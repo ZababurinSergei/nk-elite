@@ -8,7 +8,7 @@ const __dirname = process.cwd();
 
 dotenv.config()
 
-let dir = path.join(__dirname, './src/css')
+let dir = path.join(__dirname, './src/component')
 let rootWidthDesktop = 2080
 let rootHeightDesktop = 1080
 const rootWidthMobile = 375
@@ -24,7 +24,6 @@ let d = process.argv.indexOf("--dir");
 if(d >- 1) {
     dir = process.argv[d+1];
 }
-
 
 if(k >- 1) {
     viewportHeigth = process.argv[h+1];

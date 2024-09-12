@@ -15,13 +15,16 @@
         "start:webpack": "webpack serve --open --config webpack/webpack.dev.mjs",
         "=== mobile ===": "",
         "px2vw:320": "gulp px2vw --dir ./docs/css --rootWidthDesktop 320 --viewportHeigth 767 --media mobile",
-        "vw2px:320": "gulp vw2px  --dir ./docs/css --rootWidthDesktop 320 --viewportHeigth 767 --media mobile",
+        "vw2px:797.27": "gulp vw2px --dir ./src/component --rootWidthDesktop 797.27 --viewportHeigth 797.27 --media desktop",
         "=== tablet ===": "",
         "px2vw:768": "gulp px2vw --dir ./docs/css --rootWidthDesktop 768 --viewportHeigth 899 --media tablet",
         "vw2px:768": "gulp vw2px  --dir ./docs/css --rootWidthDesktop 768 --viewportHeigth 899 --media tablet",
-        "=== desctop ===": "",
+        "=== desktop vw ===": "",
         "px2vw:1920": "gulp px2vw --dir ./docs/css --rootWidthDesktop 1920 --viewportHeigth 1080 --media desktop",
         "vw2px:1920": "gulp vw2px  --dir ./docs/css --rootWidthDesktop 1920 --viewportHeigth 1080 --media desktop",
+        "=== desktop vh ===": "",
+        "px2vh:___": "gulp px2vh --dir ./src/component --rootWidthDesktop 986.24 --viewportHeigth 986.24 --media desktop",
+        "vh2px:___": "gulp vh2px  --dir ./src/component --rootWidthDesktop 600 --viewportHeigth 600 --media desktop",
         "=== end ===": ""
     },
     "keywords": [

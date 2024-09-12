@@ -15,6 +15,7 @@
 
 .game-newkind {
     position: relative;
+    width: -moz-max-content;
     width: max-content;
     display: flex;
     flex-direction: column;
