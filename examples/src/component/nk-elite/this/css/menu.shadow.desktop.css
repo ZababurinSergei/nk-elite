@@ -67,7 +67,7 @@ hr {
 }
 
 .control_right_top {
-    min-height: 52px;
+    min-height: 50px;
     /*background: aquamarine;*/
 }
 
@@ -123,6 +123,18 @@ hr {
     align-items: flex-start;
     gap: 2px;
     height: 16.5px;
+}
+
+.control_right_down .item:first-child progress {
+    margin: 0;
+}
+
+.control_right_down .item {
+    height: 14px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 0;
 }
 
 .text {
