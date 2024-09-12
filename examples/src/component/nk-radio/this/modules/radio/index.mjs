@@ -1,4 +1,4 @@
-import { initFreeQueue, FreeQueue } from "../../../../../this/index.mjs"
+import { initFreeQueue, FreeQueue } from "../../../../../this/queue.mjs"
 import Application from "./oscilloscope/index.mjs";
 
 const newAudio = async (CONFIG) => {
@@ -28,9 +28,10 @@ const newAudio = async (CONFIG) => {
 const ctx = async (CONFIG) => {
     if( CONFIG.audio.ctx == undefined || CONFIG.audio.ctx == null ) {
         CONFIG.audio.ctx = new (window.AudioContext || window.webkitAudioContext)();
-        await CONFIG.audio.ctx.audioWorklet.addModule(new URL('./radio-processor.mjs', import.meta.url).pathname);
+        const urlProcessor = new URL('./radio-processor.mjs', import.meta.url)
+        console.log('urlProcessor', urlProcessor.pathname)
+        await CONFIG.audio.ctx.audioWorklet.addModule(urlProcessor.pathname);
     }
-
     //CONFIG.audio.oscillatorNode = new OscillatorNode(CONFIG.audio.ctx);
     // Create an atomic state for synchronization between Worker and AudioWorklet.
 

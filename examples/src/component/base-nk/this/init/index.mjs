@@ -1,5 +1,3 @@
-import {store} from '../index.mjs';
-
 let pathname = undefined;
 const getChildren = (content) => {
     let isShadowDom = false;
