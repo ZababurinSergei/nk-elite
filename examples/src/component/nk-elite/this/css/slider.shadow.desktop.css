@@ -1,0 +1,114 @@
+@property --val {
+    syntax: '<integer>';
+    inherits: true;
+    initial-value: 0;
+}
+
+@property --e {
+    syntax: '<number>';
+    inherits: true;
+    initial-value: 0;
+}
+
+label {
+    --c: #547980; /* slider color */
+    --g: round(.3em,1px);  /* the gap */
+    --l: round(.2em,1px);  /* line thickness*/
+    --s: round(2.3em,1px); /* thumb size*/
+    --t: round(.8em,1px);  /* tooltip tail size */
+    --r: round(.8em,1px);  /* tooltip radius */
+
+    timeline-scope: --thumb-view;
+    position: relative; /* No, It's not useless so don't remove it (or remove it and see what happens) */
+    font-size: 24px;
+}
+
+input {
+    width: 100%;
+    height: 16px; /* needed for Firefox*/
+    --_c: color-mix(in srgb, #deb500, #000 var(--p,0%));
+    appearance :none;
+    background: none;
+    cursor: pointer;
+    overflow: hidden;
+    font-size: inherit;
+}
+
+.item.slider {
+    width: 100%;
+}
+
+input:focus-visible,
+input:hover{
+    --p: 25%;
+}
+input:active,
+input:focus-visible{
+    --_b: var(--s)
+}
+/* chromium */
+input[type="range" i]::-webkit-slider-thumb{
+    height: var(--s);
+    width: 4px;
+    aspect-ratio: 1;
+    /*border-radius: 50%;*/
+    box-shadow: 0 0 0 var(--_b,var(--l)) inset var(--_c);
+    border-image: linear-gradient(90deg,var(--_c) 50%,#ababab 0) 0 1/calc(50% - var(--l)/2) 100vw/0 calc(100vw + var(--g));
+    -webkit-appearance: none;
+    appearance: none;
+    transition: .3s;
+    anchor-name: --thumb;
+    view-timeline: --thumb-view inline;
+}
+/* Firefox */
+input[type="range"]::-moz-range-thumb {
+    height: var(--s);
+    width: var(--s);
+    background: red;
+    border-radius: 50%;
+    box-shadow: 0 0 0 var(--_b,var(--l)) inset var(--_c);
+    border-image: linear-gradient(90deg,var(--_c) 50%,#ababab 0) 0 1/calc(50% - var(--l)/2) 100vw/0 calc(100vw + var(--g));
+    -moz-appearance: none;
+    appearance: none;
+    transition: .3s;
+    anchor-name: --thumb;
+    view-timeline: --thumb-view inline;
+}
+
+output {
+    animation: range linear both;
+    animation-timeline: --thumb-view;
+    animation-range: entry 100% exit 0%;
+}
+
+output.bottom:before {
+    inset-area: bottom;
+    border-top: var(--t) solid #0000;
+    border-bottom: none;
+    rotate: calc((var(--val) - var(--e))*2deg);
+    transform-origin: 50% calc(var(--s)/-2);
+    border-radius: var(--r)/calc(var(--r) + var(--t)) calc(var(--r) + var(--t)) var(--r) var(--r);
+    --_m: 0%/var(--t) calc(var(--t) + 1px) no-repeat;
+    --_g: 0%,#0000 99%,#000 102%;
+}
+
+@keyframes range {
+    0%   {background: #8A9B0F;--val:var(--max)}
+    100% {background: #CC333F;--val:var(--min)}
+}
+
+@supports not (anchor-name: ---) {
+    output {
+        display: none;
+    }
+}
+
+/**/
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: grid;
+    gap: 20px;
+    place-content: center;
+    background: repeating-linear-gradient(-45deg, #fff 0 20px, #f9f9f9 0 40px);
+}
