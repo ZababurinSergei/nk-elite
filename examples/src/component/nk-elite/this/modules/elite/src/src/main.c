@@ -1551,6 +1551,8 @@ void main_process()
 int enablesecondchart( int _state ) {
 	venablesecondchart = _state;
 	if ( current_screen == SCR_SHORT_RANGE ) {
+		find_input = 0;
+		old_cross_x = -1;
 		display_short_range_chart (1);
 	}
 	return TRUE;
@@ -1559,6 +1561,8 @@ int enablesecondchart( int _state ) {
 int enablefirstchart( int _state ) {
 	venablefirstchart = _state;
 	if ( current_screen == SCR_GALACTIC_CHART ) {
+		find_input = 0;
+		old_cross_x = -1;
 		display_galactic_chart (1);
 	}
 	return TRUE;

@@ -307,7 +307,7 @@ void display_short_range_chart (int coord_init)
 
 void display_galactic_chart (int coord_init)
 {
-    int i;
+	int i;
 	struct galaxy_seed glx;
 	char str[64];
 	int px,py;
