@@ -22,14 +22,14 @@ source ./emsdk_env.sh
 
 ### Build WebAssembly library to ./build  directory in root of free-queue Project
 ```bash
-chmod +x ./wp-build.sh
-./wp-build.sh
+chmod +x ./mp-build.sh
+./mp-build.sh
 ```
 
 ### Clean compiled WebAssembly library
 ```bash
-chmod +x ./wp-clean.sh
-./wp-clean.sh
+chmod +x ./mp-clean.sh
+./mp-clean.sh
 ```
 
 ### Build WebAssembly library and Start example free-queue Demo
