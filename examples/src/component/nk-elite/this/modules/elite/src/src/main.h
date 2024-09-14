@@ -35,5 +35,7 @@ int SetGameParameter( char* _variable, char* _state );
 
 extern int venableconsole;
 extern int venablescreenname;
+extern int venablesecondchart;
+extern int venablefirstchart;
 
 #endif

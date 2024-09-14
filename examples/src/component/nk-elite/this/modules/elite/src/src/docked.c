@@ -21,6 +21,8 @@
 #include <ctype.h>
 
 #include "ssdl.h"
+#include "main.h"
+
 #include "elite.h"
 #include "planet.h"
 #include "shipdata.h"
@@ -226,6 +228,9 @@ void display_short_range_chart (int coord_init)
 	gfx_draw_line (GFX_VIEW_L_COORD, GFX_VIEW_T_COORD, GFX_VIEW_R_COORD, GFX_VIEW_T_COORD);
 	gfx_draw_line (GFX_VIEW_L_COORD, GFX_VIEW_T_COORD + GFX_VIEW_HSIZE, GFX_VIEW_R_COORD, GFX_VIEW_T_COORD + GFX_VIEW_HSIZE);
 
+	if( venablesecondchart )
+	{
+
 	draw_fuel_limit_circle (GFX_X_CENTER, GFX_Y_CENTER);
 
 	for (i = 0; i < 64; i++) row_used[i] = 0;
@@ -297,6 +302,7 @@ void display_short_range_chart (int coord_init)
 		cross_x = ((hyperspace_planet.d - docked_planet.d) * 8 ) + GFX_X_CENTER;
 		cross_y = ((hyperspace_planet.b - docked_planet.b) * 4 ) + GFX_Y_CENTER;
 	}
+	}
 }
 
 
@@ -320,26 +326,29 @@ void display_galactic_chart (int coord_init)
 	gfx_draw_line (GFX_VIEW_L_COORD, GFX_VIEW_T_COORD, GFX_VIEW_R_COORD, GFX_VIEW_T_COORD);
 	gfx_draw_line (GFX_VIEW_L_COORD, GFX_VIEW_T_COORD + GFX_VIEW_HSIZE, GFX_VIEW_R_COORD, GFX_VIEW_T_COORD + GFX_VIEW_HSIZE);
 
-	draw_fuel_limit_circle (GFX_VIEW_L_COORD + ( docked_planet.d * GFX_VIEW_WSIZE ) / 256, GFX_VIEW_T_COORD + ( docked_planet.b * GFX_VIEW_HSIZE ) / 256);
-
-	glx = cmdr.galaxy;
-	for (i = 0; i < 256; i++)
+	if ( venablefirstchart )
 	{
-		px = GFX_VIEW_L_COORD + ( glx.d * GFX_VIEW_WSIZE ) / 256;
-		py = GFX_VIEW_T_COORD + ( glx.b * GFX_VIEW_HSIZE ) / 256;
+		draw_fuel_limit_circle (GFX_VIEW_L_COORD + ( docked_planet.d * GFX_VIEW_WSIZE ) / 256, GFX_VIEW_T_COORD + ( docked_planet.b * GFX_VIEW_HSIZE ) / 256);
 
-		gfx_plot_pixel ( px, py, GFX_COL_WHITE );
-		if ((glx.e | 0x50) < 0x90) gfx_plot_pixel (px + 1, py, GFX_COL_WHITE);
+		glx = cmdr.galaxy;
+		for (i = 0; i < 256; i++)
+		{
+			px = GFX_VIEW_L_COORD + ( glx.d * GFX_VIEW_WSIZE ) / 256;
+			py = GFX_VIEW_T_COORD + ( glx.b * GFX_VIEW_HSIZE ) / 256;
 
-		waggle_galaxy (&glx);
-		waggle_galaxy (&glx);
-		waggle_galaxy (&glx);
-		waggle_galaxy (&glx);
-	}
+			gfx_plot_pixel ( px, py, GFX_COL_WHITE );
+			if ((glx.e | 0x50) < 0x90) gfx_plot_pixel (px + 1, py, GFX_COL_WHITE);
 
-	if ( coord_init == 1 ) {
-		cross_x = GFX_VIEW_L_COORD + hyperspace_planet.d * GFX_VIEW_WSIZE / 256;
-		cross_y = GFX_VIEW_T_COORD + hyperspace_planet.b * GFX_VIEW_HSIZE / 256;
+			waggle_galaxy (&glx);
+			waggle_galaxy (&glx);
+			waggle_galaxy (&glx);
+			waggle_galaxy (&glx);
+		}
+
+		if ( coord_init == 1 ) {
+			cross_x = GFX_VIEW_L_COORD + hyperspace_planet.d * GFX_VIEW_WSIZE / 256;
+			cross_y = GFX_VIEW_T_COORD + hyperspace_planet.b * GFX_VIEW_HSIZE / 256;
+		}
 	}
 }
 

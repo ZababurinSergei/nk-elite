@@ -60,9 +60,13 @@ const componentInit = ( self, CONFIG ) =>
 
 	CONFIG.html.scope.parameters.showGameConsole = self.shadowRoot.querySelector("#showGameConsole").checked;
 	CONFIG.html.scope.parameters.showScreenName = self.shadowRoot.querySelector("#showScreenName").checked;
+	CONFIG.html.scope.parameters.showChart1 = self.shadowRoot.querySelector("#showChart1").checked;
+	CONFIG.html.scope.parameters.showChart2 = self.shadowRoot.querySelector("#showChart2").checked;
 
 	await globalThis["LEliteTG"].ccall('SetGameParameter','number',[ 'string', 'string' ],[ "enableconsole", ( CONFIG.html.scope.parameters.showGameConsole == true ) ? "enable" : "disable" ], { async: true } );
 	await globalThis["LEliteTG"].ccall('SetGameParameter','number',[ 'string', 'string' ],[ "enablescreen-name", ( CONFIG.html.scope.parameters.showScreenName == true ) ? "enable" : "disable" ], { async: true } );
+	await globalThis["LEliteTG"].ccall('SetGameParameter','number',[ 'string', 'string' ],[ "enablefirstchart", ( CONFIG.html.scope.parameters.showChart1 == true ) ? "enable" : "disable" ], { async: true } );
+	await globalThis["LEliteTG"].ccall('SetGameParameter','number',[ 'string', 'string' ],[ "enablesecondchart", ( CONFIG.html.scope.parameters.showChart2 == true ) ? "enable" : "disable" ], { async: true } );
 
     });
 
@@ -86,6 +90,8 @@ export default async () => {
 						parameters: {
 							showGameConsole: undefined,
 							showScreenName: undefined,
+							showChart1 : undefined,
+							showChart2 : undefined
 						},
 						canvas: undefined
 					}

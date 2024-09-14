@@ -68,6 +68,8 @@ char find_name[20];
 
 int venableconsole = TRUE;
 int venablescreenname = FALSE;
+int venablesecondchart = TRUE;
+int venablefirstchart = TRUE;
 
 /*
  * Initialise the game parameters.
@@ -1539,6 +1541,19 @@ void main_process()
 		}
 }
 
+
+int enablesecondchart( int _state ) {
+	venablesecondchart = _state;
+	update_console();
+	return TRUE;
+}
+
+int enablefirstchart( int _state ) {
+	venablefirstchart = _state;
+	update_console();
+	return TRUE;
+}
+
 int enableconsole( int _state ) {
 	venableconsole = _state;
 	update_console();
@@ -1570,10 +1585,27 @@ int SetGameParameter( char* _variable, char* _state ) {
 			return enablescreenname( FALSE );
 		} 
 		return SBAD;
+	} if ( strcmp( _variable, "enablefirstchart" ) == 0 ) {
+		if ( strcmp( _state, "enable" ) == 0 ) {
+			return enablefirstchart( TRUE );
+		} else if ( strcmp( _state, "disable" ) == 0 ) {
+			return enablefirstchart( FALSE );
+		} 
+		return SBAD;
+	} if ( strcmp( _variable, "enablesecondchart" ) == 0 ) {
+		if ( strcmp( _state, "enable" ) == 0 ) {
+			return enablesecondchart( TRUE );
+		} else if ( strcmp( _state, "disable" ) == 0 ) {
+			return enablesecondchart( FALSE );
+		} 
+		return SBAD;
 	}
+
+
 	return VBAD;
 }
 #endif
+
 
 int main ( int argc, char *argv[] )
 {
