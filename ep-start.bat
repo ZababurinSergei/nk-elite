@@ -11,7 +11,7 @@ if not exist node_modules (
     @call cmd /C "npm install"
 )
 
-@call cmd /C "npm run start:webpack"
+@call cmd /C "npm run start:dev:server"
 
 cd ..
 

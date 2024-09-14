@@ -5,7 +5,7 @@ setlocal enabledelayedexpansion
 rem Project's example batch build file
 rem Emscripten SDK...
 
-set EMSCRIPTENDIR=c:/emscripten/emsdk
+set EMSCRIPTENDIR=c:/tools/emscripten/emsdk
 set BUILDDIR=build
 
 set CC=emcc
@@ -49,8 +49,8 @@ if not exist node_modules (
     @call cmd /C "npm install"
 )
 
-@call cmd /C "npm run build:webpack"
-@call cmd /C "npm run start:webpack"
+@call cmd /C "npm run start:dev:server"
+rem @call cmd /C "npm run start:dev:server"
 
 cd ..
 

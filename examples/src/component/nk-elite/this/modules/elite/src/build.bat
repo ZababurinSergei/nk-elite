@@ -4,7 +4,7 @@ setlocal enabledelayedexpansion
 
 rem Emscripten SDK...
 
-set EMSCRIPTENDIR=c:/emscripten/emsdk
+set EMSCRIPTENDIR=c:/tools/emscripten/emsdk
 set NK_ELITE_OUTPUT=nk-elite.asm.js
 
 set EMCCFLAGS=-O3 ^
