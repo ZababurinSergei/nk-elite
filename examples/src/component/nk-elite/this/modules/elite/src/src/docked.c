@@ -297,11 +297,10 @@ void display_short_range_chart (int coord_init)
 		waggle_galaxy (&glx);
 		waggle_galaxy (&glx);
 	}
-
+	}
 	if ( coord_init == 1 ) {
 		cross_x = ((hyperspace_planet.d - docked_planet.d) * 8 ) + GFX_X_CENTER;
 		cross_y = ((hyperspace_planet.b - docked_planet.b) * 4 ) + GFX_Y_CENTER;
-	}
 	}
 }
 
@@ -345,10 +344,11 @@ void display_galactic_chart (int coord_init)
 			waggle_galaxy (&glx);
 		}
 
-		if ( coord_init == 1 ) {
-			cross_x = GFX_VIEW_L_COORD + hyperspace_planet.d * GFX_VIEW_WSIZE / 256;
-			cross_y = GFX_VIEW_T_COORD + hyperspace_planet.b * GFX_VIEW_HSIZE / 256;
-		}
+	}
+
+	if ( coord_init == 1 ) {
+		cross_x = GFX_VIEW_L_COORD + hyperspace_planet.d * GFX_VIEW_WSIZE / 256;
+		cross_y = GFX_VIEW_T_COORD + hyperspace_planet.b * GFX_VIEW_HSIZE / 256;
 	}
 }
 

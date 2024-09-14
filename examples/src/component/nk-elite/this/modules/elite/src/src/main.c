@@ -1512,23 +1512,28 @@ void main_process()
 
 			if (current_screen == SCR_BREAK_PATTERN) display_break_pattern();
 
-			if (cross_timer > 0)
+			if (( venablesecondchart == TRUE && current_screen == SCR_SHORT_RANGE ) || 
+				( venablefirstchart == TRUE && current_screen == SCR_GALACTIC_CHART ))
 			{
-				cross_timer--;
-				if (cross_timer == 0)
+
+				if (cross_timer > 0)
 				{
-    				show_distance_to_planet(1);
+					cross_timer--;
+					if (cross_timer == 0)
+					{
+	    					show_distance_to_planet(1);
+					}
 				}
-			}
 
-			if ((cross_x != old_cross_x) || (cross_y != old_cross_y))
-			{
-				// if (old_cross_x != -1) draw_cross (old_cross_x, old_cross_y);
+				if ((cross_x != old_cross_x) || (cross_y != old_cross_y))
+				{
+					// if (old_cross_x != -1) draw_cross (old_cross_x, old_cross_y);
 
-				old_cross_x = cross_x;
-				old_cross_y = cross_y;
-
-				draw_cross (old_cross_x, old_cross_y);
+					old_cross_x = cross_x;
+					old_cross_y = cross_y;
+			
+					draw_cross (old_cross_x, old_cross_y);
+				}
 			}
 			return;
 		} 
@@ -1542,15 +1547,20 @@ void main_process()
 }
 
 
+
 int enablesecondchart( int _state ) {
 	venablesecondchart = _state;
-	update_console();
+	if ( current_screen == SCR_SHORT_RANGE ) {
+		display_short_range_chart (1);
+	}
 	return TRUE;
 }
 
 int enablefirstchart( int _state ) {
 	venablefirstchart = _state;
-	update_console();
+	if ( current_screen == SCR_GALACTIC_CHART ) {
+		display_galactic_chart (1);
+	}
 	return TRUE;
 }
 
