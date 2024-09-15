@@ -212,7 +212,7 @@ void constrictor_mission_brief (void)
 		gfx_clear_area (310, 50, wnd_width - 2, 180);
 		update_universe ();
 		universe[0].location.z = 600;
-		gfx_update_screen();
+		//gfx_update_screen();
 		kbd_poll_keyboard();
 	} while (!kbd_space_pressed);
 }	
@@ -236,7 +236,7 @@ void constrictor_mission_debrief (void)
 
 	gfx_display_centre_text (330, "Press space to continue.", 140, GFX_COL_GOLD);
 
-	gfx_update_screen();
+	// gfx_update_screen();
 	
 	do
 	{
@@ -259,7 +259,7 @@ void thargoid_mission_first_brief (void)
 
 	gfx_display_centre_text (330, "Press space to continue.", 140, GFX_COL_GOLD);
 
-	gfx_update_screen();
+	// gfx_update_screen();
 	
 	do
 	{
@@ -285,7 +285,7 @@ void thargoid_mission_second_brief (void)
 	
 	gfx_display_centre_text (330, "Press space to continue.", 140, GFX_COL_GOLD);
 
-	gfx_update_screen();
+	// gfx_update_screen();
 	
 	do
 	{
@@ -312,7 +312,7 @@ void thargoid_mission_debrief (void)
 
 	gfx_display_centre_text (330, "Press space to continue.", 140, GFX_COL_GOLD);
 
-	gfx_update_screen();
+	// gfx_update_screen();
 	
 	do
 	{

@@ -3,7 +3,7 @@
 #
 
 CC	=	gcc
-RM	=	rm
+RM	=	@del
 WRES	=	windres
 ECHO	=	echo
 

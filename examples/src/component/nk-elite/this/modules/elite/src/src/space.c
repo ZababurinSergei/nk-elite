@@ -882,53 +882,7 @@ void display_condition(void)
 
 void update_console (void)
 {	
-	if ( venablescreenname == TRUE ) 
-	{
-		gfx_display_centre_text (20, "Hello for Sergey Zababurin", 120, GFX_COL_GOLD);
-	}
 
-	if ( venableconsole == TRUE ) 
-	{
-		gfx_draw_scanner();
-
-		display_speed();
-		display_flight_climb();
-		display_flight_roll();
-		display_shields();
-		display_altitude();
-		display_energy();
-		display_cabin_temp();
-		display_laser_temp();
-		display_fuel();
-		display_missiles();
-
-		update_condition();
-		
-		if (docked) {
-			gfx_set_clip_region (0, 0, wnd_width - 1, wnd_height - 1);
-			return;
-		}
-
-		update_scanner();
-		update_compass();
-		display_condition();
-
-		char buf[5];
-
-		sprintf(buf, "x%d", scanner_zoom);
-		gfx_display_text(zoom_x, zoom_y, buf);
-
-		if (ship_count[SHIP_CORIOLIS] || ship_count[SHIP_DODEC]) gfx_draw_sprite (IMG_BIG_S, 387, 490);
-		if (ecm_active) gfx_draw_sprite (IMG_BIG_E, 115, 490);
-
-	} 
-	else 
-	{
-        gfx_clear_scanner();        
-		gfx_display_centre_text (400, "Special thanks for Sergey Zababurin", 120, GFX_COL_GOLD);
-    }
-
-	gfx_set_clip_region (0, 0, wnd_width - 1, wnd_height - 1);
 }
 
 void increase_flight_roll (void)

@@ -31,7 +31,6 @@
 
 #define MAX(x,y) (((x) > (y)) ? (x) : (y))
 
-
 #define LAND_X_MAX	128
 #define LAND_Y_MAX	128
 

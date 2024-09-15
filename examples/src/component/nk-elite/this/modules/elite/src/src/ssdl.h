@@ -143,7 +143,7 @@ extern int wnd_height;
 extern int wnd_fullscreen;
 extern double wnd_scale;
 
-extern SDL_Texture	*sdl_tex_clone;
+extern SDL_Texture	*sdl_tex_pri;
 extern SDL_Texture	*sdl_tex;
 extern SDL_Window	*sdl_win;
 extern SDL_Renderer	*sdl_ren;
@@ -194,5 +194,6 @@ extern void gfx_finish_render (void);
 extern int  gfx_request_file (char *title, char *path, char *ext);
 extern void gfx_texture_clone(void);
 extern void gfx_swap_textures(void);
+extern void gfx_set_clip ( int x1, int y1, int x2, int y2 );
 
 #endif

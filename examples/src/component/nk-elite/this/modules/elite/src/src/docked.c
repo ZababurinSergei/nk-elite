@@ -777,10 +777,10 @@ void sell_stock (void)
 
 
 
-void display_market_prices (void)
+void display_market_prices (int var_init)
 {
 	char str[100];
-    char planet_name[16];
+        char planet_name[16];
 	int i;
 
 	current_screen = SCR_MARKET_PRICES;
@@ -806,10 +806,20 @@ void display_market_prices (void)
 		display_stock_price (i);
 	}
 
-	if (docked)
+	if ( var_init == 1 )
 	{
-		hilite_item = -1;
-		highlight_stock (0);
+		if (docked)
+		{
+			hilite_item = -1;
+			highlight_stock (0);
+		}
+	} 
+	else 
+	{
+		if (docked)
+		{
+			highlight_stock (hilite_item);
+		}
 	}
 }
 
@@ -1317,7 +1327,7 @@ void buy_equip (void)
 }
 
 
-void equip_ship (void)
+void equip_ship (int var_init)
 {
 	current_screen = SCR_EQUIP_SHIP;
 
@@ -1329,9 +1339,12 @@ void equip_ship (void)
 	gfx_draw_simplerect(GFX_WINDOW_L_COORD, GFX_WINDOW_T_COORD, GFX_WINDOW_R_COORD, GFX_WINDOW_B_COORD, GFX_COL_WHITE);
 	gfx_draw_line (GFX_VIEW_L_COORD, GFX_VIEW_T_COORD, GFX_VIEW_R_COORD, GFX_VIEW_T_COORD);
 
-	collapse_equip_list();
-	
-	hilite_item = 0;
-	
-	list_equip_prices();
+	if ( var_init == 1 ) {
+		collapse_equip_list();	
+		hilite_item = 0;	
+		list_equip_prices();
+	} else {
+		//collapse_equip_list();	
+		list_equip_prices();
+	}
 }

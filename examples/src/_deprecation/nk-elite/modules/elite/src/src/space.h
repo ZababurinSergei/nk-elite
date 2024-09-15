@@ -62,6 +62,8 @@ void remove_ship (int un);
 void move_univ_object (struct univ_object *obj);
 void update_universe (void);
 
+void update_compass (void);
+void update_scanner (void);
 void update_console (void);
 
 void update_altitude (void);

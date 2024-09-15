@@ -210,7 +210,7 @@ int kbd_check_keys()
 	int lastkey = 0;
 	if (sdl_last_key_pressed) {
 		lastkey = sdl_last_key_pressed;
-		sdl_last_key_pressed = 0;
+//		sdl_last_key_pressed = 0;
 	}
 
 	return lastkey;

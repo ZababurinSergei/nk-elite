@@ -37,10 +37,11 @@
 #include "sound.h"
 #include "file.h"
 
-SDL_Texture		*sdl_tex_clone = NULL;
+
 SDL_Texture		*sdl_tex = NULL;
+SDL_Texture		*sdl_tex_pri = NULL;
 SDL_Window		*sdl_win = NULL;
-SDL_Renderer	*sdl_ren = NULL;
+SDL_Renderer            *sdl_ren = NULL;
 
 #define MAX_POLYS	100
 
@@ -213,23 +214,28 @@ void gfx_texture_clone()
     // Save the current rendering target (will be NULL if it is the current window)
     renderTarget = SDL_GetRenderTarget(sdl_ren);
     // Create a new texture with the same properties as the one we are duplicating
-    sdl_tex_clone = SDL_CreateTexture(sdl_ren, format, SDL_TEXTUREACCESS_TARGET, w, h);
+    sdl_tex_pri = SDL_CreateTexture(sdl_ren, format, SDL_TEXTUREACCESS_TARGET, w, h);
     // Set its blending mode and make it the render target
-    SDL_SetTextureBlendMode(sdl_tex_clone, SDL_BLENDMODE_NONE);
-    SDL_SetRenderTarget(sdl_ren, sdl_tex_clone);
+    SDL_SetTextureBlendMode(sdl_tex_pri, SDL_BLENDMODE_NONE);
+    SDL_SetRenderTarget(sdl_ren, sdl_tex_pri);
     // Render the full original texture onto the new one
     SDL_RenderCopy(sdl_ren, sdl_tex, NULL, NULL);
     // Change the blending mode of the new texture to the same as the original one
-    SDL_SetTextureBlendMode(sdl_tex_clone, blendmode);
+    SDL_SetTextureBlendMode(sdl_tex_pri, blendmode);
     // Restore the render target
     SDL_SetRenderTarget(sdl_ren, renderTarget);
 }
 
-void gfx_swap_textures()
+void gfx_swap_tex()
 {
-	SDL_Texture	*sdl_tex_temp = sdl_tex;
-	sdl_tex = sdl_tex_clone;
-	sdl_tex_clone = sdl_tex_temp;
+	SDL_Texture *sdl_tex_temp = sdl_tex;
+
+	sdl_tex = sdl_tex_pri;
+	sdl_tex_pri = sdl_tex_temp;
+
+	if (SDL_SetRenderTarget(sdl_ren, sdl_tex)) {
+		ERROR_WINDOW("Cannot set render target: %s", SDL_GetError());
+	}
 }
 
 #define fmul(x,y)	fixmul(x,y)
@@ -274,7 +280,7 @@ int gfx_graphics_startup (void)
 	for ( int i = 0; i < rc_drv; i++ ) {
 		SDL_RendererInfo info;
 		SDL_GetRenderDriverInfo( i, &info );
-		printf( "Driver: idx=%d name=%s\n", i, info.name );
+		printf( "InfoDrv: idx=%d name=%s\n", i, info.name );
 	}
 
 	sdl_ren = SDL_CreateRenderer(sdl_win, 0, SDL_RENDERER_ACCELERATED);
@@ -315,6 +321,12 @@ int gfx_graphics_startup (void)
 
 	sdl_tex = SDL_CreateTexture(sdl_ren, PIXEL_FORMAT, SDL_TEXTUREACCESS_TARGET, wnd_width, wnd_height);
 	if (!sdl_tex) {
+		ERROR_WINDOW("Cannot create texture: %s", SDL_GetError());
+		return 1;
+	}
+
+	sdl_tex_pri = SDL_CreateTexture(sdl_ren, PIXEL_FORMAT, SDL_TEXTUREACCESS_TARGET, wnd_width, wnd_height);
+	if (!sdl_tex_pri) {
 		ERROR_WINDOW("Cannot create texture: %s", SDL_GetError());
 		return 1;
 	}
@@ -418,32 +430,17 @@ void gfx_graphics_shutdown (void)
 
 void gfx_update_screen (void)
 {
-#if 0
-	while (frame_count < 1)
-		rest (10);
-	frame_count = 0;
-	
-	acquire_screen();
- 	blit (gfx_screen, screen, GFX_X_OFFSET, GFX_Y_OFFSET, GFX_X_OFFSET, GFX_Y_OFFSET, 512, 512);
-	release_screen();
-#endif
-	// TODO FIXME: add frame rate controll here?
-	//SDL_RenderSetLogicalSize(sdl_ren, SCREEN_W, SCREEN_H);
-	/* switch renderer to the actual target (window) and render output */
 	SDL_SetRenderTarget(sdl_ren, NULL);
 	SDL_SetRenderDrawColor(sdl_ren,0,0,0,0xFF);
 	SDL_RenderClear(sdl_ren);
 	SDL_RenderCopy(sdl_ren, sdl_tex, NULL, NULL);
 	SDL_RenderPresent(sdl_ren);
-	//handle_sdl_events();
-	/* switch renderer target back to the texture then */
 	SDL_SetRenderTarget(sdl_ren, sdl_tex);
-	//SDL_SetRenderDrawColor(sdl_ren,0,0,0,0xFF);
-	//SDL_RenderClear(sdl_ren);
-	// FIXME:
-	// more sane framerate control
+	SDL_SetRenderDrawColor(sdl_ren,0,0,0,0xFF);
+	SDL_RenderClear(sdl_ren);
+
 //    #ifdef __EMSCRIPTEN__
-        //emscripten_sleep(speed_cap);
+//        emscripten_sleep(speed_cap);
 //    #else
 //        SDL_Delay(speed_cap);
 //    #endif
@@ -857,7 +854,9 @@ void gfx_display_centre_text (int y, char *str, int psize, int col)
 
 void gfx_clear_display (void)
 {
-	gfx_clear_area (GFX_WINDOW_L_COORD, GFX_WINDOW_T_COORD, GFX_WINDOW_R_COORD, GFX_WINDOW_B_COORD);
+	gfx_set_clip(GFX_VIEW_L_COORD, GFX_WINDOW_T_COORD + GFX_BORDER_SIZE, GFX_VIEW_R_COORD, GFX_WINDOW_B_COORD - GFX_BORDER_SIZE);
+	SDL_SetRenderDrawColor(sdl_ren, 0, 0, 0, 0xFF);
+	SDL_RenderClear(sdl_ren);
 }
 
 void gfx_clear_text_area (void)
@@ -930,29 +929,23 @@ void gfx_display_pretty_text (int tx, int ty, int bx, int by, char *txt)
 }
 
 
-static inline void gfx_set_clip ( int x1, int y1, int x2, int y2 )
+void gfx_set_clip ( int x1, int y1, int x2, int y2 )
 {
 	SDL_Rect rect;
 	rect.x = x1;
 	rect.y = y1;
 	rect.w = x2 - x1 + 1;
 	rect.h = y2 - y1 + 1;
-	// FIXME: check?
-	//if (rect.w <= 0 || rect.h <=0 || rect.x < 0 || rect.y < 0)
-	//	fprintf(stderr, "SUSPECT clipping: set_clip(%d,%d,%d,%d)\n", x1,y1,x2,y2);
 	SDL_RenderSetClipRect(sdl_ren, &rect);
 }
 
 void gfx_clear_scanner()
 {
-	gfx_set_clip(GFX_SCANNER_L_COORD, GFX_SCANNER_T_COORD, GFX_SCANNER_R_COORD, GFX_SCANNER_B_COORD);
-	SDL_SetRenderDrawColor(sdl_ren, 0, 0, 0, 0xFF);
-	SDL_RenderClear(sdl_ren);
+	gfx_draw_simplerect (GFX_SCANNER_L_COORD, GFX_SCANNER_T_COORD, GFX_SCANNER_R_COORD, GFX_SCANNER_B_COORD, GFX_COL_BLACK);
 }
 
 void gfx_draw_scanner (void)
 {
-	gfx_set_clip(GFX_SCANNER_L_COORD, GFX_SCANNER_T_COORD, GFX_SCANNER_R_COORD, GFX_SCANNER_B_COORD);
 	SDL_RenderCopy(sdl_ren, sprites[IMG_THE_SCANNER].tex, NULL, &sprites[IMG_THE_SCANNER].rect);
 }
 
@@ -1136,22 +1129,11 @@ int start_sdl ( void )
         printf("SDL_Init() failed: %s\n", SDL_GetError());
         return 1;
     }
-//	if (SDL_Init(
-//#ifdef __EMSCRIPTEN__
-		/* It seems there is an issue with emscripten SDL2: SDL_Init does not work if TIMER and/or HAPTIC is tried to be intialized or just "EVERYTHING" is used!! */
-//		SDL_INIT_EVERYTHING & ~(SDL_INIT_TIMER | SDL_INIT_HAPTIC)
-//        SDL_Init(SDL_INIT_VIDEO)
-//#else
-//		SDL_INIT_EVERYTHING
-//#endif
-//	)) {
-//		ERROR_WINDOW("Cannot initialize SDL: %s", SDL_GetError());
-//		return 1;
-//	}
-	atexit(shutdown_sdl);
 
-	pref_path = SDL_GetBasePath();
-	printf( "FILE: [\"pref_path\"]=\"%s\"\n", pref_path );
+    atexit(shutdown_sdl);
+
+    pref_path = SDL_GetBasePath();
+    printf( "FILE: [\"pref_path\"]=\"%s\"\n", pref_path );
 
 //	pref_path = SDL_GetPrefPath("lgb", "newkind");
 //	if (!pref_path) {

@@ -63,6 +63,18 @@ void move_univ_object (struct univ_object *obj);
 void update_universe (void);
 
 void update_console (void);
+void display_speed (void);
+void update_scanner (void);
+void update_compass (void);
+void display_missiles (void);
+void display_fuel (void);
+void display_laser_temp();
+void display_flight_climb();
+void display_flight_roll();
+void display_shields();
+void display_altitude();
+void display_energy();
+void display_cabin_temp(); 
 
 void update_altitude (void);
 void update_cabin_temp (void);

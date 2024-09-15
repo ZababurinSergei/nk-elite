@@ -46,6 +46,7 @@
 #include "pilot.h"
 #include "file.h"
 #include "keyboard.h"
+#include "space.h"
 
 int old_cross_x, old_cross_y;
 int cross_timer;
@@ -71,6 +72,7 @@ int venablescreenname = FALSE;
 int venablesecondchart = TRUE;
 int venablefirstchart = TRUE;
 
+void secondary_main();
 /*
  * Initialise the game parameters.
  */
@@ -155,13 +157,11 @@ void move_cross (int dx, int dy)
 void draw_cross (int cx, int cy)
 {
 	if (current_screen == SCR_SHORT_RANGE) {
-		display_short_range_chart(0);
 		show_distance_to_planet(0);
 		gfx_set_clip_region (GFX_VIEW_L_COORD, GFX_VIEW_T_COORD, GFX_VIEW_R_COORD, GFX_VIEW_B_COORD );
 		gfx_draw_colour_line (cx - 16, cy, cx + 16, cy, GFX_COL_RED);
 		gfx_draw_colour_line (cx, cy - 16, cx, cy + 16, GFX_COL_RED);
 	} else if (current_screen == SCR_GALACTIC_CHART) {
-		display_galactic_chart(0);
 		show_distance_to_planet(0);
 		gfx_set_clip_region (GFX_VIEW_L_COORD, GFX_VIEW_T_COORD, GFX_VIEW_R_COORD, GFX_VIEW_B_COORD );
 		gfx_draw_colour_line(cx - 8, cy, cx + 8, cy, GFX_COL_RED);
@@ -663,7 +663,7 @@ void run_escape_sequence (void)
 		gfx_display_centre_text (358, "Escape pod launched - Ship auto-destuct initiated.", 120, GFX_COL_WHITE);
 		
 		update_console();
-		gfx_update_screen();
+		//gfx_update_screen();
 	}
 
 	
@@ -687,7 +687,7 @@ void run_escape_sequence (void)
 		update_starfield();
 		update_universe();
 		update_console();
-		gfx_update_screen();
+		//gfx_update_screen();
 	}
 
 	abandon_ship();
@@ -741,17 +741,18 @@ ok:
 
 void handle_flight_keys (void)
 {
-    int keyasc;
-	
+	int keyasc;
+
+/*	
 	if (docked &&
-	    ((current_screen == SCR_MARKET_PRICES) ||
-		 (current_screen == SCR_OPTIONS) ||
-		 (current_screen == SCR_SETTINGS) ||
-		 (current_screen == SCR_EQUIP_SHIP))
+		((current_screen == SCR_MARKET_PRICES) ||
+		(current_screen == SCR_OPTIONS) ||
+		(current_screen == SCR_SETTINGS) ||
+		(current_screen == SCR_EQUIP_SHIP))
 	)
 	{
-		handle_sdl_events();
-		int key_pressed = kbd_check_keys();
+//		handle_sdl_events();
+		int key_pressed = keypressed();
 
 		kbd_enter_pressed = 0;
 		kbd_backspace_pressed = 0;
@@ -760,11 +761,7 @@ void handle_flight_keys (void)
 		if (keycode == KEY_RETURN) kbd_enter_pressed = 1;
 		if (keycode == KEY_BACKSPACE) kbd_backspace_pressed = 1;
 	}
-
-	//int key_pressed = kbd_check_keys();
-	handle_sdl_events();
-	kbd_check_keys();
-
+*/
 	// FIXME: no joy yet ...
 #if 0
 	if (have_joystick)
@@ -853,7 +850,7 @@ void handle_flight_keys (void)
 		find_input = 0;
 		
 		if (docked)
-			equip_ship();
+			equip_ship(1);
 		else
 		{
 			if (current_screen != SCR_RIGHT_VIEW)
@@ -863,7 +860,6 @@ void handle_flight_keys (void)
 			}
 		}
 	}
-
 	
 	if (kbd_F5_pressed)
 	{
@@ -888,7 +884,7 @@ void handle_flight_keys (void)
 	if (kbd_F8_pressed && (!witchspace))
 	{
 		find_input = 0;
-		display_market_prices();
+		display_market_prices(1);
 	}	
 
 	if (kbd_F9_pressed)
@@ -906,7 +902,7 @@ void handle_flight_keys (void)
 	if (kbd_F11_pressed)
 	{
 		find_input = 0;
-		display_options();
+		display_options(1);
 	}
 
 	if (find_input)
@@ -932,11 +928,9 @@ void handle_flight_keys (void)
 		return;		
 	}
 	
-	if (kbd_y_pressed)
-		y_pressed();
+	if (kbd_y_pressed) y_pressed();
 
-	if (kbd_n_pressed)
-		n_pressed();
+	if (kbd_n_pressed) n_pressed();
 
 #ifdef HACKING
 	if (kbd_i_pressed == 1)
@@ -966,8 +960,7 @@ void handle_flight_keys (void)
 		}
 	}
 
-	if (kbd_d_pressed)
-		d_pressed();
+	if (kbd_d_pressed) d_pressed();
 	
 	if (kbd_ecm_pressed)
 	{
@@ -975,8 +968,7 @@ void handle_flight_keys (void)
 			activate_ecm(1);
 	}
 
-	if (kbd_find_pressed)
-		f_pressed ();
+	if (kbd_find_pressed) f_pressed ();
 	
 	if (kbd_hyperspace_pressed && (!docked))
 	{
@@ -1035,20 +1027,15 @@ void handle_flight_keys (void)
 		}
 	}
 
-	if (kbd_up_pressed)
-		arrow_up();
+	if (kbd_up_pressed) arrow_up();
 	
-	if (kbd_down_pressed)
-		arrow_down();
+	if (kbd_down_pressed) arrow_down();
 
-	if (kbd_left_pressed)
-		arrow_left();
+	if (kbd_left_pressed) arrow_left();
 		
-	if (kbd_right_pressed)
-		arrow_right();
+	if (kbd_right_pressed) arrow_right();
 	
-	if (kbd_enter_pressed)
-		return_pressed();
+	if (kbd_enter_pressed) return_pressed();
 
 	if (kbd_energy_bomb_pressed && kbd_ctrl_pressed)
 	{
@@ -1111,7 +1098,7 @@ void save_commander_screen (void)
 	gfx_clear_display();
 	gfx_display_centre_text (10, "SAVE COMMANDER", 140, GFX_COL_GOLD);
 	gfx_draw_line (0, 36, wnd_width - 1, 36);
-	gfx_update_screen();
+	//gfx_update_screen();
 	
 	strcpy (path, cmdr.name);
 	strcat (path, ".nkc");
@@ -1120,7 +1107,7 @@ void save_commander_screen (void)
 	
 	if (!okay)
 	{
-		display_options();
+		display_options(0);
 		return;
 	}
 
@@ -1149,7 +1136,7 @@ void load_commander_screen (void)
 	gfx_clear_display();
 	gfx_display_centre_text (10, "LOAD COMMANDER", 140, GFX_COL_GOLD);
 	gfx_draw_line (0, 36, wnd_width - 1, 36);
-	gfx_update_screen();
+	//gfx_update_screen();
 	
 	
 	strcpy (path, "jameson.nkc");
@@ -1166,7 +1153,7 @@ void load_commander_screen (void)
 		saved_cmdr = cmdr;
 		gfx_display_centre_text (175, "Error Loading Commander!", 140, GFX_COL_GOLD);
 		gfx_display_centre_text (200, "Press any key to continue.", 140, GFX_COL_GOLD);
-		gfx_update_screen();
+		//gfx_update_screen();
 		readkey();
 		return;
 	}
@@ -1238,7 +1225,7 @@ void run_game_over_screen()
 		update_starfield();
 		update_universe();
 		gfx_display_centre_text (190, "GAME OVER", 140, GFX_COL_GOLD);
-		gfx_update_screen();
+		//gfx_update_screen();
 	}
 }
 
@@ -1257,7 +1244,7 @@ void display_break_pattern (void)
 	for (i = 0; i < 20; i++) {
 		gfx_set_clip_region (1, 1, wnd_width - 2, (wnd_height - 129));	// put it here, to avoid overdraw console etc with circles when they are big enough
 		gfx_draw_circle (wnd_width / 2, ( wnd_height - 128 ) / 2, 30 + i * 15, GFX_COL_WHITE);
-		gfx_update_screen();
+		//gfx_update_screen();
 	}	
 
 	if (docked) {
@@ -1281,204 +1268,252 @@ unsigned int startup_part = 0;
 
 void main_process()
 {
-		unsigned int change = 0;
+	unsigned int change = 0;
 
-//		if ( (w_h != wnd_height) || ( w_h == 0 ) ) change = 1;
-//		if ( (w_w != wnd_width) || ( w_w == 0 ) ) change = 1;
+	gfx_set_clip_region (0, 0, GFX_WINDOW_WIDTH - 1, GFX_WINDOW_HEIGHT - 1);
 
-		if ( parts == 1 ) {
-			game_over = 0;	
+	if ( venablescreenname == TRUE ) {
+		gfx_display_centre_text (20, "Hello for Sergey Zababurin", 120, GFX_COL_GOLD);
+	}
 
-			initialise_game();
-			dock_player();
+	handle_sdl_events();
+	kbd_check_keys();
 
-			///////////////////////////////////////
-			// draw window star ship panel
-			update_console();
-			current_screen = SCR_FRONT_VIEW;
+	secondary_main();
 
-			startup_part = 0;
-			parts = 2;
-			return;
+	gfx_set_clip(GFX_SCANNER_L_COORD, GFX_SCANNER_T_COORD, GFX_SCANNER_R_COORD, GFX_SCANNER_B_COORD);
+
+	if ( venableconsole == TRUE ) {
+		gfx_draw_scanner();
+
+		display_speed();
+		display_flight_climb();
+		display_flight_roll();
+
+		display_shields();
+		display_altitude();
+		display_energy();
+		display_cabin_temp();
+		display_laser_temp();
+		display_fuel();
+		display_missiles();
+
+		update_condition();
+
+		if (!docked) {
+			update_scanner();
+			update_compass();
+			display_condition();
+
+			char buf[5];
+			sprintf(buf, "x%d", scanner_zoom);
+			gfx_display_text(zoom_x, zoom_y, buf);
+	
+			if (ship_count[SHIP_CORIOLIS] || ship_count[SHIP_DODEC]) gfx_draw_sprite (IMG_BIG_S, 387, 490);
+			if (ecm_active) gfx_draw_sprite (IMG_BIG_E, 115, 490);
 		}
-		else if ( parts == 2 ) 
-		{
-			///////////////////////////////////////////////////////////////
-			// intro 1
-			///////////////////////////////////////////////////////////////
-			if ( startup_part == 0 )
-			{
-				current_screen = SCR_INTRO_ONE;
 
-				snd_play_midi (SND_ELITE_THEME, TRUE);
-				initialise_intro1();
+	} else {
+		gfx_clear_scanner();
+		gfx_display_centre_text (GFX_VIEW_B_COORD - 20, "Hello for Sergey Zababurin", 120, GFX_COL_GOLD);
+	}
+
+	gfx_update_screen();
+}
+
+
+void secondary_main()
+{
+	if ( parts == 1 ) {
+		game_over = 0;	
+	
+		initialise_game();
+		dock_player();
+	
+		startup_part = 0;
+		parts = 2;
+		return;
+	} else if ( parts == 2 ) {
+		///////////////////////////////////////////////////////////////
+		// intro 1
+		///////////////////////////////////////////////////////////////
+		if ( startup_part == 0 ) {
+			current_screen = SCR_INTRO_ONE;
+
+			snd_play_midi (SND_ELITE_THEME, TRUE);
+			initialise_intro1();
 
 			#ifdef HACKING
 				identify = 0;
 			#endif
-				startup_part = 1;
-				return;
-			}
-			else if ( startup_part == 1 )
-			{
-				update_intro1();
-				
-				gfx_update_screen();
-				
-				handle_sdl_events();
-				int key_pressed = kbd_check_keys();
 
-				if (kbd_y_pressed) {
-					snd_stop_midi();	
-					load_commander_screen();
-					startup_part = 0xffff;
-				}
-				
-				if (kbd_n_pressed) { 
-					snd_stop_midi();	
-					startup_part = 0xffff;
-				}
-				return;
+			startup_part = 1;
+			return;
+		} else if ( startup_part == 1 ) {
+			update_intro1();
+			if (kbd_y_pressed) {
+				snd_stop_midi();	
+				load_commander_screen();
+				startup_part = 0xffff;
+			}	
+			if (kbd_n_pressed) { 
+				snd_stop_midi();	
+				startup_part = 0xffff;
 			}
-			startup_part = 0;
-			parts = 3;
 			return;
 		}
-		else if ( parts == 3 ) {
-			///////////////////////////////////////////////////////////////
-			// intro 2
-			///////////////////////////////////////////////////////////////
-			if ( startup_part == 0 ) {
+		startup_part = 0;
+		parts = 3;
+		return;
+	} else if ( parts == 3 ) {
+		///////////////////////////////////////////////////////////////
+		// intro 2
+		///////////////////////////////////////////////////////////////
+		if ( startup_part == 0 ) {
+			current_screen = SCR_INTRO_TWO;
+			snd_play_midi (SND_BLUE_DANUBE, TRUE);
 
-				current_screen = SCR_INTRO_TWO;
-		
-				snd_play_midi (SND_BLUE_DANUBE, TRUE);
+		#ifdef HACKING
+			identify = 0;
+		#endif
 
-			#ifdef HACKING
-				identify = 0;
-			#endif
+			initialise_intro2();
 
-				initialise_intro2();
+			flight_speed = 3;
+			flight_roll = 0;
+			flight_climb = 0;
 
-				flight_speed = 3;
-				flight_roll = 0;
-				flight_climb = 0;
-
-				startup_part = 1;
-				return;
-			}
-			else if ( startup_part == 1 )
-			{
-				update_intro2();
-
-				gfx_update_screen();
-
-				handle_sdl_events();
-				int key_pressed = kbd_check_keys();
-
-				if (kbd_space_pressed) {
-					snd_stop_midi();	
-					startup_part = 0xffff;
-				}			
-				return;
-			} 
-			startup_part = 0;
-			parts = 4;
+			startup_part = 1;
 			return;
-		}
-		else if ( parts == 4 ) {			
-			old_cross_x = -1;
-			old_cross_y = -1;
-			dock_player ();
+		} else if ( startup_part == 1 ) {
+			update_intro2();
+			if (kbd_space_pressed) {
+				snd_stop_midi();	
+				startup_part = 0xffff;
+			}			
+			return;
+		} 
+		startup_part = 0;
+		parts = 4;
+		return;
+	} else if ( parts == 4 ) {
+		old_cross_x = -1;
+		old_cross_y = -1;
+		display_commander_status ();
+		startup_part = 0;
+		parts = 5;
+		return;
+	} else if ( parts == 5 && !game_over ) {
+		int key_pressed = kbd_check_keys();
+
+
+		rolling = 0;
+		climbing = 0;
+
+		///////////////////////////////////////////////////////////////
+		// Менюхи
+		///////////////////////////////////////////////////////////////
+
+
+		handle_flight_keys ();	
+		if ( current_screen == SCR_EQUIP_SHIP ) {
+			equip_ship (0);
+		} else if ( current_screen == SCR_SHORT_RANGE ) {
+			display_short_range_chart (0);
+		} else if ( current_screen == SCR_GALACTIC_CHART ) {
+			display_galactic_chart (0);
+		} else if ( current_screen == SCR_PLANET_DATA ) {
+			display_data_on_planet();
+		} else if ( current_screen == SCR_MARKET_PRICES ) {
+			display_market_prices(0);
+		} else if ( current_screen == SCR_CMDR_STATUS ) {
 			display_commander_status ();
-			startup_part = 0;
-			parts = 5;
-			return;
+		} else if ( current_screen == SCR_INVENTORY ) {
+			display_inventory();
+		} else if ( current_screen == SCR_OPTIONS ) {
+			display_options(0);
+		} else if ( current_screen == SCR_QUIT ) {
+			quit_screen();
+		} else if ( current_screen == SCR_RESTART ) {
+			restart_screen();
+		} else if ( current_screen == SCR_SETTINGS ) {
+			game_settings_screen(0);
 		}
-		else if ( parts == 5 && !game_over )
+
+		if (game_paused) return;
+		if (message_count > 0) message_count--;
+
+		if (!rolling) {
+			if (flight_roll > 0) decrease_flight_roll();
+			if (flight_roll < 0) increase_flight_roll();
+		}
+
+		if (!climbing) {
+			if (flight_climb > 0) decrease_flight_climb();
+			if (flight_climb < 0) increase_flight_climb();
+		}
+
+		if (!docked)
 		{
-			//snd_update_sound();
-
-			gfx_update_screen();
-
-			rolling = 0;
-			climbing = 0;
-
 			///////////////////////////////////////////////////////////////
-			// Менюхи
+			// Полет, вне базы...
 			///////////////////////////////////////////////////////////////
-			handle_flight_keys ();
 
-			if (game_paused) return;
-			if (message_count > 0) message_count--;
+			gfx_set_clip_region (GFX_WINDOW_L_COORD, GFX_WINDOW_T_COORD, GFX_WINDOW_R_COORD, GFX_WINDOW_B_COORD);
+			gfx_draw_simplerect(GFX_WINDOW_L_COORD, GFX_WINDOW_T_COORD, GFX_WINDOW_R_COORD, GFX_WINDOW_B_COORD, GFX_COL_WHITE);
 
-			if (!rolling) {
-				if (flight_roll > 0) decrease_flight_roll();
-				if (flight_roll < 0) increase_flight_roll();
-			}
-
-			if (!climbing) {
-				if (flight_climb > 0) decrease_flight_climb();
-				if (flight_climb < 0) increase_flight_climb();
-			}
-
-			if (!docked)
+//			gfx_acquire_screen();
+					
+			if ((current_screen == SCR_FRONT_VIEW) || (current_screen == SCR_REAR_VIEW) ||
+				(current_screen == SCR_LEFT_VIEW) || (current_screen == SCR_RIGHT_VIEW) ||
+				(current_screen == SCR_INTRO_ONE) || (current_screen == SCR_INTRO_TWO) ||
+				(current_screen == SCR_GAME_OVER))
 			{
-				///////////////////////////////////////////////////////////////
-				// Полет, вне базы...
-				///////////////////////////////////////////////////////////////
-				gfx_acquire_screen();
-					
-				if ((current_screen == SCR_FRONT_VIEW) || (current_screen == SCR_REAR_VIEW) ||
-					(current_screen == SCR_LEFT_VIEW) || (current_screen == SCR_RIGHT_VIEW) ||
-					(current_screen == SCR_INTRO_ONE) || (current_screen == SCR_INTRO_TWO) ||
-					(current_screen == SCR_GAME_OVER))
-				{
-					gfx_clear_display();
-					update_starfield();
-				}
+				//gfx_clear_display();
+				update_starfield();
+			}
 
-				if (auto_pilot)
-				{
-					auto_dock();
-					if ((mcount & 127) == 0)
-						info_message ("Docking Computers On");
-				}
+			if (auto_pilot)
+			{
+				auto_dock();
+				if ((mcount & 127) == 0)
+					info_message ("Docking Computers On");
+			}
 
-				update_universe ();
+			update_universe ();
 
-				if (docked)
-				{
-					update_console();
-					gfx_release_screen();
-					return;
-				}
-
-				if ((current_screen == SCR_FRONT_VIEW) || (current_screen == SCR_REAR_VIEW) ||
-					(current_screen == SCR_LEFT_VIEW) || (current_screen == SCR_RIGHT_VIEW))
-				{
-					if (draw_lasers)
-					{
-						draw_laser_lines();
-						draw_lasers--;
-					}
-					
-					draw_laser_sights();
-				}
-
-				if (message_count > 0)
-					gfx_display_centre_text (358, message_string, 120, GFX_COL_WHITE);
-					
-				if (hyper_ready)
-				{
-					display_hyper_status();
-					if ((mcount & 3) == 0)
-					{
-						countdown_hyperspace();
-					}
-				}
-
+			if (docked)
+			{
+				update_console();
 				gfx_release_screen();
+				return;
+			}
+
+			if ((current_screen == SCR_FRONT_VIEW) || (current_screen == SCR_REAR_VIEW) ||
+				(current_screen == SCR_LEFT_VIEW) || (current_screen == SCR_RIGHT_VIEW))
+			{
+				if (draw_lasers)
+				{
+					draw_laser_lines();
+					draw_lasers--;
+				}
+					
+				draw_laser_sights();
+			}
+
+			if (message_count > 0)
+				gfx_display_centre_text (358, message_string, 120, GFX_COL_WHITE);
+					
+			if (hyper_ready)
+			{
+				display_hyper_status();
+				if ((mcount & 3) == 0)
+				{
+					countdown_hyperspace();
+				}
+			}
+
+			gfx_release_screen();
 			
 				mcount--;
 				if (mcount < 0)
@@ -1508,12 +1543,15 @@ void main_process()
 				time_ecm();
 
 				update_console();
-			}
+		}
 
-			if (current_screen == SCR_BREAK_PATTERN) display_break_pattern();
+		if (current_screen == SCR_BREAK_PATTERN) display_break_pattern();
 
-			if (( venablesecondchart == TRUE && current_screen == SCR_SHORT_RANGE ) || 
-				( venablefirstchart == TRUE && current_screen == SCR_GALACTIC_CHART ))
+		if (( venablesecondchart == TRUE && current_screen == SCR_SHORT_RANGE ) || 
+			( venablefirstchart == TRUE && current_screen == SCR_GALACTIC_CHART ))
+		{
+
+			if ( current_screen == SCR_SHORT_RANGE || current_screen == SCR_GALACTIC_CHART ) 
 			{
 
 				if (cross_timer > 0)
@@ -1525,25 +1563,22 @@ void main_process()
 					}
 				}
 
-				if ((cross_x != old_cross_x) || (cross_y != old_cross_y))
-				{
-					// if (old_cross_x != -1) draw_cross (old_cross_x, old_cross_y);
-
-					old_cross_x = cross_x;
-					old_cross_y = cross_y;
-			
-					draw_cross (old_cross_x, old_cross_y);
-				}
+				old_cross_x = cross_x;
+				old_cross_y = cross_y;
+				
+				draw_cross (old_cross_x, old_cross_y);
 			}
-			return;
-		} 
-		else if ( parts == 5 && game_over < 2 ) 
-		{
-			run_game_over_screen();
-			startup_part = 0;
-			parts = 1;
-			return;
 		}
+
+		return;
+	} 
+	else if ( parts == 5 && game_over < 2 ) 
+	{
+		run_game_over_screen();
+		startup_part = 0;
+		parts = 1;
+		return;
+	}
 }
 
 
@@ -1570,14 +1605,11 @@ int enablefirstchart( int _state ) {
 
 int enableconsole( int _state ) {
 	venableconsole = _state;
-	update_console();
 	return TRUE;
 }
 
 int enablescreenname( int _state ) {
 	venablescreenname = _state;
-	update_console();
-	gfx_update_screen();
 	return TRUE;
 }
 

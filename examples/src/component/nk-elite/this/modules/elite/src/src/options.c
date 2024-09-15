@@ -239,7 +239,7 @@ void toggle_setting (void)
 	if (hilite_item == (NUM_SETTINGS - 1))
 	{
 		write_config_file();
-		display_options();
+		display_options(hilite_item);
 		return;
 	}
 
@@ -274,7 +274,7 @@ void toggle_setting (void)
 }
 
 
-void game_settings_screen (void)
+void game_settings_screen (int var_init)
 {
 	int i;
 
@@ -293,8 +293,13 @@ void game_settings_screen (void)
 		display_setting_item (i);
 	}
 
-	hilite_item = -1;
-	highlight_setting (0);
+	if ( var_init ) {
+		hilite_item = -1;
+		highlight_setting (0);
+	} else {
+                highlight_setting (hilite_item);
+	}
+
 }
 
 
@@ -349,6 +354,8 @@ void select_next_option (void)
 
 void do_option (void)
 {
+	printf("do_option: %d\n", hilite_item);
+
 	if ((!docked) && option_list[hilite_item].docked_only)
 		return;
 
@@ -364,7 +371,7 @@ void do_option (void)
 			break;
 		
 		case 2:
-			game_settings_screen();
+			game_settings_screen(1);
 			break;
 
 		case 3:
@@ -378,7 +385,7 @@ void do_option (void)
 }
 
 
-void display_options (void)
+void display_options (int var_init)
 {
 	int i;
 
@@ -399,6 +406,13 @@ void display_options (void)
 	
 	for (i = 0; i < NUM_OPTIONS; i++) display_option_item (i);
 
-	hilite_item = -1;
-	highlight_option (0);
+	if ( var_init == 1 )
+	{
+		hilite_item = -1;
+		highlight_option (0);
+	} 
+	else 
+	{
+		highlight_option (hilite_item);	
+	}
 }
