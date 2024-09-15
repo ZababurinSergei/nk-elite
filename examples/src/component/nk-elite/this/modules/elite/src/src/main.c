@@ -136,15 +136,15 @@ void move_cross (int dx, int dy)
 		cross_x += (dx * 4);
 		cross_y += (dy * 4);
 		if (cross_x < GFX_VIEW_L_COORD) cross_x = GFX_VIEW_L_COORD;
-		if (cross_x > GFX_VIEW_R_COORD - 1) cross_x = GFX_VIEW_R_COORD - 1;
-		if (cross_y < GFX_VIEW_T_COORD + 1) cross_y = GFX_VIEW_T_COORD + 1;
+		if (cross_x >= GFX_VIEW_R_COORD - 1) cross_x = GFX_VIEW_R_COORD - 1;
+		if (cross_y <= GFX_VIEW_T_COORD + 1) cross_y = GFX_VIEW_T_COORD + 1;
 		if (cross_y > GFX_VIEW_B_COORD) cross_y = GFX_VIEW_B_COORD;
 	} else if (current_screen == SCR_GALACTIC_CHART) {
 		cross_x += (dx * 2);
 		cross_y += (dy * 2);
 		if (cross_x < GFX_VIEW_L_COORD) cross_x = GFX_VIEW_L_COORD;
-		if (cross_x > GFX_VIEW_R_COORD - 1) cross_x = GFX_VIEW_R_COORD - 1;
-		if (cross_y < GFX_VIEW_T_COORD + 1) cross_y = GFX_VIEW_T_COORD + 1;
+		if (cross_x >= GFX_VIEW_R_COORD - 1) cross_x = GFX_VIEW_R_COORD - 1;
+		if (cross_y <= GFX_VIEW_T_COORD + 1) cross_y = GFX_VIEW_T_COORD + 1;
 		if (cross_y > GFX_VIEW_B_COORD) cross_y = GFX_VIEW_B_COORD;
 	}
 }
@@ -158,12 +158,12 @@ void draw_cross (int cx, int cy)
 {
 	if (current_screen == SCR_SHORT_RANGE) {
 		show_distance_to_planet(0);
-		gfx_set_clip_region (GFX_VIEW_L_COORD, GFX_VIEW_T_COORD, GFX_VIEW_R_COORD, GFX_VIEW_B_COORD );
+		gfx_set_clip_region (GFX_VIEW_L_COORD, GFX_VIEW_T_COORD + 1, GFX_VIEW_R_COORD - 1, GFX_VIEW_B_COORD );
 		gfx_draw_colour_line (cx - 16, cy, cx + 16, cy, GFX_COL_RED);
 		gfx_draw_colour_line (cx, cy - 16, cx, cy + 16, GFX_COL_RED);
 	} else if (current_screen == SCR_GALACTIC_CHART) {
 		show_distance_to_planet(0);
-		gfx_set_clip_region (GFX_VIEW_L_COORD, GFX_VIEW_T_COORD, GFX_VIEW_R_COORD, GFX_VIEW_B_COORD );
+		gfx_set_clip_region (GFX_VIEW_L_COORD, GFX_VIEW_T_COORD + 1, GFX_VIEW_R_COORD - 1, GFX_VIEW_B_COORD );
 		gfx_draw_colour_line(cx - 8, cy, cx + 8, cy, GFX_COL_RED);
 		gfx_draw_colour_line(cx, cy - 8, cx, cy + 8, GFX_COL_RED);
 	}
