@@ -21,7 +21,7 @@ import fs from "node:fs";
 import { PersistentPeerStore } from '@libp2p/peer-store'
 import { MemoryDatastore } from 'datastore-core'
 import {ping} from "@libp2p/ping";
-import { PUBSUB_PEER_DISCOVERY } from './constants.js'
+import { PUBSUB_PEER_DISCOVERY } from './src/this/constants.js'
 import { gossipsub } from '@chainsafe/libp2p-gossipsub'
 import { autoNAT } from '@libp2p/autonat'
 
@@ -34,7 +34,7 @@ dotenv.config();
 
 const port = process.env.PORT
     ? process.env.PORT
-    : 4952;
+    : 4955;
 
 let whitelist = []
 
@@ -173,18 +173,122 @@ async function main () {
         console.log('==== POST ====', req.path);
     });
 
+    let clients = [];
+    let todoState = [];
+
+    app.get('/state', (req, res) => {
+        res.json(todoState);
+    });
+
+    app.get('/events', (req, res) => {
+        const headers = {
+            'Content-Type': 'text/event-stream',
+            'Access-Control-Allow-Origin': '*',
+            'Connection': 'keep-alive',
+            'Cache-Control': 'no-cache'
+        };
+
+        res.writeHead(200, headers);
+
+        const sendData = `data: ${JSON.stringify({
+            peerId: peerId.toString()
+        })}\n\n`;
+
+        res.write(sendData);
+        res.flush();
+
+        const clientId = genUniqId();
+
+        const newClient = {
+            id: clientId,
+            res,
+        };
+
+        clients.push(newClient);
+
+        console.log(`${clientId} - Connection opened`);
+
+        req.on('close', () => {
+            console.log(`${clientId} - Connection closed`);
+            clients = clients.filter(client => client.id !== clientId);
+        });
+    });
+
+    function genUniqId(){
+        return Date.now() + '-' + Math.floor(Math.random() * 1000000000);
+    }
+
+    function sendToAllUsers() {
+        for(let i=0; i<clients.length; i++){
+            clients[i].res.write(`data: ${JSON.stringify(todoState)}\n\n`);
+            clients[i].res.flush();
+        }
+    }
+
+    app.get('/clients', (req, res) => {
+        res.json(clients.map((client) => client.id));
+    });
+
+    app.get('/peers', (req, res) => {
+        let peers = []
+        for(let item of node.getPeers()) {
+            peers.push(item.toString())
+        }
+
+        res.json({
+            status: true,
+            peers: peers,
+            dhtMode:  node.services.dht.getMode(),
+            MA: node.getMultiaddrs()
+        });
+    });
+
+    app.post('/add-task', (req, res) => {
+        const addedText = req.body.text;
+        todoState = [
+            { id: genUniqId(), text: addedText, checked: false },
+            ...todoState
+        ];
+        res.json(null);
+        sendToAllUsers();
+    });
+
+    app.post('/check-task', (req, res) => {
+        const id = req.body.id;
+        const checked = req.body.checked;
+
+        todoState = todoState.map((item) => {
+            if(item.id === id){
+                return { ...item, checked };
+            }
+            else{
+                return item;
+            }
+        });
+        res.json(null);
+        sendToAllUsers();
+    });
+
+    app.post('/del-task', (req, res) => {
+        const id = req.body.id;
+        todoState = todoState.filter((item) => {
+            return item.id !== id;
+        });
+
+        res.json(null);
+        sendToAllUsers();
+    });
+
     app.use(queue.getErrorMiddleware());
 
     let addresses = process.env.PORT
         ? {
             listen: [
-                `/ip4/0.0.0.0/tcp/${port}/ws`,
-                `/ip6/::/tcp/${port}/ws`,
-                `/ip4/0.0.0.0/tcp/${port}/wss`,
-                `/ip6/::/tcp/${port}/wss`
+                `/ip4/0.0.0.0/tcp/${port}/wss`
             ],
             announce: [
-                `/dns4/${process.env.RENDER_EXTERNAL_HOSTNAME}/tcp/${port}/wss/p2p/${peerId.toString()}`
+                `/dns4/${process.env.RENDER_EXTERNAL_HOSTNAME}`,
+                `/dns4/${process.env.RENDER_EXTERNAL_HOSTNAME}/wss`
             ]
         }
         : {
@@ -213,7 +317,7 @@ async function main () {
             identify: identify(),
             identifyPush: identifyPush(),
             pubsub: gossipsub(),
-            autoNat: autoNAT(),
+            // autoNat: autoNAT(),
             relay: circuitRelayServer(),
             ping: ping()
         }

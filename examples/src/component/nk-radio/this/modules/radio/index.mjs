@@ -1,24 +1,23 @@
-import { initFreeQueue, FreeQueue } from "../../../../../this/queue.mjs"
+import {initFreeQueue, FreeQueue} from "../../../../../this/queue.mjs"
 import Application from "./oscilloscope/index.mjs";
 
 const newAudio = async (CONFIG) => {
     try {
-//        await CONFIG.stream.song.pause()
-	if ( CONFIG.audio.init == false ) {
-		CONFIG.audio.init = true;
-	        CONFIG.stream.song = new Audio(CONFIG.stream.path);
-	        CONFIG.stream.source = CONFIG.audio.ctx.createMediaElementSource(CONFIG.stream.song);
-	        CONFIG.stream.song.crossOrigin = 'anonymous';
-	        CONFIG.stream.song.addEventListener("canplay", async (event) => {
-	            await CONFIG.audio.ctx.resume();
-	            await CONFIG.stream.song.play();
-	            CONFIG.html.button.start.textContent = 'Stop Audio';
-	            return true;
-	        });
-	        await CONFIG.stream.source.connect(CONFIG.audio.ctx.destination);
-        	await CONFIG.stream.source.connect(CONFIG.audio.node);
-		CONFIG.audio.init = false;
-	}
+        if (CONFIG.audio.init == false) {
+            CONFIG.audio.init = true;
+            CONFIG.stream.song = new Audio(CONFIG.stream.path);
+            CONFIG.stream.source = CONFIG.audio.ctx.createMediaElementSource(CONFIG.stream.song);
+            CONFIG.stream.song.crossOrigin = 'anonymous';
+            CONFIG.stream.song.addEventListener("canplay", async (event) => {
+                await CONFIG.audio.ctx.resume();
+                await CONFIG.stream.song.play();
+                CONFIG.html.button.start.textContent = 'Stop Audio';
+                return true;
+            });
+            await CONFIG.stream.source.connect(CONFIG.audio.ctx.destination);
+            await CONFIG.stream.source.connect(CONFIG.audio.node);
+            CONFIG.audio.init = false;
+        }
     } catch (e) {
         CONFIG.html.button.start.textContent = 'Stop Audio';
         return true;
@@ -26,7 +25,7 @@ const newAudio = async (CONFIG) => {
 }
 
 const ctx = async (CONFIG) => {
-    if( CONFIG.audio.ctx == undefined || CONFIG.audio.ctx == null ) {
+    if (CONFIG.audio.ctx == undefined || CONFIG.audio.ctx == null) {
         CONFIG.audio.ctx = new (window.AudioContext || window.webkitAudioContext)();
         const urlProcessor = new URL('./radio-processor.mjs', import.meta.url)
         console.log('urlProcessor', urlProcessor.pathname)
@@ -67,32 +66,31 @@ const ctx = async (CONFIG) => {
     return CONFIG.audio.ctx
 }
 
-const freeQueueInit = ( CONFIG ) => {
+const freeQueueInit = (CONFIG) => {
 
     globalThis["LFreeQueue"] = {
-        setStatus:function(e){
-            if ( e != "" ) console.log("LFreeQueue: " + e);
+        setStatus: function (e) {
+            if (e != "") console.log("LFreeQueue: " + e);
         }
     };
 
-    globalThis["LFreeQueue"].onRuntimeInitialized = function() 
-    { 
+    globalThis["LFreeQueue"].onRuntimeInitialized = function () {
         ///////////////////////////////////////////////////////////////////////////////////////
         // FreeQueue initialization
         ///////////////////////////////////////////////////////////////////////////////////////
         globalThis["LFreeQueue"].callMain("");
 
-        const GetFreeQueueThreads = globalThis["LFreeQueue"].cwrap('GetFreeQueueThreads','number',[ '' ]);
-        const GetFreeQueuePointers = globalThis["LFreeQueue"].cwrap('GetFreeQueuePointers','number',[ 'number', 'string' ]);
-        const PrintQueueInfo = globalThis["LFreeQueue"].cwrap('PrintQueueInfo','',[ 'number' ]);
-        const CreateFreeQueue = globalThis["LFreeQueue"].cwrap('CreateFreeQueue','number',[ 'number', 'number' ]);
-        const PrintQueueAddresses = globalThis["LFreeQueue"].cwrap('PrintQueueAddresses','',[ 'number' ]);
+        const GetFreeQueueThreads = globalThis["LFreeQueue"].cwrap('GetFreeQueueThreads', 'number', ['']);
+        const GetFreeQueuePointers = globalThis["LFreeQueue"].cwrap('GetFreeQueuePointers', 'number', ['number', 'string']);
+        const PrintQueueInfo = globalThis["LFreeQueue"].cwrap('PrintQueueInfo', '', ['number']);
+        const CreateFreeQueue = globalThis["LFreeQueue"].cwrap('CreateFreeQueue', 'number', ['number', 'number']);
+        const PrintQueueAddresses = globalThis["LFreeQueue"].cwrap('PrintQueueAddresses', '', ['number']);
 
         CONFIG.queue.pointer = GetFreeQueueThreads();
-        const bufferLengthPtr = GetFreeQueuePointers( CONFIG.queue.pointer, "buffer_length" );
-        const channelCountPtr = GetFreeQueuePointers( CONFIG.queue.pointer, "channel_count" );
-        const statePtr = GetFreeQueuePointers( CONFIG.queue.pointer, "state" );
-        const channelDataPtr = GetFreeQueuePointers( CONFIG.queue.pointer, "channel_data" );
+        const bufferLengthPtr = GetFreeQueuePointers(CONFIG.queue.pointer, "buffer_length");
+        const channelCountPtr = GetFreeQueuePointers(CONFIG.queue.pointer, "channel_count");
+        const statePtr = GetFreeQueuePointers(CONFIG.queue.pointer, "state");
+        const channelDataPtr = GetFreeQueuePointers(CONFIG.queue.pointer, "channel_data");
 
         const pointers = new Object();
         pointers.memory = globalThis["LFreeQueue"].HEAPU8;
@@ -101,25 +99,24 @@ const freeQueueInit = ( CONFIG ) => {
         pointers.statePointer = statePtr;
         pointers.channelDataPointer = channelDataPtr;
 
-        CONFIG.queue.instance = FreeQueue.fromPointers( pointers );
-        if ( CONFIG.queue.instance != undefined ) CONFIG.queue.instance.printAvailableReadAndWrite();
+        CONFIG.queue.instance = FreeQueue.fromPointers(pointers);
+        if (CONFIG.queue.instance != undefined) CONFIG.queue.instance.printAvailableReadAndWrite();
     }
 
-    initFreeQueue( globalThis["LFreeQueue"] ).then( ( module ) => {		
+    initFreeQueue(globalThis["LFreeQueue"]).then((module) => {
         module.setStatus("initWasmFreeQueue completed...");
     });
 
 }
 
-const componentInit = ( self, CONFIG ) =>
-{
+const componentInit = (self, CONFIG) => {
     freeQueueInit(CONFIG);
 
     CONFIG.html.scope.canvas = self.shadowRoot.querySelector("#gfx")
     CONFIG.html.button.start = self.shadowRoot.querySelector("#start");
 
     let wgerr = self.shadowRoot.querySelector("#error");
-    let wgfx =  CONFIG.html.scope.canvas;
+    let wgfx = CONFIG.html.scope.canvas;
 
     CONFIG.html.button.radios.this = self.shadowRoot.querySelectorAll("input[name='radio-selection']");
     CONFIG.html.button.radios.length = CONFIG.html.button.radios.this.length;
@@ -128,7 +125,7 @@ const componentInit = ( self, CONFIG ) =>
 
     CONFIG.application.instance = new Application(CONFIG);
     const available = CONFIG.application.instance.check();
-    if ( available ) {
+    if (available) {
         wgerr.style.display = 'none';
         wgfx.style.display = 'block';
     } else {
@@ -136,7 +133,7 @@ const componentInit = ( self, CONFIG ) =>
         wgfx.style.display = 'none';
     }
 
-    CONFIG.application.instance.setCanvas( CONFIG.html.scope.canvas );
+    CONFIG.application.instance.setCanvas(CONFIG.html.scope.canvas);
     const canvas = CONFIG.application.instance.getCanvas();
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -157,20 +154,19 @@ export default async () => {
             /////////////////////////////////////////////////////////////////////////////////////////////
             // component
             /////////////////////////////////////////////////////////////////////////////////////////////
-            constructor( self ) 
-            {
-                componentInit( self, this.CONFIG );
+            constructor(self) {
+                componentInit(self, this.CONFIG);
 
-		        const CONFIG = this.CONFIG;
+                const CONFIG = this.CONFIG;
 
                 for (let i = 0, max = CONFIG.html.button.radios.length; i < max; i++) {
-                    if ( CONFIG.html.button.radios.this[i].checked === true) {
-                         CONFIG.stream.path = CONFIG.html.button.radios.this[i].value;
+                    if (CONFIG.html.button.radios.this[i].checked === true) {
+                        CONFIG.stream.path = CONFIG.html.button.radios.this[i].value;
                     }
                 }
 
                 for (let i = 0, max = CONFIG.html.button.radios.length; i < max; i++) {
-                    CONFIG.html.button.radios.this[i].addEventListener( "change", async (e) => {
+                    CONFIG.html.button.radios.this[i].addEventListener("change", async (e) => {
                         if (CONFIG.player.isPlaying) {
                             CONFIG.player.isPlaying = false;
                             await CONFIG.stream.song.pause();
@@ -182,7 +178,7 @@ export default async () => {
                             CONFIG.queue.instance._reset();
                             CONFIG.html.button.start.textContent = "Start Audio";
                             CONFIG.stream.path = e.target.value;
-                            if(CONFIG.audio.ctx != undefined && CONFIG.audio.ctx != null) {
+                            if (CONFIG.audio.ctx != undefined && CONFIG.audio.ctx != null) {
                                 CONFIG.player.isPlaying = !CONFIG.player.isPlaying;
                                 await newAudio(CONFIG);
                             } else {
@@ -191,12 +187,12 @@ export default async () => {
                                 await newAudio(CONFIG);
                             }
                         } else {
-                            CONFIG.stream.path = event.target.value;				
-			            }
-                    } );
+                            CONFIG.stream.path = event.target.value;
+                        }
+                    });
                 }
 
-                CONFIG.html.button.start.addEventListener( "click", async (e) => {
+                CONFIG.html.button.start.addEventListener("click", async (e) => {
                     if (CONFIG.player.isPlaying) {
                         CONFIG.player.isPlaying = false;
                         await CONFIG.stream.song.pause();
@@ -208,11 +204,11 @@ export default async () => {
                         CONFIG.queue.instance._reset();
                         CONFIG.html.button.start.textContent = "Start Audio";
                     } else {
-                        CONFIG.html.button.start.textContent = "Stop Audio";                        
+                        CONFIG.html.button.start.textContent = "Stop Audio";
                         CONFIG.player.isPlaying = true;
                         await ctx(CONFIG);
                         await newAudio(CONFIG);
-                    }                    
+                    }
                 });
 
                 CONFIG.application.instance.start();
@@ -227,7 +223,7 @@ export default async () => {
                 html: {
                     scope: {
                         canvas: false,
-                        context:false
+                        context: false
                     },
                     button: {
                         start: false,
@@ -251,7 +247,7 @@ export default async () => {
                 queue: {
                     instance: undefined,
                     pointer: undefined
-		},
+                },
                 application: {
                     instance: undefined,
                     channels: 2,
