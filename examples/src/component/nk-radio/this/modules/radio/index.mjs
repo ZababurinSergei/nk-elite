@@ -1,6 +1,7 @@
 import {initFreeQueue, FreeQueue} from "../../../../../this/queue.mjs"
 import Application from "./oscilloscope/index.mjs";
-
+import { logger } from '@libp2p/logger'
+const log = logger('LFreeQueue')
 const newAudio = async (CONFIG) => {
     try {
         if (CONFIG.audio.init == false) {
@@ -71,7 +72,9 @@ const freeQueueInit = (CONFIG) => {
 
     globalThis["LFreeQueue"] = {
         setStatus: function (e) {
-            if (e != "") console.log("LFreeQueue: " + e);
+            if (e != "") {
+                log(e)
+            };
         }
     };
 

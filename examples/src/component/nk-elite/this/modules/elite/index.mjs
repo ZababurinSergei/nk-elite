@@ -1,19 +1,25 @@
 
 import initWasmElite from "./build/nk-elite.asm.js"
-
+import { logger } from '@libp2p/logger'
+const log = logger('LEliteTG:')
+// console.log('==== log ====', log)
 const eliteTGInit = ( CONFIG ) => {
 	globalThis["LEliteTG"] = {
 		preRun:[],
 		postRun:[],
 		print:function(e){
-			console.log("LEliteTG: " + e);			
+			log(e)
+			// console.log("LEliteTG: " + e);
 		},
 		printErr:function(e){
-			console.error("LEliteTG: " + e);
+			log(e)
+			// console.error("LEliteTG: " + e);
 		},
 		canvas:function() { return CONFIG.html.scope.canvas }(),
 		setStatus:function(e){
-			if ( e != "" ) console.debug("LEliteTG: " + e);
+			if ( e != "" ) {
+				log(e)
+			}
 		},
 		totalDependencies:0,
 		monitorRunDependencies:function(e){

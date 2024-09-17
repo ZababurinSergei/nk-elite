@@ -11,7 +11,7 @@
 }
 
 label {
-    --c: #547980; /* slider color */
+    --c: transparent; /* slider color */
     --g: round(.3em,1px);  /* the gap */
     --l: round(.2em,1px);  /* line thickness*/
     --s: round(2.3em,1px); /* thumb size*/
@@ -25,13 +25,16 @@ label {
 
 .input-slider {
     width: 100%;
-    height: 16px; /* needed for Firefox*/
-    --_c: color-mix(in srgb, #deb500, #000 var(--p,0%));
+    height: 14px; /* needed for Firefox*/
+    max-height: 14px;
+    min-height: 14px;
+    --_c: transparent;
     appearance :none;
     background: none;
     cursor: pointer;
     overflow: hidden;
     font-size: inherit;
+    position: relative;
 }
 
 .item.slider {
@@ -39,9 +42,9 @@ label {
 }
 
 .input-slider:focus-visible,
-.input-slider:hover{
-    --p: 25%;
-}
+/*.input-slider:hover{*/
+/*    --p: 25%;*/
+/*}*/
 .input-slider:active,
 .input-slider:focus-visible{
     --_b: var(--s)
@@ -49,11 +52,11 @@ label {
 /* chromium */
 .input-slider[type="range" i]::-webkit-slider-thumb{
     height: var(--s);
-    width: 4px;
+    width: 5px;
     aspect-ratio: 1;
     /*border-radius: 50%;*/
-    box-shadow: 0 0 0 var(--_b,var(--l)) inset var(--_c);
-    border-image: linear-gradient(90deg,var(--_c) 50%,#ababab 0) 0 1/calc(50% - var(--l)/2) 100vw/0 calc(100vw + var(--g));
+    box-shadow: 0 0 0 var(--_b,var(--l)) inset #deb500;
+    /*border-image: linear-gradient(90deg,var(--_c) 50%,#ababab 0) 0 1/calc(50% - var(--l)/2) 100vw/0 calc(100vw + var(--g));*/
     -webkit-appearance: none;
     appearance: none;
     transition: .3s;
@@ -61,19 +64,19 @@ label {
     view-timeline: --thumb-view inline;
 }
 /* Firefox */
-.input-slider[type="range"]::-moz-range-thumb {
-    height: var(--s);
-    width: var(--s);
-    background: red;
-    border-radius: 50%;
-    box-shadow: 0 0 0 var(--_b,var(--l)) inset var(--_c);
-    border-image: linear-gradient(90deg,var(--_c) 50%,#ababab 0) 0 1/calc(50% - var(--l)/2) 100vw/0 calc(100vw + var(--g));
-    -moz-appearance: none;
-    appearance: none;
-    transition: .3s;
-    anchor-name: --thumb;
-    view-timeline: --thumb-view inline;
-}
+/*.input-slider[type="range"]::-moz-range-thumb {*/
+/*    height: var(--s);*/
+/*    width: var(--s);*/
+/*    background: red;*/
+/*    border-radius: 50%;*/
+/*    box-shadow: 0 0 0 var(--_b,var(--l)) inset var(--_c);*/
+/*    border-image: red;*/
+/*    -moz-appearance: none;*/
+/*    appearance: none;*/
+/*    transition: .3s;*/
+/*    anchor-name: --thumb;*/
+/*    view-timeline: --thumb-view inline;*/
+/*}*/
 
 output {
     animation: range linear both;
@@ -93,8 +96,8 @@ output.bottom:before {
 }
 
 @keyframes range {
-    0%   {background: #8A9B0F;--val:var(--max)}
-    100% {background: #CC333F;--val:var(--min)}
+    0%   {background: transparent}
+    100% {background: transparent}
 }
 
 @supports not (anchor-name: ---) {

@@ -170,6 +170,10 @@ progress::-webkit-progress-value {
     background-color: #ce9c00;
 }
 
+.item.slider {
+    height: 100%;
+}
+
 .progress::after {
     content: "";
     position: absolute;
@@ -177,6 +181,15 @@ progress::-webkit-progress-value {
     left: -1px;
     border-bottom: 4px solid green;
     width: 100%;
+}
+
+.item.slider::after {
+    content: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEMAAAAGCAYAAACYXyOsAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAVUlEQVQ4jWNkGEDgdM7pP7rYPqN9jAPhFgYGBgYWbILojsTmQGqpIQTo6RYmUh03nAGLfKI8RlJFB4NJDS3tYcSWb0cqYHl77O2AWS5sJYwhNpDuAQAvNDDyvFGSagAAAABJRU5ErkJggg==');
+    position: absolute;
+    top: -6px;
+    left: 0;
+    width: 100%;
+    height: min-content;
 }
 
 .rockets {
