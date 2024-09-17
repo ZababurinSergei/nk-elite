@@ -14,7 +14,7 @@ const newAudio = async (CONFIG) => {
                 await CONFIG.stream.song.play();
                 CONFIG.html.button.start.textContent = 'Stop Audio';
                 return true;
-            });
+            }, { once: true });
             await CONFIG.stream.source.connect(CONFIG.audio.ctx.destination);
             await CONFIG.stream.source.connect(CONFIG.audio.node);
             CONFIG.audio.init = false;
@@ -212,6 +212,17 @@ export default async () => {
                 }
 
                 CONFIG.html.button.start.addEventListener("click", async (e) => {
+                    if(CONFIG.html.button.start.classList.contains('disabled')) {
+                        return
+                    }
+
+                    CONFIG.html.button.start.classList.add('disabled')
+
+                    const timeId = setTimeout(() => {
+                        CONFIG.html.button.start.classList.remove('disabled')
+                        clearTimeout(timeId)
+                    }, 3000)
+
                     if (CONFIG.player.isPlaying) {
                         CONFIG.player.isPlaying = false;
                         await CONFIG.stream.song.pause();

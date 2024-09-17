@@ -84,3 +84,7 @@
 .audio-newkind__btn:hover {
     cursor: pointer;
 }
+
+.disabled {
+    opacity: 0.5;
+}
