@@ -1,6 +1,9 @@
 #include <emscripten.h>
 #include <emscripten/val.h>
 #include <emscripten/bind.h>
+#include <functional>
+#include <thread>
+#include <mutex>
 #include <stdatomic.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -13,10 +16,12 @@
 #include <map> 
 #include <string> 
 
+
+std::timed_mutex mutex;
 static int treads_busy = 1;
 
 // std::map<std::string, std::string> val_array;
-typedef struct varpair
+struct varpair
 {
   varpair() {
     key = "";
@@ -26,17 +31,11 @@ typedef struct varpair
     key = _key;
     value = _value;
   }
-  static varpair* instance(std::string _key, std::string _value) {
-    return new varpair(_key,_value);
-  }
-  static void free( varpair* pair ) {
-    delete pair;
-  }
   std::string key;
   std::string value;
-} *pvarpair;
+};
 
-std::vector<pvarpair> val_array;
+std::vector<struct varpair*> val_array;
 
 pthread_t tid_consumer = 0;
 pthread_t tid_producer = 0;
@@ -169,56 +168,49 @@ bool FreeQueuePull(struct FreeQueue *queue, double **output, size_t block_length
   return false;
 }
 
-/*
-EMSCRIPTEN_KEEPALIVE
-emscripten::val Load(char* name)
-{
-	for ( int i = 0; i < val_array.size(); i++ )
-  {
-    storedvalue sv = val_array[i];
-    if ( sv.name == name ) {
-      return sv.value;
-    }
-  }
-  return val::undefined;
-}
-*/
-
-/*
-EMSCRIPTEN_KEEPALIVE
-emscripten::val Store(char* name, std::string value)
-{
-  storedvalue sv;
-  sv.name = name;
-  sv.value = emscripten::val(value);
-  val_array.push_back( sv );
-  return val;
-}
-*/
-
 EMSCRIPTEN_KEEPALIVE
 char* Load(std::string name)
 {	
+  mutex.lock();
+
+  printf( "Load: Count %d; Name %s\n", val_array.size(), name.c_str() );
+
   for ( size_t i = 0; i < val_array.size(); i++ ) {
-    if ( val_array[i]->key == name ) {
-      printf( "%s,%s", val_array[i]->key.c_str(), val_array[i]->value.c_str());
+    if ( strcmp( val_array[i]->key.c_str(), name.c_str() ) == 0 ) {
+      printf( "Load: %s %s\n", val_array[i]->key.c_str(), val_array[i]->value.c_str());
+      mutex.unlock();    
       return const_cast<char*>(val_array[i]->value.c_str());
     }
   }
+
+  mutex.unlock();
   return const_cast<char*>("undefined");
 }
 
 EMSCRIPTEN_KEEPALIVE
 void Store(std::string name, std::string value)
 {
+  mutex.lock();
+
+  printf( "Store: Count %d; Name %s\n", val_array.size(), name.c_str() );
+
   for ( size_t i = 0; i < val_array.size(); i++ ) {
-    if ( val_array[i]->key == name ) {
+    if ( strcmp( val_array[i]->key.c_str(), name.c_str() ) == 0 ) {
+      printf( "Store: Key Is Present %s\n", name.c_str() );
       val_array[i]->value = value;
+      printf( "Store: New Value %s\n", name.c_str() );
+
+      mutex.unlock();
       return;
     }
   }
-  varpair* val = new varpair( name, value );
+
+  printf( "Store: Key Is Not Present %s\n", name.c_str() );
+  struct varpair* val = new varpair( name, value );
   val_array.push_back( val );
+  printf( "Store: New Count %d\n", val_array.size() );
+
+  mutex.unlock();
 }
 
 EMSCRIPTEN_KEEPALIVE

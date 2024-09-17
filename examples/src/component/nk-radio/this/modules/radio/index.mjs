@@ -105,8 +105,22 @@ const freeQueueInit = (CONFIG) => {
         if (CONFIG.queue.instance != undefined) CONFIG.queue.instance.printAvailableReadAndWrite();
     }
 
-    initFreeQueue(globalThis["LFreeQueue"]).then((module) => {
-        module.setStatus("initWasmFreeQueue completed...");
+    initFreeQueue(globalThis["LFreeQueue"]).then( async (module) => {
+        globalThis["LFreeQueue"].setStatus("initWasmFreeQueue completed...");
+
+        globalThis["LFreeQueue"].Store = async function( _key, _value ) {
+            let _convert = "";
+            
+            if ( typeof _value === "string" ) _convert = _value;
+            else if ( typeof _value === "number" ) _convert = _value.toString();
+            else if ( typeof _value === "boolean" ) _convert = (_value == true ) ? "true" : "false";
+
+            await globalThis["LFreeQueue"].ccall( "Store", "", [ "string", "string" ], [ _key, _convert ], { async: true } );
+        }
+
+        globalThis["LFreeQueue"].Load = async function( _key ) {
+            return await globalThis["LFreeQueue"].ccall( "Load", "string", [ "string" ], [ _key ], { async: true } );
+        }
     });
 
 }
@@ -136,18 +150,18 @@ const componentInit = (self, CONFIG) => {
     }
 
     CONFIG.application.instance.setCanvas(CONFIG.html.scope.canvas);
-    const canvas = CONFIG.application.instance.getCanvas();
+    const _canvas = CONFIG.application.instance.getCanvas();
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////
     // TODO: canvas resize
     //////////////////////////////////////////////////////////////////////////////////////////////////////
-    const scale = window.devicePixelRatio;
+    const _scale = window.devicePixelRatio;
 
-    canvas.width = window.innerWidth;
-    canvas.height = canvas.width * 3 / 14;
+    _canvas.width = window.innerWidth;
+    _canvas.height = _canvas.width * 3 / 14;
 
-    canvas.height = canvas.height * scale;
-    canvas.width = canvas.width * scale;
+    _canvas.height = _canvas.height * _scale;
+    _canvas.width = _canvas.width * _scale;
 }
 
 export default async () => {

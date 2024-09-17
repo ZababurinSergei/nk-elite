@@ -295,8 +295,14 @@
 <script type="module">
     import {init} from './this/index.mjs'
 
-    await init({
+    init({
         components: ['nk-elite', 'nk-radio', 'nk-p2p', 'nk-universe']
-    })
+    }).then( function() {
+        globalThis["LFreeQueue"].Store( "Key1", 10 );
+        let key = globalThis["LFreeQueue"].Load( "Key1" );
+        console.log( "Key1: value=" + key + "\n" );
+    }).catch( error => console.log( error ) );
+
+
 </script>
 </html>
