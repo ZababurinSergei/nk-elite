@@ -5,7 +5,6 @@
 // const { FRAME_SIZE }  = getConstant(self.name.toLowerCase());
 
 const FRAME_SIZE = 2048;
-QUEUE_SIZE
 let inputQueue = null;
 let outputQueue = null;
 //let atomicState = null;

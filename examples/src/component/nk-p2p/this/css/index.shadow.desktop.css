@@ -1,0 +1,28 @@
+.control-params, .multiaddr-input-button {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+}
+
+label,
+button {
+    display: block;
+    font-weight: bold;
+    margin: 5px 0;
+}
+
+div {
+    margin-bottom: 20px;
+}
+
+#send-section {
+    display: none;
+}
+
+input[type="text"] {
+    width: 800px;
+}
+
+.output {
+    overflow: hidden;
+}
