@@ -32,7 +32,8 @@ const ctx = async (CONFIG) => {
         console.log('urlProcessor', urlProcessor.pathname)
         await CONFIG.audio.ctx.audioWorklet.addModule(urlProcessor.pathname);
     }
-    //CONFIG.audio.oscillatorNode = new OscillatorNode(CONFIG.audio.ctx);
+
+    // CONFIG.audio.oscillatorNode = new OscillatorNode(CONFIG.audio.ctx);
     // Create an atomic state for synchronization between Worker and AudioWorklet.
 
     CONFIG.audio.node = new AudioWorkletNode(CONFIG.audio.ctx, 'radio-processor', {
@@ -75,7 +76,7 @@ const freeQueueInit = ( CONFIG ) => {
         }
     };
 
-    globalThis["LFreeQueue"].onRuntimeInitialized = function() 
+    globalThis["LFreeQueue"].onRuntimeInitialized = async function() 
     { 
         ///////////////////////////////////////////////////////////////////////////////////////
         // FreeQueue initialization

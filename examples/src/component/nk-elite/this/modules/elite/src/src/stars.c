@@ -44,8 +44,12 @@ void create_new_stars (void)
 
 	for (i = 0; i < nstars; i++)
 	{
-		stars[i].x = (rand255() - 128) | 8;
-		stars[i].y = (rand255() - 128) | 4;
+//		stars[i].x = (rand255() - 128) | 8;
+//		stars[i].y = (rand255() - 128) | 4;
+
+		stars[i].x = GFX_VIEW_L_COORD + ( rand255() * GFX_VIEW_WSIZE ) / 256;
+		stars[i].y = GFX_VIEW_T_COORD + ( rand255() * GFX_VIEW_HSIZE ) / 256;
+
 		stars[i].z = rand255() | 0x90;
 	}
 
@@ -82,7 +86,7 @@ void front_starfield (void)
 		sx = stars[i].x;
 		zz = stars[i].z;
 
-		sx += wnd_width / 2;
+		sx += GFX_XWINDOW_CENTER;
 		sy += ( wnd_height / 2 ) - 132;
 
 		if ((!warp_stars) &&

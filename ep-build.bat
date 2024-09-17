@@ -8,7 +8,7 @@ rem Emscripten SDK...
 set EMSCRIPTENDIR=c:/tools/emscripten/emsdk
 set BUILDDIR=build
 
-set CC=emcc
+set CC=em++
 set EMCCFLAGS=-s MODULARIZE=1 -s EXPORT_ES6=1 -s SINGLE_FILE=0 -s TOTAL_MEMORY=200MB -s ALLOW_MEMORY_GROWTH=0 -s EXPORT_NAME=LFreeQueue -s EXPORTED_RUNTIME_METHODS=['callMain','ccall','cwrap'] -s INVOKE_RUN=0 -O3
 
 if exist %BUILDDIR% (
@@ -17,7 +17,7 @@ if exist %BUILDDIR% (
 
 cd examples
 
-set SOURCEDIR=src\free-queue
+set SOURCEDIR=src\this\free-queue
 set KEEPFILE=free-queue.js
 
 for %%a in ( "%SOURCEDIR%\*" ) do if /i not "%%~nxa"=="%KEEPFILE%" @del "%%a"
@@ -37,11 +37,11 @@ set DIR=%cd%
 @call cmd /C "%EMSCRIPTENDIR:~0,2% && cd %EMSCRIPTENDIR% && emsdk_env.bat && %DIR:~0,2% && cd %DIR% && build.bat"
 cd ..
 
-if not exist examples\src\free-queue (
-    mkdir examples\src\free-queue
+if not exist examples\src\this\free-queue (
+    mkdir examples\src\this\free-queue
 )
 
-@copy %BUILDDIR%\*.* examples\src\free-queue /Y
+@copy %BUILDDIR%\*.* examples\src\this\free-queue /Y
 
 cd examples
 
@@ -50,7 +50,6 @@ if not exist node_modules (
 )
 
 @call cmd /C "npm run start:dev:server"
-rem @call cmd /C "npm run start:dev:server"
 
 cd ..
 

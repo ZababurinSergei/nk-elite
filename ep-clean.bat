@@ -19,7 +19,7 @@ cd ..
 
 cd examples
 
-set SOURCEDIR=src\free-queue
+set SOURCEDIR=src\this\free-queue
 set KEEPFILE=free-queue.js
 
 for %%a in ( "%SOURCEDIR%\*" ) do if /i not "%%~nxa"=="%KEEPFILE%" @del "%%a"

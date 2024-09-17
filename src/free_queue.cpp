@@ -1,4 +1,6 @@
 #include <emscripten.h>
+#include <emscripten/val.h>
+#include <emscripten/bind.h>
 #include <stdatomic.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -7,8 +9,34 @@
 #include <string.h>
 #include <pthread.h>
 #include <unistd.h> 
+#include <vector> 
+#include <map> 
+#include <string> 
 
 static int treads_busy = 1;
+
+// std::map<std::string, std::string> val_array;
+typedef struct varpair
+{
+  varpair() {
+    key = "";
+    value = "";
+  }
+  varpair( std::string _key, std::string _value ) {
+    key = _key;
+    value = _value;
+  }
+  static varpair* instance(std::string _key, std::string _value) {
+    return new varpair(_key,_value);
+  }
+  static void free( varpair* pair ) {
+    delete pair;
+  }
+  std::string key;
+  std::string value;
+} *pvarpair;
+
+std::vector<pvarpair> val_array;
 
 pthread_t tid_consumer = 0;
 pthread_t tid_producer = 0;
@@ -19,6 +47,7 @@ struct FreeQueue {
   size_t channel_count;
   double **channel_data;
   atomic_uint *state;
+
 };
 
 struct FreeQueueThread {
@@ -140,20 +169,70 @@ bool FreeQueuePull(struct FreeQueue *queue, double **output, size_t block_length
   return false;
 }
 
+/*
+EMSCRIPTEN_KEEPALIVE
+emscripten::val Load(char* name)
+{
+	for ( int i = 0; i < val_array.size(); i++ )
+  {
+    storedvalue sv = val_array[i];
+    if ( sv.name == name ) {
+      return sv.value;
+    }
+  }
+  return val::undefined;
+}
+*/
+
+/*
+EMSCRIPTEN_KEEPALIVE
+emscripten::val Store(char* name, std::string value)
+{
+  storedvalue sv;
+  sv.name = name;
+  sv.value = emscripten::val(value);
+  val_array.push_back( sv );
+  return val;
+}
+*/
+
+EMSCRIPTEN_KEEPALIVE
+char* Load(std::string name)
+{	
+  for ( size_t i = 0; i < val_array.size(); i++ ) {
+    if ( val_array[i]->key == name ) {
+      printf( "%s,%s", val_array[i]->key.c_str(), val_array[i]->value.c_str());
+      return const_cast<char*>(val_array[i]->value.c_str());
+    }
+  }
+  return const_cast<char*>("undefined");
+}
+
+EMSCRIPTEN_KEEPALIVE
+void Store(std::string name, std::string value)
+{
+  for ( size_t i = 0; i < val_array.size(); i++ ) {
+    if ( val_array[i]->key == name ) {
+      val_array[i]->value = value;
+      return;
+    }
+  }
+  varpair* val = new varpair( name, value );
+  val_array.push_back( val );
+}
+
 EMSCRIPTEN_KEEPALIVE
 void *GetFreeQueuePointers( struct FreeQueue* queue, char* data ) 
 {
-  if ( queue != nullptr ) {
+  if ( queue != nullptr ) 
+  {
     if (strcmp(data, "buffer_length") == 0) {
       return ( void* )&queue->buffer_length;
-    }
-    else if (strcmp(data, "channel_count") == 0) {
+    } else if (strcmp(data, "channel_count") == 0) {
       return ( void* )&queue->channel_count;
-    }
-    else if (strcmp(data, "state") == 0) {
+    } else if (strcmp(data, "state") == 0) {
       return ( void* )&queue->state;
-    }
-    else if (strcmp(data, "channel_data") == 0) {
+    } else if (strcmp(data, "channel_data") == 0) {
       return ( void* )&queue->channel_data;
     }
   }

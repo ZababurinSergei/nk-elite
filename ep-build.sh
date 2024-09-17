@@ -14,7 +14,7 @@ fi
 
 cd examples
 
-export SOURCEDIR=src/free-queue
+export SOURCEDIR=src/this/free-queue
 export KEEPFILE=free-queue.js
 
 find $SOURCEDIR -type f -not -name $KEEPFILE -delete
@@ -34,11 +34,11 @@ export DIR=`pwd`
 sh ./build.sh
 cd ..
 
-if [ ! -d ./examples/src/free-queue ]; then
-    mkdir ./examples/src/free-queue
+if [ ! -d ./examples/src/this/free-queue ]; then
+    mkdir ./examples/src/this/free-queue
 fi
 
-cp ./$BUILDDIR/*.* ./examples/src/free-queue
+cp ./$BUILDDIR/*.* ./examples/src/this/free-queue
 
 cd examples
 
@@ -46,8 +46,7 @@ if [ ! -d ./node_modules ]; then
     npm install
 fi
 
-npm run build:webpack
-npm run start:webpack
+npm run start:dev:server
 
 cd ..
 

@@ -16,7 +16,7 @@ cd ..
 
 cd examples
 
-export SOURCEDIR=src/free-queue
+export SOURCEDIR=src/this/free-queue
 export KEEPFILE=free-queue.js
 
 find $SOURCEDIR -type f -not -name $KEEPFILE -delete

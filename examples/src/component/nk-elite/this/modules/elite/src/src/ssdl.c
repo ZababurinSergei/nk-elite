@@ -40,8 +40,8 @@
 
 SDL_Texture		*sdl_tex = NULL;
 SDL_Texture		*sdl_tex_pri = NULL;
-SDL_Window		*sdl_win = NULL;
-SDL_Renderer            *sdl_ren = NULL;
+SDL_Window      *sdl_win = NULL;
+SDL_Renderer    *sdl_ren = NULL;
 
 #define MAX_POLYS	100
 
@@ -854,9 +854,7 @@ void gfx_display_centre_text (int y, char *str, int psize, int col)
 
 void gfx_clear_display (void)
 {
-	gfx_set_clip(GFX_VIEW_L_COORD, GFX_WINDOW_T_COORD + GFX_BORDER_SIZE, GFX_VIEW_R_COORD, GFX_WINDOW_B_COORD - GFX_BORDER_SIZE);
-	SDL_SetRenderDrawColor(sdl_ren, 0, 0, 0, 0xFF);
-	SDL_RenderClear(sdl_ren);
+	gfx_draw_simplerect (GFX_VIEW_L_COORD, GFX_WINDOW_T_COORD + GFX_BORDER_SIZE, GFX_VIEW_R_COORD, GFX_WINDOW_B_COORD - GFX_BORDER_SIZE, GFX_COL_BLACK);
 }
 
 void gfx_clear_text_area (void)

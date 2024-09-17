@@ -4,9 +4,6 @@ setlocal enabledelayedexpansion
 
 rem Emscripten SDK...
 
-set SOURCEDIR=src\free-queue
-set KEEPFILE=free-queue.js
-
 set SOURCEDIR=%cd%
 
 for %%a in ( "%SOURCEDIR%\*.js" ) do @del "%%a"

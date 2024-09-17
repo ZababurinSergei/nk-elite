@@ -55,7 +55,7 @@ void initialise_intro1 (void)
 {
 	clear_universe();
 	set_init_matrix (intro_ship_matrix);
-	add_new_ship (SHIP_COBRA3, 0, 0, 100, intro_ship_matrix, -127, -127);
+	add_new_ship (SHIP_COBRA3, 0, 0, 5000, intro_ship_matrix, -127, -127);
 }
 
 
@@ -92,14 +92,14 @@ void update_intro1 (void)
 	gfx_draw_sprite(IMG_ELITE_TXT, -1, 10);
 
 	if ( venablescreenname == TRUE ) {
-		gfx_display_centre_text (310, "Re-engineered by C.J.Pinder.", 120, GFX_COL_WHITE);	
-		gfx_display_centre_text (330, "Special thanks for Sergey Zababurin", 120, GFX_COL_WHITE);
+		gfx_display_centre_text ( GFX_WINDOW_B_COORD - 70, "Re-engineered by C.J.Pinder.", 120, GFX_COL_WHITE);	
+		gfx_display_centre_text ( GFX_WINDOW_B_COORD - 50, "Special thanks for Sergey Zababurin", 120, GFX_COL_WHITE);
 	} else {
-		gfx_display_centre_text ( (wnd_height - 132 ) - 70, "Original Game (C) I.Bell & D.Braben.", 120, GFX_COL_WHITE);
-		gfx_display_centre_text ( (wnd_height - 132 ) - 50, "Re-engineered by C.J.Pinder.", 120, GFX_COL_WHITE);	
+		gfx_display_centre_text ( GFX_WINDOW_B_COORD - 70, "Original Game (C) I.Bell & D.Braben.", 120, GFX_COL_WHITE);
+		gfx_display_centre_text ( GFX_WINDOW_B_COORD - 50, "Re-engineered by C.J.Pinder.", 120, GFX_COL_WHITE);	
 	}
 	
-	gfx_display_centre_text ( (wnd_height - 132 ) - 20, "Load New Commander (Y/N)?", 140, GFX_COL_GOLD);
+	gfx_display_centre_text ( GFX_WINDOW_B_COORD - 20, "Load New Commander (Y/N)?", 140, GFX_COL_GOLD);
 }
 
 static void next_ship(int bump)
