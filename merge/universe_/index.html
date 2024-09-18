@@ -1,0 +1,474 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Солничная система</title>
+    <meta name="description"
+          content="This is a project powered by Three.js and WebGL. All objects have been modeled to scale based on real astronomical data. The scene currently renders the sun, all eight planets (nine if you side with Pluto being a planet), each planet's moons, the asteriod belt and thousands of stars.">
+    <meta name="keywords"
+          content="3D Solar System, 3d, 3D, solar system, Three.js, three.js, JavaScript, WebGL, webgl, Sander Blue">
+    <meta name="author" content="Sander Blue">
+    <link rel="shortcut icon" href="./docs/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="./docs/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="./docs/css/light/index.light.css">
+    <!--    <link rel="stylesheet" type="text/css" href="./src/assets/css/main.css">-->
+    <script type="importmap">
+        {
+            "imports": {
+                "helia": "./lib-helia.mjs",
+                "@helia/unixfs": "./lib-helia-unixfs.js",
+                "@libp2p/bootstrap": "./lib-bootstrap.js",
+                "libp2p/circuit-relay": "./lib-circuit.js",
+                "@libp2p/webrtc": "./lib-webrtc.js",
+                "@libp2p/webtransport": "./lib-webtransport.js",
+                "@libp2p/websockets": "./lib-websockets.js",
+                "@libp2p/websockets/filters": "./lib-ws-filters.js",
+                "@libp2p/webrtc-star": "./lib-webrtc-star.js",
+                "@libp2p/identify": "./lib-identify.js",
+                "multiformats/cid": "./lib-multiformats.js",
+                "@multiformats/multiaddr": "./lib-multiaddr.js",
+                "@libp2p/peer-id-factory":"./lib-peerId-factory.js",
+                "@chainsafe/libp2p-noise":"./lib-npm-package.js",
+                "@chainsafe/libp2p-yamux":"./lib-npm-package.js",
+                "@libp2p/mplex":"./lib-npm-package.js",
+                "@libp2p/interface-transport": "./lib-npm-package.js",
+                "it-length-prefixed-stream": "./lib-npm-package.js",
+                "uint8-varint": "./lib-uint8-varint.js",
+                "it-length-prefixed-stream": "./lib-it-length-prefixed.js",
+                "it-byte-stream": "./lib-npm-package.js",
+                "uint8arraylist": "./lib-npm-package.js",
+                "uint8arrays": "./lib-npm-package.js",
+                "libp2p": "./lib-libp2p.js"
+            }
+        }
+    </script>
+</head>
+<body>
+<template>
+    <style> @import url('./docs/css/shadow/index.shadow.css'); </style>
+    <div class="container">
+        <div class="system-modal">
+            <slot name="system-modal"></slot>
+        </div>
+        <div class="solar-system">
+            <slot name="solar-system"></slot>
+        </div>
+        <div class="container-info">
+            <div class="peerInfo">
+                <div class="help-section">
+                    <slot name="help-section"></slot>
+                </div>
+                <div class="item planet">
+                    <p>Планета</p>
+                    <span></span>
+                </div>
+                <div class="item peerId">
+                    <p>ID Планеты</p>
+                    <span class="self_peerId_p"></span>
+                </div>
+                <div class="item self">
+                    <p>Приватный ID</p>
+                    <span class="self_p"></span>
+                </div>
+                <div class="item ma">
+                    <p>Каналы</p>
+                    <ul class="ma_p"></ul>
+                </div>
+                <div class="item private_ma">
+                    <p>Закрытый Канал</p>
+                    <ul class="ma_p"></ul>
+                </div>
+                <div class="webrtc-direct">
+                    <h2> Собственные корабли</h2>
+                    <ul class="group-ships">
+                        <li class="group-ships-item">
+                            <div class="command-group">
+                                <div class="command-group-title">
+                                    <p>M-1</p>
+                                    <span class="ship-id-1_private"></span>
+                                </div>
+                                <select class="command-group-select">
+                                    <option value="">Выберите действие</option>
+                                    <option value="Патрулировать">Патрулировать</option>
+                                    <option value="Следовать">Следовать</option>
+                                    <option value="Следить">Следить</option>
+                                    <option value="Сгруппироваться">Сгруппироваться</option>
+                                    <option value="Торговать">Торговать</option>
+                                </select>
+                            </div>
+                            <div class="item">
+                                <span class="ship-1-name"></span>
+                                <div class="ship-id">
+                                    <span class="ship-id-1_public"></span>
+                                </div>
+                            </div>
+                        </li>
+                      <li class="group-ships-item">
+                          <div class="command-group">
+                              <div class="command-group-title">
+                                  <p>M-2</p>
+                                  <span class="ship-id-2_private"></span>
+                              </div>
+                              <select class="command-group-select">
+                                  <option value="">Выберите действие</option>
+                                  <option value="Патрулировать">Патрулировать</option>
+                                  <option value="Следовать">Следовать</option>
+                                  <option value="Следить">Следить</option>
+                                  <option value="Сгруппироваться">Сгруппироваться</option>
+                                  <option value="Торговать">Торговать</option>
+                              </select>
+                          </div>
+                          <div class="item">
+                              <span class="ship-2-name"></span>
+                              <div class="ship-id">
+                                  <span class="ship-id-2_public"></span>
+                              </div>
+                          </div>
+                      </li>
+                    </ul>
+                </div>
+
+                <div class="own-stations">
+                    <h2> Собственные станции</h2>
+                    <ul class="group-ships">
+                        <li class="group-ships-item">
+                            <div class="command-group">
+                                <div class="command-group-title">
+                                    <p>Торговые станции</p>
+                                    <span class="ship-id-1_private"></span>
+                                </div>
+                                <select class="command-group-select">
+                                    <option value="">Выберите действие</option>
+                                    <option value="Патрулировать">Прекратить торговлю</option>
+                                    <option value="Следовать">Начать торговлю</option>
+                                    <option value="Следить">Запретить посадку</option>
+                                    <option value="Сгруппироваться">Разрешить посадку</option>
+                                    <option value="Торговать">Согласовать цены</option>
+                                </select>
+                            </div>
+                            <div class="item">
+                                <span class="ship-1-name"></span>
+                                <div class="ship-id">
+                                    <span class="ship-id-1_public"></span>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="group-ships-item">
+                            <div class="command-group">
+                                <div class="command-group-title">
+                                    <p>Добывающие станции</p>
+                                    <span class="ship-id-2_private"></span>
+                                </div>
+                                <select class="command-group-select">
+                                    <option value="">Выберите действие</option>
+                                    <option value="Патрулировать">Прекратить торговлю</option>
+                                    <option value="Следовать">Начать торговлю</option>
+                                    <option value="Следить">Запретить посадку</option>
+                                    <option value="Сгруппироваться">Разрешить посадку</option>
+                                    <option value="Торговать">Согласовать цены</option>
+                                </select>
+                            </div>
+                            <div class="item">
+                                <span class="ship-2-name"></span>
+                                <div class="ship-id">
+                                    <span class="ship-id-2_public"></span>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="private-self-discovery invisible">
+                <div class="private-self title">
+                    <h2>Приватный собственный канал</h2>
+                    <button class="refresh">0</button>
+                </div>
+                <ul></ul>
+            </div>
+            <div class="discovery invisible">
+                <div class="title">
+                    <h2>Канал связи</h2>
+                    <button class="refresh">0</button>
+                </div>
+                <ul></ul>
+            </div>
+            <div class="security">
+                <h2>Безопасность</h2>
+                <div class="security-container">
+                    <div class="wrapper">
+                        <label for="security-key"> Ключ доступа </label>
+                        <input id="security-key" type="file">
+                    </div>
+                    <div class="state">
+                        <div>Состояние</div>
+                    </div>
+                </div>
+            </div>
+            <div class="chat">
+                <div class="header">
+                    <select class="list-peer">
+                        <option value="">Выберите пользователя</option>
+                    </select>
+                    <button class="refresh">O</button>
+                </div>
+                <div class="chat-container">
+                    <textarea class="input" placeholder="Входящее сообщение"></textarea>
+                    <textarea class="output" placeholder="введите сообщение"></textarea>
+                </div>
+                <div class="footer">
+                    <button class="send">Отправить</button>
+                </div>
+            </div>
+            <div class="pubsub">
+                <div class="title">
+                    <h2>Канал связи</h2>
+                    <button class="refresh">0</button>
+                </div>
+                <ul class="public-list"></ul>
+            </div>
+        </div>
+    </div>
+</template>
+<div slot="help-section" class="help-section">
+    <i data-open="info" class="fi-info"></i>
+</div>
+<div id="info" slot="system-modal" class="reveal info-modal" data-reveal data-close-on-click="true">
+    <div class="project-info row collapse">
+        <h3>Project Info</h3>
+        <!--            <span class="small-3 columns">Universe Scale</span><span class="small-9 columns">6.30957344 &times; 10<sup>-5</sup></span>-->
+        <!--            <span class="small-3 columns">Orbit Scale</span><span-->
+        <!--                class="small-9 columns">6.30957344 &times; 10<sup>-5</sup></span>-->
+        <!--            <span class="small-3 columns">Celestial Scale</span><span class="small-9 columns">1.2589254 &times; 10<sup>-4</sup></span>-->
+    </div>
+
+    <div class="project-info row collapse">
+        <h3>Controls</h3>
+        <menu class="project-info-menu">
+            <a id="project-info-menu" class="button large network" data-change="admin">Network</a>
+            <a id="project-info-planet" class="button large map active-button" data-change="map">Map</a>
+            <!--                <a id="project-info-system" class="button large" data-change="system">System</a>-->
+        </menu>
+        <!--            <span class="small-12 columns">Use your mouse or trackpad to navigate the scene. To zoom, use a scroll motion. When viewing a planet, you can move around a planet using a click + drag motion.</span>-->
+    </div>
+
+    <div class="project-info-footer">
+        <a id="info-got-it" class="button large" data-close="info">Close</a>
+    </div>
+    <button class="close-button" data-close aria-label="Close modal" type="button">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div slot="solar-system" class="solar-system">
+    <div class="container-main">
+        <div class="container-menu">
+            <div id="menu" class="menu"></div>
+            <div class="help-section">
+                <i data-open="info" class="fi-info"></i>
+            </div>
+        </div>
+
+        <div id="moons" class="moons"></div>
+        <div id="current-target-title" class="current-target-title active">Solar System</div>
+        <div id="toggle-effects" class="toggle-effects">
+            <div class="control-holder">
+                <label for="toggle-orbit-highlight">
+                    <input type="checkbox" id="toggle-orbit-highlight" class="toggle-control">
+                    <span>Orbit Color Effects</span>
+                </label>
+            </div>
+        </div>
+        <div class="intro-screen">
+            <div class="intro-text">
+                <div class="intro-heading">
+                    <h1>Our Solar System</h1>
+                </div>
+                <div class="inner">
+                    <p>A solar system refers to a star and all the objects that travel in orbit around it. Our solar
+                        system consists of the sun, eight planets (and their natural satellites), dwarf planets,
+                        asteroids, and comets. Our solar system is located within the Orion Arm of the Milky Way Galaxy,
+                        which is located about 27,000 light-years away from the Milky Way Galactic Center.</p>
+                    <p>This is a project powered by <a href="http://threejs.org/" target="_blank">Three.js</a> and <a
+                            href="https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API">WebGL</a>. All objects
+                        within this project have been modeled to <span data-tooltip aria-haspopup="true" class="has-tip"
+                                                                       data-disable-hover="false" tabindex="1"
+                                                                       title="Scale = 1 * 10^-4.2">scale</span> based on
+                        real astronomical data. The scene currently renders the sun, all eight planets (nine if you side
+                        with Pluto being a planet), each planet's moons, the asteriod belt and thousands of stars.</p>
+                    <p>
+                        <strong>For a better viewing experience, use a laptop or desktop with the latest version of
+                            Google Chrome or Safari Technology Preview.</strong>
+                    </p>
+                    <!--                    <div class="social-buttons social-buttons-intro-screen">-->
+                    <!--                        <a href="https://twitter.com/SanderBlue" class="twitter-follow-button" data-show-count="false">Follow-->
+                    <!--                            @SanderBlue</a>-->
+                    <!--                        <iframe src="https://ghbtns.com/github-btn.html?user=sanderblue&repo=solar-system-threejs&type=star&count=false"-->
+                    <!--                                class="github-button" frameborder="0" scrolling="0"></iframe>-->
+                    <!--                    </div>-->
+                    <div id="render-scene" class="button large render-scene">
+                        <span>View Solar System</span>
+                    </div>
+                </div>
+                <div id="loading-prompt" class="loading-prompt">
+                    <span>Building the Solar System...</span>
+                    <div id="realtime-updates"></div>
+                    <div id="progress-bar" class="progress" role="progressbar" tabindex="0">
+                        <div class="progress-meter"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="solar-system" class="scene"></div>
+    </div>
+
+    <div class="full reveal" id="exampleModal8" data-reveal>
+        <p>Sorry, but this project is currently not viewable from a mobile device.</p>
+        <img src="http://placekitten.com/1920/1280" alt="Intropsective Cage">
+        <button class="close-button" data-close aria-label="Close reveal" type="button">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div id="browser-compatibility-modal" class="reveal browser-compatibility-modal">
+        <h3>Browser Compatibility</h3>
+        <p class="lead">This project utilizes some of JavaScript's lastest ES6 features. Currently this project is best
+            viewed using the latest version of <a href="https://www.google.com/chrome/browser/desktop/index.html"
+                                                  class="browser-link" target="_blank">Google Chrome</a> or <a
+                    href="https://developer.apple.com/safari/download/" target="_blank" class="browser-link">Safari
+                Technology Preview</a>. At a minimum, your browser must support the following ES6 features. If you can't
+            navigate past this page, this project is not compatible with the browser you're using. Sorry, but this
+            project is currently not viewable from a mobile device.</p>
+        <ul>
+            <li>Classes</li>
+            <li>Arrow Functions</li>
+        </ul>
+        <button class="close-button" data-close aria-label="Close modal" type="button">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <span>
+                <a id="browser-compatibility-got-it" class="button large" data-close="browser-compatibility-modal">Got It</a>
+        </span>
+        <span>
+                <a href="https://kangax.github.io/compat-table/es6/" class="button large es6-feature-link">ES6 feature support</a>
+        </span>
+    </div>
+
+<!--    <div id="info" class="reveal info-modal" data-reveal data-close-on-click="true">-->
+<!--        <div class="project-info row collapse">-->
+<!--            <h3>Project Info</h3>-->
+<!--            &lt;!&ndash;            <span class="small-3 columns">Universe Scale</span><span class="small-9 columns">6.30957344 &times; 10<sup>-5</sup></span>&ndash;&gt;-->
+<!--            &lt;!&ndash;            <span class="small-3 columns">Orbit Scale</span><span&ndash;&gt;-->
+<!--            &lt;!&ndash;                class="small-9 columns">6.30957344 &times; 10<sup>-5</sup></span>&ndash;&gt;-->
+<!--            &lt;!&ndash;            <span class="small-3 columns">Celestial Scale</span><span class="small-9 columns">1.2589254 &times; 10<sup>-4</sup></span>&ndash;&gt;-->
+<!--        </div>-->
+
+<!--        <div class="project-info row collapse">-->
+<!--            <h3>Controls</h3>-->
+<!--            <menu class="project-info-menu">-->
+<!--                <a id="project-info-menu" class="button large network" data-change="admin">Network</a>-->
+<!--                <a id="project-info-planet" class="button large map active-button" data-change="map">Map</a>-->
+<!--                &lt;!&ndash;                <a id="project-info-system" class="button large" data-change="system">System</a>&ndash;&gt;-->
+<!--            </menu>-->
+<!--            &lt;!&ndash;            <span class="small-12 columns">Use your mouse or trackpad to navigate the scene. To zoom, use a scroll motion. When viewing a planet, you can move around a planet using a click + drag motion.</span>&ndash;&gt;-->
+<!--        </div>-->
+
+<!--        <div class="project-info-footer">-->
+<!--            <a id="info-got-it" class="button large" data-close="info">Close</a>-->
+<!--        </div>-->
+<!--        <button class="close-button" data-close aria-label="Close modal" type="button">-->
+<!--            <span aria-hidden="true">&times;</span>-->
+<!--        </button>-->
+<!--    </div>-->
+
+    <div id="tutorial" class="reveal tutorial-modal" data-reveal data-close-on-click="true">
+        <h3>Controls</h3>
+        <p class="lead">Use your mouse or trackpad to navigate the scene. To zoom, use a scroll motion. When viewing a
+            planet, you can move around a planet using a click + drag motion.</p>
+        <button class="close-button" data-close aria-label="Close modal" type="button">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <a id="tutorial-got-it" class="button large" data-close="tutorial">Got It</a>
+    </div>
+
+    <script type="text/javascript">
+        function isMobile() {
+            return navigator.userAgent.match(/Android/i)
+                || navigator.userAgent.match(/BlackBerry/i)
+                || navigator.userAgent.match(/iPhone|iPad|iPod/i)
+                || navigator.userAgent.match(/Opera Mini/i)
+                || navigator.userAgent.match(/IEMobile/i);
+        }
+
+        if (isMobile()) {
+            var viewButton = document.getElementById('render-scene');
+
+            if (viewButton) {
+                viewButton.innerHTML = '<span>Mobile version coming soon. Please view from laptop or desktop.</span>';
+            }
+        }
+    </script>
+    <script type="text/javascript" src="src/app/vendor/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="src/app/vendor/foundation-sites/dist/foundation.min.js"></script>
+    <script type="text/javascript" src="src/app/vendor/stats/build/stats.min.js"></script>
+    <script type="text/javascript" src="src/app/vendor/tweenjs/build/tween.min.js"></script>
+    <script type="text/javascript" src="src/app/vendor/three.js/three.min.js"></script>
+    <script data-main="./src/app/app" src="src/app/vendor/requirejs/require.js"></script>
+</div>
+</body>
+<script type="module">
+    import interfaceShip from './helia-webrtc-create-interface-ship.mjs'
+    import interfaceStation from './helia-webrtc-create-interface-station.mjs'
+    import instance from './helia-webrtc-create-planet.mjs'
+
+    const DOM = {
+        control: (type) => {
+            const root = document.body.shadowRoot.querySelector('.container')
+            switch (type) {
+                case 'network':
+                    return root.querySelector('.solar-system')
+                case 'map':
+                    return root.querySelector('.container-info')
+                default:
+                    return root
+            }
+        },
+        menu: (type) => {
+            const root = document.body.querySelector('.project-info-menu')
+            switch (type) {
+                case 'network':
+                    return root.querySelector('.network')
+                case 'map':
+                    return root.querySelector('.map')
+                default:
+                    return root
+            }
+        }
+    }
+
+    window.addEventListener("load", (event) => {
+        DOM.menu('network').addEventListener('click', (event) => {
+            DOM.menu('network').classList.add('active-button')
+            DOM.menu('map').classList.remove('active-button')
+
+            DOM.control('network').classList.remove('active-button')
+            DOM.control('map').classList.add('active-button')
+        })
+
+        DOM.menu('map').addEventListener('click', (event) => {
+            DOM.menu('network').classList.remove('active-button')
+            DOM.menu('map').classList.add('active-button')
+            DOM.control('network').classList.add('active-button')
+            DOM.control('map').classList.remove('active-button')
+        })
+    });
+
+    const root = document.body
+    const shadow = root.attachShadow({mode: 'open'});
+    const template = document.body.querySelector('template')
+    shadow.appendChild(template.content)
+    template.remove()
+    instance()
+   const interfaceShips = await interfaceShip()
+   const interfaceStations = await interfaceStation()
+</script>
+</html>
