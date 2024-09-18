@@ -382,10 +382,21 @@ Object.defineProperties(component.prototype, {
                     component: 'nk-menu',
                     type: 'self',
                     execute: (self) => {
+                        const multiaddrs = this.libp2p.getMultiaddrs()
+                            .map((ma) => {
+                                const el = document.createElement('li')
+                                el.textContent = ma.toString()
+                                el.onclick = (event) => {
+                                    navigator.clipboard.writeText(event.currentTarget.textContent)
+                                        .then(() => {
+                                        })
+                                        .catch((err) => console.error(err.name, err.message));
+                                }
+                                return el
+                            })
 
-                        // console.log('---------------------------------', multiaddrs, self.DOM.info.call(self, 'ma_p'))
-                        // self.DOM.info.call(self, 'ma_p').insertAdjacentHTML('beforeend', `<li>ooooooooooo</li>`)
-                        // self.DOM.info.call(self, 'private_ma').replaceChildren(...multiaddrs)
+                        const ttt = self.DOM.info.call(self, 'ma_pr')
+                        ttt.replaceChildren(...multiaddrs)
                     }
                 }
 

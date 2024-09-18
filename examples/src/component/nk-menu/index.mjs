@@ -17,7 +17,7 @@ Object.defineProperties(component.prototype, {
                         return root.querySelector('.self_peerId_p')
                     case 'ma':
                         return root.querySelector('.ma')
-                    case 'ma_p':
+                    case 'ma_pr':
                         return root.querySelector('.ma_pr')
                     default:
                         return root
