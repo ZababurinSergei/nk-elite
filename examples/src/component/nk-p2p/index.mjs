@@ -24,8 +24,66 @@ const name = 'nk-p2p';
 const component = await Component();
 
 Object.defineProperties(component.prototype, {
-    connections: {
-        value: [],
+    isLoad: {
+        value: false,
+        writable: true
+    },
+    updatePeerList: {
+        value: async function () {
+            const connections = []
+
+            const peerList = this.libp2p.getPeers()
+                .map(peerId => {
+                    const el = document.createElement('li')
+                    el.textContent = peerId.toString()
+                    const addrList = document.createElement('ul')
+
+                    const activeConnections = this.libp2p.getConnections(peerId)
+                    const isOne = activeConnections.length === 1
+                    for (const conn of activeConnections) {
+                        const addr = document.createElement('li')
+
+                        let connection = conn.remoteAddr.toString().split(conn.multiplexer)
+
+                        connection = connection.length > 1
+                            ? `${conn.multiplexer}${connection[1]}`
+                            : connection[0]
+
+                        addr.textContent = conn.remoteAddr.toString()
+
+                        if (peerId.toString() !== '12D3KooWMkPhKVUYy5DhBe8Gr1YC7MZ1fT5YdrvzyiRXt28Q4A1E') {
+
+                           if(isOne) {
+                               connections.push(connection)
+                           } else {
+                               if(conn.remoteAddr.toString().startsWith(conn.multiplexer)) {
+                                   connections.push(connection)
+                               }
+                           }
+                        }
+                        addrList.appendChild(addr)
+                    }
+
+                    el.appendChild(addrList)
+
+                    return el
+                })
+
+            this.DOM.peerConnectionsList().replaceChildren(...peerList)
+            return connections
+        },
+        writable: false
+    },
+    libp2p: {
+        value: null,
+        writable: true
+    },
+    get: {
+        value: {
+            peers: async function () {
+                return this.updatePeerList()
+            }
+        },
         writable: true
     },
     DOM: {
@@ -58,12 +116,11 @@ Object.defineProperties(component.prototype, {
             const port = 4955
             const RENDER_EXTERNAL_HOSTNAME = 'relay-tuem.onrender.com'
 
-            const store = new IDBDatastore('/fs', {
-                prefix: '/universe',
-                version: 1
-            })
-
-            await store.open()
+            // const store = new IDBDatastore('/fs', {
+            //     prefix: '/universe',
+            //     version: 1
+            // })
+            // await store.open()
 
             const isLocalhost = window.location.hostname === 'localhost'
 
@@ -146,9 +203,8 @@ Object.defineProperties(component.prototype, {
             }
 
 
-            const libp2p = await createLibp2p({
-                store,
-                PersistentPeerStore,
+            this.libp2p = await createLibp2p({
+                peerStore: PersistentPeerStore,
                 addresses: {
                     listen: [
                         '/webrtc-direct',
@@ -157,24 +213,16 @@ Object.defineProperties(component.prototype, {
                 },
                 transports: [
                     webRTCDirect(),
-                    // the WebSocket transport lets us dial a local relay
                     webSockets({
-                        // this allows non-secure WebSocket connections for purposes of the demo
                         filter: filters.all
                     }),
-                    // support dialing/listening on WebRTC addresses
                     webRTC(),
-                    // support dialing/listening on Circuit Relay addresses
                     circuitRelayTransport({
-                        // make a reservation on any discovered relays - this will let other
-                        // peers use the relay to contact us
                         discoverRelays: 2
                     })
                 ],
                 peerDiscovery: boot,
-                // a connection encrypter is necessary to dial the relay
                 connectionEncryption: [noise()],
-                // a stream muxer is necessary to dial the relay
                 streamMuxers: [yamux()],
                 services: {
                     identify: identify(),
@@ -249,106 +297,74 @@ Object.defineProperties(component.prototype, {
                 }
             })
 
-            // libp2p.services.pubsub.subscribe(PUBSUB_PEER_DISCOVERY)
-
             const intervalId = setInterval(() => {
                 const ma = multiaddr(isLocalhost
                     ? `/dns4/localhost/tcp/${port}/ws/p2p/${serverPeerId}`
                     : `/dns4/${RENDER_EXTERNAL_HOSTNAME}/wss/p2p/${serverPeerId}`)
 
-                libp2p.services.ping.ping(ma)
+                this.libp2p.services.ping.ping(ma)
             }, 1000 * 60 * 13)
 
             this.DOM.dhtMode().textContent = isDht
-                ? libp2p.services.dht.getMode()
+                ? this.libp2p.services.dht.getMode()
                 : 'Disabled'
 
-            this.DOM.peerId().innerText = libp2p.peerId.toString()
-            console.log('multiaddress:', libp2p.getMultiaddrs())
+            this.DOM.peerId().innerText = this.libp2p.peerId.toString()
 
-            function updatePeerList() {
-                // Update connections list
-                const peerList = libp2p.getPeers()
-                    .map(peerId => {
-                        const el = document.createElement('li')
-                        el.textContent = peerId.toString()
-                        const addrList = document.createElement('ul')
-
-                        // this.task = {
-                        //     id: 'nk-menu_0',
-                        //     component: 'nk-menu',
-                        //     type: 'self',
-                        //     detail: {
-                        //         type: 'disabled-button_send'
-                        //     }
-                        // }
-
-                        this.connections = []
-                        for (const conn of libp2p.getConnections(peerId)) {
-                            const addr = document.createElement('li')
-
-                            let connection = conn.remoteAddr.toString().split(conn.multiplexer)
-                            connection = connection.length > 1
-                                ? `${conn.multiplexer}${connection[1]}`
-                                : connection[0]
-
-                            // console.log('------- Connections ------------', conn.multiplexer, conn.remoteAddr.toString().split(conn.multiplexer))
-                            addr.textContent = conn.remoteAddr.toString()
-                            if(peerId.toString() !== '12D3KooWMkPhKVUYy5DhBe8Gr1YC7MZ1fT5YdrvzyiRXt28Q4A1E') {
-                                this.connections.push(conn.remoteAddr.toString())
-                            }
-                            addrList.appendChild(addr)
-                        }
-
-                        if(this.connections.length !== 0) {
-                            // this.task = {
-                            //     id: 'nk-menu_0',
-                            //     type: 'self',
-                            //     component: 'nk-menu',
-                            //     detail: {
-                            //         type: 'refresh-select',
-                            //         callback: () => {
-                            //             this.task = {
-                            //                 id: 'nk-menu_0',
-                            //                 component: 'nk-menu',
-                            //                 type: 'self',
-                            //                 detail: {
-                            //                     type: 'enabled-button_send'
-                            //                 }
-                            //             }
-                            //         }
-                            //     }
-                            // }
-                        }
-
-
-                        el.appendChild(addrList)
-
-                        return el
-                    })
-
-                this.DOM.peerConnectionsList().replaceChildren(...peerList)
-            }
-
-            libp2p.addEventListener('peer:discovery', (evt) => {
+            this.libp2p.addEventListener('peer:discovery', (evt) => {
                 console.log(`peer:discovery ${evt.detail.id.toString()}`)
             })
 
-// update peer connections
-            libp2p.addEventListener('connection:open', (event) => {
+            this.libp2p.addEventListener('connection:open', async (event) => {
                 console.log('connection:open', event.detail.remoteAddr.toString())
-                updatePeerList.call(this)
+
+                const listPeer = await this.updatePeerList()
+
+                this.task = {
+                    id: 'nk-menu_0',
+                    type: 'self',
+                    component: "nk-menu",
+                    execute: (self, detail) => {
+                        if (listPeer.length !== 0) {
+                            let select = self.DOM.select.call(self, 'list-peers')
+
+                            select.innerHTML = ''
+                            select.insertAdjacentHTML('beforeend', `<option value="-1">Выберите пользователя</option>`)
+
+                            for (const item of listPeer) {
+                                select.insertAdjacentHTML('beforeend', `<option value="${item}">${item}</option>`)
+                            }
+                        }
+                    }
+                }
             })
 
-            libp2p.addEventListener('connection:close', (event) => {
+            this.libp2p.addEventListener('connection:close', async (event) => {
                 console.log('connection:close', event.detail.remoteAddr.toString())
-                updatePeerList.call(this)
+                const listPeer = await this.updatePeerList()
+
+                this.task = {
+                    id: 'nk-menu_0',
+                    type: 'self',
+                    component: "nk-menu",
+                    execute: (self, detail) => {
+                        if (listPeer.length !== 0) {
+                            let select = self.DOM.select.call(self, 'list-peers')
+
+                            select.innerHTML = ''
+                            select.insertAdjacentHTML('beforeend', `<option value="-1">Выберите пользователя</option>`)
+
+                            for (const item of listPeer) {
+                                select.insertAdjacentHTML('beforeend', `<option value="${item}">${item}</option>`)
+                            }
+                        }
+                    }
+                }
             })
 
-// update listening addresses
-            libp2p.addEventListener('self:peer:update', (event) => {
+            this.libp2p.addEventListener('self:peer:update', (event) => {
                 console.log('self:peer:update', event.detail)
-                const multiaddrs = libp2p.getMultiaddrs()
+                const multiaddrs = this.libp2p.getMultiaddrs()
                     .map((ma) => {
                         const el = document.createElement('li')
                         el.textContent = ma.toString()
@@ -360,6 +376,19 @@ Object.defineProperties(component.prototype, {
                         }
                         return el
                     })
+
+                this.task = {
+                    id: 'nk-menu_0',
+                    component: 'nk-menu',
+                    type: 'self',
+                    execute: (self) => {
+
+                        // console.log('---------------------------------', multiaddrs, self.DOM.info.call(self, 'ma_p'))
+                        // self.DOM.info.call(self, 'ma_p').insertAdjacentHTML('beforeend', `<li>ooooooooooo</li>`)
+                        // self.DOM.info.call(self, 'private_ma').replaceChildren(...multiaddrs)
+                    }
+                }
+
                 this.DOM.listeningAddressesList().replaceChildren(...multiaddrs)
             })
 
@@ -367,54 +396,60 @@ Object.defineProperties(component.prototype, {
                 this.DOM.dialMultiaddrInput().value = ''
             }
 
-// dial remote peer
             this.DOM.dialMultiaddrButton().onclick = async () => {
                 const ma = multiaddr(this.DOM.dialMultiaddrInput().value)
                 appendOutput(`Dialing '${ma}'`)
-                await libp2p.dial(ma)
+                await this.libp2p.dial(ma)
                 appendOutput(`Connected to '${ma}'`)
             }
 
-// subscribe to pubsub topic
             this.DOM.subscribeTopicButton().onclick = async () => {
                 const topic = this.DOM.subscribeTopicInput().value
                 appendOutput(`Subscribing to '${clean(topic)}'`)
 
-                libp2p.services.pubsub.subscribe(topic)
+                this.libp2p.services.pubsub.subscribe(topic)
 
                 this.DOM.sendTopicMessageInput().disabled = undefined
                 this.DOM.sendTopicMessageButton().disabled = undefined
             }
 
-// send message to topic
             this.DOM.sendTopicMessageButton().onclick = async () => {
                 const topic = this.DOM.subscribeTopicInput().value
                 const message = this.DOM.sendTopicMessageInput().value
                 appendOutput(`Sending message '${clean(message)}'`)
 
-                await libp2p.services.pubsub.publish(topic, fromString(message))
+                await this.libp2p.services.pubsub.publish(topic, fromString(message))
             }
 
-// update topic peers
-            setInterval(() => {
-                const topic = this.DOM.subscribeTopicInput().value
-                const peerList = libp2p.services.pubsub.getSubscribers(topic)
-                    .map(peerId => {
-                        const el = document.createElement('li')
-                        el.textContent = peerId.toString()
-                        return el
-                    })
-                this.DOM.topicPeerList().replaceChildren(...peerList)
-            }, 500)
+            // setInterval(() => {
+            //     const topic = this.DOM.subscribeTopicInput().value
+            //     const peerList = this.libp2p.services.pubsub.getSubscribers(topic)
+            //         .map(peerId => {
+            //             const el = document.createElement('li')
+            //             el.textContent = peerId.toString()
+            //             return el
+            //         })
+            //     this.DOM.topicPeerList().replaceChildren(...peerList)
+            // }, 500)
 
-            libp2p.services.pubsub.addEventListener('message', event => {
+            this.libp2p.services.pubsub.addEventListener('message', event => {
                 const topic = event.detail.topic
                 const message = toString(event.detail.data)
 
                 appendOutput(`Message received on topic '${topic}'`)
-                appendOutput(message)
+                // appendOutput(message)
             })
 
+            this.task = {
+                id: 'nk-menu_0',
+                component: 'nk-menu',
+                type: 'self',
+                execute: (self, detail) => {
+                    self.DOM.info.call(self, 'private').textContent = this.libp2p.peerId.toString()
+                }
+            }
+
+            this.isLoad = true
             return true;
         },
         writable: true
@@ -423,36 +458,8 @@ Object.defineProperties(component.prototype, {
         return true
     },
     onMessage: {
-        value: async function(self, detail) {
-            switch (self.tagName) {
-                case 'NK-MENU':
-                        switch (detail.type) {
-                            case 'disabled-button_send':
-                                self.DOM.chat.send.call(self, 'text').classList.add('disabled')
-                                break
-                            case 'enabled-button_send':
-                                self.DOM.chat.send.call(self,'text').classList.remove('disabled')
-                                break
-                            case 'refresh-select':
-                                console.log('vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv', this.connections)
-                                break
-                            default:
-                                console.warn('не обрабатывается',self.tagName, detail.type, {
-                                    this: this,
-                                    self: self,
-                                    detail: detail,
-                                })
-                                break
-                        }
-                    break
-                default:
-                    console.warn('не обрабатывается',self.tagName, {
-                        this: this,
-                        self: self,
-                        detail: detail,
-                    })
-                    break
-            }
+        value: async function (self, detail) {
+
         },
         writable: false
     }

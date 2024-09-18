@@ -246,7 +246,7 @@ const BaseClass = class extends HTMLElement {
                 switch (item.type) {
                     case 'self':
                         if (component) {
-                            const bindOnMessage = item.hasOwnProperty('callback') ? item.callback.bind(this) : this.onMessage.bind(this);
+                            const bindOnMessage = item.hasOwnProperty('execute') ? item.execute.bind(this) : this.onMessage.bind(this);
                             // component.observedAttributes = ["open", "disabled"];
                             bindOnMessage(component.self, item.detail);
                             return false;

@@ -7,9 +7,33 @@ const component = await Component();
 Object.defineProperties(component.prototype, {
     DOM: {
         value: {
+            info: function(type) {
+                const root = this.shadowRoot.querySelector('.peerInfo')
+                console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$', type)
+                switch (type) {
+                    case 'private':
+                        return root.querySelector('.self_p')
+                    case 'public':
+                        return root.querySelector('.self_peerId_p')
+                    case 'ma':
+                        return root.querySelector('.ma')
+                    case 'ma_p':
+                        return root.querySelector('.ma_pr')
+                    default:
+                        return root
+                }
+            },
+            select: function(type) {
+                const root = this.shadowRoot.querySelector('.chat')
+                switch (type) {
+                    case 'list-peers':
+                        return root.querySelector('.list-peer')
+                    default:
+                        break
+                }
+            },
             chat: {
                 refresh: function(type) {
-                    console.log('dddddddddddddddddddddddddddd', this)
                     const root = this.shadowRoot.querySelector('.chat')
                     switch (type) {
                         case 'select':
@@ -46,13 +70,6 @@ Object.defineProperties(component.prototype, {
             this.actions = await Actions.call(this)
 
             this.DOM.chat.refresh.call(this, 'select').addEventListener('click', this.actions.refresh)
-
-            // this.task = {
-            //     id: 'nk-p2p_0',
-            //     component: 'nk-p2p',
-            //     type: 'self',
-            //     detail: {test: 'test'}
-            // }
 
             return true;
         },
