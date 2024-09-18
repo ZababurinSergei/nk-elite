@@ -102,7 +102,14 @@
                 <slot name="nk-universe_0"></slot>
             </div>
             <div class="item">
-                <slot name="nk-chat_0"></slot>
+                <div class="container-menu">
+                    <div class="menu">
+                        <slot name="nk-menu_0"></slot>
+                    </div>
+<!--                    <div class="chat">-->
+<!--                        <slot name="nk-chat_0"></slot>-->
+<!--                    </div>-->
+                </div>
             </div>
             <div class="item">
                 <slot name="nk-p2p_0"></slot>
@@ -258,6 +265,199 @@
                 </div>
             </template>
         </nk-chat>
+        <nk-menu
+            id="nk-menu_0"
+            slot="nk-menu_0"
+        >
+            <template>
+                <div class="container">
+                    <div class="system-modal">
+                        <slot name="system-modal"></slot>
+                    </div>
+                    <div class="solar-system">
+                        <slot name="solar-system"></slot>
+                    </div>
+                    <div class="container-info">
+                        <div class="container-left">
+                            <div class="peerInfo">
+                                <div class="help-section">
+                                    <slot name="help-section"></slot>
+                                </div>
+                                <div class="item planet">
+                                    <p>Планета</p>
+                                    <span></span>
+                                </div>
+                                <div class="item peerId">
+                                    <p>ID Планеты</p>
+                                    <span class="self_peerId_p"></span>
+                                </div>
+                                <div class="item self">
+                                    <p>Приватный ID</p>
+                                    <span class="self_p"></span>
+                                </div>
+                                <div class="item ma">
+                                    <p>Каналы</p>
+                                    <ul class="ma_p"></ul>
+                                </div>
+                                <div class="item private_ma">
+                                    <p>Закрытый Канал</p>
+                                    <ul class="ma_p"></ul>
+                                </div>
+                                <div class="webrtc-direct">
+                                    <h2> Собственные корабли</h2>
+                                    <ul class="group-ships">
+                                        <li class="group-ships-item">
+                                            <div class="command-group">
+                                                <div class="command-group-title">
+                                                    <p>M-1</p>
+                                                    <span class="ship-id-1_private"></span>
+                                                </div>
+                                                <select class="command-group-select">
+                                                    <option value="">Выберите действие</option>
+                                                    <option value="Патрулировать">Патрулировать</option>
+                                                    <option value="Следовать">Следовать</option>
+                                                    <option value="Следить">Следить</option>
+                                                    <option value="Сгруппироваться">Сгруппироваться</option>
+                                                    <option value="Торговать">Торговать</option>
+                                                </select>
+                                            </div>
+                                            <div class="item">
+                                                <span class="ship-1-name"></span>
+                                                <div class="ship-id">
+                                                    <span class="ship-id-1_public"></span>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="group-ships-item">
+                                            <div class="command-group">
+                                                <div class="command-group-title">
+                                                    <p>M-2</p>
+                                                    <span class="ship-id-2_private"></span>
+                                                </div>
+                                                <select class="command-group-select">
+                                                    <option value="">Выберите действие</option>
+                                                    <option value="Патрулировать">Патрулировать</option>
+                                                    <option value="Следовать">Следовать</option>
+                                                    <option value="Следить">Следить</option>
+                                                    <option value="Сгруппироваться">Сгруппироваться</option>
+                                                    <option value="Торговать">Торговать</option>
+                                                </select>
+                                            </div>
+                                            <div class="item">
+                                                <span class="ship-2-name"></span>
+                                                <div class="ship-id">
+                                                    <span class="ship-id-2_public"></span>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div class="own-stations">
+                                    <h2> Собственные станции</h2>
+                                    <ul class="group-ships">
+                                        <li class="group-ships-item">
+                                            <div class="command-group">
+                                                <div class="command-group-title">
+                                                    <p>Торговые станции</p>
+                                                    <span class="ship-id-1_private"></span>
+                                                </div>
+                                                <select class="command-group-select">
+                                                    <option value="">Выберите действие</option>
+                                                    <option value="Патрулировать">Прекратить торговлю</option>
+                                                    <option value="Следовать">Начать торговлю</option>
+                                                    <option value="Следить">Запретить посадку</option>
+                                                    <option value="Сгруппироваться">Разрешить посадку</option>
+                                                    <option value="Торговать">Согласовать цены</option>
+                                                </select>
+                                            </div>
+                                            <div class="item">
+                                                <span class="ship-1-name"></span>
+                                                <div class="ship-id">
+                                                    <span class="ship-id-1_public"></span>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="group-ships-item">
+                                            <div class="command-group">
+                                                <div class="command-group-title">
+                                                    <p>Добывающие станции</p>
+                                                    <span class="ship-id-2_private"></span>
+                                                </div>
+                                                <select class="command-group-select">
+                                                    <option value="">Выберите действие</option>
+                                                    <option value="Патрулировать">Прекратить торговлю</option>
+                                                    <option value="Следовать">Начать торговлю</option>
+                                                    <option value="Следить">Запретить посадку</option>
+                                                    <option value="Сгруппироваться">Разрешить посадку</option>
+                                                    <option value="Торговать">Согласовать цены</option>
+                                                </select>
+                                            </div>
+                                            <div class="item">
+                                                <span class="ship-2-name"></span>
+                                                <div class="ship-id">
+                                                    <span class="ship-id-2_public"></span>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="private-self-discovery invisible">
+                                <div class="private-self title">
+                                    <h2>Приватный собственный канал</h2>
+                                    <button class="refresh">0</button>
+                                </div>
+                                <ul></ul>
+                            </div>
+                            <div class="discovery invisible">
+                                <div class="title">
+                                    <h2>Канал связи</h2>
+                                    <button class="refresh">0</button>
+                                </div>
+                                <ul></ul>
+                            </div>
+                        </div>
+                        <div class="container-right">
+                            <div class="security">
+                                <h2>Безопасность</h2>
+                                <div class="security-container">
+                                    <div class="wrapper">
+                                        <label for="security-key"> Ключ доступа </label>
+                                        <input id="security-key" type="file">
+                                    </div>
+                                    <div class="state">
+                                        <div>Состояние</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="chat">
+                                <div class="header">
+                                    <select class="list-peer">
+                                        <option value="">Выберите пользователя</option>
+                                    </select>
+                                    <button class="refresh">O</button>
+                                </div>
+                                <div class="chat-container">
+                                    <textarea class="input" placeholder="Входящее сообщение"></textarea>
+                                    <textarea class="output" placeholder="введите сообщение"></textarea>
+                                </div>
+                                <div class="footer">
+                                    <button class="send">Отправить</button>
+                                </div>
+                            </div>
+                            <div class="pubsub">
+                                <div class="title">
+                                    <h2>Канал связи</h2>
+                                    <button class="refresh">0</button>
+                                </div>
+                                <ul class="public-list"></ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </nk-menu>
         <nk-p2p
                 id="nk-p2p_0"
                 slot="nk-p2p_0"
@@ -351,7 +551,7 @@
     import {init} from './this/index.mjs'
 
     init({
-        components: ['nk-world', 'nk-elite', 'nk-radio', 'nk-p2p', 'nk-universe', 'nk-chat']
+        components: ['nk-world','nk-menu', 'nk-elite', 'nk-radio', 'nk-p2p', 'nk-universe', 'nk-chat']
     }).then().catch( error => console.log( error ) );
 
 //        globalThis["LFreeQueue"].Store( "Key1", 10 );

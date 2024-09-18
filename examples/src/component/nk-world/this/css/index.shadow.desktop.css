@@ -13,3 +13,14 @@
     flex-direction: column;
     gap: 16px;
 }
+
+.container-menu {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: inherit;
+}
+
+.menu {
+    width: 100%;
+}
