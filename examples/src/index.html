@@ -35,6 +35,21 @@
     </script>
 </head>
 <body>
+<button
+        onclick="(function(self) {
+                window.location.href = `${window.location.origin}${window.location.pathname}`
+            })(this)"
+>
+    empty
+</button>
+
+<button
+        onclick="(function(self) {
+                window.location.href = `${window.location.origin}${window.location.pathname}?nkWorld`
+            })(this)"
+>
+    World
+</button>
 
 <nk-radio
         id="nk-radio_0"
@@ -80,247 +95,263 @@
     </template>
 </nk-elite>
 
-<nk-universe
-        id="nk-universe_0"
-        slot="nk-universe_0"
->
+<nk-world id="nk-world_0">
     <template>
-        <div class="control">
-            <div class="control_left">
-                <div class="control_left_top">
-                    <div class="item">
-                        <div class="text">FS</div>
-                        <progress class="progress" max="100" value="70">70%</progress>
-                    </div>
-                    <div class="item">
-                        <div class="text">AS</div>
-                        <progress class="progress" max="100" value="70">70%</progress>
-                    </div>
-                </div>
-                <hr>
-                <div class="control_left_center">
-                    <div class="item">
-                        <div class="text">FU</div>
-                        <progress class="progress" max="100" value="70">70%</progress>
-                    </div>
-                    <div class="item">
-                        <div class="text">CT</div>
-                        <progress class="progress" max="100" value="70">70%</progress>
-                    </div>
-                    <div class="item">
-                        <div class="text">LT</div>
-                        <progress class="progress" max="100" value="70">70%</progress>
-                    </div>
-                    <div class="item">
-                        <div class="text">AL</div>
-                        <progress class="progress" max="100" value="70">70%</progress>
-                    </div>
-                </div>
-                <hr>
-                <div class="control_left_down">
-                    <div class="item">
-                        <div class="text img">
-                            <img class="image_rocket"
-                                 src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAGCAYAAADdXo4uAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAArElEQVQokZWRMQrCQBRE35q19gB2nsDeW4hg6zG8gGfwFIbgCSzEysLCSlJICCKmUhFhN+RbWJjdJGBeNwN/ZuCrOELMCwCMheEMhccpRPK37zaz3sJ86eboewLnzVfYov4wO8L18H9Rdql6KpwgUiqwBSA/HWgIFEjDiDp6A+iPXE/7Ad2OdyUgQiueCcQ3r6gs8gKmUfVHqzGtqvYpLHZujrO/7fImHqbqfQAfpDbMQIr8MAAAAABJRU5ErkJggg=="/>
-                        </div>
-                        <div class="rockets">
-                            <div class="rocket"></div>
-                            <div class="rocket"></div>
-                            <div class="rocket"></div>
-                            <div class="rocket"></div>
-                        </div>
-                    </div>
-                </div>
+        <div class="container">
+            <div class="item">
+                <slot name="nk-universe_0"></slot>
             </div>
-            <div class="control_center">
-                <div class="radar top">
-                    <div class="center_left_45"></div>
-                    <div class="center_right_45"></div>
-                    <div class="center_x_top_4"></div>
-                    <div class="center_x_top_3"></div>
-                    <div class="center_x_top_2"></div>
-                    <div class="center_x_top_1"></div>
-                    <div class="center_x"></div>
-                    <div class="center_x_bottom_1"></div>
-                    <div class="center_x_bottom_2"></div>
-                    <div class="center_x_bottom_3"></div>
-                    <div class="center_y_left_3"></div>
-                    <div class="center_y_left_2"></div>
-                    <div class="center_y_left_1"></div>
-                    <div class="center_y"></div>
-                    <div class="center_y_right_1"></div>
-                    <div class="center_y_right_2"></div>
-                    <div class="center_y_right_3"></div>
-                </div>
-                <div class="border radar">
-
-                </div>
+            <div class="item">
+                <slot name="nk-chat_0"></slot>
             </div>
-            <div class="control_right">
-                <div class="control_right_top">
-                    <div class="item">
-                        <progress class="progress" max="100" value="70">70%</progress>
-                        <div class="text">SP</div>
-                    </div>
-
-                    <div class="item">
-                        <!--							<progress class="progress" max="100" value="70">70%</progress>-->
-                        <label class="item slider" style="--c: #BD1550">
-                            <input class="input-slider" type="range" id="two" min="-50" max="50" step="1" value="0">
-                            <output class="bottom" for="two" style="--min: -50;--max: 50"></output>
-                        </label>
-                        <div class="text">RL</div>
-                    </div>
-                    <div class="item">
-                        <label class="item slider" style="--c: #BD1550">
-                            <input class="input-slider" type="range" id="three" min="-50" max="50" step="1"
-                                   value="0">
-                            <output class="bottom" for="three" style="--min: -50;--max: 50"></output>
-                        </label>
-                        <!--							<progress class="progress" max="100" value="70">70%</progress>-->
-                        <div class="text">DC</div>
-                    </div>
-                </div>
-                <hr>
-                <div class="control_right_down">
-                    <div class="item">
-                        <progress class="progress_laser" max="100" value="70">70%</progress>
-                        <div class="text">1</div>
-                    </div>
-                    <hr>
-                    <div class="item">
-                        <progress class="progress_laser" max="100" value="70">70%</progress>
-                        <div class="text">2</div>
-                    </div>
-                    <hr>
-                    <div class="item">
-                        <progress class="progress_laser" max="100" value="70">70%</progress>
-                        <div class="text">3</div>
-                    </div>
-                    <hr>
-                    <div class="item">
-                        <progress class="progress_laser" max="100" value="70">70%</progress>
-                        <div class="text">4</div>
-                    </div>
-                </div>
+            <div class="item">
+                <slot name="nk-p2p_0"></slot>
             </div>
         </div>
-    </template>
-</nk-universe>
-<nk-chat
-    id="nk-chat_0"
->
-    <template>
-        <div class="chat">
-            <div class="header">
-                <select class="list-peer">
-                    <option value="">Выберите пользователя</option>
-                </select>
-                <button class="refresh">O</button>
-            </div>
-            <div class="chat-container">
-                <textarea class="input" placeholder="Входящее сообщение"></textarea>
-                <textarea class="output" placeholder="введите сообщение"></textarea>
-            </div>
-            <div class="footer">
-                <button class="send">Отправить</button>
-            </div>
-        </div>
-    </template>
-</nk-chat>
-<nk-p2p
-        id="nk-p2p_0"
-        slot="nk-p2p_0"
->
-    <template>
-        <div class="libp2p">
-            <div class="control-params">
-                <button
-                        onclick="(function(self) {
+
+        <nk-universe
+                id="nk-universe_0"
+                slot="nk-universe_0"
+        >
+            <template>
+                <div class="control">
+                    <div class="control_left">
+                        <div class="control_left_top">
+                            <div class="item">
+                                <div class="text">FS</div>
+                                <progress class="progress" max="100" value="70">70%</progress>
+                            </div>
+                            <div class="item">
+                                <div class="text">AS</div>
+                                <progress class="progress" max="100" value="70">70%</progress>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="control_left_center">
+                            <div class="item">
+                                <div class="text">FU</div>
+                                <progress class="progress" max="100" value="70">70%</progress>
+                            </div>
+                            <div class="item">
+                                <div class="text">CT</div>
+                                <progress class="progress" max="100" value="70">70%</progress>
+                            </div>
+                            <div class="item">
+                                <div class="text">LT</div>
+                                <progress class="progress" max="100" value="70">70%</progress>
+                            </div>
+                            <div class="item">
+                                <div class="text">AL</div>
+                                <progress class="progress" max="100" value="70">70%</progress>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="control_left_down">
+                            <div class="item">
+                                <div class="text img">
+                                    <img class="image_rocket"
+                                         src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAGCAYAAADdXo4uAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAArElEQVQokZWRMQrCQBRE35q19gB2nsDeW4hg6zG8gGfwFIbgCSzEysLCSlJICCKmUhFhN+RbWJjdJGBeNwN/ZuCrOELMCwCMheEMhccpRPK37zaz3sJ86eboewLnzVfYov4wO8L18H9Rdql6KpwgUiqwBSA/HWgIFEjDiDp6A+iPXE/7Ad2OdyUgQiueCcQ3r6gs8gKmUfVHqzGtqvYpLHZujrO/7fImHqbqfQAfpDbMQIr8MAAAAABJRU5ErkJggg=="/>
+                                </div>
+                                <div class="rockets">
+                                    <div class="rocket"></div>
+                                    <div class="rocket"></div>
+                                    <div class="rocket"></div>
+                                    <div class="rocket"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="control_center">
+                        <div class="radar top">
+                            <div class="center_left_45"></div>
+                            <div class="center_right_45"></div>
+                            <div class="center_x_top_4"></div>
+                            <div class="center_x_top_3"></div>
+                            <div class="center_x_top_2"></div>
+                            <div class="center_x_top_1"></div>
+                            <div class="center_x"></div>
+                            <div class="center_x_bottom_1"></div>
+                            <div class="center_x_bottom_2"></div>
+                            <div class="center_x_bottom_3"></div>
+                            <div class="center_y_left_3"></div>
+                            <div class="center_y_left_2"></div>
+                            <div class="center_y_left_1"></div>
+                            <div class="center_y"></div>
+                            <div class="center_y_right_1"></div>
+                            <div class="center_y_right_2"></div>
+                            <div class="center_y_right_3"></div>
+                        </div>
+                        <div class="border radar">
+
+                        </div>
+                    </div>
+                    <div class="control_right">
+                        <div class="control_right_top">
+                            <div class="item">
+                                <progress class="progress" max="100" value="70">70%</progress>
+                                <div class="text">SP</div>
+                            </div>
+
+                            <div class="item">
+                                <!--							<progress class="progress" max="100" value="70">70%</progress>-->
+                                <label class="item slider" style="--c: #BD1550">
+                                    <input class="input-slider" type="range" id="two" min="-50" max="50" step="1" value="0">
+                                    <output class="bottom" for="two" style="--min: -50;--max: 50"></output>
+                                </label>
+                                <div class="text">RL</div>
+                            </div>
+                            <div class="item">
+                                <label class="item slider" style="--c: #BD1550">
+                                    <input class="input-slider" type="range" id="three" min="-50" max="50" step="1"
+                                           value="0">
+                                    <output class="bottom" for="three" style="--min: -50;--max: 50"></output>
+                                </label>
+                                <!--							<progress class="progress" max="100" value="70">70%</progress>-->
+                                <div class="text">DC</div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="control_right_down">
+                            <div class="item">
+                                <progress class="progress_laser" max="100" value="70">70%</progress>
+                                <div class="text">1</div>
+                            </div>
+                            <hr>
+                            <div class="item">
+                                <progress class="progress_laser" max="100" value="70">70%</progress>
+                                <div class="text">2</div>
+                            </div>
+                            <hr>
+                            <div class="item">
+                                <progress class="progress_laser" max="100" value="70">70%</progress>
+                                <div class="text">3</div>
+                            </div>
+                            <hr>
+                            <div class="item">
+                                <progress class="progress_laser" max="100" value="70">70%</progress>
+                                <div class="text">4</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </nk-universe>
+        <nk-chat
+                id="nk-chat_0"
+                slot="nk-chat_0"
+        >
+            <template>
+                <div class="chat">
+                    <div class="header">
+                        <select class="list-peer">
+                            <option value="">Выберите пользователя</option>
+                        </select>
+                        <button class="refresh">O</button>
+                    </div>
+                    <div class="chat-container">
+                        <textarea class="input" placeholder="Входящее сообщение"></textarea>
+                        <textarea class="output" placeholder="введите сообщение"></textarea>
+                    </div>
+                    <div class="footer">
+                        <button class="send">Отправить</button>
+                    </div>
+                </div>
+            </template>
+        </nk-chat>
+        <nk-p2p
+                id="nk-p2p_0"
+                slot="nk-p2p_0"
+        >
+            <template>
+                <div class="libp2p">
+                    <div class="control-params">
+                        <button
+                                onclick="(function(self) {
                 window.location.href = `${window.location.origin}${window.location.pathname}`
             })(this)"
-                >
-                    empty
-                </button>
-                <button
-                        onclick="(function(self) {
+                        >
+                            empty
+                        </button>
+                        <button
+                                onclick="(function(self) {
                 window.location.href = `${window.location.origin}${window.location.pathname}?bootstrap`
             })(this)"
-                >
-                    Bootstrap
-                </button>
+                        >
+                            Bootstrap
+                        </button>
 
-                <button
-                        onclick="(function(self) {
+                        <button
+                                onclick="(function(self) {
                 window.location.href = `${window.location.origin}${window.location.pathname}?bootstrap&dht`
             })(this)"
-                >
-                    Bootstrap && DHT
-                </button>
+                        >
+                            Bootstrap && DHT
+                        </button>
 
-                <button
-                        onclick="(function(self) {
+                        <button
+                                onclick="(function(self) {
                 window.location.href = `${window.location.origin}${window.location.pathname}?bootstrap&pubsubPeerDiscovery`
             })(this)"
-                >
-                    Bootstrap && pubsubPeerDiscovery
-                </button>
-            </div>
-            <div>
-                <label for="dial-multiaddr-input">Dial MultiAddr</label>
-                <input type="text" id="dial-multiaddr-input" placeholder="/ip4/127.0.0.1/tcp/1234/ws/p2p/123Foo"/>
-                <div class="multiaddr-input-button">
-                    <button id="dial-multiaddr-button">Connect</button>
-                    <button id="clear-button">Clear</button>
+                        >
+                            Bootstrap && pubsubPeerDiscovery
+                        </button>
+                    </div>
+                    <div>
+                        <label for="dial-multiaddr-input">Dial MultiAddr</label>
+                        <input type="text" id="dial-multiaddr-input" placeholder="/ip4/127.0.0.1/tcp/1234/ws/p2p/123Foo"/>
+                        <div class="multiaddr-input-button">
+                            <button id="dial-multiaddr-button">Connect</button>
+                            <button id="clear-button">Clear</button>
+                        </div>
+
+                        <h4>PeerId</h4>
+                        <p id="peer-id"></p>
+
+                        <h4>DHT mode</h4>
+                        <p id="dht-mode"></p>
+
+                        <h4>Listening Addresses</h4>
+                        <ul id="listening-addresses">
+                            <li>None</li>
+                        </ul>
+
+                        <h4>Connected Peers</h4>
+                        <ul id="peer-connections">
+                            <li>None</li>
+                        </ul>
+                    </div>
+                    <hr/>
+                    <div>
+                        <h2>PubSub</h2>
+                        <label for="subscribe-topic-input">Subscribe to topic</label>
+                        <input type="text" id="subscribe-topic-input" placeholder="my-topic"/>
+                        <button id="subscribe-topic-button">Subscribe</button>
+
+                        <h4>Topic Peers</h4>
+                        <ul id="topic-peers">
+                            <li>None</li>
+                        </ul>
+
+                        <label for="send-topic-message-input">Send Message to Topic</label>
+                        <input type="text" id="send-topic-message-input" placeholder="hello world" disabled="disabled"/>
+                        <button id="send-topic-message-button" disabled="disabled">Send</button>
+                    </div>
+                    <hr/>
+                    <div class="output">
+                        <h2>Output</h2>
+                        <pre id="output"></pre>
+                    </div>
                 </div>
-
-                <h4>PeerId</h4>
-                <p id="peer-id"></p>
-
-                <h4>DHT mode</h4>
-                <p id="dht-mode"></p>
-
-                <h4>Listening Addresses</h4>
-                <ul id="listening-addresses">
-                    <li>None</li>
-                </ul>
-
-                <h4>Connected Peers</h4>
-                <ul id="peer-connections">
-                    <li>None</li>
-                </ul>
-            </div>
-            <hr/>
-            <div>
-                <h2>PubSub</h2>
-                <label for="subscribe-topic-input">Subscribe to topic</label>
-                <input type="text" id="subscribe-topic-input" placeholder="my-topic"/>
-                <button id="subscribe-topic-button">Subscribe</button>
-
-                <h4>Topic Peers</h4>
-                <ul id="topic-peers">
-                    <li>None</li>
-                </ul>
-
-                <label for="send-topic-message-input">Send Message to Topic</label>
-                <input type="text" id="send-topic-message-input" placeholder="hello world" disabled="disabled"/>
-                <button id="send-topic-message-button" disabled="disabled">Send</button>
-            </div>
-            <hr/>
-            <div class="output">
-                <h2>Output</h2>
-                <pre id="output"></pre>
-            </div>
-        </div>
+            </template>
+        </nk-p2p>
     </template>
-</nk-p2p>
-
+</nk-world>
 </body>
 <script type="module">
     import {init} from './this/index.mjs'
 
     init({
-        components: ['nk-elite', 'nk-radio', 'nk-p2p', 'nk-universe', 'nk-chat']
+        components: ['nk-world', 'nk-elite', 'nk-radio', 'nk-p2p', 'nk-universe', 'nk-chat']
     }).then().catch( error => console.log( error ) );
 
 //        globalThis["LFreeQueue"].Store( "Key1", 10 );

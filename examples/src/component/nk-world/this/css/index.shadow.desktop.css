@@ -1,0 +1,15 @@
+:host {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+:host(.inactive) {
+    display: none;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
