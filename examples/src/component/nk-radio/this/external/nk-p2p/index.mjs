@@ -46,12 +46,7 @@ export const nkP2p = function(self, data) {
         //         description: 'Хорошо'
         //     }]
         // })
-
-        console.log('---- TASK ----', {
-            this: this,
-            self: self,
-            data: data
-        })
+        this.stream(self.stream)
         resolve(true)
     })
 }

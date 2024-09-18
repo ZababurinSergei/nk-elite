@@ -24,6 +24,9 @@ const name = 'nk-p2p';
 const component = await Component();
 
 Object.defineProperties(component.prototype, {
+    stream: {
+
+    },
     DOM: {
         value: null,
         writable: true

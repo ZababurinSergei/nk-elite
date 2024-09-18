@@ -5,6 +5,12 @@ const name = 'nk-radio';
 const component = await Component();
 
 Object.defineProperties(component.prototype, {
+    stream: {
+        value: async function(stream) {
+            console.log('--------------', stream)
+        },
+        writable: true
+    },
     connected: {
         value: async function(property) {
             this.broadcastChannel = {

@@ -6,8 +6,6 @@ import compression from 'compression';
 import * as dotenv from 'dotenv';
 import express from 'express';
 import http from 'http'
-
-/* eslint-disable no-console */
 import { noise } from '@chainsafe/libp2p-noise'
 import { yamux } from '@chainsafe/libp2p-yamux'
 import { circuitRelayServer } from '@libp2p/circuit-relay-v2'
@@ -24,6 +22,7 @@ import {ping} from "@libp2p/ping";
 import { PUBSUB_PEER_DISCOVERY } from './src/this/constants.js'
 import { gossipsub } from '@chainsafe/libp2p-gossipsub'
 import { autoNAT } from '@libp2p/autonat'
+import { tls } from '@libp2p/tls'
 
 // const datastore = new MemoryDatastore()
 let __dirname = process.cwd();
@@ -310,7 +309,8 @@ async function main () {
             tcp(),
         ],
         connectionEncryption: [
-            noise()
+            noise(),
+            tls()
         ],
         streamMuxers: [yamux()],
         services: {

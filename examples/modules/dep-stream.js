@@ -1,0 +1,1 @@
+export { lpStream } from 'it-length-prefixed-stream'
