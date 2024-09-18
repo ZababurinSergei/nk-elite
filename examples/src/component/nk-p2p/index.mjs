@@ -24,8 +24,9 @@ const name = 'nk-p2p';
 const component = await Component();
 
 Object.defineProperties(component.prototype, {
-    stream: {
-
+    connections: {
+        value: [],
+        writable: true
     },
     DOM: {
         value: null,
@@ -34,10 +35,10 @@ Object.defineProperties(component.prototype, {
     connected: {
         value: async function (property) {
             this.broadcastChannel = {
-                await: ['nk-radio']
+                await: ['nk-radio', 'nk-menu']
             }
 
-            const DOM = {
+            this.DOM = {
                 peerId: () => this.shadowRoot.getElementById('peer-id'),
                 dhtMode: () => this.shadowRoot.getElementById('dht-mode'),
                 clearButton: () => this.shadowRoot.getElementById('clear-button'),
@@ -80,7 +81,7 @@ Object.defineProperties(component.prototype, {
             console.log('isPubsubPeerDiscovery', isPubsubPeerDiscovery)
 
             const appendOutput = (line) => {
-                DOM.output().innerText += `${line}\n`
+                this.DOM.output().innerText += `${line}\n`
             }
             const clean = (line) => line.replaceAll('\n', '')
 
@@ -258,11 +259,11 @@ Object.defineProperties(component.prototype, {
                 libp2p.services.ping.ping(ma)
             }, 1000 * 60 * 13)
 
-            DOM.dhtMode().textContent = isDht
+            this.DOM.dhtMode().textContent = isDht
                 ? libp2p.services.dht.getMode()
                 : 'Disabled'
 
-            DOM.peerId().innerText = libp2p.peerId.toString()
+            this.DOM.peerId().innerText = libp2p.peerId.toString()
             console.log('multiaddress:', libp2p.getMultiaddrs())
 
             function updatePeerList() {
@@ -272,6 +273,17 @@ Object.defineProperties(component.prototype, {
                         const el = document.createElement('li')
                         el.textContent = peerId.toString()
                         const addrList = document.createElement('ul')
+
+                        this.task = {
+                            id: 'nk-menu_0',
+                            component: 'nk-menu',
+                            type: 'self',
+                            detail: {
+                                type: 'disabled button send'
+                            }
+                        }
+
+                        this.connections = []
                         for (const conn of libp2p.getConnections(peerId)) {
                             const addr = document.createElement('li')
 
@@ -282,15 +294,25 @@ Object.defineProperties(component.prototype, {
 
                             // console.log('------- Connections ------------', conn.multiplexer, conn.remoteAddr.toString().split(conn.multiplexer))
                             addr.textContent = conn.remoteAddr.toString()
-
+                            this.connections.push(addr)
                             addrList.appendChild(addr)
+                        }
+
+                        this.task = {
+                            id: 'nk-menu_0',
+                            type: 'self',
+                            component: 'nk-menu',
+                            detail: {
+                                type: 'refresh'
+                            }
                         }
 
                         el.appendChild(addrList)
 
                         return el
                     })
-                DOM.peerConnectionsList().replaceChildren(...peerList)
+
+                this.DOM.peerConnectionsList().replaceChildren(...peerList)
             }
 
             libp2p.addEventListener('peer:discovery', (evt) => {
@@ -300,12 +322,12 @@ Object.defineProperties(component.prototype, {
 // update peer connections
             libp2p.addEventListener('connection:open', (event) => {
                 console.log('connection:open', event.detail.remoteAddr.toString())
-                updatePeerList()
+                updatePeerList.call(this)
             })
 
             libp2p.addEventListener('connection:close', (event) => {
                 console.log('connection:close', event.detail.remoteAddr.toString())
-                updatePeerList()
+                updatePeerList.call(this)
             })
 
 // update listening addresses
@@ -323,36 +345,36 @@ Object.defineProperties(component.prototype, {
                         }
                         return el
                     })
-                DOM.listeningAddressesList().replaceChildren(...multiaddrs)
+                this.DOM.listeningAddressesList().replaceChildren(...multiaddrs)
             })
 
-            DOM.clearButton().onclick = async () => {
-                DOM.dialMultiaddrInput().value = ''
+            this.DOM.clearButton().onclick = async () => {
+                this.DOM.dialMultiaddrInput().value = ''
             }
 
 // dial remote peer
-            DOM.dialMultiaddrButton().onclick = async () => {
-                const ma = multiaddr(DOM.dialMultiaddrInput().value)
+            this.DOM.dialMultiaddrButton().onclick = async () => {
+                const ma = multiaddr(this.DOM.dialMultiaddrInput().value)
                 appendOutput(`Dialing '${ma}'`)
                 await libp2p.dial(ma)
                 appendOutput(`Connected to '${ma}'`)
             }
 
 // subscribe to pubsub topic
-            DOM.subscribeTopicButton().onclick = async () => {
-                const topic = DOM.subscribeTopicInput().value
+            this.DOM.subscribeTopicButton().onclick = async () => {
+                const topic = this.DOM.subscribeTopicInput().value
                 appendOutput(`Subscribing to '${clean(topic)}'`)
 
                 libp2p.services.pubsub.subscribe(topic)
 
-                DOM.sendTopicMessageInput().disabled = undefined
-                DOM.sendTopicMessageButton().disabled = undefined
+                this.DOM.sendTopicMessageInput().disabled = undefined
+                this.DOM.sendTopicMessageButton().disabled = undefined
             }
 
 // send message to topic
-            DOM.sendTopicMessageButton().onclick = async () => {
-                const topic = DOM.subscribeTopicInput().value
-                const message = DOM.sendTopicMessageInput().value
+            this.DOM.sendTopicMessageButton().onclick = async () => {
+                const topic = this.DOM.subscribeTopicInput().value
+                const message = this.DOM.sendTopicMessageInput().value
                 appendOutput(`Sending message '${clean(message)}'`)
 
                 await libp2p.services.pubsub.publish(topic, fromString(message))
@@ -360,14 +382,14 @@ Object.defineProperties(component.prototype, {
 
 // update topic peers
             setInterval(() => {
-                const topic = DOM.subscribeTopicInput().value
+                const topic = this.DOM.subscribeTopicInput().value
                 const peerList = libp2p.services.pubsub.getSubscribers(topic)
                     .map(peerId => {
                         const el = document.createElement('li')
                         el.textContent = peerId.toString()
                         return el
                     })
-                DOM.topicPeerList().replaceChildren(...peerList)
+                this.DOM.topicPeerList().replaceChildren(...peerList)
             }, 500)
 
             libp2p.services.pubsub.addEventListener('message', event => {
@@ -384,6 +406,23 @@ Object.defineProperties(component.prototype, {
     },
     disconnected: async function () {
         return true
+    },
+    onMessage: {
+        value: async function(self, detail) {
+            switch (self.tagName) {
+                case 'NK-MENU':
+
+                    break
+                default:
+                    console.warn('не обрабатывается',self.tagName, {
+                        this: this,
+                        self: self,
+                        detail: detail,
+                    })
+                    break
+            }
+        },
+        writable: false
     }
 });
 

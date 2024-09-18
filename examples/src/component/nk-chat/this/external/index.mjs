@@ -1,1 +1,0 @@
-export { nkP2p } from './nk-p2p/index.mjs'

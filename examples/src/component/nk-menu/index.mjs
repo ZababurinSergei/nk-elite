@@ -1,5 +1,4 @@
 import { Component } from '../index.mjs';
-import { nkP2p } from './this/index.mjs'
 
 const name = 'nk-menu';
 const component = await Component();
@@ -21,8 +20,7 @@ Object.defineProperties(component.prototype, {
                 id: 'nk-p2p_0',
                 component: 'nk-p2p',
                 type: 'self',
-                callback: nkP2p,
-                data: {test: 'test'}
+                detail: {test: 'test'}
             }
 
             return true;
