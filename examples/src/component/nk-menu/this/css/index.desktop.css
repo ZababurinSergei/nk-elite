@@ -19,6 +19,8 @@ p {
     width: inherit;
     /*border: 0.2vw solid black;*/
     background: black;
+    box-sizing: border-box;
+    padding-bottom: 32px;
 }
 
 .container-info {
@@ -383,4 +385,8 @@ button.refresh {
 
 .container-left {
     width: 35%;
+}
+
+h2 {
+    margin-bottom: 12px;
 }
