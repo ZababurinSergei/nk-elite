@@ -274,14 +274,14 @@ Object.defineProperties(component.prototype, {
                         el.textContent = peerId.toString()
                         const addrList = document.createElement('ul')
 
-                        this.task = {
-                            id: 'nk-menu_0',
-                            component: 'nk-menu',
-                            type: 'self',
-                            detail: {
-                                type: 'disabled button send'
-                            }
-                        }
+                        // this.task = {
+                        //     id: 'nk-menu_0',
+                        //     component: 'nk-menu',
+                        //     type: 'self',
+                        //     detail: {
+                        //         type: 'disabled-button_send'
+                        //     }
+                        // }
 
                         this.connections = []
                         for (const conn of libp2p.getConnections(peerId)) {
@@ -294,18 +294,33 @@ Object.defineProperties(component.prototype, {
 
                             // console.log('------- Connections ------------', conn.multiplexer, conn.remoteAddr.toString().split(conn.multiplexer))
                             addr.textContent = conn.remoteAddr.toString()
-                            this.connections.push(addr)
+                            if(peerId.toString() !== '12D3KooWMkPhKVUYy5DhBe8Gr1YC7MZ1fT5YdrvzyiRXt28Q4A1E') {
+                                this.connections.push(conn.remoteAddr.toString())
+                            }
                             addrList.appendChild(addr)
                         }
 
-                        this.task = {
-                            id: 'nk-menu_0',
-                            type: 'self',
-                            component: 'nk-menu',
-                            detail: {
-                                type: 'refresh'
-                            }
+                        if(this.connections.length !== 0) {
+                            // this.task = {
+                            //     id: 'nk-menu_0',
+                            //     type: 'self',
+                            //     component: 'nk-menu',
+                            //     detail: {
+                            //         type: 'refresh-select',
+                            //         callback: () => {
+                            //             this.task = {
+                            //                 id: 'nk-menu_0',
+                            //                 component: 'nk-menu',
+                            //                 type: 'self',
+                            //                 detail: {
+                            //                     type: 'enabled-button_send'
+                            //                 }
+                            //             }
+                            //         }
+                            //     }
+                            // }
                         }
+
 
                         el.appendChild(addrList)
 
@@ -411,7 +426,24 @@ Object.defineProperties(component.prototype, {
         value: async function(self, detail) {
             switch (self.tagName) {
                 case 'NK-MENU':
-
+                        switch (detail.type) {
+                            case 'disabled-button_send':
+                                self.DOM.chat.send.call(self, 'text').classList.add('disabled')
+                                break
+                            case 'enabled-button_send':
+                                self.DOM.chat.send.call(self,'text').classList.remove('disabled')
+                                break
+                            case 'refresh-select':
+                                console.log('vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv', this.connections)
+                                break
+                            default:
+                                console.warn('не обрабатывается',self.tagName, detail.type, {
+                                    this: this,
+                                    self: self,
+                                    detail: detail,
+                                })
+                                break
+                        }
                     break
                 default:
                     console.warn('не обрабатывается',self.tagName, {

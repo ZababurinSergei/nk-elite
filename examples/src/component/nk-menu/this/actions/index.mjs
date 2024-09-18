@@ -1,8 +1,7 @@
-export const actions = async function(self) {
+export const Actions = async function() {
     return  {
-        message: async (event) => { },
-        broadcastChannel: async (event) => { },
-        messageerror: async (event) => { },
-        click: async (event) => { }
+        refresh: async (event) => {
+            console.log('@@@@@@@@@@@ REFRESH @@@@@@@@@@@@@', this, event)
+        }
     }
 }
