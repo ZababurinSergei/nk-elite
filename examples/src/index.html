@@ -207,6 +207,27 @@
         </div>
     </template>
 </nk-universe>
+<nk-chat
+    id="nk-chat_0"
+>
+    <template>
+        <div class="chat">
+            <div class="header">
+                <select class="list-peer">
+                    <option value="">Выберите пользователя</option>
+                </select>
+                <button class="refresh">O</button>
+            </div>
+            <div class="chat-container">
+                <textarea class="input" placeholder="Входящее сообщение"></textarea>
+                <textarea class="output" placeholder="введите сообщение"></textarea>
+            </div>
+            <div class="footer">
+                <button class="send">Отправить</button>
+            </div>
+        </div>
+    </template>
+</nk-chat>
 <nk-p2p
         id="nk-p2p_0"
         slot="nk-p2p_0"
@@ -299,7 +320,7 @@
     import {init} from './this/index.mjs'
 
     init({
-        components: ['nk-elite', 'nk-radio', 'nk-p2p', 'nk-universe']
+        components: ['nk-elite', 'nk-radio', 'nk-p2p', 'nk-universe', 'nk-chat']
     }).then().catch( error => console.log( error ) );
 
 //        globalThis["LFreeQueue"].Store( "Key1", 10 );
