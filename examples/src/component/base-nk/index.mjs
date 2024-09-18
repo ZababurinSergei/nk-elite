@@ -26,41 +26,36 @@ const BaseClass = class extends HTMLElement {
 
     dialog = {
         open: async function(value) {
-            const dialog = document.querySelector('dialog')
-            const content = document.querySelector('.content')
-            const pathname = servicePath.pathname;
+            // const dialog = document.querySelector('dialog')
+            // const content = document.querySelector('.content')
+            //
 
-            dialogThis.actions.schema = dialogThis.actions.schema.bind(this)
-            dialogThis.actions.input = dialogThis.actions.input.bind(this)
-            dialogThis.actions.save = dialogThis.actions.save.bind(this)
-            dialogThis.actions.update = dialogThis.actions.update.bind(this)
-            dialogThis.actions.reset = dialogThis.actions.reset.bind(this)
-            dialogThis.actions.next = dialogThis.actions.next.bind(this)
-            dialogThis.actions.close = dialogThis.actions.close.bind(this)
-            dialogThis.actions.success = dialogThis.actions.success.bind(this)
-            dialogThis.actions.remove = dialogThis.actions.remove.bind(this)
-            dialogThis.actions.close = dialogThis.actions.close.bind(this)
+            // dialogThis.config.inputs = undefined
+            // dialogThis.config.schema = undefined
+            // dialogThis.config.close = undefined;
+            // dialogThis.config.save = undefined;
+            // dialogThis.config.cancel = undefined;
+            // dialogThis.config.remove = undefined;
+            // dialogThis.config.reset = undefined;
+            // dialogThis.config.next = undefined;
+            // dialogThis.config.data = undefined;
+            // dialogThis.config.inputSchema = undefined;
+            // dialogThis.config.inputsBody = []
+            // dialogThis.config.update = undefined;
+            // dialogThis.config.success = undefined;
 
-            dialogThis.config.inputs = undefined
-            dialogThis.config.schema = undefined
-            dialogThis.config.close = undefined;
-            dialogThis.config.save = undefined;
-            dialogThis.config.cancel = undefined;
-            dialogThis.config.remove = undefined;
-            dialogThis.config.reset = undefined;
-            dialogThis.config.next = undefined;
-            dialogThis.config.data = undefined;
-            dialogThis.config.inputSchema = undefined;
-            dialogThis.config.inputsBody = []
-            dialogThis.config.update = undefined;
-            dialogThis.config.success = undefined;
-
-            content.innerHTML = '';
-            Object.keys(dialog.dataset).forEach(key => {
-                delete dialog.dataset[key];
-            });
+            // content.innerHTML = '';
+            // Object.keys(dialog.dataset).forEach(key => {
+            //     delete dialog.dataset[key];
+            // });
 
             if (value) {
+                const dialog = document.createElement('dialog')
+                const content = document.createElement('div')
+                const pathname = servicePath.pathname;
+                content.className = 'content'
+                dialog.appendChild(content)
+
                 if (value.hasOwnProperty('dataset')) {
                     for (let key in value.dataset) {
                         dialog.dataset[key] = value.dataset[key]
@@ -68,7 +63,7 @@ const BaseClass = class extends HTMLElement {
                 }
 
                 const data = await dialogThis.template.get(value.type)[0].template(pathname, value);
-                content.innerHTML = '';
+                // content.innerHTML = '';
                 content.insertAdjacentHTML('afterbegin', data);
 
                 dialogThis.config.inputs = dialog.querySelectorAll('.input_body');
@@ -86,6 +81,17 @@ const BaseClass = class extends HTMLElement {
                     item.addEventListener('input', dialogThis.actions.input);
                 })
 
+                dialogThis.actions.schema = dialogThis.actions.schema.bind(this)
+                dialogThis.actions.input = dialogThis.actions.input.bind(this)
+                dialogThis.actions.save = dialogThis.actions.save.bind(this)
+                dialogThis.actions.update = dialogThis.actions.update.bind(this)
+                dialogThis.actions.reset = dialogThis.actions.reset.bind(this)
+                dialogThis.actions.next = dialogThis.actions.next.bind(this)
+                dialogThis.actions.close = dialogThis.actions.close.bind(this)
+                dialogThis.actions.success = dialogThis.actions.success.bind(this)
+                dialogThis.actions.remove = dialogThis.actions.remove.bind(this)
+                dialogThis.actions.close = dialogThis.actions.close.bind(this)
+
                 dialogThis.config.schema?.addEventListener('input', dialogThis.actions.schema);
                 dialogThis.config.save?.addEventListener('click', dialogThis.actions.save);
                 dialogThis.config.update?.addEventListener('click', dialogThis.actions.update);
@@ -96,17 +102,12 @@ const BaseClass = class extends HTMLElement {
                 dialogThis.config.remove?.addEventListener('click', dialogThis.actions.remove);
                 dialogThis.config.close?.addEventListener('click', dialogThis.actions.close);
 
+                document.body.appendChild(dialog)
                 dialog.showModal();
             }
         },
         close: async function() {
             const dialog = document.querySelector('dialog')
-            const content = document.querySelector('.content')
-
-            content.innerHTML = '';
-            Object.keys(dialog.dataset).forEach(key => {
-                delete dialog.dataset[key];
-            });
 
             dialogThis.config.inputs.forEach(item => {
                 item.removeEventListener('input', dialogThis.actions.input);
@@ -137,17 +138,32 @@ const BaseClass = class extends HTMLElement {
             dialogThis.config.success = undefined;
 
             dialog.close();
-            content.innerHTML = '';
+            dialog.remove()
         }
     }
+    broadcastPublish = function () {
+        this.external;
+    }
+
+    messageerror = function (event) {
+        console.log('ddddddddddddddddddddddddddddd BROADCAST messageerror ddddddddddddddddddddddddddddd', event);
+    }
+
     set broadcastChannel(value) {
         if (!this._isBroadcastChannel) {
             this._broadcastChannel[0].value = value;
             if (value.hasOwnProperty('await')) {
                 this._broadcastChannel[0].await = value.await;
             }
-            this._broadcastChannel[0].self.addEventListener('message', this._broadcastChannel[0].value.broadcastChannel);
-            this._broadcastChannel[0].self.addEventListener('messageerror', this._broadcastChannel[0].value.messageerror);
+
+            if('broadcastChannel' in this._broadcastChannel[0].value && 'messageerror' in this._broadcastChannel[0].value) {
+                this._broadcastChannel[0].self.addEventListener('message', this._broadcastChannel[0].value.broadcastChannel);
+                this._broadcastChannel[0].self.addEventListener('messageerror', this._broadcastChannel[0].value.messageerror);
+            } else {
+                this._broadcastChannel[0].self.addEventListener('message', this.broadcastPublish);
+                this._broadcastChannel[0].self.addEventListener('messageerror', this.messageerror);
+            }
+
             this._isBroadcastChannel = true
         }
     }
@@ -231,8 +247,8 @@ const BaseClass = class extends HTMLElement {
                     case 'self':
                         if (component) {
                             const bindOnMessage = item.hasOwnProperty('callback') ? item.callback.bind(this) : onMessage.bind(this);
-                            component.observedAttributes = ["open", "disabled"];
-                            bindOnMessage(component, item);
+                            // component.observedAttributes = ["open", "disabled"];
+                            bindOnMessage(component.self, item.data);
                             return false;
                         }
                         return true;

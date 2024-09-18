@@ -30,6 +30,10 @@ Object.defineProperties(component.prototype, {
     },
     connected: {
         value: async function (property) {
+            this.broadcastChannel = {
+                await: ['nk-radio']
+            }
+
             const DOM = {
                 peerId: () => this.shadowRoot.getElementById('peer-id'),
                 dhtMode: () => this.shadowRoot.getElementById('dht-mode'),

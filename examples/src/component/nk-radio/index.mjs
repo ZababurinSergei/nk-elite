@@ -1,20 +1,27 @@
 import { Component } from '../index.mjs';
-import { wControl } from './this/index.mjs'
+import { wControl, nkP2p } from './this/index.mjs'
 
 const name = 'nk-radio';
 const component = await Component();
 
 Object.defineProperties(component.prototype, {
-    DOM: {
-        value: null,
-        writable: true
-    },
     connected: {
         value: async function(property) {
-            this.DOM = { };
+            this.broadcastChannel = {
+                await: ['nk-p2p']
+            }
 
-            new (await wControl())(this);
+            const instanceRadio = new (await wControl())(this);
 
+            this.task = {
+                id: 'nk-p2p_0',
+                component: 'nk-p2p',
+                type: 'self',
+                callback: nkP2p,
+                data: {test: 'test'}
+            }
+
+            console.log('=== instanceRadio ===', instanceRadio)
             return true;
         },
         writable: true
