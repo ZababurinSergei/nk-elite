@@ -1,4 +1,5 @@
 import {Component} from '../index.mjs';
+import { objectId } from './this/index.mjs'
 import {gossipsub} from '@chainsafe/libp2p-gossipsub'
 import {noise} from '@chainsafe/libp2p-noise'
 import {yamux} from '@chainsafe/libp2p-yamux'
@@ -202,8 +203,20 @@ Object.defineProperties(component.prototype, {
                 ]
             }
 
+            let peerObject = {
+                PeerId: undefined
+            }
+
+            if(this.dataset.type === 'public') {
+                peerObject = await objectId.get.peerid.call(this)
+                if(!peerObject.status) {
+                    console.error('Небыл найден id')
+                    peerObject.peerId = undefined
+                }
+            }
 
             this.libp2p = await createLibp2p({
+                peerId: peerObject.PeerId,
                 peerStore: PersistentPeerStore,
                 addresses: {
                     listen: [
@@ -395,8 +408,13 @@ Object.defineProperties(component.prototype, {
                                 return el
                             })
 
-                        const ttt = self.DOM.info.call(self, 'ma_pr')
-                        ttt.replaceChildren(...multiaddrs)
+                        if(this.dataset.type === 'private') {
+                            self.DOM.info.call(self, 'ma_private').replaceChildren(...multiaddrs)
+                        }
+
+                        if(this.dataset.type === 'public') {
+                            self.DOM.info.call(self, 'ma_public').replaceChildren(...multiaddrs)
+                        }
                     }
                 }
 
@@ -456,7 +474,13 @@ Object.defineProperties(component.prototype, {
                 component: 'nk-menu',
                 type: 'self',
                 execute: (self, detail) => {
-                    self.DOM.info.call(self, 'private').textContent = this.libp2p.peerId.toString()
+                    if(this.dataset.type === 'private') {
+                        self.DOM.info.call(self, 'planet-private-id').textContent = this.libp2p.peerId.toString()
+                    } else {
+                        self.DOM.info.call(self, 'planet').textContent = peerObject.name
+                        self.DOM.info.call(self, 'planet-public-id').textContent = this.libp2p.peerId.toString()
+                    }
+
                 }
             }
 

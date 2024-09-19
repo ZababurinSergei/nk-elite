@@ -9,16 +9,21 @@ Object.defineProperties(component.prototype, {
         value: {
             info: function(type) {
                 const root = this.shadowRoot.querySelector('.peerInfo')
-                console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$', type)
                 switch (type) {
+                    case 'planet-public-id':
+                        return root.querySelector('.planet-public-id')
+                    case 'planet-private-id':
+                        return root.querySelector('.planet-private-id')
+                    case 'planet':
+                        return  root.querySelector('.planet-text')
                     case 'private':
                         return root.querySelector('.self_p')
                     case 'public':
                         return root.querySelector('.self_peerId_p')
-                    case 'ma':
-                        return root.querySelector('.ma')
-                    case 'ma_pr':
-                        return root.querySelector('.ma_pr')
+                    case 'ma_public':
+                        return root.querySelector('.ma_public')
+                    case 'ma_private':
+                        return root.querySelector('.ma_private')
                     default:
                         return root
                 }
