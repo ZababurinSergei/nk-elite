@@ -459,10 +459,115 @@
             </template>
         </nk-menu>
         <nk-p2p
-                id="nk-p2p_0"
-                slot="nk-p2p_0"
+            id="nk-p2p_0"
+            slot="nk-p2p_0"
+            data-type="private"
         >
             <template>
+                <button
+                        onclick="(function(self) {
+                            const container = self.getRootNode().querySelector('.libp2p')
+                            container.classList.toggle('enabled')
+                        })(this)"
+                >
+                    Node
+                </button>
+                <div class="libp2p">
+                    <div class="control-params">
+                        <button
+                                onclick="(function(self) {
+                window.location.href = `${window.location.origin}${window.location.pathname}`
+            })(this)"
+                        >
+                            empty
+                        </button>
+                        <button
+                                onclick="(function(self) {
+                window.location.href = `${window.location.origin}${window.location.pathname}?bootstrap`
+            })(this)"
+                        >
+                            Bootstrap
+                        </button>
+
+                        <button
+                                onclick="(function(self) {
+                window.location.href = `${window.location.origin}${window.location.pathname}?bootstrap&dht`
+            })(this)"
+                        >
+                            Bootstrap && DHT
+                        </button>
+
+                        <button
+                                onclick="(function(self) {
+                window.location.href = `${window.location.origin}${window.location.pathname}?bootstrap&pubsubPeerDiscovery`
+            })(this)"
+                        >
+                            Bootstrap && pubsubPeerDiscovery
+                        </button>
+                    </div>
+                    <div>
+                        <label for="dial-multiaddr-input">Dial MultiAddr</label>
+                        <input type="text" id="dial-multiaddr-input" placeholder="/ip4/127.0.0.1/tcp/1234/ws/p2p/123Foo"/>
+                        <div class="multiaddr-input-button">
+                            <button id="dial-multiaddr-button">Connect</button>
+                            <button id="clear-button">Clear</button>
+                        </div>
+
+                        <h4>PeerId</h4>
+                        <p id="peer-id"></p>
+
+                        <h4>DHT mode</h4>
+                        <p id="dht-mode"></p>
+
+                        <h4>Listening Addresses</h4>
+                        <ul id="listening-addresses">
+                            <li>None</li>
+                        </ul>
+
+                        <h4>Connected Peers</h4>
+                        <ul id="peer-connections">
+                            <li>None</li>
+                        </ul>
+                    </div>
+                    <hr/>
+                    <div>
+                        <h2>PubSub</h2>
+                        <label for="subscribe-topic-input">Subscribe to topic</label>
+                        <input type="text" id="subscribe-topic-input" placeholder="my-topic"/>
+                        <button id="subscribe-topic-button">Subscribe</button>
+
+                        <h4>Topic Peers</h4>
+                        <ul id="topic-peers">
+                            <li>None</li>
+                        </ul>
+
+                        <label for="send-topic-message-input">Send Message to Topic</label>
+                        <input type="text" id="send-topic-message-input" placeholder="hello world" disabled="disabled"/>
+                        <button id="send-topic-message-button" disabled="disabled">Send</button>
+                    </div>
+                    <hr/>
+                    <div class="output">
+                        <h2>Output</h2>
+                        <pre id="output"></pre>
+                    </div>
+                </div>
+            </template>
+        </nk-p2p>
+
+        <nk-p2p
+            id="nk-p2p_0"
+            slot="nk-p2p_0"
+            data-type="public"
+        >
+            <template>
+                <button
+                        onclick="(function(self) {
+                            const container = self.getRootNode().querySelector('.libp2p')
+                            container.classList.toggle('enabled')
+                        })(this)"
+                >
+                    Node
+                </button>
                 <div class="libp2p">
                     <div class="control-params">
                         <button

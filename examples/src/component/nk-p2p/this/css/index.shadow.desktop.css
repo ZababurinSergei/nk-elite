@@ -26,3 +26,12 @@ input[type="text"] {
 .output {
     overflow: hidden;
 }
+
+.libp2p {
+    display: none;
+}
+
+.enabled {
+    display: flex;
+    flex-direction: column;
+}
