@@ -8,4 +8,5 @@ export const bootstrapPeers = [
   'QmZa1sAxajnQjVM8WjWXoMbmPd7NsWhfKsPkErzpm9wGkp',
 ]
 
+export const proto = "/universe/0.1";
 export const PUBSUB_PEER_DISCOVERY = 'discovery'

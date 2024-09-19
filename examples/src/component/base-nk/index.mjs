@@ -226,6 +226,7 @@ const BaseClass = class extends HTMLElement {
         return store;
     }
     execute = async function () {
+        const call = []
         this._task = this._task.filter(item => {
             const isTagName = item.tagName === this.tagName.toLowerCase()
             const components = this.store[`${item.component}`]
@@ -247,8 +248,14 @@ const BaseClass = class extends HTMLElement {
                     case 'self':
                         if (component) {
                             const bindOnMessage = item.hasOwnProperty('execute') ? item.execute.bind(this) : this.onMessage.bind(this);
+
+                            call.push({
+                                execute: bindOnMessage,
+                                self: component.self,
+                                detail: item.detail
+                            })
                             // component.observedAttributes = ["open", "disabled"];
-                            bindOnMessage(component.self, item.detail);
+                            // bindOnMessage(component.self, item.detail);
                             return false;
                         }
                         return true;
@@ -266,7 +273,7 @@ const BaseClass = class extends HTMLElement {
                             if (item.hasOwnProperty('callback')) {
                                 delete item.callback;
                             }
-
+                            //TODO Надо вынести из цикла фильтра
                             if (this[`_${item.component}`]._worker !== null) {
                                 this[`_${item.component}`]._worker.postMessage(item);
                                 return false;
@@ -287,6 +294,8 @@ const BaseClass = class extends HTMLElement {
 
             return true;
         });
+
+        call.forEach(item => item.execute(item.self, item.detail))
     };
     _task = [];
     set task(value) {

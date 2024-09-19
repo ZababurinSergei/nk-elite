@@ -18,7 +18,7 @@ import {PersistentPeerStore} from '@libp2p/peer-store'
 import {pubsubPeerDiscovery} from '@libp2p/pubsub-peer-discovery'
 import {IDBDatastore} from 'datastore-idb'
 import {ping} from '@libp2p/ping'
-import {PUBSUB_PEER_DISCOVERY} from '@newkind/constants'
+import {PUBSUB_PEER_DISCOVERY, proto} from '@newkind/constants'
 import {FaultTolerance} from '@libp2p/interface-transport'
 
 const name = 'nk-p2p';
@@ -481,6 +481,15 @@ Object.defineProperties(component.prototype, {
                         self.DOM.info.call(self, 'planet-public-id').textContent = this.libp2p.peerId.toString()
                     }
 
+                }
+            }
+
+            this.task = {
+                id: 'nk-chat_0',
+                component: 'nk-chat',
+                type: 'self',
+                execute: async (self) => {
+                    await this.libp2p.handle(proto, self.handler);
                 }
             }
 
