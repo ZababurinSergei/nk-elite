@@ -36,7 +36,7 @@ Object.defineProperties(component.prototype, {
     },
     onMessage: {
         value: async function(self, detail) {
-            this.dialog.open('Сообщение')
+
         },
         writable: false
     }
