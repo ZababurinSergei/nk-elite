@@ -19,14 +19,6 @@ Object.defineProperties(component.prototype, {
 
             const instanceRadio = new (await wControl())(this);
 
-            this.task = {
-                id: 'nk-p2p_0',
-                type: 'self',
-                component: 'nk-p2p',
-                detail: {test: 'test'}
-            }
-
-            console.log('=== instanceRadio ===', instanceRadio)
             return true;
         },
         writable: true
