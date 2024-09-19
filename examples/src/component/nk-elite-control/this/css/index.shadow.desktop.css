@@ -1,0 +1,8 @@
+:host {
+    display: flex;
+    position: relative;
+    min-height: max-content;
+    aspect-ratio: 16 / 9;
+    width: 100%;
+    background: black;
+}
