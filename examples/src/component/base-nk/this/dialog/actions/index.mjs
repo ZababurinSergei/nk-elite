@@ -12,17 +12,16 @@ export const actions = {
 
     },
     reset: async function(event) {
-
+        this.close()
     },
     next: async function(event) {
 
     },
     cancel: async function(event) {
-
-        console.log('========= CANCEL ==========')
+        this.close()
     },
     success: async function(event) {
-
+        this.close()
     },
     remove: async function(event) {
 

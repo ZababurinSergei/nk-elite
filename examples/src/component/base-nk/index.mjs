@@ -1,12 +1,106 @@
-import { init, onload, v4 as uuidv } from './this/index.mjs';
-import { onMessage } from './onMessage.mjs';
-import { dialogThis } from './this/index.mjs'
+import {init, onload, v4 as uuidv} from './this/index.mjs';
+import {onMessage} from './onMessage.mjs';
+import {dialogThis} from './this/index.mjs'
 
 const servicePath = new URL('../', import.meta.url);
 
 const store = {};
 let eventMessages = {};
-let config = { }
+let config = {}
+
+const dialogInit = async function (value, type) {
+    if(type !== 'terminate') {
+        if (value) {
+            const dialog = document.createElement('dialog')
+            const content = document.createElement('div')
+            const pathname = servicePath.pathname;
+            content.className = 'content'
+            dialog.appendChild(content)
+
+            if (value.hasOwnProperty('dataset')) {
+                for (let key in value.dataset) {
+                    dialog.dataset[key] = value.dataset[key]
+                }
+            }
+
+            const data = await dialogThis.template.get(value.type)[0].template(pathname, value);
+            // content.innerHTML = '';
+            content.insertAdjacentHTML('afterbegin', data);
+
+            dialogThis.config.inputs = dialog.querySelectorAll('.input_body');
+            dialogThis.config.schema = dialog.querySelector('#schema');
+            dialogThis.config.update = dialog.querySelector('.update');
+            dialogThis.config.reset = dialog.querySelector('.reset');
+            dialogThis.config.success = dialog.querySelector('.footer-button.success');
+            dialogThis.config.save = dialog.querySelector('.save');
+            dialogThis.config.next = dialog.querySelector('.next');
+            dialogThis.config.close = dialog.querySelector('.close');
+            dialogThis.config.cancel = dialog.querySelector('.cancel');
+            dialogThis.config.remove = dialog.querySelector('.remove') || dialog.querySelector('.delete');
+
+            dialogThis.config.inputs?.forEach(item => {
+                item.addEventListener('input', dialogThis.actions.input);
+            })
+
+            dialogThis.actions.schema = dialogThis.actions.schema.bind(this)
+            dialogThis.actions.input = dialogThis.actions.input.bind(this)
+            dialogThis.actions.save = dialogThis.actions.save.bind(this)
+            dialogThis.actions.update = dialogThis.actions.update.bind(this)
+            dialogThis.actions.reset = dialogThis.actions.reset.bind(this)
+            dialogThis.actions.next = dialogThis.actions.next.bind(this)
+            dialogThis.actions.close = dialogThis.actions.close.bind(this)
+            dialogThis.actions.success = dialogThis.actions.success.bind(this)
+            dialogThis.actions.remove = dialogThis.actions.remove.bind(this)
+            dialogThis.actions.close = dialogThis.actions.close.bind(this)
+
+            dialogThis.config.schema?.addEventListener('input', dialogThis.actions.schema);
+            dialogThis.config.save?.addEventListener('click', dialogThis.actions.save);
+            dialogThis.config.update?.addEventListener('click', dialogThis.actions.update);
+            dialogThis.config.reset?.addEventListener('click', dialogThis.actions.reset);
+            dialogThis.config.next?.addEventListener('click', dialogThis.actions.next);
+            dialogThis.config.cancel?.addEventListener('click', dialogThis.actions.close);
+            dialogThis.config.success?.addEventListener('click', dialogThis.actions.success);
+            dialogThis.config.remove?.addEventListener('click', dialogThis.actions.remove);
+            dialogThis.config.close?.addEventListener('click', dialogThis.actions.close);
+
+            document.body.appendChild(dialog)
+            dialog.showModal();
+        }
+    } else {
+        const dialog = document.querySelector('dialog')
+
+        dialogThis.config.inputs.forEach(item => {
+            item.removeEventListener('input', dialogThis.actions.input);
+        })
+
+        dialogThis.config.schema?.removeEventListener('input', dialogThis.actions.schema);
+        dialogThis.config.save?.removeEventListener('click', dialogThis.actions.save);
+        dialogThis.config.update?.removeEventListener('click', dialogThis.actions.update);
+        dialogThis.config.reset?.removeEventListener('click', dialogThis.actions.reset);
+        dialogThis.config.next?.removeEventListener('click', dialogThis.actions.next);
+        dialogThis.config.cancel?.removeEventListener('click', dialogThis.actions.close);
+        dialogThis.config.success?.removeEventListener('click', dialogThis.actions.success);
+        dialogThis.config.remove?.removeEventListener('click', dialogThis.actions.remove);
+        dialogThis.config.close?.removeEventListener('click', dialogThis.actions.close);
+
+        dialogThis.config.inputs = undefined
+        dialogThis.config.schema = undefined
+        dialogThis.config.close = undefined;
+        dialogThis.config.save = undefined;
+        dialogThis.config.cancel = undefined;
+        dialogThis.config.remove = undefined;
+        dialogThis.config.reset = undefined;
+        dialogThis.config.next = undefined;
+        dialogThis.config.data = undefined;
+        dialogThis.config.inputSchema = undefined;
+        dialogThis.config.inputsBody = []
+        dialogThis.config.update = undefined;
+        dialogThis.config.success = undefined;
+
+        dialog.close();
+        dialog.remove()
+    }
+}
 
 const BaseClass = class extends HTMLElement {
     static get observedAttributes() {
@@ -25,122 +119,41 @@ const BaseClass = class extends HTMLElement {
     }];
 
     dialog = {
-        open: async function(value) {
-            // const dialog = document.querySelector('dialog')
-            // const content = document.querySelector('.content')
-            //
-
-            // dialogThis.config.inputs = undefined
-            // dialogThis.config.schema = undefined
-            // dialogThis.config.close = undefined;
-            // dialogThis.config.save = undefined;
-            // dialogThis.config.cancel = undefined;
-            // dialogThis.config.remove = undefined;
-            // dialogThis.config.reset = undefined;
-            // dialogThis.config.next = undefined;
-            // dialogThis.config.data = undefined;
-            // dialogThis.config.inputSchema = undefined;
-            // dialogThis.config.inputsBody = []
-            // dialogThis.config.update = undefined;
-            // dialogThis.config.success = undefined;
-
-            // content.innerHTML = '';
-            // Object.keys(dialog.dataset).forEach(key => {
-            //     delete dialog.dataset[key];
-            // });
-
-            if (value) {
-                const dialog = document.createElement('dialog')
-                const content = document.createElement('div')
-                const pathname = servicePath.pathname;
-                content.className = 'content'
-                dialog.appendChild(content)
-
-                if (value.hasOwnProperty('dataset')) {
-                    for (let key in value.dataset) {
-                        dialog.dataset[key] = value.dataset[key]
-                    }
-                }
-
-                const data = await dialogThis.template.get(value.type)[0].template(pathname, value);
-                // content.innerHTML = '';
-                content.insertAdjacentHTML('afterbegin', data);
-
-                dialogThis.config.inputs = dialog.querySelectorAll('.input_body');
-                dialogThis.config.schema = dialog.querySelector('#schema');
-                dialogThis.config.update = dialog.querySelector('.update');
-                dialogThis.config.reset = dialog.querySelector('.reset');
-                dialogThis.config.success = dialog.querySelector('.footer-button.success');
-                dialogThis.config.save = dialog.querySelector('.save');
-                dialogThis.config.next = dialog.querySelector('.next');
-                dialogThis.config.close = dialog.querySelector('.close');
-                dialogThis.config.cancel = dialog.querySelector('.cancel');
-                dialogThis.config.remove = dialog.querySelector('.remove') || dialog.querySelector('.delete');
-
-                dialogThis.config.inputs?.forEach(item => {
-                    item.addEventListener('input', dialogThis.actions.input);
+        error: async function (value) {
+            dialogInit.call(this, {
+                type: 'error',
+                title: 'Ошибка',
+                description: [{
+                    text: value
+                }],
+                button: [{
+                    type: 'reset',
+                    description: 'Закрыть'
+                }]
+            })
+        },
+        open: async function (value) {
+            if (typeof value === 'string') {
+                dialogInit.call(this,{
+                    type: 'success',
+                    title: '',
+                    description: [{
+                        text: value
+                    }],
+                    button: [{
+                        type: 'success',
+                        description: 'Хорошо'
+                    }]
                 })
-
-                dialogThis.actions.schema = dialogThis.actions.schema.bind(this)
-                dialogThis.actions.input = dialogThis.actions.input.bind(this)
-                dialogThis.actions.save = dialogThis.actions.save.bind(this)
-                dialogThis.actions.update = dialogThis.actions.update.bind(this)
-                dialogThis.actions.reset = dialogThis.actions.reset.bind(this)
-                dialogThis.actions.next = dialogThis.actions.next.bind(this)
-                dialogThis.actions.close = dialogThis.actions.close.bind(this)
-                dialogThis.actions.success = dialogThis.actions.success.bind(this)
-                dialogThis.actions.remove = dialogThis.actions.remove.bind(this)
-                dialogThis.actions.close = dialogThis.actions.close.bind(this)
-
-                dialogThis.config.schema?.addEventListener('input', dialogThis.actions.schema);
-                dialogThis.config.save?.addEventListener('click', dialogThis.actions.save);
-                dialogThis.config.update?.addEventListener('click', dialogThis.actions.update);
-                dialogThis.config.reset?.addEventListener('click', dialogThis.actions.reset);
-                dialogThis.config.next?.addEventListener('click', dialogThis.actions.next);
-                dialogThis.config.cancel?.addEventListener('click', dialogThis.actions.close);
-                dialogThis.config.success?.addEventListener('click', dialogThis.actions.success);
-                dialogThis.config.remove?.addEventListener('click', dialogThis.actions.remove);
-                dialogThis.config.close?.addEventListener('click', dialogThis.actions.close);
-
-                document.body.appendChild(dialog)
-                dialog.showModal();
+            } else {
+                dialogInit.call(this, value)
             }
         },
-        close: async function() {
-            const dialog = document.querySelector('dialog')
-
-            dialogThis.config.inputs.forEach(item => {
-                item.removeEventListener('input', dialogThis.actions.input);
-            })
-
-            dialogThis.config.schema?.removeEventListener('input', dialogThis.actions.schema);
-            dialogThis.config.save?.removeEventListener('click', dialogThis.actions.save);
-            dialogThis.config.update?.removeEventListener('click', dialogThis.actions.update);
-            dialogThis.config.reset?.removeEventListener('click', dialogThis.actions.reset);
-            dialogThis.config.next?.removeEventListener('click', dialogThis.actions.next);
-            dialogThis.config.cancel?.removeEventListener('click', dialogThis.actions.close);
-            dialogThis.config.success?.removeEventListener('click', dialogThis.actions.success);
-            dialogThis.config.remove?.removeEventListener('click', dialogThis.actions.remove);
-            dialogThis.config.close?.removeEventListener('click', dialogThis.actions.close);
-
-            dialogThis.config.inputs = undefined
-            dialogThis.config.schema = undefined
-            dialogThis.config.close = undefined;
-            dialogThis.config.save = undefined;
-            dialogThis.config.cancel = undefined;
-            dialogThis.config.remove = undefined;
-            dialogThis.config.reset = undefined;
-            dialogThis.config.next = undefined;
-            dialogThis.config.data = undefined;
-            dialogThis.config.inputSchema = undefined;
-            dialogThis.config.inputsBody = []
-            dialogThis.config.update = undefined;
-            dialogThis.config.success = undefined;
-
-            dialog.close();
-            dialog.remove()
+        close: async function () {
+            dialogInit.call(this,{}, 'terminate')
         }
     }
+
     broadcastPublish = function () {
         this.external;
     }
@@ -156,7 +169,7 @@ const BaseClass = class extends HTMLElement {
                 this._broadcastChannel[0].await = value.await;
             }
 
-            if('broadcastChannel' in this._broadcastChannel[0].value && 'messageerror' in this._broadcastChannel[0].value) {
+            if ('broadcastChannel' in this._broadcastChannel[0].value && 'messageerror' in this._broadcastChannel[0].value) {
                 this._broadcastChannel[0].self.addEventListener('message', this._broadcastChannel[0].value.broadcastChannel);
                 this._broadcastChannel[0].self.addEventListener('messageerror', this._broadcastChannel[0].value.messageerror);
             } else {
@@ -167,9 +180,11 @@ const BaseClass = class extends HTMLElement {
             this._isBroadcastChannel = true
         }
     }
+
     get broadcastChannel() {
         return this._broadcastChannel[0].value;
     }
+
     get external() {
         if (this._broadcastChannel[0].await) {
             let componentState = {};
@@ -213,18 +228,22 @@ const BaseClass = class extends HTMLElement {
             };
         }
     }
+
     get config() {
         return config;
     }
+
     set config(value) {
         for (let key in value) {
             config[key] = value[key];
         }
         return true;
     }
+
     get store() {
         return store;
     }
+
     execute = async function () {
         const call = []
         this._task = this._task.filter(item => {
@@ -306,11 +325,13 @@ const BaseClass = class extends HTMLElement {
 
         this.execute().catch(e => console.error(e));
     }
+
     get task() {
         return {
             task: this._task,
         };
     }
+
     get help() {
         return {
             task: {
@@ -328,21 +349,29 @@ const BaseClass = class extends HTMLElement {
             }
         };
     }
+
     constructor() {
         super();
         this.dataset.servicesPath = servicePath.pathname;
         this.config = config;
 
-        init(this).then(() => { this._isOnload = true; }).catch(error => console.warn('error', error));
+        init(this).then(() => {
+            this._isOnload = true;
+        }).catch(error => console.warn('error', error));
     }
+
     connectedCallback() {
         if (this.dataset?.servicesPath) {
             onload(this)
                 .then(async (self) => {
                     self.dataset.uuid = uuidv();
-                    if ('connected' in self) { await self.connected().then().catch(e => console.error(e)) }
+                    if ('connected' in self) {
+                        await self.connected().then().catch(e => console.error(e))
+                    }
                     const name = self.tagName.toLowerCase();
-                    if (!store.hasOwnProperty(name)) { store[name] = [] }
+                    if (!store.hasOwnProperty(name)) {
+                        store[name] = []
+                    }
 
                     store[name].push({
                         id: self.id,
@@ -356,13 +385,18 @@ const BaseClass = class extends HTMLElement {
                         name: this.tagName
                     });
 
-                    if (this._isBroadcastChannel) { this.external }
+                    if (this._isBroadcastChannel) {
+                        this.external
+                    }
                 })
                 .catch(e => console.error('error', e));
         }
     }
+
     disconnectedCallback() {
-        if ('disconnected' in this) { this.disconnected().then().catch(e => console.error(e)) }
+        if ('disconnected' in this) {
+            this.disconnected().then().catch(e => console.error(e))
+        }
 
         if (this._broadcastChannel[0].value) {
             this._broadcastChannel[0].self.removeEventListener('message', this._broadcastChannel[0].value.broadcastChannel);
@@ -371,6 +405,7 @@ const BaseClass = class extends HTMLElement {
 
         this._broadcastChannel.self.close();
     }
+
     attributeChangedCallback(name, oldValue, newValue) {
         if ('attributeChanged' in this && newValue) {
             this.attribute({
@@ -380,6 +415,7 @@ const BaseClass = class extends HTMLElement {
             });
         }
     }
+
     adoptedCallback() {
         if ('adopted' in this) {
             this.adopted({
@@ -392,7 +428,7 @@ const BaseClass = class extends HTMLElement {
 export const Component = (() => {
     return async () => {
         const body = `return ${BaseClass}`;
-        const baseComponent = new Function('dialogThis', 'config', 'onMessage', 'eventMessages', 'store', 'uuidv', 'servicePath', 'init', 'onload', body);
-        return baseComponent(dialogThis, config, onMessage, eventMessages, store, uuidv, servicePath, init, onload, body);
+        const baseComponent = new Function('dialogInit', 'config', 'onMessage', 'eventMessages', 'store', 'uuidv', 'servicePath', 'init', 'onload', body);
+        return baseComponent(dialogInit, config, onMessage, eventMessages, store, uuidv, servicePath, init, onload, body);
     };
 })();
