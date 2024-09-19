@@ -21,15 +21,15 @@ Object.defineProperties(component.prototype, {
     printSmbl: {
         value: async function () {
             let timeout = Math.round(Math.random() * 100);
-            incoming.textContent = incoming.textContent + globalThis.message[p]
+            this.DOM.incoming.textContent = this.DOM.incoming.textContent + this.message[this._count]
 
             this._count ++
-            if (this._count < globalThis.message.length) {
-                setTimeout(printSmbl, timeout);
+            if (this._count < this.message.length) {
+                setTimeout(this.printSmbl, timeout);
             } else {
                 this._count = 0
                 clearTimeout(timeout)
-                globalThis.message = ''
+                this.message = ''
             }
         },
         writable: true
@@ -43,7 +43,7 @@ Object.defineProperties(component.prototype, {
 
             const output = new TextDecoder().decode(res.subarray())
 
-            globalThis.message = output
+            this.message = output
 
             this.printSmbl()
         },
