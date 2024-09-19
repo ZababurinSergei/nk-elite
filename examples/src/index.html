@@ -421,19 +421,7 @@
                                         </div>
                                     </div>
                                     <div class="chat">
-                                        <div class="header">
-                                            <select class="list-peer">
-                                                <option value="">Выберите пользователя</option>
-                                            </select>
-                                            <button class="refresh">O</button>
-                                        </div>
-                                        <div class="chat-container">
-                                            <textarea class="input" placeholder="Входящее сообщение"></textarea>
-                                            <textarea class="output" placeholder="введите сообщение"></textarea>
-                                        </div>
-                                        <div class="footer">
-                                            <button class="send">Отправить</button>
-                                        </div>
+                                        <slot name="nk-chat_0"></slot>
                                     </div>
                                     <div class="pubsub">
                                         <div class="title">
@@ -445,32 +433,32 @@
                                 </div>
                             </div>
                         </div>
+                        <nk-chat
+                                id="nk-chat_0"
+                                slot="nk-chat_0"
+                        >
+                            <template>
+                                <div class="chat">
+                                    <div class="header">
+                                        <select class="list-peer">
+                                            <option value="">Выберите пользователя</option>
+                                        </select>
+                                        <button class="refresh">O</button>
+                                    </div>
+                                    <div class="chat-container">
+                                        <textarea class="input" placeholder="Входящее сообщение"></textarea>
+                                        <textarea class="output" placeholder="введите сообщение"></textarea>
+                                    </div>
+                                    <div class="footer">
+                                        <button class="send disabled">Отправить</button>
+                                    </div>
+                                </div>
+                            </template>
+                        </nk-chat>
                     </template>
                 </nk-menu>
             </template>
         </nk-universe>
-<!--        <nk-chat-->
-<!--                id="nk-chat_0"-->
-<!--                slot="nk-chat_0"-->
-<!--        >-->
-<!--            <template>-->
-<!--                <div class="chat">-->
-<!--                    <div class="header">-->
-<!--                        <select class="list-peer">-->
-<!--                            <option value="">Выберите пользователя</option>-->
-<!--                        </select>-->
-<!--                        <button class="refresh">O</button>-->
-<!--                    </div>-->
-<!--                    <div class="chat-container">-->
-<!--                        <textarea class="input" placeholder="Входящее сообщение"></textarea>-->
-<!--                        <textarea class="output" placeholder="введите сообщение"></textarea>-->
-<!--                    </div>-->
-<!--                    <div class="footer">-->
-<!--                        <button class="send disabled">Отправить</button>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </template>-->
-<!--        </nk-chat>-->
     </template>
 </nk-world>
 <nk-p2p

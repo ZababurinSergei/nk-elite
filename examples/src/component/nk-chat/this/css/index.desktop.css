@@ -51,9 +51,9 @@ p {
     color: white;
     box-sizing: border-box;
     padding: 0.63vw;
-    background: #8e7bb36b;
+    /*background: #8e7bb36b;*/
     gap: 0.83vw;
-    backdrop-filter: blur(10px);
+    /*backdrop-filter: blur(10px);*/
 }
 
 .peerInfo {

@@ -334,9 +334,9 @@ Object.defineProperties(component.prototype, {
                 const listPeer = await this.updatePeerList()
 
                 this.task = {
-                    id: 'nk-menu_0',
+                    id: 'nk-chat_0',
                     type: 'self',
-                    component: "nk-menu",
+                    component: "nk-chat",
                     execute: (self, detail) => {
                         if (listPeer.length !== 0) {
                             let select = self.DOM.select.call(self, 'list-peers')
@@ -357,9 +357,9 @@ Object.defineProperties(component.prototype, {
                 const listPeer = await this.updatePeerList()
 
                 this.task = {
-                    id: 'nk-menu_0',
+                    id: 'nk-chat_0',
                     type: 'self',
-                    component: "nk-menu",
+                    component: "nk-chat",
                     execute: (self, detail) => {
                         if (listPeer.length !== 0) {
                             let select = self.DOM.select.call(self, 'list-peers')

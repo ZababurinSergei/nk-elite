@@ -1,5 +1,5 @@
 import {Component} from '../index.mjs';
-import {Actions} from './this/index.mjs'
+// import {Actions} from './this/index.mjs'
 
 const name = 'nk-menu';
 const component = await Component();
@@ -27,35 +27,6 @@ Object.defineProperties(component.prototype, {
                     default:
                         return root
                 }
-            },
-            select: function(type) {
-                const root = this.shadowRoot.querySelector('.chat')
-                switch (type) {
-                    case 'list-peers':
-                        return root.querySelector('.list-peer')
-                    default:
-                        break
-                }
-            },
-            chat: {
-                refresh: function(type) {
-                    const root = this.shadowRoot.querySelector('.chat')
-                    switch (type) {
-                        case 'select':
-                            return root.querySelector('.refresh')
-                        default:
-                            break
-                    }
-                },
-                send: function (type) {
-                    const root = this.shadowRoot.querySelector('.chat')
-                    switch (type) {
-                        case 'text':
-                            return root.querySelector('.send')
-                        default:
-                            break
-                    }
-                }
             }
         },
         writable: true
@@ -72,16 +43,11 @@ Object.defineProperties(component.prototype, {
                 await: ['nk-p2p']
             }
 
-            this.actions = await Actions.call(this)
-
-            this.DOM.chat.refresh.call(this, 'select').addEventListener('click', this.actions.refresh)
-
             return true;
         },
         writable: true
     },
     disconnected: async function () {
-        this.DOM.chat.refresh.call(this,'select').removeEventListener('click', this.actions.refresh)
         return true
     },
     onMessage: {
