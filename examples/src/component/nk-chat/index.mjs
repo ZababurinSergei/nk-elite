@@ -121,8 +121,15 @@ Object.defineProperties(component.prototype, {
             return this._stream;
         },
         set: function (newValue) {
-            this.DOM.chat.send.call(this, 'audio').classList.remove('disabled')
             this._stream = newValue;
+            const select = this.DOM.select('list-peers')
+            let peer = select.options[select.selectedIndex].value;
+
+            if(peer.length === 0) {
+                this.DOM.chat.send('audio').classList.add('disabled')
+            } else {
+                this.DOM.chat.send('audio').classList.remove('disabled')
+            }
         },
     },
     connected: {
@@ -186,8 +193,15 @@ Object.defineProperties(component.prototype, {
                 let peer = select.options[select.selectedIndex].value;
 
                 if(peer.length === 0) {
+                    this.DOM.chat.send('audio').classList.add('disabled')
                     this.DOM.chat.send('text').classList.add('disabled')
                 } else {
+                    if(this.stream) {
+                        this.DOM.chat.send('audio').classList.remove('disabled')
+                    } else {
+                        this.DOM.chat.send('audio').classList.add('disabled')
+                    }
+
                     this.DOM.chat.send('text').classList.remove('disabled')
                 }
             })
