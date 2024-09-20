@@ -219,6 +219,7 @@ textarea.output {
     display: flex;
     flex-direction: row;
     justify-content: end;
+    gap: 32px;
 }
 
 button.refresh {
@@ -248,7 +249,7 @@ button.refresh {
     gap: 0.83vw;
 }
 
-.send, .detail {
+.send, .detail, .send-audio {
     color: white;
     border-radius: 0.3vw;
     box-sizing: border-box;
@@ -362,4 +363,9 @@ button.refresh {
 .command-group-title p {
     width: min-content;
     min-width: max-content;
+}
+
+.disabled {
+    opacity: 0.2;
+    /*background: rgba(170, 214, 228, 0.56);*/
 }

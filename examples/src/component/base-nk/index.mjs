@@ -366,8 +366,9 @@ const BaseClass = class extends HTMLElement {
                 .then(async (self) => {
                     self.dataset.uuid = uuidv();
                     if ('connected' in self) {
-                        await self.connected().then().catch(e => console.error(e))
+                        await self.connected()
                     }
+
                     const name = self.tagName.toLowerCase();
                     if (!store.hasOwnProperty(name)) {
                         store[name] = []

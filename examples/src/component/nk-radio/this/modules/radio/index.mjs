@@ -2,12 +2,22 @@ import {initFreeQueue, FreeQueue} from "../../../../../this/queue.mjs"
 import Application from "./oscilloscope/index.mjs";
 import { logger } from '@libp2p/logger'
 const log = logger('LFreeQueue')
-const newAudio = async (CONFIG) => {
+const newAudio = async function (CONFIG) {
     try {
         if (CONFIG.audio.init == false) {
             CONFIG.audio.init = true;
             CONFIG.stream.song = new Audio(CONFIG.stream.path);
             CONFIG.stream.source = CONFIG.audio.ctx.createMediaElementSource(CONFIG.stream.song);
+
+            this.task = {
+                id: 'nk-chat_0',
+                component: 'nk-chat',
+                type: 'self',
+                execute: (self) => {
+                    self.stream = CONFIG.stream.source
+                }
+            }
+
             CONFIG.stream.song.crossOrigin = 'anonymous';
             CONFIG.stream.song.addEventListener("canplay", async (event) => {
                 await CONFIG.audio.ctx.resume();
@@ -199,11 +209,11 @@ export default async () => {
                             CONFIG.stream.path = e.target.value;
                             if (CONFIG.audio.ctx != undefined && CONFIG.audio.ctx != null) {
                                 CONFIG.player.isPlaying = !CONFIG.player.isPlaying;
-                                await newAudio(CONFIG);
+                                await newAudio.call(self, CONFIG);
                             } else {
                                 CONFIG.player.isPlaying = !CONFIG.player.isPlaying;
                                 await ctx(CONFIG);
-                                await newAudio(CONFIG);
+                                await newAudio.call(self, CONFIG);
                             }
                         } else {
                             CONFIG.stream.path = event.target.value;
@@ -237,7 +247,8 @@ export default async () => {
                         CONFIG.html.button.start.textContent = "Stop Audio";
                         CONFIG.player.isPlaying = true;
                         await ctx(CONFIG);
-                        await newAudio(CONFIG);
+                        console.log(self)
+                        await newAudio.call(self, CONFIG);
                     }
                 });
 

@@ -18,7 +18,7 @@ import {PersistentPeerStore} from '@libp2p/peer-store'
 import {pubsubPeerDiscovery} from '@libp2p/pubsub-peer-discovery'
 import {IDBDatastore} from 'datastore-idb'
 import {ping} from '@libp2p/ping'
-import {PUBSUB_PEER_DISCOVERY, proto} from '@newkind/constants'
+import {PUBSUB_PEER_DISCOVERY, proto, protoAudio} from '@newkind/constants'
 import {FaultTolerance} from '@libp2p/interface-transport'
 
 const name = 'nk-p2p';
@@ -342,7 +342,7 @@ Object.defineProperties(component.prototype, {
                             let select = self.DOM.select.call(self, 'list-peers')
 
                             select.innerHTML = ''
-                            select.insertAdjacentHTML('beforeend', `<option value="-1">Выберите пользователя</option>`)
+                            select.insertAdjacentHTML('beforeend', `<option value="">Выберите пользователя</option>`)
 
                             for (const item of listPeer) {
                                 select.insertAdjacentHTML('beforeend', `<option value="${item}">${item}</option>`)
@@ -365,7 +365,7 @@ Object.defineProperties(component.prototype, {
                             let select = self.DOM.select.call(self, 'list-peers')
 
                             select.innerHTML = ''
-                            select.insertAdjacentHTML('beforeend', `<option value="-1">Выберите пользователя</option>`)
+                            select.insertAdjacentHTML('beforeend', `<option value="">Выберите пользователя</option>`)
 
                             for (const item of listPeer) {
                                 select.insertAdjacentHTML('beforeend', `<option value="${item}">${item}</option>`)
@@ -490,6 +490,15 @@ Object.defineProperties(component.prototype, {
                 type: 'self',
                 execute: async (self) => {
                     await this.libp2p.handle(proto, self.handler);
+                }
+            }
+
+            this.task = {
+                id: 'nk-radio-client_0',
+                component: 'nk-radio-client',
+                type: 'self',
+                execute: async (self) => {
+                    await this.libp2p.handle(protoAudio, self.audioHandler);
                 }
             }
 

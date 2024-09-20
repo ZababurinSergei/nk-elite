@@ -2,7 +2,7 @@ import {Component} from '../index.mjs';
 import {Actions} from "../nk-menu/this/index.mjs";
 import {lpStream} from 'it-length-prefixed-stream'
 import {multiaddr} from "@multiformats/multiaddr";
-import {proto} from '@newkind/constants'
+import {proto, protoAudio} from '@newkind/constants'
 
 const name = 'nk-chat';
 const component = await Component();
@@ -36,9 +36,24 @@ Object.defineProperties(component.prototype, {
         },
         writable: true
     },
+    audioHandler: {
+        value: async function (event) {
+            const {connection, stream} = event
+            console.log('INCOMING PEER_ID ', event)
+            // const lp = lpStream(stream)
+            //
+            // const res = await lp.read()
+            //
+            // const output = new TextDecoder().decode(res.subarray())
+            //
+            // this._message = output
+            // this.printSmbl()
+        },
+        writable: true
+    },
     handler: {
         value: async function ({connection, stream}) {
-            console.log('INCOMING PEER_ID ', connection.remotePeer.toString())
+            console.log('INCOMING PEER_ID ', event)
             const lp = lpStream(stream)
 
             const res = await lp.read()
@@ -46,32 +61,48 @@ Object.defineProperties(component.prototype, {
             const output = new TextDecoder().decode(res.subarray())
 
             this._message = output
-            this.printSmbl.call(component.prototype)
+            this.printSmbl()
         },
         writable: true
     },
     send: {
-        value: async function (ma, msg) {
+        value: async function (type, ma, msg) {
             if (typeof ma === "string") ma = multiaddr(ma);
-
-            const signal = AbortSignal.timeout(5000)
-
             this.task = {
                 id: 'nk-p2p_1',
                 component: 'nk-p2p',
                 type: 'self',
                 execute: async (self) => {
                     try {
-                        this.DOM.input.textContent = ''
-                        const stream = await self.libp2p.dialProtocol(ma, proto, {
-                            signal
-                        });
+                        if(type === 'text') {
+                            const signal = AbortSignal.timeout(5000)
 
-                        const lp = lpStream(stream)
+                            this.DOM.input.textContent = ''
+                            const stream = await self.libp2p.dialProtocol(ma, proto, {
+                                signal
+                            });
 
-                        await lp.write(new TextEncoder().encode(msg))
+                            const lp = lpStream(stream)
 
-                        return msg
+                            await lp.write(new TextEncoder().encode(msg))
+
+                            return msg
+                        }
+
+                        if(type === 'audio') {
+                            const signal = AbortSignal.timeout(5000)
+                            this.DOM.input.textContent = ''
+                            const stream = await self.libp2p.dialProtocol(ma, protoAudio, {
+                                signal
+                            });
+
+                            this.stream.connect(stream)
+                            // const lp = lpStream(stream)
+                            //
+                            // await lp.write(new TextEncoder().encode(msg))
+                            //
+                            return true
+                        }
                     } catch (e) {
                         alert(e.toString)
                     }
@@ -81,11 +112,18 @@ Object.defineProperties(component.prototype, {
         },
         writable: true
     },
+    _stream: {
+      value: null,
+      writable: true
+    },
     stream: {
-        value: async function (stream) {
-            console.log('--------------', stream)
+        get: function () {
+            return this._stream;
         },
-        writable: true
+        set: function (newValue) {
+            this.DOM.chat.send.call(this, 'audio').classList.remove('disabled')
+            this._stream = newValue;
+        },
     },
     connected: {
         value: async function (property) {
@@ -96,6 +134,7 @@ Object.defineProperties(component.prototype, {
             this.printSmbl = this.printSmbl.bind(this)
             this.send = this.send.bind(this)
             this.handler = this.handler.bind(this)
+            this.audioHandler = this.audioHandler.bind(this)
 
             this.DOM = {
                 input: this.shadowRoot.querySelector('.input'),
@@ -124,6 +163,8 @@ Object.defineProperties(component.prototype, {
                         switch (type) {
                             case 'text':
                                 return root.querySelector('.send')
+                            case 'audio':
+                                return root.querySelector('.send-audio')
                             default:
                                 break
                         }
@@ -131,11 +172,63 @@ Object.defineProperties(component.prototype, {
                 }
             }
 
+            this.DOM.select = this.DOM.select.bind(this)
+            this.DOM.chat.send = this.DOM.chat.send.bind(this)
+            this.DOM.select = this.DOM.select.bind(this)
+
             this.actions = await Actions.call(this)
 
             this.DOM.chat.refresh.call(this, 'select').addEventListener('click', this.actions.refresh)
 
+            this.DOM.select('list-peers').addEventListener('change', (event) => {
+                const select = this.DOM.select('list-peers')
+
+                let peer = select.options[select.selectedIndex].value;
+
+                if(peer.length === 0) {
+                    this.DOM.chat.send('text').classList.add('disabled')
+                } else {
+                    this.DOM.chat.send('text').classList.remove('disabled')
+                }
+            })
+
+            this.DOM.chat.send( 'audio').addEventListener('click', async (event) => {
+                if(this.DOM.chat.send.call(this, 'audio').classList.contains('disabled')) {
+                    return
+                }
+
+                const select = this.DOM.select('list-peers')
+                const outgoing = this.DOM.output
+                let peer = select.options[select.selectedIndex].value.trim();
+
+                if(peer.length !== 0) {
+                    this.task = {
+                        id: 'nk-p2p_1',
+                        component: 'nk-p2p',
+                        type: 'self',
+                        execute: async (self) => {
+                            const connections = self.libp2p.getConnections()
+                            //TODO надо получать адресс из значений ноды
+                            const connect =  {
+                                remotePeer: peer
+                            }
+                            if (connect) {
+                                const res = await this.send('audio',connect.remotePeer, outgoing.value)
+                            } else {
+                                this.dialog.error('соединение не найдено')
+                            }
+                        }
+                    }
+                } else {
+                    this.dialog.error('Надо выбрать адрес отправления')
+                }
+            })
+
             this.DOM.chat.send.call(this, 'text').addEventListener('click', async (event) => {
+                if(this.DOM.chat.send.call(this, 'text').classList.contains('disabled')) {
+                    return
+                }
+
                 const select = this.DOM.select.call(this, 'list-peers')
                 const outgoing = this.DOM.output
                 let peer = select.options[select.selectedIndex].value;
@@ -147,24 +240,19 @@ Object.defineProperties(component.prototype, {
                         type: 'self',
                         execute: async (self) => {
                             const connections = self.libp2p.getConnections()
+                           //TODO надо получать адресс из значений ноды
                             const connect =  {
                                 remotePeer: peer
                             }
-                            // const connect = connections.find(item => {}item.remotePeer.toString().includes(peer))
-
-                            console.log('------------ connections --------------', connections)
                             if (connect) {
-                                const res = await this.send(connect.remotePeer, outgoing.value)
-                                // console.log('---------- REQUEST ----------', connect.remotePeer.toString(), res)
+                                const res = await this.send('text', connect.remotePeer, outgoing.value)
                             } else {
-                                alert('соединение не найдено')
+                                this.dialog.error('соединение не найдено')
                             }
                         }
                     }
-                    // const connections = globalThis.node.libp2p.getConnections()
                 } else {
-                    alert('Надо выбрать адрес отправления')
-                    // this.dialog.open('Надо выбрать адрес отправления')
+                    this.dialog.error('Надо выбрать адрес отправления')
                 }
 
             })

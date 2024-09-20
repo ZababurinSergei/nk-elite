@@ -12,7 +12,7 @@ export const Actions = async function() {
                         let select = this.DOM.select.call(this, 'list-peers')
 
                         select.innerHTML = ''
-                        select.insertAdjacentHTML('beforeend', `<option value="-1">Выберите пользователя</option>`)
+                        select.insertAdjacentHTML('beforeend', `<option value="">Выберите пользователя</option>`)
 
                         for (const item of listPeer) {
                             select.insertAdjacentHTML('beforeend', `<option value="${item}">${item}</option>`)

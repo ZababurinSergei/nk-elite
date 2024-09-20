@@ -78,7 +78,18 @@
         </div>
     </template>
 </nk-radio>
-
+<nk-radio-client
+    id="nk-radio-client_0"
+    slot="nk-radio-client_0"
+>
+    <template>
+        <div class="nk-radio-client">
+            <button class="audio">
+                Слушать радио
+            </button>
+        </div>
+    </template>
+</nk-radio-client>
 <nk-elite
         id="nk-elite_0"
         slot="nk-elite_0"
@@ -451,6 +462,7 @@
                                         <textarea class="output" placeholder="введите сообщение"></textarea>
                                     </div>
                                     <div class="footer">
+                                        <button class="send-audio disabled">Аудио стрим</button>
                                         <button class="send disabled">Отправить</button>
                                     </div>
                                 </div>
@@ -658,7 +670,7 @@
     import {init} from './this/index.mjs'
 
     init({
-        components: ['nk-elite-control','nk-world','nk-menu', 'nk-elite', 'nk-radio', 'nk-p2p', 'nk-universe', 'nk-chat']
+        components: ['nk-radio-client', 'nk-elite-control','nk-world','nk-menu', 'nk-elite', 'nk-radio', 'nk-p2p', 'nk-universe', 'nk-chat']
     }).then().catch( error => console.log( error ) );
 
 //        globalThis["LFreeQueue"].Store( "Key1", 10 );
