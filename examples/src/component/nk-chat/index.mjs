@@ -36,32 +36,31 @@ Object.defineProperties(component.prototype, {
         },
         writable: true
     },
-    audioHandler: {
-        value: async function (event) {
-            const {connection, stream} = event
-            console.log('INCOMING PEER_ID ', event)
-            // const lp = lpStream(stream)
-            //
-            // const res = await lp.read()
-            //
-            // const output = new TextDecoder().decode(res.subarray())
-            //
-            // this._message = output
-            // this.printSmbl()
-        },
-        writable: true
-    },
     handler: {
-        value: async function ({connection, stream}) {
-            console.log('INCOMING PEER_ID ', event)
-            const lp = lpStream(stream)
+        value: async function ({ connection, stream }) {
+            const protocol = stream.protocol
+            if(stream.protocol === proto) {
+                const lp = lpStream(stream)
 
-            const res = await lp.read()
+                const res = await lp.read()
 
-            const output = new TextDecoder().decode(res.subarray())
+                const output = new TextDecoder().decode(res.subarray())
 
-            this._message = output
-            this.printSmbl()
+                this._message = output
+                this.printSmbl()
+            }
+
+            if(stream.protocol === protoAudio) {
+                console.log('----------- stream --------------', stream)
+                // const lp = lpStream(stream)
+                //
+                // const res = await lp.read()
+                //
+                // const output = new TextDecoder().decode(res.subarray())
+                //
+                // this._message = output
+                // this.printSmbl()
+            }
         },
         writable: true
     },
@@ -146,7 +145,6 @@ Object.defineProperties(component.prototype, {
             this.printSmbl = this.printSmbl.bind(this)
             this.send = this.send.bind(this)
             this.handler = this.handler.bind(this)
-            this.audioHandler = this.audioHandler.bind(this)
 
             this.DOM = {
                 input: this.shadowRoot.querySelector('.input'),

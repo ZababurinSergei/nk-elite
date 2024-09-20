@@ -493,17 +493,18 @@ Object.defineProperties(component.prototype, {
                 type: 'self',
                 execute: async (self) => {
                     await this.libp2p.handle(proto, self.handler);
+                    await this.libp2p.handle(protoAudio, self.handler);
                 }
             }
 
-            this.task = {
-                id: 'nk-radio-client_0',
-                component: 'nk-radio-client',
-                type: 'self',
-                execute: async (self) => {
-                    await this.libp2p.handle(protoAudio, self.audioHandler);
-                }
-            }
+            // this.task = {
+            //     id: 'nk-radio-client_0',
+            //     component: 'nk-radio-client',
+            //     type: 'self',
+            //     execute: async (self) => {
+            //         await this.libp2p.handle(protoAudio, self.handler);
+            //     }
+            // }
 
             this.isLoad = true
             return true;
