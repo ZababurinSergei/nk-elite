@@ -202,31 +202,31 @@ void draw_laser_sights(void)
 
 	if (laser)
 	{
-		x1 = wnd_width / 2;
-		y1 = ((wnd_height / 2 - 132)-16);
-		y2 = ((wnd_height / 2 - 132)-32);
+		x1 = GFX_FULLVIEW_X_CENTER;
+		y1 = GFX_FULLVIEW_Y_CENTER - 16;
+		y2 = GFX_FULLVIEW_Y_CENTER - 32;
    
 		gfx_draw_colour_line (x1-1, y1, x1-1, y2, GFX_COL_GREY_1); 
 		gfx_draw_colour_line (x1, y1, x1, y2, GFX_COL_WHITE);
 		gfx_draw_colour_line (x1+1, y1, x1+1, y2, GFX_COL_GREY_1); 
 
-		y1 = ((wnd_height / 2 - 132)+16);
-		y2 = ((wnd_height / 2 - 132)+32);
+		y1 = GFX_FULLVIEW_Y_CENTER + 16;
+		y2 = GFX_FULLVIEW_Y_CENTER + 32;
 		
 		gfx_draw_colour_line (x1-1, y1, x1-1, y2, GFX_COL_GREY_1); 
 		gfx_draw_colour_line (x1, y1, x1, y2, GFX_COL_WHITE);
 		gfx_draw_colour_line (x1+1, y1, x1+1, y2, GFX_COL_GREY_1); 
 
-		x1 = (wnd_width / 2) - 16;
-		y1 = (wnd_height / 2 - 132);
-		x2 = (wnd_width / 2) - 32;
+		y1 = GFX_FULLVIEW_Y_CENTER;
+		x1 = GFX_FULLVIEW_X_CENTER - 16;
+		x2 = GFX_FULLVIEW_X_CENTER - 32;
 		   
 		gfx_draw_colour_line (x1, y1-1, x2, y1-1, GFX_COL_GREY_1); 
 		gfx_draw_colour_line (x1, y1, x2, y1, GFX_COL_WHITE);
 		gfx_draw_colour_line (x1, y1+1, x2, y1+1, GFX_COL_GREY_1); 
 
-		x1 = (wnd_width / 2) + 16;
-		x2 = (wnd_width / 2) + 32;
+		x1 = GFX_FULLVIEW_X_CENTER + 16;
+		x2 = GFX_FULLVIEW_X_CENTER + 32;
 
 		gfx_draw_colour_line (x1, y1-1, x2, y1-1, GFX_COL_GREY_1); 
 		gfx_draw_colour_line (x1, y1, x2, y1, GFX_COL_WHITE);
@@ -594,7 +594,7 @@ void auto_dock (void)
 	{
 		decrease_flight_climb();
 
-		if (ship.rotx > 1)
+		if (ship.rotx > 1) 
 			decrease_flight_climb();
 	}
 	
@@ -651,7 +651,7 @@ void run_escape_sequence (void)
 			snd_play_sample (SND_EXPLODE);
 		}
 
-		gfx_set_clip_region (1, 1, wnd_width - 2, (wnd_height - 129));
+		gfx_set_clip_region (1, 1, GFX_VIEW_R_COORD, (wnd_height - 129));
 		gfx_clear_display();
 		update_starfield();
 		update_universe();
@@ -682,7 +682,7 @@ void run_escape_sequence (void)
 		}
 
 		warp_stars = 1;
-		gfx_set_clip_region (1, 1, wnd_width - 2, (wnd_height - 129));
+		gfx_set_clip_region (1, 1, GFX_VIEW_R_COORD, (wnd_height - 129));
 		gfx_clear_display();
 		update_starfield();
 		update_universe();
@@ -708,17 +708,15 @@ static void check_cheat_keys(void)
     }
   }
 
-  if (old_key[KEY_c] == 1)
-    goto done;
+  if (old_key[KEY_c] == 1) goto done;
 
-  if (docked)
-    return;
+  if (docked) return;
 
   if (old_key[KEY_s] == 1) {
     if (cheat_arg < NO_OF_SHIPS) {
       int un = create_other_ship(cheat_arg);
-      if (un != -1)
-	universe[un].flags |= FLG_TARGET;
+      if (un != -1) 
+	  	universe[un].flags |= FLG_TARGET;
       goto done;
     }
   }
@@ -989,11 +987,11 @@ void handle_flight_keys (void)
 			fire_missile();
 	}
 
-	if (kbd_origin_pressed)
+	if (kbd_origin_pressed) 
 		o_pressed();
 
 	if (kbd_pause_pressed) {
-	        cheat_arg = 0;
+	    cheat_arg = 0;
 		game_paused = 1;
 	}
 	
@@ -1097,7 +1095,7 @@ void save_commander_screen (void)
 
 	gfx_clear_display();
 	gfx_display_centre_text (10, "SAVE COMMANDER", 140, GFX_COL_GOLD);
-	gfx_draw_line (0, 36, wnd_width - 1, 36);
+	gfx_draw_line (0, 36, GFX_FULLVIEW_R_COORD, 36);
 	//gfx_update_screen();
 	
 	strcpy (path, cmdr.name);
@@ -1135,7 +1133,7 @@ void load_commander_screen (void)
 
 	gfx_clear_display();
 	gfx_display_centre_text (10, "LOAD COMMANDER", 140, GFX_COL_GOLD);
-	gfx_draw_line (0, 36, wnd_width - 1, 36);
+	gfx_draw_line (0, 36, GFX_FULLVIEW_R_COORD, 36);
 	//gfx_update_screen();
 	
 	
@@ -1193,7 +1191,7 @@ void run_game_over_screen()
 	int type;
 	
 	current_screen = SCR_GAME_OVER;
-	gfx_set_clip_region (1, 1, wnd_width - 2, (wnd_height - 129));
+	gfx_set_clip_region (1, 1, GFX_VIEW_R_COORD, (wnd_height - 129));
 	
 	flight_speed = 6;
 	flight_roll = 0;
@@ -1238,12 +1236,12 @@ void display_break_pattern (void)
 {
 	int i;
 
-	gfx_set_clip_region (1, 1, wnd_width - 2, (wnd_height - 129));
+	gfx_set_clip_region (1, 1, GFX_VIEW_R_COORD, (wnd_height - 129));
 	gfx_clear_display();
 	
 	for (i = 0; i < 20; i++) {
-		gfx_set_clip_region (1, 1, wnd_width - 2, (wnd_height - 129));	// put it here, to avoid overdraw console etc with circles when they are big enough
-		gfx_draw_circle (wnd_width / 2, ( wnd_height - 128 ) / 2, 30 + i * 15, GFX_COL_WHITE);
+		gfx_set_clip_region (1, 1, GFX_VIEW_R_COORD, (wnd_height - 129));	// put it here, to avoid overdraw console etc with circles when they are big enough
+		gfx_draw_circle (GFX_FULLVIEW_X_CENTER, ( wnd_height - 128 ) / 2, 30 + i * 15, GFX_COL_WHITE);
 		//gfx_update_screen();
 	}	
 
@@ -1406,14 +1404,12 @@ void secondary_main()
 	} else if ( parts == 5 && !game_over ) {
 		int key_pressed = kbd_check_keys();
 
-
 		rolling = 0;
 		climbing = 0;
 
 		///////////////////////////////////////////////////////////////
 		// Менюхи
 		///////////////////////////////////////////////////////////////
-
 
 		handle_flight_keys ();	
 		if ( current_screen == SCR_EQUIP_SHIP ) {
@@ -1440,6 +1436,9 @@ void secondary_main()
 			game_settings_screen(0);
 		}
 
+		gfx_set_clip_region (GFX_FULLVIEW_L_COORD, GFX_FULLVIEW_T_COORD, GFX_FULLVIEW_R_COORD, GFX_FULLVIEW_B_COORD);
+		gfx_draw_simplerect(GFX_FULLVIEW_L_COORD, GFX_FULLVIEW_T_COORD, GFX_FULLVIEW_R_COORD, GFX_FULLVIEW_B_COORD, GFX_COL_WHITE);
+
 		if (game_paused) return;
 		if (message_count > 0) message_count--;
 
@@ -1458,10 +1457,7 @@ void secondary_main()
 			///////////////////////////////////////////////////////////////
 			// Полет, вне базы...
 			///////////////////////////////////////////////////////////////
-
-			gfx_set_clip_region (GFX_WINDOW_L_COORD, GFX_WINDOW_T_COORD, GFX_WINDOW_R_COORD, GFX_WINDOW_B_COORD);
-			gfx_draw_simplerect(GFX_WINDOW_L_COORD, GFX_WINDOW_T_COORD, GFX_WINDOW_R_COORD, GFX_WINDOW_B_COORD, GFX_COL_WHITE);
-
+			
 //			gfx_acquire_screen();
 					
 			if ((current_screen == SCR_FRONT_VIEW) || (current_screen == SCR_REAR_VIEW) ||
@@ -1550,7 +1546,6 @@ void secondary_main()
 		if (( venablesecondchart == TRUE && current_screen == SCR_SHORT_RANGE ) || 
 			( venablefirstchart == TRUE && current_screen == SCR_GALACTIC_CHART ))
 		{
-
 			if ( current_screen == SCR_SHORT_RANGE || current_screen == SCR_GALACTIC_CHART ) 
 			{
 
@@ -1681,12 +1676,12 @@ int main ( int argc, char *argv[] )
 	finish = 0;
 	auto_pilot = 0;
 
-        #ifdef __EMSCRIPTEN__
-	    emscripten_set_main_loop(main_process, 0, 1);
-        #else
-            while (!finish) {        
-		main_process();
-            }
+    #ifdef __EMSCRIPTEN__
+	   	emscripten_set_main_loop(main_process, 0, 1);
+    #else
+        while (!finish) {        
+			main_process();
+        }
 	#endif
 
 	return 0;

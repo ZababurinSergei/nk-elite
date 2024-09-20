@@ -34,7 +34,6 @@ struct star
 
 struct star stars[20];
 
-
 void create_new_stars (void)
 {
 	int i;
@@ -47,9 +46,8 @@ void create_new_stars (void)
 //		stars[i].x = (rand255() - 128) | 8;
 //		stars[i].y = (rand255() - 128) | 4;
 
-		stars[i].x = GFX_VIEW_L_COORD + ( rand255() * GFX_VIEW_WSIZE ) / 256;
-		stars[i].y = GFX_VIEW_T_COORD + ( rand255() * GFX_VIEW_HSIZE ) / 256;
-
+		stars[i].x = (rand255() - 128);
+		stars[i].y = (rand255() - 128);
 		stars[i].z = rand255() | 0x90;
 	}
 
@@ -60,18 +58,22 @@ void create_new_stars (void)
 void front_starfield (void)
 {
 	int i;
+
 	double Q;
 	double delta;
 	double alpha = 0;
 	double beta = 0;
 	double xx,yy,zz;
-	int sx;
-	int sy;
+
+	int bx,by;
+	int ex,ey;
+	int sx,sy;
 	int nstars;
 	
 	nstars = witchspace ? 3 : 12;
 
-	delta = warp_stars ? 50 : flight_speed;	
+	delta = warp_stars ? 50 : flight_speed;
+
 	alpha = (double)flight_roll;
 	beta = (double)flight_climb;
 
@@ -86,31 +88,28 @@ void front_starfield (void)
 		sx = stars[i].x;
 		zz = stars[i].z;
 
-		sx += GFX_XWINDOW_CENTER;
-		sy += ( wnd_height / 2 ) - 132;
+		bx = GFX_FULLVIEW_X_CENTER + sx * GFX_FULLVIEW_X_SCALE;
+		by = GFX_FULLVIEW_Y_CENTER + sy * GFX_FULLVIEW_Y_SCALE;
 
-		if ((!warp_stars) &&
-			(sx >= GFX_VIEW_TX) && (sx <= GFX_VIEW_BX) &&
-			(sy >= GFX_VIEW_TY) && (sy <= GFX_VIEW_BY))
+		if ((!warp_stars) && 
+			(bx >= GFX_FULLVIEW_L_COORD) && (bx <= GFX_FULLVIEW_R_COORD) &&
+			(by >= GFX_FULLVIEW_T_COORD) && (by <= GFX_FULLVIEW_B_COORD))
 		{
-			gfx_plot_pixel (sx, sy, GFX_COL_WHITE);
-
-			if (zz < 0xC0)
-				gfx_plot_pixel (sx+1, sy, GFX_COL_WHITE);
-
+			gfx_plot_pixel (bx, by, GFX_COL_WHITE);
+			if (zz < 0xC0) gfx_plot_pixel (bx + 1, by, GFX_COL_WHITE);
 			if (zz < 0x90)
 			{
-				gfx_plot_pixel (sx, sy+1, GFX_COL_WHITE);
-				gfx_plot_pixel (sx+1, sy+1, GFX_COL_WHITE);
+				gfx_plot_pixel (bx, by + 1, GFX_COL_WHITE);
+				gfx_plot_pixel (bx + 1, by + 1, GFX_COL_WHITE);
 			}
 		}
-
 
 		/* Move the stars to their new locations...*/
 
 		Q = delta / stars[i].z;
 
 		stars[i].z -= delta;
+
 		yy = stars[i].y + (stars[i].y * Q);
 		xx = stars[i].x + (stars[i].x * Q);
 		zz = stars[i].z;
@@ -122,24 +121,30 @@ void front_starfield (void)
 		tx = yy * beta;
 		xx = xx + (tx * tx * 2);
 */
+
 		yy = yy + beta;
 
 		stars[i].y = yy;
 		stars[i].x = xx;
 
-		
-		if (warp_stars)
-			gfx_draw_line (sx, sy, (xx + ( wnd_width / 2 )), (yy + ( wnd_height / 2 ) - 132));
+		bx = GFX_FULLVIEW_X_CENTER + sx * GFX_FULLVIEW_X_SCALE;
+		by = GFX_FULLVIEW_Y_CENTER + sy * GFX_FULLVIEW_Y_SCALE;
+
+		ex = GFX_FULLVIEW_X_CENTER + xx * GFX_FULLVIEW_X_SCALE;
+		ey = GFX_FULLVIEW_Y_CENTER + yy * GFX_FULLVIEW_Y_SCALE;
+
+		if ( warp_stars ) gfx_draw_line (bx, by, ex, ey);
 		
 		sx = xx;
 		sy = yy;
 
-		if ((sx > 120) || (sx < -120) ||
-			(sy > 120) || (sy < -120) || (zz < 16))
+		if ((sx > 120) || (sx < -120) || (sy > 120) || (sy < -120) || (zz < 16))	
 		{
-			stars[i].x = (rand255() - 128) | 8;
-			stars[i].y = (rand255() - 128) | 4;
-			stars[i].z = rand255() | 0x90;
+//			stars[i].x = (rand255() - 128) | 8; // Set 4 bit
+//			stars[i].y = (rand255() - 128) | 4; // Set 8 bit
+			stars[i].x = (rand255() - 128);
+			stars[i].y = (rand255() - 128);
+			stars[i].z = rand255() | 0x90;  
 			continue;
 		}
 
@@ -159,6 +164,7 @@ void rear_starfield (void)
 	double beta = 0;
 	double xx,yy,zz;
 	int sx,sy;
+	int bx,by;
 	int ex,ey;
 	int nstars;
 	
@@ -179,22 +185,19 @@ void rear_starfield (void)
 		sx = stars[i].x;
 		zz = stars[i].z;
 
-		sx += ( wnd_width / 2 );
-		sy += ( wnd_height / 2 ) - 132;
+		bx = GFX_FULLVIEW_X_CENTER + sx * GFX_FULLVIEW_X_SCALE;
+		by = GFX_FULLVIEW_Y_CENTER + sy * GFX_FULLVIEW_Y_SCALE;
 
 		if ((!warp_stars) &&
-			(sx >= GFX_VIEW_TX) && (sx <= GFX_VIEW_BX) &&
-			(sy >= GFX_VIEW_TY) && (sy <= GFX_VIEW_BY))
+			(bx >= GFX_FULLVIEW_L_COORD) && (bx <= GFX_FULLVIEW_R_COORD) &&
+			(by >= GFX_FULLVIEW_T_COORD) && (by <= GFX_FULLVIEW_B_COORD))
 		{
-			gfx_plot_pixel (sx, sy, GFX_COL_WHITE);
-
-			if (zz < 0xC0)
-				gfx_plot_pixel (sx+1, sy, GFX_COL_WHITE);
-
+			gfx_plot_pixel (bx, by, GFX_COL_WHITE);
+			if (zz < 0xC0) gfx_plot_pixel (bx+1, by, GFX_COL_WHITE);
 			if (zz < 0x90)
 			{
-				gfx_plot_pixel (sx, sy+1, GFX_COL_WHITE);
-				gfx_plot_pixel (sx+1, sy+1, GFX_COL_WHITE);
+				gfx_plot_pixel (bx, by+1, GFX_COL_WHITE);
+				gfx_plot_pixel (bx+1, by+1, GFX_COL_WHITE);
 			}
 		}
 
@@ -216,19 +219,20 @@ void rear_starfield (void)
 		xx = xx + (tx * tx * 2);
 */
 		yy = yy + beta;
-		
+
 		if (warp_stars)
 		{
-			ey = yy;
-			ex = xx;
-			ex = (ex + ( wnd_width / 2 ) - 132);
-			ey = (ey + ( wnd_height / 2 ) - 132);
+			bx = GFX_FULLVIEW_X_CENTER + sx * GFX_FULLVIEW_X_SCALE;
+			by = GFX_FULLVIEW_Y_CENTER + sy * GFX_FULLVIEW_Y_SCALE;
 
-			if ((sx >= GFX_VIEW_TX) && (sx <= GFX_VIEW_BX) &&
-			   (sy >= GFX_VIEW_TY) && (sy <= GFX_VIEW_BY) &&
-			   (ex >= GFX_VIEW_TX) && (ex <= GFX_VIEW_BX) &&
-			   (ey >= GFX_VIEW_TY) && (ey <= GFX_VIEW_BY))
-				gfx_draw_line (sx, sy, (xx + ( wnd_width / 2 )) * GFX_SCALE, (yy + ( wnd_height / 2 ) - 132));
+			ex = GFX_FULLVIEW_X_CENTER + xx * GFX_FULLVIEW_X_SCALE;
+			ey = GFX_FULLVIEW_Y_CENTER + yy * GFX_FULLVIEW_Y_SCALE;
+
+			if ((bx >= GFX_FULLVIEW_L_COORD) && (bx <= GFX_FULLVIEW_R_COORD) &&
+			   (by >= GFX_FULLVIEW_T_COORD) && (by <= GFX_FULLVIEW_B_COORD) &&
+			   (ex >= GFX_FULLVIEW_L_COORD) && (ex <= GFX_FULLVIEW_R_COORD) &&
+			   (ey >= GFX_FULLVIEW_T_COORD) && (ey <= GFX_FULLVIEW_B_COORD))
+			gfx_draw_line (bx, by, ex, ey);
 		}
 		
 		stars[i].y = yy;
@@ -265,6 +269,10 @@ void side_starfield (void)
 	double xx,yy,zz;
 	int sx;
 	int sy;
+	int ex;
+	int ey;
+	int bx;
+	int by;
 	double delt8;
 	int nstars;
 	
@@ -287,22 +295,19 @@ void side_starfield (void)
 		sx = stars[i].x;
 		zz = stars[i].z;
 
-		sx += ( wnd_width / 2 );
-		sy += ( wnd_height / 2 ) - 132;
+		bx = GFX_FULLVIEW_X_CENTER + sx * GFX_FULLVIEW_X_SCALE;
+		by = GFX_FULLVIEW_Y_CENTER + sy * GFX_FULLVIEW_Y_SCALE;
 
 		if ((!warp_stars) &&
-			(sx >= GFX_VIEW_TX) && (sx <= GFX_VIEW_BX) &&
-			(sy >= GFX_VIEW_TY) && (sy <= GFX_VIEW_BY))
+			(bx >= GFX_FULLVIEW_L_COORD) && (bx <= GFX_FULLVIEW_R_COORD) &&
+			(by >= GFX_FULLVIEW_T_COORD) && (by <= GFX_FULLVIEW_B_COORD))
 		{
-			gfx_plot_pixel (sx, sy, GFX_COL_WHITE);
-
-			if (zz < 0xC0)
-				gfx_plot_pixel (sx+1, sy, GFX_COL_WHITE);
-
+			gfx_plot_pixel (bx, by, GFX_COL_WHITE);
+			if (zz < 0xC0) gfx_plot_pixel (bx+1, by, GFX_COL_WHITE);
 			if (zz < 0x90)
 			{
-				gfx_plot_pixel (sx, sy+1, GFX_COL_WHITE);
-				gfx_plot_pixel (sx+1, sy+1, GFX_COL_WHITE);
+				gfx_plot_pixel (bx, by+1, GFX_COL_WHITE);
+				gfx_plot_pixel (bx+1, by+1, GFX_COL_WHITE);
 			}
 		}
 
@@ -313,33 +318,37 @@ void side_starfield (void)
 		delt8 = delta / (zz / 32);
 		xx = xx + delt8;
 
-		xx += (yy * (beta / (wnd_width / 2)));		
-		yy -= (xx * (beta / (wnd_height / 2)));
+		xx += (yy * (beta / 256));		
+		yy -= (xx * (beta / 256));
 
-		xx += ((yy / (wnd_width / 2)) * (alpha / (wnd_width / 2))) * (-xx);
-		yy += ((yy / (wnd_height / 2)) * (alpha / (wnd_height / 2))) * (yy);
+		xx += ((yy / 256) * (alpha / 256)) * (-xx);
+		yy += ((yy / 256) * (alpha / 256)) * (yy);
 
 		yy += alpha; 
 
 		stars[i].y = yy;
 		stars[i].x = xx;
 
-		if (warp_stars)
-			gfx_draw_line (sx, sy, (xx + wnd_width / 2), (yy + ( wnd_height / 2 ) - 132) );
+		bx = GFX_FULLVIEW_X_CENTER + sx * GFX_FULLVIEW_X_SCALE;
+		by = GFX_FULLVIEW_Y_CENTER + sy * GFX_FULLVIEW_Y_SCALE;
 
-		
+		ex = GFX_FULLVIEW_X_CENTER + xx * GFX_FULLVIEW_X_SCALE;
+		ey = GFX_FULLVIEW_Y_CENTER + yy * GFX_FULLVIEW_Y_SCALE;
+
+		if (warp_stars) gfx_draw_line (bx, by, ex, ey);
 		if (fabs(stars[i].x) >= 116)
 		{
-			stars[i].y = rand255() - wnd_height / 4;
+			stars[i].y = rand255() - 128;
 			stars[i].x = (current_screen == SCR_LEFT_VIEW) ? 115 : -115;
-			stars[i].z = rand255() | 8;
+			stars[i].z = rand255();
 		}
 		else if (fabs(stars[i].y) >= 116)
 		{
-			stars[i].x = rand255() - wnd_width / 4;
+			stars[i].x = rand255() - 128;
 			stars[i].y = (alpha > 0) ? -110 : 110;
-			stars[i].z = rand255() | 8;
+			stars[i].z = rand255();
 		} 
+
 		
 	}
 

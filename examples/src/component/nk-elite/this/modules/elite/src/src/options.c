@@ -74,14 +74,10 @@ void quit_screen (void)
 	current_screen = SCR_QUIT;
 
 	gfx_clear_display();
-	gfx_set_clip_region (GFX_WINDOW_L_COORD, GFX_WINDOW_T_COORD, GFX_WINDOW_R_COORD, GFX_WINDOW_B_COORD);
-
 	gfx_display_centre_text (16, "GAME OPTIONS", 140, GFX_COL_GOLD);
-
-	gfx_draw_simplerect(GFX_WINDOW_L_COORD, GFX_WINDOW_T_COORD, GFX_WINDOW_R_COORD, GFX_WINDOW_B_COORD, GFX_COL_WHITE);
 	gfx_draw_line (GFX_VIEW_L_COORD, GFX_VIEW_T_COORD, GFX_VIEW_R_COORD, GFX_VIEW_T_COORD);
 
-	gfx_display_centre_text (GFX_YWINDOW_CENTER, "QUIT GAME (Y/N)?", 140, GFX_COL_GOLD);		
+	gfx_display_centre_text (GFX_VIEW_Y_CENTER, "QUIT GAME (Y/N)?", 140, GFX_COL_GOLD);		
 }
 
 
@@ -90,14 +86,10 @@ void restart_screen(void)
 	current_screen = SCR_RESTART;
 
 	gfx_clear_display();
-	gfx_set_clip_region (GFX_WINDOW_L_COORD, GFX_WINDOW_T_COORD, GFX_WINDOW_R_COORD, GFX_WINDOW_B_COORD);
-
 	gfx_display_centre_text (16, "GAME OPTIONS", 140, GFX_COL_GOLD);
-
-	gfx_draw_simplerect(GFX_WINDOW_L_COORD, GFX_WINDOW_T_COORD, GFX_WINDOW_R_COORD, GFX_WINDOW_B_COORD, GFX_COL_WHITE);
 	gfx_draw_line (GFX_VIEW_L_COORD, GFX_VIEW_T_COORD, GFX_VIEW_R_COORD, GFX_VIEW_T_COORD);
 
-	gfx_display_centre_text (175, "RESTART GAME (Y/N)?", 140, GFX_COL_GOLD);		
+	gfx_display_centre_text (GFX_VIEW_Y_CENTER, "RESTART GAME (Y/N)?", 140, GFX_COL_GOLD);		
 }  
 
 
@@ -281,11 +273,7 @@ void game_settings_screen (int var_init)
 	current_screen = SCR_SETTINGS;
 
 	gfx_clear_display();
-	gfx_set_clip_region (GFX_WINDOW_L_COORD, GFX_WINDOW_T_COORD, GFX_WINDOW_R_COORD, GFX_WINDOW_B_COORD);
-
 	gfx_display_centre_text (16, "GAME SETTINGS", 140, GFX_COL_GOLD);
-
-	gfx_draw_simplerect(GFX_WINDOW_L_COORD, GFX_WINDOW_T_COORD, GFX_WINDOW_R_COORD, GFX_WINDOW_B_COORD, GFX_COL_WHITE);
 	gfx_draw_line (GFX_VIEW_L_COORD, GFX_VIEW_T_COORD, GFX_VIEW_R_COORD, GFX_VIEW_T_COORD);
 
 	for (i = 0; i < NUM_SETTINGS; i++)
@@ -297,7 +285,7 @@ void game_settings_screen (int var_init)
 		hilite_item = -1;
 		highlight_setting (0);
 	} else {
-                highlight_setting (hilite_item);
+        highlight_setting (hilite_item);
 	}
 
 }
@@ -334,8 +322,7 @@ void highlight_option (int i)
 	y = ((wnd_height - 128) - (30 * NUM_OPTIONS)) / 2;
 	y += i * 30;
 	
-	gfx_draw_filledrect (x, y - 6, x + OPTION_BAR_WIDTH, y + OPTION_BAR_HEIGHT,
-						GFX_COL_DARK_RED);
+	gfx_draw_filledrect (x, y - 6, x + OPTION_BAR_WIDTH, y + OPTION_BAR_HEIGHT, GFX_COL_DARK_RED);
 	display_option_item (i);		
 
 	hilite_item = i;
@@ -392,11 +379,7 @@ void display_options (int var_init)
 	current_screen = SCR_OPTIONS;
 
 	gfx_clear_display();
-	gfx_set_clip_region (GFX_WINDOW_L_COORD, GFX_WINDOW_T_COORD, GFX_WINDOW_R_COORD, GFX_WINDOW_B_COORD);
-
 	gfx_display_centre_text (16, "GAME OPTIONS", 140, GFX_COL_GOLD);
-
-	gfx_draw_simplerect(GFX_WINDOW_L_COORD, GFX_WINDOW_T_COORD, GFX_WINDOW_R_COORD, GFX_WINDOW_B_COORD, GFX_COL_WHITE);
 	gfx_draw_line (GFX_VIEW_L_COORD, GFX_VIEW_T_COORD, GFX_VIEW_R_COORD, GFX_VIEW_T_COORD);
 
 	gfx_display_centre_text (GFX_WINDOW_B_COORD - 120, "Version: Release 1.0", 120, GFX_COL_WHITE); // 300

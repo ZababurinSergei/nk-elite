@@ -34,9 +34,9 @@
 #define LAND_X_MAX	128
 #define LAND_Y_MAX	128
 
-static unsigned char landscape[LAND_X_MAX+1][LAND_Y_MAX+1];
+static unsigned char landscape[ LAND_X_MAX + 1 ][ LAND_Y_MAX + 1 ];
 
-static struct point point_list[100];
+static struct point point_list[ 100 ];
 
 #ifdef HACKING
 
@@ -79,7 +79,7 @@ void draw_wireframe_ship (struct univ_object *univ)
 {
 	Matrix trans_mat;
 	int i;
-	int sx,sy,ex,ey;
+	int sx,sy,ex,ey,bx,by;
 	double rx,ry,rz;
 	int visible[32];
 	Vector vec;
@@ -144,13 +144,10 @@ void draw_wireframe_ship (struct univ_object *univ)
 		ry = vec.y + univ->location.y;
 		rz = vec.z + univ->location.z;
 
-		sx = (rx * (wnd_width / 2)) / rz;
-		sy = (ry * (wnd_height / 2)) / rz;
+		sx = (rx * 256) / rz;
+		sy = (ry * 256) / rz;
 
 		sy = -sy;
-
-		sx += ( wnd_width / 2 );
-		sy += ( wnd_height / 2 ) - 132;
 
 		point_list[i].x = sx;
 		point_list[i].y = sy;
@@ -159,14 +156,19 @@ void draw_wireframe_ship (struct univ_object *univ)
 
 	for (i = 0; i < ship->num_lines; i++)
 	{
-		if (visible[ship->lines[i].face1] ||
-			visible[ship->lines[i].face2])
+		if (visible[ship->lines[i].face1] || visible[ship->lines[i].face2])
 		{
 			sx = point_list[ship->lines[i].start_point].x;
 			sy = point_list[ship->lines[i].start_point].y;
 
+			sx = GFX_FULLVIEW_X_CENTER + sx * GFX_FULLVIEW_X_SCALE;
+			sy = GFX_FULLVIEW_Y_CENTER + sy * GFX_FULLVIEW_Y_SCALE;
+
 			ex = point_list[ship->lines[i].end_point].x;
 			ey = point_list[ship->lines[i].end_point].y;
+
+			ex = GFX_FULLVIEW_X_CENTER + ex * GFX_FULLVIEW_X_SCALE;
+			ey = GFX_FULLVIEW_Y_CENTER + ey * GFX_FULLVIEW_Y_SCALE;
 
 			gfx_draw_line (sx, sy, ex, ey);
 		}
@@ -176,18 +178,27 @@ void draw_wireframe_ship (struct univ_object *univ)
 	if (univ->flags & FLG_FIRING)
 	{
 		lasv = ship_list[univ->type]->front_laser;
-		gfx_draw_line (point_list[lasv].x, point_list[lasv].y,
-					   univ->location.x > 0 ? 0 : wnd_width - 1, rand255() * 2);
+
+		sx = point_list[lasv].x;
+		sy = point_list[lasv].y;
+
+		sx = GFX_FULLVIEW_X_CENTER + sx * GFX_FULLVIEW_X_SCALE;
+		sy = GFX_FULLVIEW_Y_CENTER + sy * GFX_FULLVIEW_Y_SCALE;
+
+		ex = univ->location.x > 0 ? 0 : 511;
+		ey = rand255() * 2;
+
+		ex = GFX_FULLVIEW_X_CENTER + ex * GFX_FULLVIEW_X_SCALE;
+		ey = GFX_FULLVIEW_Y_CENTER + ey * GFX_FULLVIEW_Y_SCALE;
+
+		gfx_draw_line (sx, sy, ex, ey);
 	}
 
 #ifdef HACKING
-	if (identify)
-	  identify_ship(univ);
+	if (identify) identify_ship(univ);
 #endif
+
 }
-
-
-
 
 /*
  * Hacked version of the draw ship routine to display solid ships...
@@ -200,6 +211,7 @@ void draw_solid_ship (struct univ_object *univ)
 {
 	int i;
 	int sx,sy;
+	int ex,ey;
 	double rx,ry,rz;
 	struct vector vec;
 	struct vector camera_vec;
@@ -267,20 +279,17 @@ void draw_solid_ship (struct univ_object *univ)
 		ry = vec.y + univ->location.y;
 		rz = vec.z + univ->location.z;
 
-		if (rz <= 0)
-			rz = 1;
+		if (rz <= 0) rz = 1;
 		
-		sx = (rx * (wnd_width / 2)) / rz;
-		sy = (ry * (wnd_height / 2)) / rz;
+		sx = (rx * 256) / rz;
+		sy = (ry * 256) / rz;
 
 		sy = -sy;
 
-		sx += ( wnd_width / 2 );
-		sy += ( wnd_height / 2 ) - 132;
-
 		point_list[i].x = sx;
 		point_list[i].y = sy;
-		point_list[i].z = rz;		
+		point_list[i].z = rz;
+		
 	}
 
 	for (i = 0; i < num_faces; i++)
@@ -353,9 +362,19 @@ void draw_solid_ship (struct univ_object *univ)
 		lasv = ship_list[univ->type]->front_laser;
 		col = (univ->type == SHIP_VIPER) ? GFX_COL_CYAN : GFX_COL_WHITE; 
 		
-		gfx_render_line (point_list[lasv].x, point_list[lasv].y,
-						 univ->location.x > 0 ? 0 : wnd_width - 1, rand255() * 2,
-						 point_list[lasv].z, col);
+		sx = point_list[lasv].x;
+		sy = point_list[lasv].y;
+
+		sx = GFX_FULLVIEW_X_CENTER + sx * GFX_FULLVIEW_X_SCALE;
+		sy = GFX_FULLVIEW_Y_CENTER + sy * GFX_FULLVIEW_Y_SCALE;
+
+		ex = univ->location.x > 0 ? 0 : 511;
+		ey = rand255() * 2;
+
+		ex = GFX_FULLVIEW_X_CENTER + ex * GFX_FULLVIEW_X_SCALE;
+		ey = GFX_FULLVIEW_Y_CENTER + ey * GFX_FULLVIEW_Y_SCALE;
+
+		gfx_render_line (sx, sy, ex, ey, point_list[lasv].z, col);
 	}
 
 #if 0
@@ -486,6 +505,7 @@ void midpoint_square (int tx, int ty, int w)
 	int d;
 
 	d = w / 2;	
+
 	mx = tx + d;
 	my = ty + d;
 	bx = tx + w;
@@ -579,7 +599,7 @@ void generate_landscape (int rnd_seed)
  */
 
 
-void render_planet_line (int xo, int yo, int x, int y, int radius, int vx, int vy)
+void gfx_render_planet_line (int xo, int yo, int x, int y, int radius, int vx, int vy)
 {
 	int lx, ly;
 	int rx, ry;
@@ -606,8 +626,7 @@ void render_planet_line (int xo, int yo, int x, int y, int radius, int vx, int v
 		
 	for (; sx <= ex; sx++)
 	{
-		if ((sx >= (GFX_VIEW_TX + GFX_X_OFFSET)) && (sx <= (GFX_VIEW_BX + GFX_X_OFFSET)))
-		{
+		if ((sx >= (GFX_VIEW_TX + GFX_X_OFFSET)) && (sx <= (GFX_VIEW_BX + GFX_X_OFFSET))) {
 			lx = rx / div;
 			ly = ry / div;
 			colour = landscape[lx][ly];
@@ -624,14 +643,13 @@ void render_planet_line (int xo, int yo, int x, int y, int radius, int vx, int v
  * Draw a solid planet.  Based on Doros circle drawing alogorithm.
  */
 
-void render_planet (int xo, int yo, int radius, struct vector *vec)
+void gfx_render_planet (int xo, int yo, int radius, struct vector *vec)
 {
 	int x,y;
 	int s;
 	int vx,vy;
-
-	xo += GFX_X_OFFSET;
-	yo += GFX_Y_OFFSET;
+	int ex,ey;
+	int bx,by;
 	
 	vx = vec[1].x * 65536;
 	vy = vec[1].y * 65536;	
@@ -643,10 +661,16 @@ void render_planet (int xo, int yo, int radius, struct vector *vec)
 	s -= x + x;
 	while (y <= x)
 	{
-		render_planet_line (xo, yo, x, y, radius, vx, vy);
-		render_planet_line (xo, yo, x,-y, radius, vx, vy);
-		render_planet_line (xo, yo, y, x, radius, vx, vy);
-		render_planet_line (xo, yo, y,-x, radius, vx, vy);
+		bx = xo;
+		by = yo;
+
+		ex = x;
+		ey = y;
+
+		gfx_render_planet_line (bx, by, ex, ey, radius, vx, vy);
+		gfx_render_planet_line (bx, by, ex,-ey, radius, vx, vy);
+		gfx_render_planet_line (bx, by, ey, ex, radius, vx, vy);
+		gfx_render_planet_line (bx, by, ey,-ex, radius, vx, vy);
 		
 		s += y + y + 1;
 		y++;
@@ -682,47 +706,53 @@ void draw_wireframe_planet (int xo, int yo, int radius, struct vector *vec)
 void draw_planet (struct univ_object *planet)
 {
 	int x,y;
+	int cx,cy;
 	int radius;
 	
-	x = (planet->location.x * (wnd_width / 2)) / planet->location.z;
-	y = (planet->location.y * (wnd_height / 2)) / planet->location.z;
+	x = (planet->location.x * 256) / planet->location.z;
+	y = (planet->location.y * 256) / planet->location.z;
 
 	y = -y;
 	
-	x += ( wnd_width / 2 );
-	y += ( wnd_height / 2 ) - 132;
-	
-	radius = 6291456 * 2 / planet->distance;
-	/* radius = 6291456 / ship_vec.z; */	/* Planets are BIG! */
+	x += 128;
+	y += 96;
+
+	radius = 6291456 / planet->distance;
+	/* radius = 6291456 / ship_vec.z; */	
+	/* Planets are BIG! */
 
 	if ((x + radius <  0) ||
-		(x - radius > wnd_width - 1) ||
+		(x - radius > 511) ||
 		(y + radius < 0) ||
-		(y - radius > (wnd_height - 129)))
-		return; 
+		(y - radius > 383))
+	return; 
+
+	cx = x * GFX_FULLVIEW_X_SCALE;
+	cy = y * GFX_FULLVIEW_Y_SCALE;
 
 	switch (planet_render_style)
 	{
 		case 0:
-			draw_wireframe_planet (x, y, radius, planet->rotmat);
+			draw_wireframe_planet (cx, cy, radius, planet->rotmat);
 			break;
 		
 		case 1:
-			gfx_draw_filled_circle (x, y, radius, GFX_COL_GREEN_1);
+			gfx_draw_filled_circle (cx, cy, radius, GFX_COL_GREEN_1);
 			break;
 
 		case 2:
 		case 3:
-			render_planet (x, y, radius, planet->rotmat);
+			gfx_render_planet (cx, cy, radius, planet->rotmat);
 			break;
 	}
 }
 
 
-void render_sun_line (int xo, int yo, int x, int y, int radius)
+void gfx_render_sun_line (int xo, int yo, int x, int y, int radius)
 {
 	int sy = yo + y;
 	int sx,ex;
+	int bx,by;
 	int colour;
 	int dx,dy;
 	int distance;
@@ -732,7 +762,7 @@ void render_sun_line (int xo, int yo, int x, int y, int radius)
 
 	if ((sy < GFX_VIEW_TY + GFX_Y_OFFSET) ||
 		(sy > GFX_VIEW_BY + GFX_Y_OFFSET))
-		return;
+	return;
 	
 	sx = xo - x;
 	ex = xo + x;
@@ -775,19 +805,16 @@ void render_sun_line (int xo, int yo, int x, int y, int radius)
 			colour = GFX_ORANGE_3;
 		else
 			colour = mix ? GFX_ORANGE_1 : GFX_ORANGE_2;
-		
+
 		gfx_fast_plot_pixel (sx, sy, colour);
 	} 	
 }
 
 
-void render_sun (int xo, int yo, int radius)
+void gfx_render_sun (int xo, int yo, int radius)
 {
 	int x,y;
 	int s;
-	
-	xo += GFX_X_OFFSET;
-	yo += GFX_Y_OFFSET;
 	
 	s = -radius;
 	x = radius;
@@ -796,10 +823,10 @@ void render_sun (int xo, int yo, int radius)
 	/* s -= x + x; */
 	while (y <= x)
 	{
-		render_sun_line (xo, yo, x, y, radius);
-		render_sun_line (xo, yo, x,-y, radius);
-		render_sun_line (xo, yo, y, x, radius);
-		render_sun_line (xo, yo, y,-x, radius);
+		gfx_render_sun_line (xo, yo, x, y, radius);
+		gfx_render_sun_line (xo, yo, x,-y, radius);
+		gfx_render_sun_line (xo, yo, y, x, radius);
+		gfx_render_sun_line (xo, yo, y,-x, radius);
 		
 		s += y + y + 1;
 		y++;
@@ -818,23 +845,26 @@ void draw_sun (struct univ_object *planet)
 	int x,y;
 	int radius;
 	
-	x = (planet->location.x * (wnd_width / 2)) / planet->location.z;
-	y = (planet->location.y * (wnd_height / 2)) / planet->location.z;
+	x = (planet->location.x * 256) / planet->location.z;
+	y = (planet->location.y * 256) / planet->location.z;
 
 	y = -y;
 	
-	x += ( wnd_width / 2 );
-	y += ( wnd_height / 2 ) - 132;
+	x += 128;
+	y += 96;
 	
-	radius = 6291456 * 2 / planet->distance;
+	radius = 6291456 / planet->distance;
 
 	if ((x + radius <  0) ||
-		(x - radius > wnd_width - 1) ||
+		(x - radius > 511) ||
 		(y + radius < 0) ||
-		(y - radius > (wnd_height - 129)))
+		(y - radius > 383))
 		return; 
 
-	render_sun (x, y, radius);
+	x = GFX_FULLVIEW_X_CENTER + x * GFX_FULLVIEW_X_SCALE;
+	y = GFX_FULLVIEW_X_CENTER + y * GFX_FULLVIEW_Y_SCALE;
+
+	gfx_render_sun (x, y, radius);
 }
 
 
@@ -846,6 +876,7 @@ void draw_explosion (struct univ_object *univ)
 	int q;
 	int pr;
 	int px,py;
+	int ex,ey;
 	int cnt;
 	int sizex,sizey,psx,psy;
 	Matrix trans_mat;
@@ -927,13 +958,13 @@ void draw_explosion (struct univ_object *univ)
 			ry = vec.y + univ->location.y;
 			rz = vec.z + univ->location.z;
 
-			sx = (rx * (wnd_width / 2)) / rz;
-			sy = (ry * (wnd_height / 2)) / rz;
+			sx = (rx * 256) / rz;
+			sy = (ry * 256) / rz;
 
 			sy = -sy;
 
-			sx += ( wnd_width / 2 );
-			sy += ( wnd_height / 2 ) - 132;
+			sx += 128;
+			sy += 96;
 
 			point_list[np].x = sx;
 			point_list[np].y = sy;
@@ -980,8 +1011,15 @@ void draw_explosion (struct univ_object *univ)
 			sizey = (randint() & 1) + 1;
 
 			for (psy = 0; psy < sizey; psy++)
-				for (psx = 0; psx < sizex; psx++)		
-					gfx_plot_pixel (px+psx, py+psy, GFX_COL_WHITE);
+				for (psx = 0; psx < sizex; psx++) {
+					ex = px + psx;
+					ey = py + psy;
+
+					ex = ex * GFX_FULLVIEW_X_SCALE;
+					ey = ey * GFX_FULLVIEW_Y_SCALE;
+
+					gfx_plot_pixel (ex, ey, GFX_COL_WHITE);
+				}
 		}
 	}
 

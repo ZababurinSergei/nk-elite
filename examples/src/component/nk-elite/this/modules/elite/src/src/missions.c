@@ -189,7 +189,7 @@ void constrictor_mission_brief (void)
 
 	gfx_clear_display();
 	gfx_display_centre_text (10, "INCOMING MESSAGE", 140, GFX_COL_GOLD);
-	gfx_draw_line (0, 36, wnd_width - 1, 36);
+	gfx_draw_line (0, 36, GFX_FULLVIEW_R_COORD, 36);
 
 	gfx_display_pretty_text (16, 50, 300, wnd_height - 128, mission1_brief_a);
 	gfx_display_pretty_text (16, 200, 470, wnd_height - 128,
@@ -209,7 +209,7 @@ void constrictor_mission_brief (void)
 
 	do
 	{
-		gfx_clear_area (310, 50, wnd_width - 2, 180);
+		gfx_clear_area (310, 50, GFX_VIEW_R_COORD, 180);
 		update_universe ();
 		universe[0].location.z = 600;
 		//gfx_update_screen();
@@ -228,7 +228,7 @@ void constrictor_mission_debrief (void)
 	
 	gfx_clear_display();
 	gfx_display_centre_text (10, "INCOMING MESSAGE", 140, GFX_COL_GOLD);
-	gfx_draw_line (0, 36, wnd_width - 1, 36);
+	gfx_draw_line (0, 36, GFX_FULLVIEW_R_COORD, 36);
 
 	gfx_display_centre_text (100, "Congratulations Commander!", 140, GFX_COL_GOLD);
 	
@@ -253,7 +253,7 @@ void thargoid_mission_first_brief (void)
 	
 	gfx_clear_display();
 	gfx_display_centre_text (10, "INCOMING MESSAGE", 140, GFX_COL_GOLD);
-	gfx_draw_line (0, 36, wnd_width - 1, 36);
+	gfx_draw_line (0, 36, GFX_FULLVIEW_R_COORD, 36);
 
 	gfx_display_pretty_text (116, 132, 400, wnd_height - 128, mission2_brief_a);
 
@@ -276,7 +276,7 @@ void thargoid_mission_second_brief (void)
 	
 	gfx_clear_display();
 	gfx_display_centre_text (10, "INCOMING MESSAGE", 140, GFX_COL_GOLD);
-	gfx_draw_line (0, 36, wnd_width - 1, 36);
+	gfx_draw_line (0, 36, GFX_FULLVIEW_R_COORD, 36);
 
 	gfx_display_pretty_text (16, 50, 300, wnd_height - 128, mission2_brief_b);
 	gfx_display_pretty_text (16, 200, 470, wnd_height - 128, mission2_brief_c);
@@ -304,7 +304,7 @@ void thargoid_mission_debrief (void)
 	
 	gfx_clear_display ();
 	gfx_display_centre_text (10, "INCOMING MESSAGE", 140, GFX_COL_GOLD);
-	gfx_draw_line (0, 36, wnd_width - 1, 36);
+	gfx_draw_line (0, 36, GFX_FULLVIEW_R_COORD, 36);
 
 	gfx_display_centre_text (100, "Well done Commander.", 140, GFX_COL_GOLD);
 	

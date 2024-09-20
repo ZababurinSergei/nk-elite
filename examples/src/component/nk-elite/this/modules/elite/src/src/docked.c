@@ -59,8 +59,8 @@ void draw_fuel_limit_circle (int cx, int cy)
 	int cross_size;
 
 	if (current_screen == SCR_GALACTIC_CHART) {
-		radius = ( ( cmdr.fuel / 4 ) * GFX_VIEW_WSIZE ) / 256;
-		cross_size = ( ( 16 / 4 ) * GFX_VIEW_WSIZE ) / 256;
+		radius = ( ( cmdr.fuel / 4 ) * GFX_VIEW_W_SIZE ) / 256;
+		cross_size = ( ( 16 / 4 ) * GFX_VIEW_W_SIZE ) / 256;
 	} else {
 		radius = cmdr.fuel * 2;
 		cross_size = 16 * 2;
@@ -115,11 +115,11 @@ void show_distance_to_planet (int coord_init)
 	char str[128];
 
 	if (current_screen == SCR_GALACTIC_CHART) {
-		px = (cross_x - GFX_VIEW_L_COORD) * 256 / GFX_VIEW_WSIZE;
-		py = (cross_y - GFX_VIEW_T_COORD) * 256 / GFX_VIEW_HSIZE;
+		px = (cross_x - GFX_VIEW_L_COORD) * 256 / GFX_VIEW_W_SIZE;
+		py = (cross_y - GFX_VIEW_T_COORD) * 256 / GFX_VIEW_H_SIZE;
 	} else {
-		px = ((cross_x - GFX_X_CENTER) / 8) + docked_planet.d;
-		py = ((cross_y - GFX_Y_CENTER) / 4) + docked_planet.b;
+		px = ((cross_x - GFX_VIEW_X_CENTER) / 8) + docked_planet.d;
+		py = ((cross_y - GFX_VIEW_Y_CENTER) / 4) + docked_planet.b;
 	}
 
 	hyperspace_planet = find_planet (px, py);
@@ -130,14 +130,15 @@ void show_distance_to_planet (int coord_init)
 	
 	sprintf (str, "Star System: %-18s", planet_name);
 	gfx_display_text (GFX_FOOTER_LSIZE, GFX_FOOTER_L1, str);
+	
 	show_distance (GFX_FOOTER_LSIZE, GFX_FOOTER_L2, docked_planet, hyperspace_planet);  // 356
 	if ( coord_init == 1 ) {
 		if (current_screen == SCR_GALACTIC_CHART) {
-			cross_x = GFX_VIEW_L_COORD + hyperspace_planet.d * GFX_VIEW_WSIZE / 256;
-			cross_y = GFX_VIEW_T_COORD + hyperspace_planet.b * GFX_VIEW_HSIZE / 256;
+			cross_x = GFX_VIEW_L_COORD + hyperspace_planet.d * GFX_VIEW_W_SIZE / 256;
+			cross_y = GFX_VIEW_T_COORD + hyperspace_planet.b * GFX_VIEW_H_SIZE / 256;
 		} else {
-			cross_x = ((hyperspace_planet.d - docked_planet.d) * 8 ) + GFX_X_CENTER;
-			cross_y = ((hyperspace_planet.b - docked_planet.b) * 4 ) + GFX_Y_CENTER;
+			cross_x = ((hyperspace_planet.d - docked_planet.d) * 8 ) + GFX_VIEW_X_CENTER;
+			cross_y = ((hyperspace_planet.b - docked_planet.b) * 4 ) + GFX_VIEW_Y_CENTER;
 		}
 	}
 }
@@ -145,11 +146,11 @@ void show_distance_to_planet (int coord_init)
 void move_cursor_to_origin (void)
 {
 	if (current_screen == SCR_GALACTIC_CHART) {
-		cross_x = GFX_VIEW_L_COORD + docked_planet.d * GFX_VIEW_WSIZE / 256;
-		cross_y = GFX_VIEW_T_COORD + docked_planet.b * GFX_VIEW_HSIZE / 256;
+		cross_x = GFX_VIEW_L_COORD + docked_planet.d * GFX_VIEW_W_SIZE / 256;
+		cross_y = GFX_VIEW_T_COORD + docked_planet.b * GFX_VIEW_H_SIZE / 256;
 	} else {
-		cross_x = GFX_X_CENTER;
-		cross_y = GFX_Y_CENTER;
+		cross_x = GFX_VIEW_X_CENTER;
+		cross_y = GFX_VIEW_Y_CENTER;
 	}
 	show_distance_to_planet(1);
 }
@@ -192,16 +193,16 @@ void find_planet_by_name (char *find_name)
 
 	// gfx_clear_text_area ();
 	sprintf (str, "%-18s", planet_name);
-
 	gfx_display_text (GFX_FOOTER_LSIZE, GFX_FOOTER_L1, str);
+
 	show_distance (GFX_FOOTER_LSIZE, GFX_FOOTER_L2, docked_planet, hyperspace_planet);
 
 	if (current_screen == SCR_GALACTIC_CHART) {
-		cross_x = GFX_VIEW_L_COORD + hyperspace_planet.d * GFX_VIEW_WSIZE / 256;
-		cross_y = GFX_VIEW_T_COORD + hyperspace_planet.b * GFX_VIEW_HSIZE / 256;
+		cross_x = GFX_VIEW_L_COORD + hyperspace_planet.d * GFX_VIEW_W_SIZE / 256;
+		cross_y = GFX_VIEW_T_COORD + hyperspace_planet.b * GFX_VIEW_H_SIZE / 256;
 	} else {
-		cross_x = ((hyperspace_planet.d - docked_planet.d) * 8) + GFX_X_CENTER;
-		cross_y = ((hyperspace_planet.b - docked_planet.b) * 4) + GFX_Y_CENTER;
+		cross_x = ((hyperspace_planet.d - docked_planet.d) * 8) + GFX_VIEW_X_CENTER;
+		cross_y = ((hyperspace_planet.b - docked_planet.b) * 4) + GFX_VIEW_Y_CENTER;
 	}
 }
 
@@ -219,19 +220,15 @@ void display_short_range_chart (int coord_init)
 	current_screen = SCR_SHORT_RANGE;
 
 	gfx_clear_display();
-	gfx_set_clip_region (GFX_WINDOW_L_COORD, GFX_WINDOW_T_COORD, GFX_WINDOW_R_COORD, GFX_WINDOW_B_COORD);
-
 	gfx_display_centre_text (16, "SHORT RANGE CHART", 140, GFX_COL_GOLD);
 
-	gfx_draw_simplerect(GFX_WINDOW_L_COORD, GFX_WINDOW_T_COORD, GFX_WINDOW_R_COORD, GFX_WINDOW_B_COORD, GFX_COL_WHITE);
-
 	gfx_draw_line (GFX_VIEW_L_COORD, GFX_VIEW_T_COORD, GFX_VIEW_R_COORD, GFX_VIEW_T_COORD);
-	gfx_draw_line (GFX_VIEW_L_COORD, GFX_VIEW_T_COORD + GFX_VIEW_HSIZE, GFX_VIEW_R_COORD, GFX_VIEW_T_COORD + GFX_VIEW_HSIZE);
+	gfx_draw_line (GFX_VIEW_L_COORD, GFX_VIEW_T_COORD + GFX_VIEW_H_SIZE, GFX_VIEW_R_COORD, GFX_VIEW_T_COORD + GFX_VIEW_H_SIZE);
 
 	if( venablesecondchart )
 	{
 
-	draw_fuel_limit_circle (GFX_X_CENTER, GFX_Y_CENTER);
+	draw_fuel_limit_circle (GFX_VIEW_X_CENTER, GFX_VIEW_Y_CENTER);
 
 	for (i = 0; i < 64; i++) row_used[i] = 0;
 
@@ -254,10 +251,10 @@ void display_short_range_chart (int coord_init)
 		}
 
 		px = (glx.d - docked_planet.d);
-		px = px * 8 + GFX_X_CENTER;  /* Convert to screen co-ords */
+		px = px * 8 + GFX_VIEW_X_CENTER;    /* Convert to screen co-ords */
 
 		py = (glx.b - docked_planet.b);
-		py = py * 4 + GFX_Y_CENTER;	/* Convert to screen co-ords */
+		py = py * 4 + GFX_VIEW_Y_CENTER;	/* Convert to screen co-ords */
 
 		row = py / 16;
 
@@ -299,8 +296,8 @@ void display_short_range_chart (int coord_init)
 	}
 	}
 	if ( coord_init == 1 ) {
-		cross_x = ((hyperspace_planet.d - docked_planet.d) * 8 ) + GFX_X_CENTER;
-		cross_y = ((hyperspace_planet.b - docked_planet.b) * 4 ) + GFX_Y_CENTER;
+		cross_x = ((hyperspace_planet.d - docked_planet.d) * 8 ) + GFX_VIEW_X_CENTER;
+		cross_y = ((hyperspace_planet.b - docked_planet.b) * 4 ) + GFX_VIEW_Y_CENTER;
 	}
 }
 
@@ -315,25 +312,22 @@ void display_galactic_chart (int coord_init)
 	current_screen = SCR_GALACTIC_CHART;
 
 	gfx_clear_display();
-	gfx_set_clip_region (GFX_WINDOW_L_COORD, GFX_WINDOW_T_COORD, GFX_WINDOW_R_COORD, GFX_WINDOW_B_COORD);
 
 	sprintf (str, "GALACTIC CHART %d", cmdr.galaxy_number + 1);
 	gfx_display_centre_text (16, str, 140, GFX_COL_GOLD);
 
-	gfx_draw_simplerect(GFX_WINDOW_L_COORD, GFX_WINDOW_T_COORD, GFX_WINDOW_R_COORD, GFX_WINDOW_B_COORD, GFX_COL_WHITE);
-
 	gfx_draw_line (GFX_VIEW_L_COORD, GFX_VIEW_T_COORD, GFX_VIEW_R_COORD, GFX_VIEW_T_COORD);
-	gfx_draw_line (GFX_VIEW_L_COORD, GFX_VIEW_T_COORD + GFX_VIEW_HSIZE, GFX_VIEW_R_COORD, GFX_VIEW_T_COORD + GFX_VIEW_HSIZE);
+	gfx_draw_line (GFX_VIEW_L_COORD, GFX_VIEW_T_COORD + GFX_VIEW_H_SIZE, GFX_VIEW_R_COORD, GFX_VIEW_T_COORD + GFX_VIEW_H_SIZE);
 
 	if ( venablefirstchart )
 	{
-		draw_fuel_limit_circle (GFX_VIEW_L_COORD + ( docked_planet.d * GFX_VIEW_WSIZE ) / 256, GFX_VIEW_T_COORD + ( docked_planet.b * GFX_VIEW_HSIZE ) / 256);
+		draw_fuel_limit_circle (GFX_VIEW_L_COORD + ( docked_planet.d * GFX_VIEW_W_SIZE ) / 256, GFX_VIEW_T_COORD + ( docked_planet.b * GFX_VIEW_H_SIZE ) / 256);
 
 		glx = cmdr.galaxy;
 		for (i = 0; i < 256; i++)
 		{
-			px = GFX_VIEW_L_COORD + ( glx.d * GFX_VIEW_WSIZE ) / 256;
-			py = GFX_VIEW_T_COORD + ( glx.b * GFX_VIEW_HSIZE ) / 256;
+			px = GFX_VIEW_L_COORD + ( glx.d * GFX_VIEW_W_SIZE ) / 256;
+			py = GFX_VIEW_T_COORD + ( glx.b * GFX_VIEW_H_SIZE ) / 256;
 
 			gfx_plot_pixel ( px, py, GFX_COL_WHITE );
 			if ((glx.e | 0x50) < 0x90) gfx_plot_pixel (px + 1, py, GFX_COL_WHITE);
@@ -347,8 +341,8 @@ void display_galactic_chart (int coord_init)
 	}
 
 	if ( coord_init == 1 ) {
-		cross_x = GFX_VIEW_L_COORD + hyperspace_planet.d * GFX_VIEW_WSIZE / 256;
-		cross_y = GFX_VIEW_T_COORD + hyperspace_planet.b * GFX_VIEW_HSIZE / 256;
+		cross_x = GFX_VIEW_L_COORD + hyperspace_planet.d * GFX_VIEW_W_SIZE / 256;
+		cross_y = GFX_VIEW_T_COORD + hyperspace_planet.b * GFX_VIEW_H_SIZE / 256;
 	}
 }
 
@@ -366,13 +360,11 @@ void display_data_on_planet (void)
 	current_screen = SCR_PLANET_DATA;
 
 	gfx_clear_display();
-	gfx_set_clip_region (GFX_WINDOW_L_COORD, GFX_WINDOW_T_COORD, GFX_WINDOW_R_COORD, GFX_WINDOW_B_COORD);
 
 	name_planet (planet_name, hyperspace_planet);
 	sprintf (str, "DATA ON %s", planet_name);
-	gfx_display_centre_text (16, str, 140, GFX_COL_GOLD);
 
-	gfx_draw_simplerect(GFX_WINDOW_L_COORD, GFX_WINDOW_T_COORD, GFX_WINDOW_R_COORD, GFX_WINDOW_B_COORD, GFX_COL_WHITE);
+	gfx_display_centre_text (16, str, 140, GFX_COL_GOLD);
 	gfx_draw_line (GFX_VIEW_L_COORD, GFX_VIEW_T_COORD, GFX_VIEW_R_COORD, GFX_VIEW_T_COORD);
 
 	generate_planet_data (&hyper_planet_data, hyperspace_planet);
@@ -478,12 +470,10 @@ void display_commander_status (void)
 	current_screen = SCR_CMDR_STATUS;
 
 	gfx_clear_display();
-	gfx_set_clip_region (GFX_WINDOW_L_COORD, GFX_WINDOW_T_COORD, GFX_WINDOW_R_COORD, GFX_WINDOW_B_COORD);
 
 	sprintf (str, "COMMANDER %s", cmdr.name);
 	gfx_display_centre_text (16, str, 140, GFX_COL_GOLD);
 
-	gfx_draw_simplerect(GFX_WINDOW_L_COORD, GFX_WINDOW_T_COORD, GFX_WINDOW_R_COORD, GFX_WINDOW_B_COORD, GFX_COL_WHITE);
 	gfx_draw_line (GFX_VIEW_L_COORD, GFX_VIEW_T_COORD, GFX_VIEW_R_COORD, GFX_VIEW_T_COORD);
 
 	gfx_display_colour_text (16, 50, "Present System:", GFX_COL_GREEN_1);
@@ -652,7 +642,6 @@ void display_commander_status (void)
 static int hilite_item;
 static char *unit_name[] = {"t", "kg", "g"};
 
-
 void display_stock_price (int i)
 {
 	int y;
@@ -684,7 +673,6 @@ void display_stock_price (int i)
 	gfx_display_text (444, y, str);
 }
 
-
 void highlight_stock (int i)
 {
 	int y;
@@ -693,13 +681,13 @@ void highlight_stock (int i)
 	if ((hilite_item != -1) && (hilite_item != i))
 	{
 		y = hilite_item * 16 + 76;
-		gfx_clear_area (2, y - 6, wnd_width - 2 - 1, y + 12);
+		gfx_clear_area (2, y - 6, GFX_FULLVIEW_R_COORD, y + 12);
 		display_stock_price (hilite_item);		
 	}
 
 	y = i * 16 + 76;
 	
-	gfx_draw_filledrect (2, y - 6, wnd_width - 2 - 1, y + 12, GFX_COL_DARK_RED);
+	gfx_draw_filledrect (2, y - 6, GFX_FULLVIEW_R_COORD, y + 12, GFX_COL_DARK_RED);
 	display_stock_price (i);		
 
 	hilite_item = i;
@@ -712,16 +700,14 @@ void highlight_stock (int i)
 
 void select_previous_stock (void)
 {
-	if ((!docked) || (hilite_item == 0))
-		return;
+	if ((!docked) || (hilite_item == 0)) return;
 
 	highlight_stock (hilite_item - 1);
 }
 
 void select_next_stock (void)
 {
-	if ((!docked) || (hilite_item == 16))
-		return;
+	if ((!docked) || (hilite_item == 16)) return;
 
 	highlight_stock (hilite_item + 1);
 }
@@ -786,13 +772,10 @@ void display_market_prices (int var_init)
 	current_screen = SCR_MARKET_PRICES;
 
 	gfx_clear_display();
-	gfx_set_clip_region (GFX_WINDOW_L_COORD, GFX_WINDOW_T_COORD, GFX_WINDOW_R_COORD, GFX_WINDOW_B_COORD);
-
 	name_planet (planet_name, docked_planet);
 	sprintf (str, "%s MARKET PRICES", planet_name);
 	gfx_display_centre_text (16, str, 140, GFX_COL_GOLD);
 
-	gfx_draw_simplerect(GFX_WINDOW_L_COORD, GFX_WINDOW_T_COORD, GFX_WINDOW_R_COORD, GFX_WINDOW_B_COORD, GFX_COL_WHITE);
 	gfx_draw_line (GFX_VIEW_L_COORD, GFX_VIEW_T_COORD, GFX_VIEW_R_COORD, GFX_VIEW_T_COORD);
 
 	gfx_display_colour_text (16,  50, "PRODUCT", GFX_COL_GREEN_1);
@@ -833,11 +816,7 @@ void display_inventory (void)
 	current_screen = SCR_INVENTORY;
 
 	gfx_clear_display();
-	gfx_set_clip_region (GFX_WINDOW_L_COORD, GFX_WINDOW_T_COORD, GFX_WINDOW_R_COORD, GFX_WINDOW_B_COORD);
-
 	gfx_display_centre_text (16, "INVENTORY", 140, GFX_COL_GOLD);
-
-	gfx_draw_simplerect(GFX_WINDOW_L_COORD, GFX_WINDOW_T_COORD, GFX_WINDOW_R_COORD, GFX_WINDOW_B_COORD, GFX_COL_WHITE);
 	gfx_draw_line (GFX_VIEW_L_COORD, GFX_VIEW_T_COORD, GFX_VIEW_R_COORD, GFX_VIEW_T_COORD);
 	
 	sprintf (str, "%d.%d Light Years", cmdr.fuel / 10, cmdr.fuel % 10);
@@ -1049,13 +1028,13 @@ void highlight_equip (int i)
 	if ((hilite_item != -1) && (hilite_item != i))
 	{
 		y = equip_stock[hilite_item].y;
-		gfx_clear_area (2, y-6, wnd_width - 2 - 1, y + 12);
+		gfx_clear_area (2, y-6, GFX_FULLVIEW_R_COORD, y + 12);
 		display_equip_price (hilite_item);		
 	}
 
 	y = equip_stock[i].y;
 	
-	gfx_draw_filledrect (2, y-6, wnd_width - 2 - 1, y + 12, GFX_COL_DARK_RED);
+	gfx_draw_filledrect (2, y-6, GFX_FULLVIEW_R_COORD, y + 12, GFX_COL_DARK_RED);
 	display_equip_price (i);		
 
 	hilite_item = i;
@@ -1115,7 +1094,7 @@ void list_equip_prices (void)
 	int y;
 	int tech_level;
 
-	gfx_clear_area (2, GFX_VIEW_T_COORD + 1, wnd_width - 2 - 1, GFX_VIEW_B_COORD - 1);
+	gfx_clear_area (2, GFX_VIEW_T_COORD + 1, GFX_FULLVIEW_R_COORD, GFX_VIEW_B_COORD - 1);
 	
 	tech_level = current_planet_data.techlevel + 1;
 
@@ -1332,11 +1311,8 @@ void equip_ship (int var_init)
 	current_screen = SCR_EQUIP_SHIP;
 
 	gfx_clear_display();
-	gfx_set_clip_region (GFX_WINDOW_L_COORD, GFX_WINDOW_T_COORD, GFX_WINDOW_R_COORD, GFX_WINDOW_B_COORD);
-
 	gfx_display_centre_text (16, "EQUIP SHIP", 140, GFX_COL_GOLD);
 
-	gfx_draw_simplerect(GFX_WINDOW_L_COORD, GFX_WINDOW_T_COORD, GFX_WINDOW_R_COORD, GFX_WINDOW_B_COORD, GFX_COL_WHITE);
 	gfx_draw_line (GFX_VIEW_L_COORD, GFX_VIEW_T_COORD, GFX_VIEW_R_COORD, GFX_VIEW_T_COORD);
 
 	if ( var_init == 1 ) {

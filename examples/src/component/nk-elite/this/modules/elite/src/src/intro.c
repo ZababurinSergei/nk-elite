@@ -82,9 +82,9 @@ void update_intro1 (void)
 		universe[0].location.z = 512; 
 
 	gfx_clear_display();
-	gfx_set_clip_region (GFX_WINDOW_L_COORD, GFX_WINDOW_T_COORD, GFX_WINDOW_R_COORD, GFX_WINDOW_B_COORD);
+	gfx_set_clip_region (GFX_FULLVIEW_L_COORD, GFX_FULLVIEW_T_COORD, GFX_FULLVIEW_R_COORD, GFX_FULLVIEW_B_COORD);
 
-	gfx_draw_simplerect(GFX_WINDOW_L_COORD, GFX_WINDOW_T_COORD, GFX_WINDOW_R_COORD, GFX_WINDOW_B_COORD, GFX_COL_WHITE);
+	gfx_draw_simplerect(GFX_FULLVIEW_L_COORD, GFX_FULLVIEW_T_COORD, GFX_FULLVIEW_R_COORD, GFX_FULLVIEW_B_COORD, GFX_COL_WHITE);
 
 	flight_roll = 1;
 	update_universe();
@@ -92,14 +92,14 @@ void update_intro1 (void)
 	gfx_draw_sprite(IMG_ELITE_TXT, -1, 10);
 
 	if ( venablescreenname == TRUE ) {
-		gfx_display_centre_text ( GFX_WINDOW_B_COORD - 70, "Re-engineered by C.J.Pinder.", 120, GFX_COL_WHITE);	
-		gfx_display_centre_text ( GFX_WINDOW_B_COORD - 50, "Special thanks for Sergey Zababurin", 120, GFX_COL_WHITE);
+		gfx_display_centre_text ( GFX_FULLVIEW_B_COORD - 70, "Re-engineered by C.J.Pinder.", 120, GFX_COL_WHITE);	
+		gfx_display_centre_text ( GFX_FULLVIEW_B_COORD - 50, "Special thanks for Sergey Zababurin", 120, GFX_COL_WHITE);
 	} else {
-		gfx_display_centre_text ( GFX_WINDOW_B_COORD - 70, "Original Game (C) I.Bell & D.Braben.", 120, GFX_COL_WHITE);
-		gfx_display_centre_text ( GFX_WINDOW_B_COORD - 50, "Re-engineered by C.J.Pinder.", 120, GFX_COL_WHITE);	
+		gfx_display_centre_text ( GFX_FULLVIEW_B_COORD - 70, "Original Game (C) I.Bell & D.Braben.", 120, GFX_COL_WHITE);
+		gfx_display_centre_text ( GFX_FULLVIEW_B_COORD - 50, "Re-engineered by C.J.Pinder.", 120, GFX_COL_WHITE);	
 	}
 	
-	gfx_display_centre_text ( GFX_WINDOW_B_COORD - 20, "Load New Commander (Y/N)?", 140, GFX_COL_GOLD);
+	gfx_display_centre_text ( GFX_FULLVIEW_B_COORD - 20, "Load New Commander (Y/N)?", 140, GFX_COL_GOLD);
 }
 
 static void next_ship(int bump)
@@ -141,22 +141,18 @@ void update_intro2 (void)
 
 	universe[0].location.z += direction;
 
-	if (universe[0].location.z < min_dist[ship_no])
-		universe[0].location.z = min_dist[ship_no];
-
-	if (universe[0].location.z > 4500)
-	  next_ship(ship_bump);
+	if (universe[0].location.z < min_dist[ship_no]) universe[0].location.z = min_dist[ship_no];
+	if (universe[0].location.z > 4500) next_ship(ship_bump);
 
 	gfx_clear_display();
-	gfx_set_clip_region (GFX_WINDOW_L_COORD, GFX_WINDOW_T_COORD, GFX_WINDOW_R_COORD, GFX_WINDOW_B_COORD);
-
-	gfx_draw_simplerect(GFX_WINDOW_L_COORD, GFX_WINDOW_T_COORD, GFX_WINDOW_R_COORD, GFX_WINDOW_B_COORD, GFX_COL_WHITE);
+	gfx_set_clip_region(GFX_FULLVIEW_L_COORD, GFX_FULLVIEW_T_COORD, GFX_FULLVIEW_R_COORD, GFX_FULLVIEW_B_COORD);
+	gfx_draw_simplerect(GFX_FULLVIEW_L_COORD, GFX_FULLVIEW_T_COORD, GFX_FULLVIEW_R_COORD, GFX_FULLVIEW_B_COORD, GFX_COL_WHITE);
 	
 	update_starfield();
 	update_universe();
 
 	gfx_draw_sprite (IMG_ELITE_TXT, -1, 10);
 
-	gfx_display_centre_text (360, "Press Fire or Space, Commander.", 140, GFX_COL_GOLD);
-	gfx_display_centre_text (330, ship_list[ship_no]->name, 120, GFX_COL_WHITE);
+	gfx_display_centre_text (GFX_FULLVIEW_B_COORD - 20, "Press Fire or Space, Commander.", 140, GFX_COL_GOLD);
+	gfx_display_centre_text (GFX_FULLVIEW_B_COORD - 40, ship_list[ship_no]->name, 120, GFX_COL_WHITE);
 }

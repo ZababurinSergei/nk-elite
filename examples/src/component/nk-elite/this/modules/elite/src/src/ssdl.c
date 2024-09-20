@@ -849,7 +849,7 @@ void gfx_display_centre_text (int y, char *str, int psize, int col)
 #endif
 	txt_colour = col;
 	//text_mode (-1);
-	textout_centre (gfx_screen,  datafile[txt_size].dat, str, (wnd_width / 2), y, txt_colour);
+	textout_centre (gfx_screen,  datafile[txt_size].dat, str, GFX_FULLVIEW_X_CENTER, y, txt_colour);
 }
 
 void gfx_clear_display (void)
@@ -974,11 +974,9 @@ void gfx_render_polygon (int num_points, int *point_list, int face_colour, int z
 	poly_chain[x].z = zavg;
 	poly_chain[x].next = -1;
 
-	for (i = 0; i < 16; i++)
-		poly_chain[x].point_list[i] = point_list[i];				
+	for (i = 0; i < 16; i++) poly_chain[x].point_list[i] = point_list[i];		
 
-	if (x == 0)
-		return;
+	if (x == 0) return;
 
 	if (zavg > poly_chain[start_poly].z)
 	{
@@ -990,7 +988,6 @@ void gfx_render_polygon (int num_points, int *point_list, int face_colour, int z
 	for (i = start_poly; poly_chain[i].next != -1; i = poly_chain[i].next)
 	{
 		nx = poly_chain[i].next;
-		
 		if (zavg > poly_chain[nx].z) {
 			poly_chain[i].next = x;
 			poly_chain[x].next = nx;
@@ -1021,9 +1018,10 @@ void gfx_finish_render (void)
 	int *pl;
 	int i;
 	int col;
-	
-	if (total_polys == 0)
-		return;
+	int bx,by;
+	int ex,ey;
+
+	if (total_polys == 0) return;
 		
 	for (i = start_poly; i != -1; i = poly_chain[i].next)
 	{
@@ -1033,7 +1031,18 @@ void gfx_finish_render (void)
 
 		if (num_points == 2)
 		{
-			gfx_draw_colour_line (pl[0], pl[1], pl[2], pl[3], col);
+			bx = pl[0];
+			by = pl[1];
+			ex = pl[2];
+			ey = pl[3];
+
+			bx = GFX_FULLVIEW_X_CENTER + bx * GFX_FULLVIEW_X_SCALE;
+			by = GFX_FULLVIEW_Y_CENTER + by * GFX_FULLVIEW_Y_SCALE;
+
+			ex = GFX_FULLVIEW_X_CENTER + ex * GFX_FULLVIEW_X_SCALE;
+			ey = GFX_FULLVIEW_Y_CENTER + ey * GFX_FULLVIEW_Y_SCALE;
+
+			gfx_draw_colour_line (bx, by, ex, ey, col);
 			continue;
 		}
 		
@@ -1045,26 +1054,12 @@ void gfx_finish_render (void)
 
 void gfx_polygon (int num_points, int *poly_list, int face_colour)
 {
-#if 0
-	int i;
-	int x,y;
-	
-	x = 0;
-	y = 1;
-	for (i = 0; i < num_points; i++)
-	{
-		poly_list[x] += GFX_X_OFFSET;
-		poly_list[y] += GFX_Y_OFFSET;
-		x += 2;
-		y += 2;
-	}
-	
-	polygon (gfx_screen, num_points, poly_list, face_colour);
-#endif
 	Sint16 vx[MAX_POLYS], vy[MAX_POLYS];
 	for (int i = 0, j = 0; i < num_points; i++) {
-		vx[i] = poly_list[j++] + GFX_X_OFFSET;
-		vy[i] = poly_list[j++] + GFX_Y_OFFSET;
+		vx[i] = poly_list[j++];
+		vx[i] = GFX_FULLVIEW_X_CENTER + vx[i] * GFX_FULLVIEW_X_SCALE;
+		vy[i] = poly_list[j++];
+		vy[i] = GFX_FULLVIEW_Y_CENTER + vy[i] * GFX_FULLVIEW_Y_SCALE;
 	}
 	filledPolygonRGBA(sdl_ren, vx, vy, num_points, RGBA_PARAM(face_colour));
 }
@@ -1072,26 +1067,24 @@ void gfx_polygon (int num_points, int *poly_list, int face_colour)
 
 void gfx_draw_sprite ( int sprite_no, int x, int y )
 {
-	if (sprite_no >= IMG_NUM_OF || !sprites[sprite_no].tex) {
+	if ( sprite_no >= IMG_NUM_OF || !sprites[sprite_no].tex)  {
 		ERROR_WINDOW("gfx_draw_sprite(): trying to render non-existing sprite number #%d", sprite_no);
 		exit(1);
 	}
-	if (x == -1)
-		x = (wnd_width - sprites[sprite_no].rect.w ) / 2;
-	//draw_sprite (gfx_screen, sprite_bmp, x + GFX_X_OFFSET, y + GFX_Y_OFFSET);
-	//SDL_Rect rect;
-	sprites[sprite_no].rect.x = x + GFX_X_OFFSET;
-	sprites[sprite_no].rect.y = y + GFX_Y_OFFSET;
-	//rect.w = sprites[sprite_no].w;
-	//rect.h = sprites[sprite_no].h;
-	SDL_RenderCopy(sdl_ren, sprites[sprite_no].tex, NULL, &sprites[sprite_no].rect);
+
+	if ( x == -1 ) x = ( GFX_WINDOW_WIDTH - sprites[sprite_no].rect.w ) / 2;
+
+	sprites[sprite_no].rect.x = x;
+	sprites[sprite_no].rect.y = y;
+
+	SDL_RenderCopy( sdl_ren, sprites[sprite_no].tex, NULL, &sprites[sprite_no].rect );
 }
 
 
 int gfx_request_file (char *title, char *path, char *ext)
 {
 	// TODO / FIXME
-	fprintf(stderr, "FIXME: add file selector code! [title=\"%s\" path=\"%s\" ext=\"%s\"]\n", title, path, ext);
+	fprintf(stderr, "FIXME: add file selector code! [ title=\"%s\" path=\"%s\" ext=\"%s\" ]\n", title, path, ext);
 	return 0;
 #if 0
 	int okay;

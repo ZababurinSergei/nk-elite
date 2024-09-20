@@ -45,22 +45,31 @@ typedef int32_t fixed;
 /* --- system stuffs --- */
 
 #define USE_REGPARM
+
 #define OUR_WINDOW_TITLE	"Elite - The New Kind"
 
 #ifdef __GNUC__
+
 #define ETNK_LIKELY(__x__)	__builtin_expect(!!(__x__), 1)
 #define ETNK_UNLIKELY(__x__)	__builtin_expect(!!(__x__), 0)
 #define ETNK_INLINE		__attribute__ ((__always_inline__)) inline
+
 #else
+
 #define ETNK_LIKELY(__x__)	(__x__)
 #define ETNK_UNLIKELY(__x__)	(__x__)
 #define ETNK_INLINE		inline
+
 #endif
 
 #if defined(USE_REGPARM) && defined(__GNUC__) && !defined(__EMSCRIPTEN__)
+
 #define ETNK_REGPARM(__n__)	__attribute__ ((__regparm__ (__n__)))
+
 #else
+
 #define ETNK_REGPARM(__n__)
+
 #endif
 
 #ifndef _WIN32

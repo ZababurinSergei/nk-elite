@@ -852,8 +852,8 @@ void tactics (int un)
 	attacking = 0;
 
 	if ((fabs(ship->location.z) >= 768) ||
-		(fabs(ship->location.x) >= wnd_width) ||
-		(fabs(ship->location.y) >= wnd_height))  //??????
+		(fabs(ship->location.x) >= GFX_FULLVIEW_X_CENTER) ||
+		(fabs(ship->location.y) >= GFX_FULLVIEW_Y_CENTER))  //??????
 	{
 		if (ship->bravery > (rand255() & 127))
 		{
@@ -907,15 +907,15 @@ void draw_laser_lines (void)
 {
 	if (wireframe)
 	{
-		gfx_draw_colour_line (32 * GFX_SCALE, GFX_VIEW_BY, laser_x, laser_y, GFX_COL_WHITE);
-		gfx_draw_colour_line (48 * GFX_SCALE, GFX_VIEW_BY, laser_x, laser_y, GFX_COL_WHITE);
-		gfx_draw_colour_line (208 * GFX_SCALE, GFX_VIEW_BY, laser_x, laser_y, GFX_COL_WHITE);
-		gfx_draw_colour_line (224 * GFX_SCALE, GFX_VIEW_BY, laser_x, laser_y, GFX_COL_WHITE);
+		gfx_draw_colour_line (32, GFX_FULLVIEW_B_COORD, laser_x, laser_y, GFX_COL_WHITE);
+		gfx_draw_colour_line (48, GFX_FULLVIEW_B_COORD, laser_x, laser_y, GFX_COL_WHITE);
+		gfx_draw_colour_line (208, GFX_FULLVIEW_B_COORD, laser_x, laser_y, GFX_COL_WHITE);
+		gfx_draw_colour_line (224, GFX_FULLVIEW_B_COORD, laser_x, laser_y, GFX_COL_WHITE);
 	}
 	else
 	{
-		gfx_draw_triangle (32 * GFX_SCALE, GFX_VIEW_BY, laser_x, laser_y,  48 * GFX_SCALE, GFX_VIEW_BY, GFX_COL_RED);
-		gfx_draw_triangle (208 * GFX_SCALE, GFX_VIEW_BY, laser_x, laser_y, 224 * GFX_SCALE, GFX_VIEW_BY, GFX_COL_RED);
+		gfx_draw_triangle (32, GFX_FULLVIEW_B_COORD, laser_x, laser_y,  48, GFX_FULLVIEW_B_COORD, GFX_COL_RED);
+		gfx_draw_triangle (208, GFX_FULLVIEW_B_COORD, laser_x, laser_y, 224, GFX_FULLVIEW_B_COORD, GFX_COL_RED);
 	}		 
 }
 
@@ -957,8 +957,8 @@ int fire_laser (void)
 			if (energy > 1)
 				energy--;
 			
-			laser_x = ((rand() & 3) + ( wnd_width / 2 ) - 2);
-			laser_y = ((rand() & 3) + ( wnd_height / 2 ) - 130) ;
+			laser_x = ((rand() & 3) + GFX_FULLVIEW_X_CENTER);
+			laser_y = ((rand() & 3) + GFX_FULLVIEW_Y_CENTER) ;
 			
 			return 2;
 		}

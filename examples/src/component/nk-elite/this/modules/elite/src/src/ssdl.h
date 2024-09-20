@@ -43,68 +43,85 @@
 #define SCANNER_WIDTH         (scanner_width)
 #define SCANNER_HEIGHT        (scanner_height)
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// GFX_FULL[xxxxx]_SIZE
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #define GFX_FULLHEADER_SIZE   (GFX_HEADER_SIZE + 2 * GFX_BORDER_SIZE)
 #define GFX_FULLFOOTER_SIZE   (GFX_FOOTER_SIZE + 2 * GFX_BORDER_SIZE)
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #define GFX_SCANNER_L_COORD   (0)
 #define GFX_SCANNER_R_COORD   (GFX_WINDOW_WIDTH - 1)
 #define GFX_SCANNER_T_COORD   ((GFX_WINDOW_HEIGHT - 1) - SCANNER_HEIGHT + 1)
 #define GFX_SCANNER_B_COORD   (GFX_WINDOW_HEIGHT - 1)
-
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GFX_WINDOW_[xxxxx]
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#define GFX_WINDOW_W_SIZE    (GFX_WINDOW_WIDTH)
-#define GFX_WINDOW_H_SIZE    (GFX_WINDOW_HEIGHT)
+#define GFX_WINDOW_W_SIZE     (GFX_WINDOW_WIDTH)
+#define GFX_WINDOW_H_SIZE     (GFX_WINDOW_HEIGHT)
 
 #define GFX_WINDOW_L_COORD    (0)
-#define GFX_WINDOW_R_COORD    (GFX_WINDOW_W_COORD - 1)
+#define GFX_WINDOW_R_COORD    (GFX_WINDOW_W_SIZE - 1)
 #define GFX_WINDOW_T_COORD    (0)
-#define GFX_WINDOW_B_COORD    ((GFX_WINDOW_H_COORD - 1) - SCANNER_HEIGHT) // next free
+#define GFX_WINDOW_B_COORD    (GFX_WINDOW_H_SIZE - 1)
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GFX_VIEW_[xxxxx]
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#define GFX_VIEW_W_SIZE       (GFX_WINDOW_WIDTH)
-#define GFX_VIEW_H_SIZE       (GFX_WINDOW_HEIGHT - SCANNER_HEIGHT - 2 * GFX_BORDER_SIZE)
+#define GFX_VIEW_W_SIZE       (GFX_WINDOW_WIDTH - 2 * GFX_BORDER_SIZE)
+#define GFX_VIEW_H_SIZE       (GFX_WINDOW_HEIGHT - SCANNER_HEIGHT - GFX_FULLFOOTER_SIZE - GFX_FULLHEADER_SIZE)
 
 #define GFX_VIEW_L_COORD      (GFX_WINDOW_L_COORD + GFX_BORDER_SIZE)
 #define GFX_VIEW_R_COORD      (GFX_WINDOW_R_COORD - GFX_BORDER_SIZE)
 #define GFX_VIEW_T_COORD      (GFX_WINDOW_T_COORD + GFX_FULLHEADER_SIZE)
-#define GFX_VIEW_B_COORD      (GFX_WINDOW_B_COORD - GFX_FULLFOOTER_SIZE) 
+#define GFX_VIEW_B_COORD      (GFX_WINDOW_B_COORD - SCANNER_HEIGHT - GFX_FULLFOOTER_SIZE) 
+
+#define GFX_VIEW_X_CENTER     (GFX_VIEW_L_COORD + GFX_VIEW_W_SIZE / 2)
+#define GFX_VIEW_Y_CENTER     (GFX_VIEW_T_COORD + GFX_VIEW_H_SIZE / 2)
+
+#define GFX_VIEW_KX_SCALE(kxx) (GFX_VIEW_X_CENTER / kxx ) // 136
+#define GFX_VIEW_KY_SCALE(kyy) (GFX_VIEW_Y_CENTER / kyy ) // 132
+
+#define GFX_VIEW_X_SCALE      (GFX_VIEW_KX_SCALE(128)) // 136
+#define GFX_VIEW_Y_SCALE      (GFX_VIEW_KY_SCALE(48)) // 132
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GFX_FULLVIEW_[xxxxx]
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#define GFX_FULLVIEW_W_SIZE       (GFX_WINDOW_WIDTH)
-#define GFX_FULLVIEW_H_SIZE       (GFX_WINDOW_HEIGHT - SCANNER_HEIGHT - 2 * GFX_BORDER_SIZE)
+#define GFX_FULLVIEW_W_SIZE   (GFX_WINDOW_WIDTH - 2 * GFX_BORDER_SIZE)
+#define GFX_FULLVIEW_H_SIZE   (GFX_WINDOW_HEIGHT - SCANNER_HEIGHT - 2 * GFX_BORDER_SIZE)
 
-#define GFX_FULLVIEW_L_COORD      (GFX_WINDOW_L_COORD + GFX_BORDER_SIZE)
-#define GFX_FULLVIEW_R_COORD      (GFX_WINDOW_R_COORD - GFX_BORDER_SIZE)
-#define GFX_FULLVIEW_T_COORD      (GFX_WINDOW_T_COORD + GFX_FULLHEADER_SIZE)
-#define GFX_FULLVIEW_B_COORD      (GFX_WINDOW_B_COORD - GFX_FULLFOOTER_SIZE) 
+#define GFX_FULLVIEW_L_COORD  (GFX_WINDOW_L_COORD)
+#define GFX_FULLVIEW_R_COORD  (GFX_WINDOW_R_COORD)
+#define GFX_FULLVIEW_T_COORD  (GFX_WINDOW_T_COORD)
+#define GFX_FULLVIEW_B_COORD  (GFX_WINDOW_B_COORD - SCANNER_HEIGHT - GFX_BORDER_SIZE) 
 
+#define GFX_FULLVIEW_X_CENTER (GFX_FULLVIEW_L_COORD + GFX_FULLVIEW_W_SIZE / 2)
+#define GFX_FULLVIEW_Y_CENTER (GFX_FULLVIEW_T_COORD + GFX_FULLVIEW_H_SIZE / 2)
+
+#define GFX_FULLVIEW_KX_SCALE(kxx) (GFX_FULLVIEW_X_CENTER / kxx) // 136
+#define GFX_FULLVIEW_KY_SCALE(kyy) (GFX_FULLVIEW_Y_CENTER / kyy) // 132
+
+#define GFX_FULLVIEW_X_SCALE  (GFX_FULLVIEW_KX_SCALE(128)) // 136 256
+#define GFX_FULLVIEW_Y_SCALE  (GFX_FULLVIEW_KY_SCALE(48)) // 132 192
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // #define GFX_VIEW_WSIZE		  (GFX_WINDOW_WIDTH - 2 * GFX_BORDER_SIZE )
 // #define GFX_VIEW_HSIZE		  (GFX_WINDOW_HEIGHT - SCANNER_HEIGHT - GFX_FULLFOOTER_SIZE - GFX_FULLHEADER_SIZE )
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GFX_FULLVIEW_[xxxxx]
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define GFX_XWINDOW_CENTER	  (GFX_WINDOW_WIDTH / 2)
-#define GFX_YWINDOW_CENTER	  (GFX_BORDER_SIZE + GFX_HEADER_SIZE + ((GFX_WINDOW_HEIGHT - SCANNER_HEIGHT - GFX_FULLHEADER_SIZE) / 2))
-
-#define GFX_X_CENTER		  (GFX_BORDER_SIZE + GFX_VIEW_WSIZE / 2 - 1)
-#define GFX_Y_CENTER		  (GFX_FULLHEADER_SIZE + GFX_VIEW_HSIZE / 2 - 1)
+#define GFX_X_CENTER		  (GFX_FULLVIEW_X_CENTER)
+#define GFX_Y_CENTER		  (GFX_FULLVIEW_Y_CENTER)
 
 #define GFX_FOOTER_LSIZE      (GFX_BORDER_SIZE + 16)
 
 #define GFX_FOOTER_L1         ((GFX_WINDOW_HEIGHT - SCANNER_HEIGHT - GFX_BORDER_SIZE - GFX_FOOTER_SIZE) + 10)
-#define GFX_FOOTER_L2         ((GFX_WINDOW_HEIGHT - SCANNER_HEIGHT - GFX_BORDER_SIZE - GFX_FOOTER_SIZE) + 22)
+#define GFX_FOOTER_L2         ((GFX_WINDOW_HEIGHT - SCANNER_HEIGHT - GFX_BORDER_SIZE - GFX_FOOTER_SIZE) + 24)
 
-#define GFX_VIEW_TX           1
-#define GFX_VIEW_TY           1
-#define GFX_VIEW_BX		(wnd_width - 3)
-#define GFX_VIEW_BY		(wnd_height - 131)
+#define GFX_VIEW_TX           (GFX_FULLVIEW_L_COORD)
+#define GFX_VIEW_TY           (GFX_FULLVIEW_T_COORD)
+#define GFX_VIEW_BX		      (GFX_FULLVIEW_R_COORD)
+#define GFX_VIEW_BY		      (GFX_FULLVIEW_B_COORD)
 
 #define GFX_COL_BLACK		0
 #define GFX_COL_DARK_RED	28

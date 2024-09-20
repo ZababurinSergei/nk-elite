@@ -55,11 +55,6 @@ char hyper_name[16];
 int hyper_distance;
 int hyper_galactic;
 
-
-
-
-
-
 void rotate_x_first (double *a, double *b, int direction)
 {
 	double fx,ux;
@@ -327,9 +322,9 @@ void update_cabin_temp (void)
 	if (ship_count[SHIP_CORIOLIS] || ship_count[SHIP_DODEC])
 		return;
 	
-	x = abs((int)universe[1].location.x);
-	y = abs((int)universe[1].location.y);
-	z = abs((int)universe[1].location.z);
+	x = fabs((int)universe[1].location.x);
+	y = fabs((int)universe[1].location.y);
+	z = fabs((int)universe[1].location.z);
 	
 	if ((x > 65535) || (y > 65535) || (z > 65535))
 		return;
@@ -436,6 +431,7 @@ void make_station_appear (void)
 {
 	double px,py,pz;
 	double sx,sy,sz;
+	
 	Vector vec;
 	Matrix rotmat;
 	
