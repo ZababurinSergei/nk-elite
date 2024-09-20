@@ -84,7 +84,11 @@ Object.defineProperties(component.prototype, {
 
                             const lp = lpStream(stream)
 
-                            await lp.write(new TextEncoder().encode(msg))
+                            // setInterval(async () => {
+                            //     console.log('ssssssssssssssssssssssssssssssss')
+                                await lp.write(new TextEncoder().encode(msg))
+                            // }, 1000)
+
 
                             return msg
                         }
@@ -104,7 +108,8 @@ Object.defineProperties(component.prototype, {
                             return true
                         }
                     } catch (e) {
-                        alert(e.toString)
+                        const text = e.toString()
+                        this.dialog.error(text)
                     }
 
                 }

@@ -43,6 +43,8 @@ Object.defineProperties(component.prototype, {
                 await: ['nk-p2p']
             }
 
+            this.DOM.info = this.DOM.info.bind(this)
+
             return true;
         },
         writable: true

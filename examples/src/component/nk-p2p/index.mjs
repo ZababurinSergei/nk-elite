@@ -377,6 +377,7 @@ Object.defineProperties(component.prototype, {
 
             this.libp2p.addEventListener('self:peer:update', (event) => {
                 console.log('self:peer:update', event.detail)
+
                 const multiaddrs = this.libp2p.getMultiaddrs()
                     .map((ma) => {
                         const el = document.createElement('li')
@@ -390,33 +391,36 @@ Object.defineProperties(component.prototype, {
                         return el
                     })
 
-                this.task = {
-                    id: 'nk-menu_0',
-                    component: 'nk-menu',
-                    type: 'self',
-                    execute: (self) => {
-                        const multiaddrs = this.libp2p.getMultiaddrs()
-                            .map((ma) => {
-                                const el = document.createElement('li')
-                                el.textContent = ma.toString()
-                                el.onclick = (event) => {
-                                    navigator.clipboard.writeText(event.currentTarget.textContent)
-                                        .then(() => {
-                                        })
-                                        .catch((err) => console.error(err.name, err.message));
-                                }
-                                return el
-                            })
+                if(this.dataset.type === 'public') {
+                    this.task = {
+                        id: 'nk-menu_0',
+                        component: 'nk-menu',
+                        type: 'self',
+                        execute: (self) => {
+                            const multiaddrs = this.libp2p.getMultiaddrs()
+                                .map((ma) => {
+                                    const el = document.createElement('li')
+                                    el.textContent = ma.toString()
+                                    el.onclick = (event) => {
+                                        navigator.clipboard.writeText(event.currentTarget.textContent)
+                                            .then(() => {
+                                            })
+                                            .catch((err) => console.error(err.name, err.message));
+                                    }
+                                    return el
+                                })
 
-                        if(this.dataset.type === 'private') {
-                            self.DOM.info.call(self, 'ma_private').replaceChildren(...multiaddrs)
-                        }
+                            if(this.dataset.type === 'private') {
+                                self.DOM.info('ma_private').replaceChildren(...multiaddrs)
+                            }
 
-                        if(this.dataset.type === 'public') {
-                            self.DOM.info.call(self, 'ma_public').replaceChildren(...multiaddrs)
+                            if(this.dataset.type === 'public') {
+                                self.DOM.info('ma_public').replaceChildren(...multiaddrs)
+                            }
                         }
                     }
                 }
+
 
                 this.DOM.listeningAddressesList().replaceChildren(...multiaddrs)
             })
@@ -480,7 +484,6 @@ Object.defineProperties(component.prototype, {
                         self.DOM.info.call(self, 'planet').textContent = peerObject.name
                         self.DOM.info.call(self, 'planet-public-id').textContent = this.libp2p.peerId.toString()
                     }
-
                 }
             }
 
