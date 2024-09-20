@@ -234,7 +234,7 @@ Object.defineProperties(component.prototype, {
                         }
                     }
                 } else {
-                    this.dialog.error('Надо выбрать адрес отправления')
+                    this.dialog.error('Надо выбрать адрес получателя')
                 }
             })
 
@@ -266,7 +266,7 @@ Object.defineProperties(component.prototype, {
                         }
                     }
                 } else {
-                    this.dialog.error('Надо выбрать адрес отправления')
+                    this.dialog.error('Надо выбрать адрес получателя')
                 }
 
             })
