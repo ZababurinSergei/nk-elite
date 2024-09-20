@@ -1,8 +1,0 @@
-{
-  "type": "object",
-  "properties": {
-    "user": {
-      "$ref": "./root.json#/components/schemas/User"
-    }
-  }
-}

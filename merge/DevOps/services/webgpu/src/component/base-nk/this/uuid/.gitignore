@@ -1,5 +1,0 @@
-node_modules/
-# Browserstack
-browserstack.err
-local.log
-*.tgz
