@@ -24,8 +24,6 @@ Object.defineProperties(component.prototype, {
     },
     connected: {
         value: async function (property) {
-            console.log('ddddddddddddd',QUEUE_SIZE)
-
             this.inputQueue = new JsFreeQueue(QUEUE_SIZE, 2);
             this.outputQueue = new JsFreeQueue(QUEUE_SIZE, 2);
             Object.setPrototypeOf(this.inputQueue, JsFreeQueue.prototype);
@@ -33,15 +31,14 @@ Object.defineProperties(component.prototype, {
 
             self.atomicState = new Int32Array(new SharedArrayBuffer(4 * Int32Array.BYTES_PER_ELEMENT));
 
-            this.task = {
-                id: 'nk-memory_0',
-                component: 'nk-memory',
-                type: 'self',
-                execute: async (self) => {
+            // this.task = {
+            //     id: 'nk-memory_0',
+            //     component: 'nk-memory',
+            //     type: 'self',
+            //     execute: async (self) => {}
+            // }
 
-                }
-            }
-            // let workerName = 'Emulator'
+            let workerName = 'Emulator'
 
             // self.hardwareConcurrency
         },
