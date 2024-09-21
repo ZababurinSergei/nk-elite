@@ -24,15 +24,12 @@ Object.defineProperties(component.prototype, {
     },
     connected: {
         value: async function (property) {
+            let workerName = 'Emulator'
             this.inputQueue = new JsFreeQueue(QUEUE_SIZE, 2);
             this.outputQueue = new JsFreeQueue(QUEUE_SIZE, 2);
             Object.setPrototypeOf(this.inputQueue, JsFreeQueue.prototype);
             Object.setPrototypeOf(this.outputQueue, JsFreeQueue.prototype);
-
             this.atomicState = new Int32Array(new SharedArrayBuffer(4 * Int32Array.BYTES_PER_ELEMENT));
-
-            let workerName = 'Emulator'
-
             const worker = new Worker(new URL('./worker.async.js', import.meta.url), {
                 name: workerName,
                 type: 'module',
