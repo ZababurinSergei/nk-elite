@@ -1,7 +1,7 @@
 import FreeQueue from './free-queue.js'
 import { getConstants } from './constants.js'
 const { FRAME_SIZE }  = getConstants('emulator');
-console.log('##########################################################################################')
+
 let inputQueue = null;
 let outputQueue = null;
 let atomicState = null;

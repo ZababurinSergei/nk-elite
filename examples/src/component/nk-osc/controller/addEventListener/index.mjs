@@ -1,4 +1,7 @@
 import { Reader } from '../../this/index.mjs'
+import {logger} from '@libp2p/logger'
+
+const log = logger('nk-emulator:')
 export default async (self, actions) => {
     let {
         setStopState,
@@ -36,8 +39,7 @@ export default async (self, actions) => {
         readableStream
     } = await Reader(self)
 
-    console.log('EMULATOR reader: ', self.dataset.field)
-
+    log('EMULATOR reader:', self.dataset.field)
 
     if(self.dataset.field === 'osc_audio' || self.dataset.field === 'osc_audio_frame') {
         inputTextArea.textContent = ''

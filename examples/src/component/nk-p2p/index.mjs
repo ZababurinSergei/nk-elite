@@ -20,6 +20,9 @@ import {IDBDatastore} from 'datastore-idb'
 import {ping} from '@libp2p/ping'
 import {PUBSUB_PEER_DISCOVERY, proto, protoAudio} from '@newkind/constants'
 import {FaultTolerance} from '@libp2p/interface-transport'
+import {logger} from '@libp2p/logger'
+
+const log = logger('nk-p2p:')
 
 const name = 'nk-p2p';
 const component = await Component();
@@ -137,8 +140,8 @@ Object.defineProperties(component.prototype, {
             let publicAddressesMapper = removePublicAddressesMapper
 
             let DhtProtocol = "/universe/kad/1.0.0"
-            console.log('isBootstrap', isBootstrap)
-            console.log('isPubsubPeerDiscovery', isPubsubPeerDiscovery)
+            log('isBootstrap', isBootstrap)
+            log('isPubsubPeerDiscovery', isPubsubPeerDiscovery)
 
             const appendOutput = (line) => {
                 this.DOM.output().innerText += `${line}\n`
@@ -327,11 +330,11 @@ Object.defineProperties(component.prototype, {
             this.DOM.peerId().innerText = this.libp2p.peerId.toString()
 
             this.libp2p.addEventListener('peer:discovery', (evt) => {
-                console.log(`peer:discovery ${evt.detail.id.toString()}`)
+                log('peer:discovery', evt.detail.id.toString())
             })
 
             this.libp2p.addEventListener('connection:open', async (event) => {
-                console.log('connection:open', event.detail.remoteAddr.toString())
+                log('connection:open', event.detail.remoteAddr.toString())
 
                 const listPeer = await this.updatePeerList()
                 if(this.dataset.type === 'private') {
@@ -356,7 +359,8 @@ Object.defineProperties(component.prototype, {
             })
 
             this.libp2p.addEventListener('connection:close', async (event) => {
-                console.log('connection:close', event.detail.remoteAddr.toString())
+                log('connection:close', event.detail.remoteAddr.toString())
+
                 const listPeer = await this.updatePeerList()
 
                 if(this.dataset.type === 'private') {
@@ -381,7 +385,7 @@ Object.defineProperties(component.prototype, {
             })
 
             this.libp2p.addEventListener('self:peer:update', (event) => {
-                console.log('self:peer:update', event.detail)
+                log('self:peer:update', this.libp2p.getMultiaddrs())
 
                 const multiaddrs = this.libp2p.getMultiaddrs()
                     .map((ma) => {

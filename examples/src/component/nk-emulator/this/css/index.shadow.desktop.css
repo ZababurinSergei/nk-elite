@@ -179,3 +179,8 @@ canvas.emscripten { border: 0px none; background-color: black; }
     /*flex-grow: 1;*/
     /*max-width: 50%;*/
 }
+
+[disabled] {
+    opacity: 0.5;
+    color: grey;
+}

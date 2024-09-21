@@ -1,12 +1,22 @@
 import { Component } from '../index.mjs'
 import { JsFreeQueue } from '@newkind/queue'
 import { getConstants } from '@newkind/constants'
+import { Processor } from './processor.mjs'
+import { Actions } from './this/index.mjs'
 const { QUEUE_SIZE } = getConstants('emulator')
 const name = 'nk-emulator';
 const component = await Component();
 
 Object.defineProperties(component.prototype, {
     DOM: {
+        value: null,
+        writable: true
+    },
+    actions:{
+        value: null,
+        writable: true
+    },
+    processor: {
         value: null,
         writable: true
     },
@@ -24,12 +34,41 @@ Object.defineProperties(component.prototype, {
     },
     connected: {
         value: async function (property) {
+            this.actions = await Actions(this)
+
+            this.DOM = {
+                processor: function(type) {
+                    const root = this.shadowRoot.querySelector('.processor')
+                    switch (type) {
+                        case 'button-run':
+                            return root.querySelector('.button-run')
+                        default:
+                            return root
+                    }
+                }
+            }
+
+            for(let key in this.DOM) {
+                this.DOM[key] = this.DOM[key].bind(this)
+            }
+
+            this.DOM.processor('button-run').addEventListener('click', this.actions.processor.run)
+
             let workerName = 'Emulator'
             this.inputQueue = new JsFreeQueue(QUEUE_SIZE, 2);
             this.outputQueue = new JsFreeQueue(QUEUE_SIZE, 2);
+            this.atomicState = new Int32Array(new SharedArrayBuffer(4 * Int32Array.BYTES_PER_ELEMENT));
             Object.setPrototypeOf(this.inputQueue, JsFreeQueue.prototype);
             Object.setPrototypeOf(this.outputQueue, JsFreeQueue.prototype);
-            this.atomicState = new Int32Array(new SharedArrayBuffer(4 * Int32Array.BYTES_PER_ELEMENT));
+
+            this.processor = new Processor({
+                processorOptions: {
+                    inputQueue: this.inputQueue,
+                    outputQueue: this.outputQueue,
+                    atomicState: this.atomicState
+                }
+            })
+
             const worker = new Worker(new URL('./worker.async.js', import.meta.url), {
                 name: workerName,
                 type: 'module',
@@ -57,6 +96,8 @@ Object.defineProperties(component.prototype, {
                                         sampleRate: 69,
                                         type: 'async'
                                     }
+
+                                    this.DOM.processor('button-run').removeAttribute('disabled')
                                     self.hardwareConcurrency()
                                 }
                             }
@@ -80,6 +121,7 @@ Object.defineProperties(component.prototype, {
     },
     disconnected: {
         value: async function () {
+            this.DOM.processor('button-run').removeEventListener('click', this.actions.processor.run)
             return true
         },
         writable: false

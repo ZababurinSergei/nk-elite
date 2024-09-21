@@ -1,6 +1,6 @@
 import FreeQueue from './free-queue.js';
-import { getConstant} from './constants.js';
-const { RENDER_QUANTUM, FRAME_SIZE } = getConstant('radio');
+import { getConstants } from './constants.js';
+const { RENDER_QUANTUM, FRAME_SIZE } = getConstants('emulator');
 
 const ExpectedPrimingCount = FRAME_SIZE / RENDER_QUANTUM;
 
@@ -10,7 +10,7 @@ const ExpectedPrimingCount = FRAME_SIZE / RENDER_QUANTUM;
  * @class BasicProcessor
  * @extends AudioWorkletProcessor
  */
-class BasicProcessor extends AudioWorkletProcessor {
+export class Processor  {
     /**
      * Constructor to initialize, input and output FreeQueue instances
      * and atomicState to synchronise Worker with AudioWorklet
@@ -18,7 +18,6 @@ class BasicProcessor extends AudioWorkletProcessor {
      *    to initialize inputQueue, outputQueue and atomicState
      */
     constructor(options) {
-        super();
         this.inputQueue = options.processorOptions.inputQueue;
         this.outputQueue = options.processorOptions.outputQueue;
         this.atomicState = options.processorOptions.atomicState;
@@ -34,15 +33,14 @@ class BasicProcessor extends AudioWorkletProcessor {
      * @param {Array<Float32Array>>} outputs
      * @returns {boolean}
      */
-    process(inputs, outputs, parameters) {
+    process(inputs, outputs) {
         const input = inputs[0];
         const output = outputs[0];
 
-        // console.log('🟢 ==== processor ==== 🟢',{
-        //     input: input,
-        //     output: output,
-        //     parameters: parameters
-        // })
+        console.log('🟢 ==== processor ==== 🟢',{
+            input: input,
+            output: output
+        })
         // The first |ExpectedPrimingCount| number of callbacks won't get any
         // data from the queue because the it's empty. This check is not perfect;
         // waking up the worker can be slow and priming N callbacks might not be
@@ -74,5 +72,3 @@ class BasicProcessor extends AudioWorkletProcessor {
         return true;
     }
 }
-
-registerProcessor('radio-processor', BasicProcessor);
