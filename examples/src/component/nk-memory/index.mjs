@@ -15,24 +15,17 @@ Object.defineProperties(component.prototype, {
         value: undefined,
         writable: true
     },
-    _hardwareConcurrency: {
-        value: 0,
-        writable: true
-    },
     _sharedArrayBuffer: {
         value: [],
         writable: true
     },
     hardwareConcurrency: {
-        set(value) {
-            this._hardwareConcurrency = value
-        },
-        get() {
-            this._hardwareConcurrency = window.navigator.hardwareConcurrency
+        value: function(){
             const hardwareConcurrency = this.shadowRoot.querySelector('.hardwareConcurrency')
-            hardwareConcurrency.querySelector('.value').textContent = this._hardwareConcurrency
-            return this._hardwareConcurrency
-        }
+            hardwareConcurrency.querySelector('.value').textContent = window.navigator.hardwareConcurrency
+            return window.navigator.hardwareConcurrency
+        },
+        writable: true
     },
     inputQueue: {
         set(value) {
@@ -91,6 +84,8 @@ Object.defineProperties(component.prototype, {
     },
     connected: {
         value: async function (property) {
+            this.hardwareConcurrency = this.hardwareConcurrency.bind(this)
+            this.hardwareConcurrency()
             const queryString = window.location.search;
             const urlParams = new URLSearchParams(queryString);
             const isNkWorld = urlParams.has('memory')

@@ -26,7 +26,7 @@ const QUEUE_SIZE = 2048;
 // WebGPU parallelization parameter
 const WORKGROUP_SIZE = 4;
 
-export const getConstant = (type) => {
+export const getConstants = (type) => {
   let constants = {}
   switch (type) {
     case 'emulator':
