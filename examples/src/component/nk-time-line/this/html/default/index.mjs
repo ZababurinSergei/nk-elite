@@ -1,17 +1,11 @@
+import {loadHTML} from '../index.mjs'
+
 let components = new Map();
 
 components.set('default', [{
     type: 'component',
-    template: async (slot, props = {}) => {
-        let template = ''
-        let keys = []
-        switch(slot) { 
-            default:
-                return `<div>test</div>`
-            break
-        }
+    render: async (self, data) => {
+        return `<div class="item color_${data}"><span>${data}</span></div>`
     }
 }])
-
-
 export default components

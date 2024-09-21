@@ -747,35 +747,23 @@
         </div>
     </template>
 </nk-radio>
-<!--<nk-radio-client-->
-<!--    id="nk-radio-client_0"-->
-<!--    slot="nk-radio-client_0"-->
+<!--<nk-elite-->
+<!--        id="nk-elite_0"-->
+<!--        slot="nk-elite_0"-->
 <!--&gt;-->
 <!--    <template>-->
-<!--        <div class="nk-radio-client">-->
-<!--            <button class="audio">-->
-<!--                Слушать радио-->
-<!--            </button>-->
+<!--        <div class="game-newkind">-->
+<!--            <form class="game-newkind__form">-->
+<!--                <span><input type="checkbox" id="showGameConsole" checked>Show console</span>-->
+<!--                <span><input type="checkbox" id="showScreenName">Show greetings</span>-->
+<!--                <span><input type="checkbox" id="showChart1" checked>Show Galactic Chart</span>-->
+<!--                <span><input type="checkbox" id="showChart2" checked>Show Short Range Chart</span>-->
+<!--            </form>-->
+<!--            <button class="game-newkind__btn" id="showAndApply">Apply and Show</button>-->
+<!--            <canvas class="game-newkind__canvas" id="nk-elitecanvas" oncontextmenu="event.preventDefault()"></canvas>-->
 <!--        </div>-->
 <!--    </template>-->
-<!--</nk-radio-client>-->
-<nk-elite
-        id="nk-elite_0"
-        slot="nk-elite_0"
->
-    <template>
-        <div class="game-newkind">
-            <form class="game-newkind__form">
-                <span><input type="checkbox" id="showGameConsole" checked>Show console</span>
-                <span><input type="checkbox" id="showScreenName">Show greetings</span>
-                <span><input type="checkbox" id="showChart1" checked>Show Galactic Chart</span>
-                <span><input type="checkbox" id="showChart2" checked>Show Short Range Chart</span>
-            </form>
-            <button class="game-newkind__btn" id="showAndApply">Apply and Show</button>
-            <canvas class="game-newkind__canvas" id="nk-elitecanvas" oncontextmenu="event.preventDefault()"></canvas>
-        </div>
-    </template>
-</nk-elite>
+<!--</nk-elite>-->
 
 <nk-world id="nk-world_0">
     <template>
@@ -1339,7 +1327,7 @@
     import {init} from './this/index.mjs'
 
     init({
-        components: ['nk-emulator', 'nk-memory', 'nk-elite-control','nk-world','nk-menu', 'nk-elite', 'nk-radio', 'nk-p2p', 'nk-universe', 'nk-chat']
+        components: ['nk-filter', 'nk-time-line', 'nk-switch', 'nk-osc', 'nk-emulator', 'nk-memory', 'nk-elite-control','nk-world','nk-menu', 'nk-elite', 'nk-radio', 'nk-p2p', 'nk-universe', 'nk-chat']
     }).then().catch( error => console.log( error ) );
 
 //        globalThis["LFreeQueue"].Store( "Key1", 10 );

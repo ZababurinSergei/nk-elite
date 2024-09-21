@@ -80,14 +80,15 @@ body {
 
 .outputText {
     position: absolute;
-    top: 36px;
-    left: 22.1vw;
-    text-align:left;
-    font-size:42px;
-    font-family:monospace;
-    /* color:#000000; /* Uncomment for black text on white background */
-    color:white; /* Uncomment for white text on black background */
+    top: 30px;
+    left: 0;
+    text-align: left;
+    font-size: 42px;
+    font-family: monospace;
+    color: white;
     width: min-content;
+    right: 0;
+    margin: auto;
 }
 
 .highlight

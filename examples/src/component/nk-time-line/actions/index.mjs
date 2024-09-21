@@ -1,5 +1,4 @@
-import { store } from '../../../this/index.mjs'
-import { Line } from '../../nk-emulator/this/index.mjs';
+import { Line } from '../this/index.mjs'
 
 export const actions = (self) => {
     return new Promise(async (resolve, reject) => {

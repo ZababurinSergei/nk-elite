@@ -1,4 +1,3 @@
-import { store } from '../../../this/index.mjs'
 import { Line } from '../this/index.mjs';
 
 export const actions = (self) => {

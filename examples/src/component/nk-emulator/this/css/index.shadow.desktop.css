@@ -165,3 +165,17 @@ canvas.emscripten { border: 0px none; background-color: black; }
 .hardwareConcurrency .key, .hardwareConcurrency .value {
     font-size: 24px;
 }
+
+.container-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+}
+
+.position-sample-container {
+    display: flex;
+    flex-direction: column;
+    width: calc(50% - 8px);
+    /*flex-grow: 1;*/
+    /*max-width: 50%;*/
+}

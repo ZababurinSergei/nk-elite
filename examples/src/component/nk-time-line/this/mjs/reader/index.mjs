@@ -1,5 +1,3 @@
-import { isEmpty } from '../../../../../this/index.mjs';
-
 export const Reader = (self, containerFrame) => {
     return new Promise((resolve, reject) => {
         //////////
