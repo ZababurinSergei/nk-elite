@@ -91,6 +91,12 @@ Object.defineProperties(component.prototype, {
     },
     connected: {
         value: async function (property) {
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            const isNkWorld = urlParams.has('memory')
+            if(!isNkWorld) {
+                this.classList.add('inactive')
+            }
                 console.log('----------- key -----------')
         },
         writable: true
