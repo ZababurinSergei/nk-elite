@@ -6,10 +6,10 @@ export const Actions = async function() {
                 component: 'nk-p2p',
                 type: 'self',
                 execute: async (self, detail) => {
-                   const listPeer = await self.get.peers.call(self)
+                   const listPeer = await self.get.peers()
 
                     if (listPeer.length !== 0) {
-                        let select = this.DOM.select.call(this, 'list-peers')
+                        let select = this.DOM.select('list-peers')
 
                         select.innerHTML = ''
                         select.insertAdjacentHTML('beforeend', `<option value="">Выберите пользователя</option>`)

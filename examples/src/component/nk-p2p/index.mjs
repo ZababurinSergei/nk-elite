@@ -113,6 +113,8 @@ Object.defineProperties(component.prototype, {
                 topicPeerList: () => this.shadowRoot.getElementById('topic-peers')
             }
 
+            this.get.peers = this.get.peers.bind(this)
+
             const serverPeerId = '12D3KooWMkPhKVUYy5DhBe8Gr1YC7MZ1fT5YdrvzyiRXt28Q4A1E'
             const port = 4955
             const RENDER_EXTERNAL_HOSTNAME = 'relay-tuem.onrender.com'
@@ -244,9 +246,9 @@ Object.defineProperties(component.prototype, {
                     dcutr: dcutr(),
                     ping: ping(),
                     dht: isDht ? kadDHT({
-                        kBucketSize: 4,
+                        kBucketSize: 12,
                         kBucketSplitThreshold: `kBucketSize`,
-                        prefixLength: 6,
+                        prefixLength: 32,
                         clientMode: false,
                         querySelfInterval: 5000,
                         initialQuerySelfInterval: 1000,
@@ -257,8 +259,8 @@ Object.defineProperties(component.prototype, {
                         pingConcurrency: 10,
                         // maxInboundStreams: 32,
                         // maxOutboundStreams: 64,
-                        maxInboundStreams: 3,
-                        maxOutboundStreams: 6,
+                        maxInboundStreams: 32,
+                        maxOutboundStreams: 64,
                         // peerInfoMapper: removePrivateAddressesMapper,
                         peerInfoMapper: publicAddressesMapper,
                     }) : () => {
@@ -332,20 +334,21 @@ Object.defineProperties(component.prototype, {
                 console.log('connection:open', event.detail.remoteAddr.toString())
 
                 const listPeer = await this.updatePeerList()
+                if(this.dataset.type === 'private') {
+                    this.task = {
+                        id: 'nk-chat_0',
+                        type: 'self',
+                        component: "nk-chat",
+                        execute: (self, detail) => {
+                            if (listPeer.length !== 0) {
+                                let select = self.DOM.select.call(self, 'list-peers')
 
-                this.task = {
-                    id: 'nk-chat_0',
-                    type: 'self',
-                    component: "nk-chat",
-                    execute: (self, detail) => {
-                        if (listPeer.length !== 0) {
-                            let select = self.DOM.select.call(self, 'list-peers')
+                                select.innerHTML = ''
+                                select.insertAdjacentHTML('beforeend', `<option value="">Выберите пользователя</option>`)
 
-                            select.innerHTML = ''
-                            select.insertAdjacentHTML('beforeend', `<option value="">Выберите пользователя</option>`)
-
-                            for (const item of listPeer) {
-                                select.insertAdjacentHTML('beforeend', `<option value="${item}">${item}</option>`)
+                                for (const item of listPeer) {
+                                    select.insertAdjacentHTML('beforeend', `<option value="${item}">${item}</option>`)
+                                }
                             }
                         }
                     }
@@ -356,19 +359,21 @@ Object.defineProperties(component.prototype, {
                 console.log('connection:close', event.detail.remoteAddr.toString())
                 const listPeer = await this.updatePeerList()
 
-                this.task = {
-                    id: 'nk-chat_0',
-                    type: 'self',
-                    component: "nk-chat",
-                    execute: (self, detail) => {
-                        if (listPeer.length !== 0) {
-                            let select = self.DOM.select.call(self, 'list-peers')
+                if(this.dataset.type === 'private') {
+                    this.task = {
+                        id: 'nk-chat_0',
+                        type: 'self',
+                        component: "nk-chat",
+                        execute: (self, detail) => {
+                            if (listPeer.length !== 0) {
+                                let select = self.DOM.select.call(self, 'list-peers')
 
-                            select.innerHTML = ''
-                            select.insertAdjacentHTML('beforeend', `<option value="">Выберите пользователя</option>`)
+                                select.innerHTML = ''
+                                select.insertAdjacentHTML('beforeend', `<option value="">Выберите пользователя</option>`)
 
-                            for (const item of listPeer) {
-                                select.insertAdjacentHTML('beforeend', `<option value="${item}">${item}</option>`)
+                                for (const item of listPeer) {
+                                    select.insertAdjacentHTML('beforeend', `<option value="${item}">${item}</option>`)
+                                }
                             }
                         }
                     }

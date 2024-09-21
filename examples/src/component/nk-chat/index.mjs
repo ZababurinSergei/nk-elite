@@ -39,7 +39,7 @@ Object.defineProperties(component.prototype, {
     handler: {
         value: async function ({ connection, stream }) {
             const protocol = stream.protocol
-            if(stream.protocol === proto) {
+            if(protocol === proto) {
                 const lp = lpStream(stream)
 
                 const res = await lp.read()
@@ -50,8 +50,24 @@ Object.defineProperties(component.prototype, {
                 this.printSmbl()
             }
 
-            if(stream.protocol === protoAudio) {
+            if(protocol === protoAudio) {
+                // const localStream = await getUserMedia({video: true, audio: true})
                 console.log('----------- stream --------------', stream)
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+
+                stream.channel.onmessage = (event) => {
+                    console.log(`received: ${event.data}`);
+                };
+
+                stream.channel.onopen = () => {
+                    console.log("datachannel open");
+                };
+
+                stream.channel.onclose = () => {
+                    console.log("datachannel close");
+                };
+                // await stream.pipe(audioCtx.destination);
                 // const lp = lpStream(stream)
                 //
                 // const res = await lp.read()
@@ -83,11 +99,7 @@ Object.defineProperties(component.prototype, {
 
                             const lp = lpStream(stream)
 
-                            // setInterval(async () => {
-                            //     console.log('ssssssssssssssssssssssssssssssss')
-                                await lp.write(new TextEncoder().encode(msg))
-                            // }, 1000)
-
+                            await lp.write(new TextEncoder().encode(msg))
 
                             return msg
                         }
@@ -99,7 +111,15 @@ Object.defineProperties(component.prototype, {
                                 signal
                             });
 
-                            this.stream.connect(stream)
+                            const lp = lpStream(stream)
+
+                            console.log('stream ======================',stream,  this.stream)
+
+                            // setInterval(async () => {
+                            //     await lp.write(new TextEncoder().encode(msg))
+                                // stream.channel.send('asasasasas')
+                            // }, 1000)
+                            //
                             // const lp = lpStream(stream)
                             //
                             // await lp.write(new TextEncoder().encode(msg))
@@ -142,10 +162,6 @@ Object.defineProperties(component.prototype, {
                 await: ['nk-p2p']
             }
 
-            this.printSmbl = this.printSmbl.bind(this)
-            this.send = this.send.bind(this)
-            this.handler = this.handler.bind(this)
-
             this.DOM = {
                 input: this.shadowRoot.querySelector('.input'),
                 output: this.shadowRoot.querySelector('.output'),
@@ -182,6 +198,9 @@ Object.defineProperties(component.prototype, {
                 }
             }
 
+            this.printSmbl = this.printSmbl.bind(this)
+            this.send = this.send.bind(this)
+            this.handler = this.handler.bind(this)
             this.DOM.select = this.DOM.select.bind(this)
             this.DOM.chat.send = this.DOM.chat.send.bind(this)
             this.DOM.select = this.DOM.select.bind(this)
@@ -297,4 +316,7 @@ try {
 }
 
 export default {};
+
+
+
 

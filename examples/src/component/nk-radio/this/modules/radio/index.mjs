@@ -14,7 +14,7 @@ const newAudio = async function (CONFIG) {
                 component: 'nk-chat',
                 type: 'self',
                 execute: (self) => {
-                    self.stream = CONFIG.stream.source
+                    self.stream = CONFIG.stream
                 }
             }
 
