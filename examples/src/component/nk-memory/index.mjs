@@ -3,18 +3,6 @@ const name = 'nk-memory';
 const component = await Component();
 
 Object.defineProperties(component.prototype, {
-    _inputQueue: {
-        value: undefined,
-        writable: true
-    },
-    _outputQueue: {
-        value: undefined,
-        writable: true
-    },
-    _atomicState: {
-        value: undefined,
-        writable: true
-    },
     _sharedArrayBuffer: {
         value: [],
         writable: true
@@ -26,30 +14,6 @@ Object.defineProperties(component.prototype, {
             return window.navigator.hardwareConcurrency
         },
         writable: true
-    },
-    inputQueue: {
-        set(value) {
-            this._inputQueue = value
-        },
-        get() {
-            return this._inputQueue
-        }
-    },
-    atomicState: {
-        set(value) {
-            this._atomicState = value
-        },
-        get() {
-            return this._atomicState
-        }
-    },
-    outputQueue: {
-        set(value) {
-            this._outputQueue = value
-        },
-        get() {
-            return this._outputQueue
-        }
     },
     sharedArrayBuffer: {
         set(value) {
@@ -89,6 +53,7 @@ Object.defineProperties(component.prototype, {
             const queryString = window.location.search;
             const urlParams = new URLSearchParams(queryString);
             const isNkWorld = urlParams.has('memory')
+
             if(!isNkWorld) {
                 this.classList.add('inactive')
             }

@@ -29,18 +29,55 @@ Object.defineProperties(component.prototype, {
             Object.setPrototypeOf(this.inputQueue, JsFreeQueue.prototype);
             Object.setPrototypeOf(this.outputQueue, JsFreeQueue.prototype);
 
-            self.atomicState = new Int32Array(new SharedArrayBuffer(4 * Int32Array.BYTES_PER_ELEMENT));
-
-            // this.task = {
-            //     id: 'nk-memory_0',
-            //     component: 'nk-memory',
-            //     type: 'self',
-            //     execute: async (self) => {}
-            // }
+            this.atomicState = new Int32Array(new SharedArrayBuffer(4 * Int32Array.BYTES_PER_ELEMENT));
 
             let workerName = 'Emulator'
 
-            // self.hardwareConcurrency
+            const worker = new Worker(new URL('./worker.async.js', import.meta.url), {
+                name: workerName,
+                type: 'module',
+            });
+
+            worker.onmessage = (event) => {
+                if(event.data.status) {
+                    switch (event.data.type) {
+                        case 'terminate':
+                            //TODO надо проверить уничтожится он или нет до уничтожения компонента
+                            console.log('######## TERMINATE ##########')
+                            break
+                        default:
+                            this.task = {
+                                id: 'nk-memory_0',
+                                component: 'nk-memory',
+                                type: 'self',
+                                execute: (self) => {
+                                    self.sharedArrayBuffer =  {
+                                        name: workerName,
+                                        inputQueue: QUEUE_SIZE * 2,
+                                        outputQueue: QUEUE_SIZE * 2,
+                                        atomicState: 4 * Int32Array.BYTES_PER_ELEMENT,
+                                        irArray: undefined,
+                                        sampleRate: 69,
+                                        type: 'async'
+                                    }
+                                    self.hardwareConcurrency()
+                                }
+                            }
+                            break
+                    }
+                }
+            }
+
+            worker.postMessage({
+                type: 'init',
+                data: {
+                    inputQueue: this.inputQueue,
+                    outputQueue: this.outputQueue,
+                    atomicState: this.atomicState,
+                    irArray: undefined,
+                    sampleRate: 48000,
+                }
+            });
         },
         writable: true
     },

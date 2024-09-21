@@ -166,3 +166,9 @@ canvas.emscripten { border: 0px none; background-color: black; }
 .hardwareConcurrency .key, .hardwareConcurrency .value {
     font-size: 24px;
 }
+
+.memory .item {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+}

@@ -1,6 +1,6 @@
-import { getConstant } from './constants.js';
-import { FreeQueue } from './free-queue.js';
-const { FRAME_SIZE }  = getConstant(self.name.toLowerCase());
+import FreeQueue from './free-queue.js'
+import { getConstants } from './constants.js'
+const { FRAME_SIZE }  = getConstants('emulator');
 console.log('##########################################################################################')
 let inputQueue = null;
 let outputQueue = null;
@@ -77,7 +77,7 @@ const process = () => {
 /**
  * Worker message event handler.
  * This will initialize worker with FreeQueue instance and set loop for audio
- * processing. 
+ * processing.
  */
 self.onmessage = (msg) => {
     if (msg.data.type === 'init') {
