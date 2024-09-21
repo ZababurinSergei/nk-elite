@@ -1,4 +1,6 @@
 import { Component } from '../index.mjs'
+import {jsFreeQueue} from '@newkind/queue'
+
 const name = 'nk-emulator';
 const component = await Component();
 
@@ -9,7 +11,7 @@ Object.defineProperties(component.prototype, {
     },
     connected: {
         value: async function (property) {
-
+            console.log('ddddddddddddd',jsFreeQueue)
         },
         writable: true
     },

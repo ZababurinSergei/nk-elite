@@ -97,7 +97,6 @@ Object.defineProperties(component.prototype, {
             if(!isNkWorld) {
                 this.classList.add('inactive')
             }
-                console.log('----------- key -----------')
         },
         writable: true
     },
