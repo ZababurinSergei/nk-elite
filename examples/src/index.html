@@ -37,22 +37,85 @@
     <link rel="stylesheet" href="./assets/index.light.css">
 </head>
 <body>
-<button
-        onclick="(function(self) {
+<div class="header">
+    <div class="logo">
+        <img class="icon" src="./favicon.ico"/>
+           <pre class="__peer-header_logo_value">
+						░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+						░░░░░░░░░░░░░░░░░░█░░░░░░░░░░░░░░░░░░░░░░░░░░░
+						░░░░░░████░░░░░░█████░░░░░░░░░░░░░░░░░░░░░░░░░
+						░░░░████████░░░███████░░░░░░░░░░░░░░░░░░░░░░░░
+						░░░██████████░█████████░░░░░░░░░░░░░░░░░░░░░░░
+						░░████████████░░█████░░░░░░░░░░░░░░░░░░░░░░░░░
+						░░░██████████░░░░░█░░░░░░░░░░░░░░░░░░░░░░░░░░░
+						░░░░████████░░░░░░█████╗░██████╗░░██████╗░░░░░
+						░░░░░░░░█████░░░░██╔══██╗██╔══██╗██╔════╝░░░░░
+						░░░░░░█████████░░██║░░██║██████╔╝██║░░██╗░░░░░
+						░░░░░███████████░██║░░██║██╔══██╗██║░░╚██╗░░░░
+						░░░░░░█████████░░╚█████╔╝██║░░██║╚██████╔╝░░░░
+						░░░░░░░███████░░░░╚════╝░╚═╝░░╚═╝░╚═════╝░░░░░
+						░░░░░░░░░███░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+						░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░</pre>
+    </div>
+    <div class="menu">
+        <button
+                onclick="(function(self) {
                 window.location.href = `${window.location.origin}${window.location.pathname}`
             })(this)"
->
-    empty
-</button>
+        >
+            empty
+        </button>
 
-<button
-        onclick="(function(self) {
+        <button
+                onclick="(function(self) {
                 window.location.href = `${window.location.origin}${window.location.pathname}?nkWorld&bootstrap&pubsubPeerDiscovery`
             })(this)"
->
-    World
-</button>
+        >
+            World
+        </button>
 
+        <button
+                onclick="(function(self) {
+                window.location.href = `${window.location.origin}${window.location.pathname}?nkWorld&bootstrap&pubsubPeerDiscovery&memory`
+            })(this)"
+        >
+            Emulator
+        </button>
+    </div>
+</div>
+
+<nk-memory
+    id="nk-memory_0"
+    slot="nk-memory_0"
+>
+    <template>
+        <div class="nk-memory">
+            <div class="container">
+                <div class="item">
+                    <h2>Scheduler</h2>
+                    <div class="settings">
+                        <div class="item hardwareConcurrency">
+                            <span class="key">Колличество логических процессоров для воркеров:</span>
+                            <span class="value"></span>
+                        </div>
+                    </div>
+                    <div class="memory-queue"></div>
+                </div>
+                <div class="item">
+                    <slot name="nk-emulator_0"></slot>
+                </div>
+            </div>
+        </div>
+        <nk-emulator
+            id="nk-emulator_0"
+            slot="nk-emulator_0"
+        >
+            <template>
+
+            </template>
+        </nk-emulator>
+    </template>
+</nk-memory>
 <nk-radio
         id="nk-radio_0"
         slot="nk-radio_0"
@@ -670,7 +733,7 @@
     import {init} from './this/index.mjs'
 
     init({
-        components: ['nk-elite-control','nk-world','nk-menu', 'nk-elite', 'nk-radio', 'nk-p2p', 'nk-universe', 'nk-chat']
+        components: ['nk-emulator', 'nk-memory', 'nk-elite-control','nk-world','nk-menu', 'nk-elite', 'nk-radio', 'nk-p2p', 'nk-universe', 'nk-chat']
     }).then().catch( error => console.log( error ) );
 
 //        globalThis["LFreeQueue"].Store( "Key1", 10 );

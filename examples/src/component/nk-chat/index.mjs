@@ -296,9 +296,12 @@ Object.defineProperties(component.prototype, {
         },
         writable: true
     },
-    disconnected: async function () {
-        this.DOM.chat.refresh.call(this, 'select').removeEventListener('click', this.actions.refresh)
-        return true
+    disconnected: {
+        value: async function () {
+            this.DOM.chat.refresh.call(this, 'select').removeEventListener('click', this.actions.refresh)
+            return true
+        },
+        writable: false
     },
     onMessage: {
         value: async function (self, detail) {

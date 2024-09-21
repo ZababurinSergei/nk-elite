@@ -18,8 +18,11 @@ Object.defineProperties(component.prototype, {
         },
         writable: true
     },
-    disconnected: async function () {
-        return true
+    disconnected: {
+        value: async function () {
+            return true
+        },
+        writable: false
     }
 });
 

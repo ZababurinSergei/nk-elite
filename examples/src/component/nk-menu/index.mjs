@@ -1,5 +1,4 @@
 import {Component} from '../index.mjs';
-// import {Actions} from './this/index.mjs'
 
 const name = 'nk-menu';
 const component = await Component();
@@ -49,8 +48,11 @@ Object.defineProperties(component.prototype, {
         },
         writable: true
     },
-    disconnected: async function () {
-        return true
+    disconnected: {
+        value: async function () {
+            return true
+        },
+        writable: false
     },
     onMessage: {
         value: async function (event) {
