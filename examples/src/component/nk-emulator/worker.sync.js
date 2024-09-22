@@ -35,15 +35,19 @@ const initialize = (messageDataFromMainThread) => {
     // gpuProcessor.setIRArray(irArray);
     // await gpuProcessor.initialize();
 
-    console.log('----------- sampleRate -------------------', sampleRate)
     // How many "frames" gets processed over 1 second (1000ms)?
     runningAverageFactor = sampleRate / FRAME_SIZE;
 
+    console.log('----------- runningAverageFactor -------------------', runningAverageFactor)
     console.log('[worker.js] initialize', runningAverageFactor);
 };
 
 
 const process = () => {
+    console.log('-------------------- PROCESS --------------------', {
+        inputQueue: inputQueue,
+        outputBuffer: outputBuffer
+    })
     const data = inputQueue.pull(inputBuffer, FRAME_SIZE)
     if (!data) {
         console.error('[worker.js] Pulling from inputQueue failed.');
@@ -83,7 +87,8 @@ self.onmessage = (msg) => {
         });
 
         // eslint-disable-next-line no-undef
-        while (Atomics.wait(atomicState, 0,0) === 'ok') {
+        while(Atomics.wait(atomicState, 0,0) === 'ok') {
+            console.log('ddddddddddddd PROCESS ddddddddddddddddddddd')
             const processStart = performance.now();
             const callbackInterval = processStart - lastCallback;
             lastCallback = processStart;

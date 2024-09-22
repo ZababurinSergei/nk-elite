@@ -116,7 +116,7 @@ Object.defineProperties(component.prototype, {
                     outputQueue: this.outputQueue,
                     atomicState: this.atomicState,
                     irArray: undefined,
-                    sampleRate: 48000,
+                    sampleRate: 20,
                 }
             });
         },

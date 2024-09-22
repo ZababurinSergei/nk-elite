@@ -12,8 +12,6 @@ export const protoAudio = "/audio/0.1";
 export const proto = "/text/0.1";
 export const PUBSUB_PEER_DISCOVERY = 'discovery'
 
-
-
 const RENDER_QUANTUM = 128;
 // The size multiplier for the batch processing frame size (in worker).
 const KERNEL_LENGTH = 8;
