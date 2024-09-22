@@ -1,8 +1,8 @@
-import { FreeQueue } from './free-queue.js';
-import { getConstant } from './constants.js';
-import GPUProcessor from './gpu-processor.js';
+import FreeQueue from './free-queue.js'
+import { getConstants } from './constants.js'
+const { FRAME_SIZE }  = getConstants('emulator');
 
-const { FRAME_SIZE }  = getConstant(self.name.toLowerCase());
+// import GPUProcessor from './gpu-processor.js';
 
 let inputQueue = null;
 let outputQueue = null;
