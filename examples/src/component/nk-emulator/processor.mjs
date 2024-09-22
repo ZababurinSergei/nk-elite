@@ -2,7 +2,7 @@ import FreeQueue from './free-queue.js';
 import { getConstants } from './constants.js';
 const { RENDER_QUANTUM, FRAME_SIZE } = getConstants('emulator');
 
-const ExpectedPrimingCount = FRAME_SIZE / RENDER_QUANTUM;
+const ExpectedPrimingCount = parseInt(FRAME_SIZE / RENDER_QUANTUM, 10);
 
 /**
  * A simple AudioWorkletProcessor node.
@@ -37,15 +37,13 @@ export class Processor  {
         const input = inputs[0];
         const output = outputs[0];
 
-        console.log('🟢 ==== processor ==== 🟢',{
-            input: input,
-            output: output
-        })
+        console.log('🟢 ==== processor ==== 🟢')
         // The first |ExpectedPrimingCount| number of callbacks won't get any
         // data from the queue because the it's empty. This check is not perfect;
         // waking up the worker can be slow and priming N callbacks might not be
         // enough.
-        if (this.primingCounter > ExpectedPrimingCount) {
+        if (this.primingCounter > 0) {
+            console.log('🟢🟢 ==== OUTQUEUE PULL ==== 🟢🟢')
             const didPull = this.outputQueue.pull(output, RENDER_QUANTUM);
             if (!didPull) {
                 console.log('[basic-processor.js] Not enough data in outputQueue');
@@ -64,6 +62,7 @@ export class Processor  {
         // Notify worker.js if `inputQueue` has enough data to perform the batch
         // processing of FRAME_SIZE.
         if (this.inputQueue.hasEnoughFramesFor(FRAME_SIZE)) {
+            console.log('🟢 ==== CHANGE STATE ==== 🟢')
             Atomics.store(this.atomicState, 0, 1);
             Atomics.notify(this.atomicState, 0);
         }
