@@ -42,11 +42,11 @@ cp ./$BUILDDIR/*.* ./examples/src/this/free-queue
 
 cd examples
 
-if [ ! -d ./node_modules ]; then
-    npm install
-fi
+#if [ ! -d ./node_modules ]; then
+#    npm install
+#fi
 
-npm run dev
+#npm run start
 
 cd ..
 
