@@ -42,7 +42,7 @@ export class Processor  {
         // data from the queue because the it's empty. This check is not perfect;
         // waking up the worker can be slow and priming N callbacks might not be
         // enough.
-        if (this.primingCounter > 0) {
+        if (this.primingCounter > ExpectedPrimingCount) {
             console.log('🟢🟢 ==== OUTQUEUE PULL ==== 🟢🟢')
             const didPull = this.outputQueue.pull(output, RENDER_QUANTUM);
             if (!didPull) {
