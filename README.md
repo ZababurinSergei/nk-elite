@@ -35,7 +35,7 @@ chmod +x ./mp-clean.sh
 ### Build WebAssembly library and Start example free-queue Demo
 ```bash
 chmod +x ./ep-build.sh
-./ep-build.bat
+./ep-build.sh
 ```
 
 ### Start example free-queue Demo

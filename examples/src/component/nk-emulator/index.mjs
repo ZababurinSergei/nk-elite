@@ -1,5 +1,5 @@
 import { Component } from '../index.mjs'
-import { JsFreeQueue } from '@newkind/queue'
+import { FreeQueue } from './free-queue.js'
 import { getConstants } from '@newkind/constants'
 import { Processor } from './processor.mjs'
 import { Actions } from './this/index.mjs'
@@ -55,11 +55,11 @@ Object.defineProperties(component.prototype, {
             this.DOM.processor('button-run').addEventListener('click', this.actions.processor.run)
 
             let workerName = 'Emulator'
-            this.inputQueue = new JsFreeQueue(QUEUE_SIZE, 2);
-            this.outputQueue = new JsFreeQueue(QUEUE_SIZE, 2);
+            this.inputQueue = new FreeQueue(QUEUE_SIZE, 2);
+            this.outputQueue = new FreeQueue(QUEUE_SIZE, 2);
             this.atomicState = new Int32Array(new SharedArrayBuffer(4 * Int32Array.BYTES_PER_ELEMENT));
-            Object.setPrototypeOf(this.inputQueue, JsFreeQueue.prototype);
-            Object.setPrototypeOf(this.outputQueue, JsFreeQueue.prototype);
+            Object.setPrototypeOf(this.inputQueue, FreeQueue.prototype);
+            Object.setPrototypeOf(this.outputQueue, FreeQueue.prototype);
 
             this.processor = new Processor({
                 processorOptions: {

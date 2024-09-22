@@ -1,0 +1,27 @@
+{
+    "name": "@newkind/elite",
+    "version": "0.1.0",
+    "description": "FreeQueue",
+    "main": "app.js",
+    "author": "Vyacheslav Zababurin && Zababurin Sergei",
+    "license": "LGPL-2.1",
+    "type": "module",
+    "private": "true",
+    "scripts": {
+        "================ free-queue ================": "",
+        "build:build": "nodemon  --config free-queue.build.json",
+        "build:example": "nodemon  --config free-queue.example.json",
+        "=================== end ====================": ""
+    },
+    "keywords": [
+        "webgpu",
+        "webgl",
+        "example",
+        "seed",
+        "types",
+        "typescript"
+    ],
+    "devDependencies": {
+        "nodemon": "^3.1.7"
+    }
+}

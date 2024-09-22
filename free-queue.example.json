@@ -1,0 +1,18 @@
+{
+  "ignore": [
+    ".git",
+    ".idea",
+    ".jsonenv",
+    "logs",
+    "node_modules",
+    "jspm_packages",
+    ".npm",
+    "typings"
+  ],
+  "watch": [
+    "src"
+  ],
+  "exec": "./mp-build-example.sh",
+  "delay": "1000",
+  "ext": "cpp"
+}

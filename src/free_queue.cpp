@@ -173,7 +173,7 @@ char* Load(std::string name)
 {	
   mutex.lock();
 
-  printf( "Load: Count %d; Name %s\n", val_array.size(), name.c_str() );
+  printf( "Load: Count %zu; Name %s\n", val_array.size(), name.c_str() );
 
   for ( size_t i = 0; i < val_array.size(); i++ ) {
     if ( strcmp( val_array[i]->key.c_str(), name.c_str() ) == 0 ) {
@@ -192,7 +192,7 @@ void Store(std::string name, std::string value)
 {
   mutex.lock();
 
-  printf( "Store: Count %d; Name %s\n", val_array.size(), name.c_str() );
+  printf( "Store: Count %zu; Name %s\n", val_array.size(), name.c_str() );
 
   for ( size_t i = 0; i < val_array.size(); i++ ) {
     if ( strcmp( val_array[i]->key.c_str(), name.c_str() ) == 0 ) {
@@ -208,7 +208,7 @@ void Store(std::string name, std::string value)
   printf( "Store: Key Is Not Present %s\n", name.c_str() );
   struct varpair* val = new varpair( name, value );
   val_array.push_back( val );
-  printf( "Store: New Count %d\n", val_array.size() );
+  printf( "Store: New Count %zu\n", val_array.size() );
 
   mutex.unlock();
 }
@@ -424,7 +424,7 @@ void *monitor( void *arg )
   uint32_t channel_count = instance->channel_count;
   uint32_t buffer_length = instance->buffer_length;
   uint32_t length = 2000; //1764; 
-  printf( "monitor: [ buffer length is %d; channel count is %d ]\n", buffer_length, channel_count );
+  printf( "monitor ----: [ buffer length is %d; channel count is %d ]\n", buffer_length, channel_count );
   while ( f->busy ) {  
     uint32_t current_read = atomic_load(instance->state + READ);
     uint32_t current_write = atomic_load(instance->state + WRITE);

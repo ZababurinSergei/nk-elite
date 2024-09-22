@@ -46,7 +46,7 @@ if [ ! -d ./node_modules ]; then
     npm install
 fi
 
-npm run start:dev:server
+npm run dev
 
 cd ..
 
