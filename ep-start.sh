@@ -9,7 +9,7 @@ if [ ! -d ./node_modules ]; then
     npm install
 fi
 
-npm run start:webpack
+npm run start
 
 cd ..
 
