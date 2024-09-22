@@ -12,7 +12,7 @@
   "watch": [
     "src"
   ],
-  "exec": "./mp-build.sh",
+  "exec": "chmod +x ./mp-build.sh && ./mp-build.sh",
   "delay": "1000",
   "ext": "cpp"
 }
