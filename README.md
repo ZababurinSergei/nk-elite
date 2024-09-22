@@ -10,13 +10,20 @@ cd emsdk
 ```bash
 cd emsdk
 git pull
+./emsdk install latest
+./emsdk activate latest
+source ./emsdk_env.sh
+```
+
+### Emscripten SDK: Install and activate SDK 2.0.28
+```bash
+git pull
 ./emsdk install 2.0.28
 ./emsdk activate 2.0.28
 ```
 
 ### Add environment to profile
 ```bash
-cd emsdk
 source ./emsdk_env.sh
 ```
 
