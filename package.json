@@ -9,8 +9,8 @@
     "private": "true",
     "scripts": {
         "================ free-queue ================": "",
-        "build:build": "nodemon  --config free-queue.build.json",
-        "build:example": "nodemon  --config free-queue.example.json",
+        "build:mp": "nodemon  --config free-queue.mp.json",
+        "build:ep": "nodemon  --config free-queue.ep.json",
         "=================== end ====================": ""
     },
     "keywords": [
