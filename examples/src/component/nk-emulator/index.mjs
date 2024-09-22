@@ -7,6 +7,9 @@ const { QUEUE_SIZE } = getConstants('emulator')
 const name = 'nk-emulator';
 const component = await Component();
 
+// const urlWorker = new URL('./worker.async.js', import.meta.url)
+const urlWorker = (new URL('./worker.sync.js', import.meta.url)).pathname
+
 Object.defineProperties(component.prototype, {
     DOM: {
         value: null,
@@ -69,7 +72,7 @@ Object.defineProperties(component.prototype, {
                 }
             })
 
-            const worker = new Worker(new URL('./worker.async.js', import.meta.url), {
+            const worker = new Worker(urlWorker, {
                 name: workerName,
                 type: 'module',
             });
