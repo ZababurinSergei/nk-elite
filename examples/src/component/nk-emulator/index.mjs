@@ -12,7 +12,7 @@ Object.defineProperties(component.prototype, {
         value: null,
         writable: true
     },
-    actions:{
+    actions: {
         value: null,
         writable: true
     },

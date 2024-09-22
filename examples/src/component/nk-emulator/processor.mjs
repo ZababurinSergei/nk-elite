@@ -61,7 +61,6 @@ export class Processor  {
             console.log('[basic-processor.js] Not enough space in inputQueue');
             return false;
         }
-
         // Notify worker.js if `inputQueue` has enough data to perform the batch
         // processing of FRAME_SIZE.
         if (this.inputQueue.hasEnoughFramesFor(FRAME_SIZE)) {

@@ -20,6 +20,9 @@ let runningAverageFactor = 1;
 function executeLocked(callback, atomicState, index = 0, value = 0) {
     async function tryGetLock() {
         while (await (Atomics.waitAsync(atomicState, index, value)).value === 'ok') {
+                console.log('inputBuffer: ', inputBuffer)
+                console.log('outputBuffer: ', outputBuffer)
+
                 callback();
                 Atomics.store(atomicState, index, 0);
         }

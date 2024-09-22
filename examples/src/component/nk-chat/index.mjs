@@ -128,7 +128,7 @@ Object.defineProperties(component.prototype, {
                         }
                     } catch (e) {
                         const text = e.toString()
-                        this.dialog.error(text)
+                        this.dialog.error(import.meta.url, text)
                     }
 
                 }

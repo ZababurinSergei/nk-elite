@@ -6,6 +6,7 @@
     <script type="importmap">
         {
             "imports": {
+                "lokijs": "./this/modules/lib-lokijs.js",
                 "@newkind/queue": "./this/queue.mjs",
                 "@libp2p/peer-id-factory": "./this/modules/lib-peerId-factory.js",
                 "@newkind/constants": "./this/constants.js",
@@ -1327,6 +1328,7 @@
 </nk-p2p>
 </body>
 <script type="module">
+    import {lokijs, Parser, Joi} from 'lokijs'
     import {init} from './this/index.mjs'
 
     init({

@@ -119,11 +119,13 @@ const BaseClass = class extends HTMLElement {
     }];
 
     dialog = {
-        error: async function (value) {
+        error: async function (url, value) {
             dialogInit.call(this, {
                 type: 'error',
                 title: 'Ошибка',
                 description: [{
+                    text: url
+                }, {
                     text: value
                 }],
                 button: [{
@@ -134,7 +136,7 @@ const BaseClass = class extends HTMLElement {
         },
         open: async function (value) {
             if (typeof value === 'string') {
-                dialogInit.call(this,{
+                dialogInit.call(this, {
                     type: 'success',
                     title: '',
                     description: [{
@@ -150,7 +152,7 @@ const BaseClass = class extends HTMLElement {
             }
         },
         close: async function () {
-            dialogInit.call(this,{}, 'terminate')
+            dialogInit.call(this, {}, 'terminate')
         }
     }
 

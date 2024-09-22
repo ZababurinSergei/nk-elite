@@ -1,3 +1,6 @@
+import { getConstants } from '@newkind/constants'
+
+const { FRAME_SIZE } = getConstants('emulator')
 export const Actions = async (self) => {
 
     return {
@@ -5,11 +8,12 @@ export const Actions = async (self) => {
             run: (event) => {
                const timerId = setInterval(() => {
                     try {
-                        const input = [new Float64Array([21, 31]), new Float64Array([21, 31])];
-                        const output = [new Float64Array([21, 31]), new Float64Array([21, 31])];
+                        let input = [[new Float64Array(FRAME_SIZE), new Float64Array(FRAME_SIZE)]];
+                        const output = [[new Float64Array(FRAME_SIZE), new Float64Array(FRAME_SIZE)]];
+
                         self.processor.process(input, output)
                     } catch (e) {
-                        self.dialog.error(e.toString())
+                        self.dialog.error(import.meta.url, e.toString())
                         clearInterval(timerId)
                     }
                 }, 1000)
@@ -17,7 +21,6 @@ export const Actions = async (self) => {
         }
     }
 };
-
 export default {
     description: 'action'
 };
