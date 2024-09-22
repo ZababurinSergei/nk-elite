@@ -30,8 +30,8 @@ export const getConstants = (type) => {
     case 'emulator':
       constants = {
         RENDER_QUANTUM: 16,
-        KERNEL_LENGTH: 2,
-        QUEUE_SIZE: 64,
+        KERNEL_LENGTH: 1,
+        QUEUE_SIZE: 256,
         WORKGROUP_SIZE: 4
       };
 

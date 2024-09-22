@@ -4,6 +4,7 @@ import { getConstants } from '@newkind/constants'
 import { Processor } from './processor.mjs'
 import { Actions } from './this/index.mjs'
 const { QUEUE_SIZE } = getConstants('emulator')
+let constants = getConstants('emulator')
 const name = 'nk-emulator';
 const component = await Component();
 
@@ -45,9 +46,68 @@ Object.defineProperties(component.prototype, {
                     switch (type) {
                         case 'button-run':
                             return root.querySelector('.button-run')
+                        case 'constants':
+                            return root.querySelector('.constants')
                         default:
                             return root
                     }
+                },
+                constants: function (type, constants) {
+                    const root = this.shadowRoot.querySelector('.processor')
+                    const dataValue = root.querySelector('.constants')
+                    switch (type) {
+                        case 'set':
+                            dataValue.innerHTML = ''
+                            for(let key in constants) {
+                                if(key === 'ExpectedPrimingCount') {
+                                    dataValue.insertAdjacentHTML('beforeend', `<div class="item ${key}"><span class="key">${key}</span> <span class="value">${constants[key]} // FRAME_SIZE/RENDER_QUANTUM</span> </div>`)
+                                } else {
+                                    dataValue.insertAdjacentHTML('beforeend', `<div class="item ${key}"><span class="key">${key}</span> <span class="value">${constants[key]}</span> </div>`)
+                                }
+                            }
+                            return true
+                        default:
+                            return root
+                    }
+                },
+                queue: function () {
+                    const root = this.shadowRoot.querySelector('.processor')
+                    const dataValue = root.querySelector('.queue')
+                    const inputQueue = dataValue.querySelector('.inputQueue')
+                    const outputQueue = dataValue.querySelector('.outputQueue')
+                    const atomicState = dataValue.querySelector('.atomicState')
+                    const sampleRate = dataValue.querySelector('.sampleRate')
+                    const irArray = dataValue.querySelector('.irArray')
+
+                    inputQueue.innerHTML = ''
+                    outputQueue.innerHTML = ''
+
+                    for(let i = 0; i < this.inputQueue.channelData[0].length; ++i) {
+                        inputQueue.insertAdjacentHTML('beforeend', `<div class="sample-${this.inputQueue.channelData[0][i]}"></div>`)
+                    }
+
+                    for(let i = 0; i < this.outputQueue.channelData[0].length; ++i) {
+                        outputQueue.insertAdjacentHTML('beforeend', `<div class="sample-${this.inputQueue.channelData[0][i]}"></div>`)
+                    }
+
+                    // switch (name) {
+                    //     case 'inputQueue':
+                    //
+
+                    //         break
+                    //     case 'outputQueue':
+                    //         break
+                    //     case 'atomicState':
+                    //         break
+                    //     case 'sampleRate':
+                    //         break
+                    //     case 'irArray':
+                    //         break
+                    // }
+                    //
+                    // for(let i =0; i < data.length; ++i) {
+                    //     dataValue.insertAdjacentHTML('beforeend', `<div class="item ${key}"><span class="key">${key}</span> <span class="value">${constants[key]}</span> </div>`)
+                    // }
                 }
             }
 
@@ -55,12 +115,14 @@ Object.defineProperties(component.prototype, {
                 this.DOM[key] = this.DOM[key].bind(this)
             }
 
+            constants.ExpectedPrimingCount =  parseInt(constants.FRAME_SIZE / constants.RENDER_QUANTUM, 10);
+            this.DOM.constants('set', constants)
             this.DOM.processor('button-run').addEventListener('click', this.actions.processor.run)
 
             let workerName = 'Emulator'
             this.inputQueue = new FreeQueue(QUEUE_SIZE, 2);
             this.outputQueue = new FreeQueue(QUEUE_SIZE, 2);
-            this.atomicState = new Int32Array(new SharedArrayBuffer(4 * Int32Array.BYTES_PER_ELEMENT));
+            this.atomicState = new Int32Array(new SharedArrayBuffer(2 * Int32Array.BYTES_PER_ELEMENT));
             Object.setPrototypeOf(this.inputQueue, FreeQueue.prototype);
             Object.setPrototypeOf(this.outputQueue, FreeQueue.prototype);
 
@@ -92,15 +154,16 @@ Object.defineProperties(component.prototype, {
                                 execute: (self) => {
                                     self.sharedArrayBuffer =  {
                                         name: workerName,
-                                        inputQueue: QUEUE_SIZE * 2,
-                                        outputQueue: QUEUE_SIZE * 2,
-                                        atomicState: 4 * Int32Array.BYTES_PER_ELEMENT,
+                                        inputQueue: QUEUE_SIZE,
+                                        outputQueue: QUEUE_SIZE,
+                                        atomicState: 2 * Int32Array.BYTES_PER_ELEMENT,
                                         irArray: undefined,
                                         sampleRate: 69,
                                         type: 'async'
                                     }
 
                                     this.DOM.processor('button-run').removeAttribute('disabled')
+                                    this.DOM.queue()
                                     self.hardwareConcurrency()
                                 }
                             }

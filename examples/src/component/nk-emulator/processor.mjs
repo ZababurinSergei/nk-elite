@@ -34,16 +34,19 @@ export class Processor  {
      * @returns {boolean}
      */
     process(inputs, outputs) {
-        const input = inputs[0];
-        const output = outputs[0];
+        let input = inputs[0];
+        let output = outputs[0];
 
-        console.log('🟢 ==== processor ==== 🟢')
+        console.log('🟢 ==== processor ==== 🟢', {
+            input: input,
+            output: output
+        })
         // The first |ExpectedPrimingCount| number of callbacks won't get any
         // data from the queue because the it's empty. This check is not perfect;
         // waking up the worker can be slow and priming N callbacks might not be
         // enough.
-        if (this.primingCounter > ExpectedPrimingCount) {
-            console.log('🟢🟢 ==== OUTQUEUE PULL ==== 🟢🟢')
+        if (this.primingCounter > 1) {
+            console.log('🟢🟢 ==== OUTQUEUE PULL ==== 🟢🟢', this.outputQueue)
             const didPull = this.outputQueue.pull(output, RENDER_QUANTUM);
             if (!didPull) {
                 console.log('[basic-processor.js] Not enough data in outputQueue');
@@ -56,6 +59,7 @@ export class Processor  {
         const didPush = this.inputQueue.push(input, RENDER_QUANTUM);
 
         if (!didPush) {
+            debugger
             console.log('[basic-processor.js] Not enough space in inputQueue');
             return false;
         }

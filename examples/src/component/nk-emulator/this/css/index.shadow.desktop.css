@@ -184,3 +184,90 @@ canvas.emscripten { border: 0px none; background-color: black; }
     opacity: 0.5;
     color: grey;
 }
+
+.processor {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.queue {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    box-sizing: border-box;
+    padding: 8px;
+    background: black;
+}
+
+.inputQueue {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    /*height: 5px;*/
+    width: 100%;
+    gap: 2px;
+}
+
+.outputQueue {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    /*height: 5px;*/
+    width: 100%;
+    gap: 2px;
+}
+
+.queue [class*="sample-"] {
+    width: 10px;
+    height: 10px;
+    /*max-width: 100%;*/
+    flex-grow: 1;
+}
+
+.sample-0 {
+    background: silver;
+}
+
+.sample-1 {
+    background: orange;
+}
+
+.sample-2 {
+    background: yellow;
+}
+
+.sample-3 {
+    background: green;
+}
+
+.sample-4 {
+    background: #239ae4;
+}
+
+.sample-5 {
+    background: blue;
+}
+
+.sample-6 {
+    background: blueviolet;
+}
+
+.sample-7 {
+    background: magenta;
+}
+
+
+.sample-8 {
+    background: aquamarine;
+}
+
+
+.sample-9 {
+    background: sandybrown;
+}
+
+
+.sample-10 {
+    background: firebrick;
+}

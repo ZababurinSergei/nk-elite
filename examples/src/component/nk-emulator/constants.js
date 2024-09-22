@@ -1,6 +1,6 @@
 // eslint-disable-next-line react/wrap-multilines
 //TODO ============== WebAudio's render block size (in sample-frames) to default ==============
-export const RENDER_QUANTUM = 128;
+export const RENDER_QUANTUM = 228;
 
 // The size multiplier for the batch processing frame size (in worker).
 export const KERNEL_LENGTH = 8;
@@ -23,7 +23,7 @@ export const getConstants = (type) => {
         constants = {
             RENDER_QUANTUM: 16,
             KERNEL_LENGTH: 2,
-            QUEUE_SIZE: 64,
+            QUEUE_SIZE: 8,
             WORKGROUP_SIZE: 4
         };
 
