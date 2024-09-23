@@ -55,6 +55,23 @@ Object.defineProperties(component.prototype, {
                                     <span class="value"> ${typeof elite[key] === 'function' ? 'function' : elite[key]} </span>
                                     </div>`)
                     }
+                },
+                queue: function () {
+                    const root = this.shadowRoot.querySelector('.elite-control')
+                    const dataValue = root.querySelector('.queue')
+                    const inputQueue = dataValue.querySelector('.inputQueue')
+                    const outputQueue = dataValue.querySelector('.outputQueue')
+
+                    inputQueue.innerHTML = ''
+                    outputQueue.innerHTML = ''
+
+                    // for(let i = 0; i < this.inputQueue.channelData[0].length; ++i) {
+                        // inputQueue.insertAdjacentHTML('beforeend', `<div class="sample-${this.inputQueue.channelData[0][i]}"></div>`)
+                    // }
+
+                    // for(let i = 0; i < this.outputQueue.channelData[0].length; ++i) {
+                        // outputQueue.insertAdjacentHTML('beforeend', `<div class="sample-${this.inputQueue.channelData[0][i]}"></div>`)
+                    // }
                 }
             };
 
@@ -65,13 +82,12 @@ Object.defineProperties(component.prototype, {
             const {actions} = await import(new URL('./actions/index.mjs', import.meta.url).pathname)
             const {controller} = await import(new URL('./controller/index.mjs', import.meta.url).pathname)
             this.controller = await controller(this, await actions(this))
+
             await this.controller.addEventListener.init()
             this.DOM.config()
 
             await freeQueueInit(this, {})
             this.onRuntimeInitialized = async () => {
-
-
                 // debugger
                 this.processor = new EliteProcessor({
                     processorOptions: {
@@ -86,6 +102,7 @@ Object.defineProperties(component.prototype, {
                     channelInterpretation: "speakers"
                 })
 
+                this.DOM.elite('run').disabled = false
                 const interfaceGame = new (await wControl())(this)
             }
             return true;

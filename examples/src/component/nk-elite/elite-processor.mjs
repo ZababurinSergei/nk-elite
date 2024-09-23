@@ -34,6 +34,7 @@ export class EliteProcessor
 			}
 
 			if ( this.instance != undefined && this.instance != null) {
+				console.log('========= PUSH ==============', bufferSize)
 				const r = this.instance.push( dataArray, bufferSize );
 //				console.log( "processor: queue.push [ " + ( ( r == true ) ? "true" : "false" ) + " ]" );
 			}
