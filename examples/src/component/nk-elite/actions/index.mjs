@@ -1,6 +1,10 @@
 export const actions = async (self) => {
 
-    return {}
+    return {
+        run: (event) => {
+            console.log('#####################################')
+        }
+    }
 }
 
 export default {

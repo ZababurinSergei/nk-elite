@@ -1,11 +1,12 @@
 export default async (self, actions) => {
 
+    self.DOM.elite('run')
     return {
         init: () => {
-            // document.addEventListener('next-frame', actions.bus.frame)
+            self.DOM.elite('run').addEventListener('click', actions.run)
         },
         terminate: () => {
-            // document.removeEventListener('next-frame', actions.bus.frame)
+            self.DOM.elite('run').removeEventListener('click', actions.run)
         }
     }
 }

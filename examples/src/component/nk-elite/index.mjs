@@ -21,6 +21,10 @@ Object.defineProperties(component.prototype, {
         value: null,
         writable: true
     },
+    processor: {
+        value: null,
+        writable: true
+    },
     controller: {
         value: null,
         writable: true
@@ -28,6 +32,15 @@ Object.defineProperties(component.prototype, {
     connected: {
         value: async function(property) {
             this.DOM = {
+                elite: function (type) {
+                    const root = this.shadowRoot.querySelector('.elite-control')
+                    switch (type) {
+                        case 'run':
+                            return root.querySelector('.elite-run')
+                        default:
+                            return root
+                    }
+                },
                 config: () => {
                     const root = this.shadowRoot.querySelector('.config')
                     for(let key in elite) {
@@ -50,6 +63,7 @@ Object.defineProperties(component.prototype, {
             this.controller = await controller(this, await actions(this))
             await this.controller.addEventListener.init()
             this.DOM.config()
+
 
             const interfaceGame = new (await wControl())(this)
             return true;
