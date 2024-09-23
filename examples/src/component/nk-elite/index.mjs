@@ -62,36 +62,32 @@ Object.defineProperties(component.prototype, {
                 this.DOM[key] = this.DOM[key].bind(this)
             }
 
-            await freeQueueInit(this, {})
-
-            this.onRuntimeInitialized = () => {
-                console.log('------------', {
-                    instance: this.instance,
-                    pointer: this.pointer,
-                    LFreeQueue: this.LFreeQueue
-                })
-            }
-
-            // debugger
-            // this.processor = new EliteProcessor({
-            //     processorOptions: {
-            //         pointer: this.pointer,
-            //         instance: this.instance
-            //     },
-            //     numberOfInputs: 1,
-            //     numberOfOutputs: 1,
-            //     outputChannelCount: [2],
-            //     channelCount: 2,
-            //     channelCountMode: "max",
-            //     channelInterpretation: "speakers"
-            // })
-
             const {actions} = await import(new URL('./actions/index.mjs', import.meta.url).pathname)
             const {controller} = await import(new URL('./controller/index.mjs', import.meta.url).pathname)
             this.controller = await controller(this, await actions(this))
             await this.controller.addEventListener.init()
             this.DOM.config()
-            const interfaceGame = new (await wControl())(this)
+
+            await freeQueueInit(this, {})
+            this.onRuntimeInitialized = async () => {
+
+
+                // debugger
+                this.processor = new EliteProcessor({
+                    processorOptions: {
+                        pointer: this.pointer,
+                        instance: this.instance
+                    },
+                    numberOfInputs: 1,
+                    numberOfOutputs: 1,
+                    outputChannelCount: [2],
+                    channelCount: 2,
+                    channelCountMode: "max",
+                    channelInterpretation: "speakers"
+                })
+
+                const interfaceGame = new (await wControl())(this)
+            }
             return true;
         },
         writable: true
