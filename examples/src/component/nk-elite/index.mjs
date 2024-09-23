@@ -13,6 +13,14 @@ Object.defineProperties(component.prototype, {
         value: null,
         writable: true
     },
+    pointer: {
+        value: null,
+        writable: true
+    },
+    instance: {
+        value: null,
+        writable: true
+    },
     controller: {
         value: null,
         writable: true

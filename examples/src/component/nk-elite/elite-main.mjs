@@ -24,7 +24,7 @@ export const freeQueueInit = function(self, CONFIG)  {
         const CreateFreeQueue = self.LFreeQueue.cwrap('CreateFreeQueue', 'number', ['number', 'number']);
         const PrintQueueAddresses = self.LFreeQueue.cwrap('PrintQueueAddresses', '', ['number']);
 
-        CONFIG.queue.pointer = GetFreeQueueThreads();
+        self.pointer = GetFreeQueueThreads();
         const bufferLengthPtr = GetFreeQueuePointers(CONFIG.queue.pointer, "buffer_length");
         const channelCountPtr = GetFreeQueuePointers(CONFIG.queue.pointer, "channel_count");
         const statePtr = GetFreeQueuePointers(CONFIG.queue.pointer, "state");
@@ -37,8 +37,8 @@ export const freeQueueInit = function(self, CONFIG)  {
         pointers.statePointer = statePtr;
         pointers.channelDataPointer = channelDataPtr;
 
-        CONFIG.queue.instance = FreeQueue.fromPointers(pointers);
-        if (CONFIG.queue.instance != undefined) CONFIG.queue.instance.printAvailableReadAndWrite();
+        self.instance = FreeQueue.fromPointers(pointers);
+        if (self.instance != undefined) self.instance.printAvailableReadAndWrite();
     }
 
     initFreeQueue(self.LFreeQueue).then( async (module) => {
