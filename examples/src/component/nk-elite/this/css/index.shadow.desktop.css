@@ -44,3 +44,19 @@
     border: none;
     align-self: flex-start;
 }
+
+.config {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 16px;
+    width: 99dvw;
+    box-sizing: border-box;
+}
+.item .key {
+    color: grey;
+}
+
+.item .value {
+    color: blue;
+}

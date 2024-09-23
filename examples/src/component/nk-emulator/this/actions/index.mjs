@@ -1,15 +1,24 @@
-import { getConstants } from '@newkind/constants'
+import {getConstants} from '@newkind/constants'
 
-const { FRAME_SIZE } = getConstants('emulator')
+const {FRAME_SIZE} = getConstants('emulator')
 export const Actions = async (self) => {
 
     return {
         processor: {
             run: (event) => {
-                let count  = 0
-               const timerId = setInterval(() => {
+                if (self.DOM.processor('button-run').disabled) {
+                    return
+                }
+
+                const buttonRun = self.DOM.processor('button-run')
+                buttonRun.disabled = true
+
+
+                let count = 0
+
+                const timerId = setInterval(() => {
                     try {
-                        if(count > 10) {
+                        if (count > 10) {
                             count = 1
                         }
 
@@ -37,8 +46,18 @@ export const Actions = async (self) => {
                         clearInterval(timerId)
                     }
 
-                   count++
-                }, 500)
+                    count++
+                }, 10)
+
+
+                buttonRun.dataset.type = buttonRun.dataset.type === 'run'
+                    ? (buttonRun.dataset.type = 'stop', buttonRun.textContent = 'stop')
+                    : (buttonRun.dataset.type = 'run', buttonRun.textContent = 'run')
+
+                const timerRunId = setTimeout(() => {
+                    clearTimeout(timerRunId)
+                    self.DOM.processor('button-run').disabled = false
+                }, 3000)
             }
         }
     }

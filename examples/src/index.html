@@ -117,7 +117,7 @@
                     <h2>Эмулятор</h2>
                     <div class="reader">
                         <div class="processor">
-                            <button disabled class="button-run">Run</button>
+                            <button disabled data-type="run" class="button-run">Run</button>
                             <div class="constants"></div>
                             <div class="queue">
                                 <div class="inputQueue"></div>
@@ -773,6 +773,7 @@
             </form>
             <button class="game-newkind__btn" id="showAndApply">Apply and Show</button>
             <canvas class="game-newkind__canvas" id="nk-elitecanvas" oncontextmenu="event.preventDefault()"></canvas>
+            <div class="config"></div>
         </div>
     </template>
 </nk-elite>
