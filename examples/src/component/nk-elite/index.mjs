@@ -1,11 +1,15 @@
 import { Component } from '../index.mjs';
 import { elite, wControl } from './this/index.mjs'
-
+import { freeQueueInit } from './elite-main.mjs'
 const name = 'nk-elite';
 const component = await Component();
 
 Object.defineProperties(component.prototype, {
     DOM: {
+        value: null,
+        writable: true
+    },
+    LFreeQueue: {
         value: null,
         writable: true
     },
@@ -27,9 +31,12 @@ Object.defineProperties(component.prototype, {
                 }
             };
 
+            const eliteMemory = await freeQueueInit(this, {})
+
             for(let key in this.DOM) {
                 this.DOM[key] = this.DOM[key].bind(this)
             }
+
             const { actions } = await import(new URL('./actions/index.mjs', import.meta.url).pathname)
             const { controller } = await import(new URL('./controller/index.mjs', import.meta.url).pathname)
             this.controller = await controller(this, await actions(this))
