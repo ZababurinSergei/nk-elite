@@ -25,10 +25,10 @@ export const freeQueueInit = function(self, CONFIG)  {
         const PrintQueueAddresses = self.LFreeQueue.cwrap('PrintQueueAddresses', '', ['number']);
 
         self.pointer = GetFreeQueueThreads();
-        const bufferLengthPtr = GetFreeQueuePointers(CONFIG.queue.pointer, "buffer_length");
-        const channelCountPtr = GetFreeQueuePointers(CONFIG.queue.pointer, "channel_count");
-        const statePtr = GetFreeQueuePointers(CONFIG.queue.pointer, "state");
-        const channelDataPtr = GetFreeQueuePointers(CONFIG.queue.pointer, "channel_data");
+        const bufferLengthPtr = GetFreeQueuePointers(self.pointer, "buffer_length");
+        const channelCountPtr = GetFreeQueuePointers(self.pointer, "channel_count");
+        const statePtr = GetFreeQueuePointers(self.pointer, "state");
+        const channelDataPtr = GetFreeQueuePointers(self.pointer, "channel_data");
 
         const pointers = new Object();
         pointers.memory = self.LFreeQueue.HEAPU8;
