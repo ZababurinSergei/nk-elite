@@ -65,13 +65,13 @@ Object.defineProperties(component.prototype, {
                     inputQueue.innerHTML = ''
                     outputQueue.innerHTML = ''
 
-                    // for(let i = 0; i < this.inputQueue.channelData[0].length; ++i) {
-                        // inputQueue.insertAdjacentHTML('beforeend', `<div class="sample-${this.inputQueue.channelData[0][i]}"></div>`)
-                    // }
-
-                    // for(let i = 0; i < this.outputQueue.channelData[0].length; ++i) {
-                        // outputQueue.insertAdjacentHTML('beforeend', `<div class="sample-${this.inputQueue.channelData[0][i]}"></div>`)
-                    // }
+                    let start = this.instance.states[1] - 42
+                    if(start >= 0) {
+                        for(let i = 0; i < 42; ++i) {
+                            console.log('instance: ',start + i,  this.instance.channelData[0][start + i])
+                            outputQueue.insertAdjacentHTML('beforeend', `<div class="sample-${this.instance.channelData[0][start + i]}"></div>`)
+                        }
+                    }
                 }
             };
 
