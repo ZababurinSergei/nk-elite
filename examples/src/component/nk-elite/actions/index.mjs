@@ -39,9 +39,9 @@ export const actions = async (self) => {
                         //
                         self.DOM.queue()
 
-                        console.log('======= PROCESSOR =======', input[0])
+                        // console.log('======= PROCESSOR =======', input[0])
                         // debugger
-                        self.processor.process(input[0], output[0])
+                        self.processor.process(input, output)
                     } catch (e) {
                         self.dialog.error(import.meta.url, e.toString())
                         clearInterval(timerId)
