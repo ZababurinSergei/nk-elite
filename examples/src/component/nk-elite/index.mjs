@@ -1,6 +1,8 @@
-import { Component } from '../index.mjs';
-import { elite, wControl } from './this/index.mjs'
-import { freeQueueInit } from './elite-main.mjs'
+import {Component} from '../index.mjs';
+import {elite, wControl} from './this/index.mjs'
+import {freeQueueInit} from './elite-main.mjs'
+import {EliteProcessor} from './elite-processor.mjs'
+
 const name = 'nk-elite';
 const component = await Component();
 
@@ -29,8 +31,12 @@ Object.defineProperties(component.prototype, {
         value: null,
         writable: true
     },
+    onRuntimeInitialized: {
+        value: null,
+        writable: true
+    },
     connected: {
-        value: async function(property) {
+        value: async function (property) {
             this.DOM = {
                 elite: function (type) {
                     const root = this.shadowRoot.querySelector('.elite-control')
@@ -43,28 +49,48 @@ Object.defineProperties(component.prototype, {
                 },
                 config: () => {
                     const root = this.shadowRoot.querySelector('.config')
-                    for(let key in elite) {
-                        root.insertAdjacentHTML('beforeend',`<div class="item ${key}">
+                    for (let key in elite) {
+                        root.insertAdjacentHTML('beforeend', `<div class="item ${key}">
                                     <span class="key ${key}">${key}: </span>
-                                    <span class="value"> ${typeof elite[key] === 'function'?'function': elite[key] } </span>
+                                    <span class="value"> ${typeof elite[key] === 'function' ? 'function' : elite[key]} </span>
                                     </div>`)
                     }
                 }
             };
 
-            const eliteMemory = await freeQueueInit(this, {})
-
-            for(let key in this.DOM) {
+            for (let key in this.DOM) {
                 this.DOM[key] = this.DOM[key].bind(this)
             }
 
-            const { actions } = await import(new URL('./actions/index.mjs', import.meta.url).pathname)
-            const { controller } = await import(new URL('./controller/index.mjs', import.meta.url).pathname)
+            await freeQueueInit(this, {})
+
+            this.onRuntimeInitialized = () => {
+                console.log('------------', {
+                    instance: this.instance,
+                    pointer: this.pointer,
+                    LFreeQueue: this.LFreeQueue
+                })
+            }
+
+            // debugger
+            // this.processor = new EliteProcessor({
+            //     processorOptions: {
+            //         pointer: this.pointer,
+            //         instance: this.instance
+            //     },
+            //     numberOfInputs: 1,
+            //     numberOfOutputs: 1,
+            //     outputChannelCount: [2],
+            //     channelCount: 2,
+            //     channelCountMode: "max",
+            //     channelInterpretation: "speakers"
+            // })
+
+            const {actions} = await import(new URL('./actions/index.mjs', import.meta.url).pathname)
+            const {controller} = await import(new URL('./controller/index.mjs', import.meta.url).pathname)
             this.controller = await controller(this, await actions(this))
             await this.controller.addEventListener.init()
             this.DOM.config()
-
-
             const interfaceGame = new (await wControl())(this)
             return true;
         },
@@ -78,7 +104,7 @@ Object.defineProperties(component.prototype, {
         writable: false
     },
     onMessage: {
-        value: async function(event) {
+        value: async function (event) {
             console.warn('Этот метод не надо использовать. Надо сделать в вызывающем компоненте тип self')
             debugger
         },

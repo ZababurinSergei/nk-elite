@@ -1,7 +1,7 @@
 import {initFreeQueue, FreeQueue} from "../../../../../this/queue.mjs"
 import { logger } from '@libp2p/logger'
 const log = logger('LElite')
-export const freeQueueInit = function(self, CONFIG)  {
+export const freeQueueInit = function(self)  {
 
     self.LFreeQueue = {
         setStatus: function (e) {
@@ -39,6 +39,8 @@ export const freeQueueInit = function(self, CONFIG)  {
 
         self.instance = FreeQueue.fromPointers(pointers);
         if (self.instance != undefined) self.instance.printAvailableReadAndWrite();
+
+        self.onRuntimeInitialized()
     }
 
     initFreeQueue(self.LFreeQueue).then( async (module) => {

@@ -1,6 +1,6 @@
 import { FreeQueue } from "../../../../../this/queue.mjs";
 
-class EliteProcessor
+export class EliteProcessor
 {
 	constructor(options) {
 		this.instance = FreeQueue.fromObject(options.processorOptions.instance);

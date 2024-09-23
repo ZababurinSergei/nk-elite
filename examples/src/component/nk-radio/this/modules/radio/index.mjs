@@ -82,14 +82,14 @@ const freeQueueInit = (CONFIG) => {
 
     globalThis["LFreeQueue"] = {
         setStatus: function (e) {
-            if (e != "") {
+            if (e !== "") {
                 log(e)
             };
         }
     };
 
     globalThis["LFreeQueue"].onRuntimeInitialized = async function() 
-    { 
+    {
         ///////////////////////////////////////////////////////////////////////////////////////
         // FreeQueue initialization
         ///////////////////////////////////////////////////////////////////////////////////////
