@@ -1255,7 +1255,7 @@ void gfx_display_fps() {
 	if ( game_fps > 0 ) {
 		char buf[16];
 		sprintf(buf, "fps: %d", game_fps);
-		gfx_display_text(10, 10, buf);
+		gfx_display_text(16, 16, buf);
 	}
 }
 
