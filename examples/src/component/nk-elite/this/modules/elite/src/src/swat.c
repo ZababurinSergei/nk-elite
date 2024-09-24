@@ -909,13 +909,13 @@ void draw_laser_lines (void)
 	{
 		gfx_draw_colour_line (32, GFX_FULLVIEW_B_COORD, laser_x, laser_y, GFX_COL_WHITE);
 		gfx_draw_colour_line (48, GFX_FULLVIEW_B_COORD, laser_x, laser_y, GFX_COL_WHITE);
-		gfx_draw_colour_line (208, GFX_FULLVIEW_B_COORD, laser_x, laser_y, GFX_COL_WHITE);
-		gfx_draw_colour_line (224, GFX_FULLVIEW_B_COORD, laser_x, laser_y, GFX_COL_WHITE);
+		gfx_draw_colour_line (GFX_FULLVIEW_R_COORD - 32, GFX_FULLVIEW_B_COORD, laser_x, laser_y, GFX_COL_WHITE);
+		gfx_draw_colour_line (GFX_FULLVIEW_R_COORD - 48, GFX_FULLVIEW_B_COORD, laser_x, laser_y, GFX_COL_WHITE);
 	}
 	else
 	{
 		gfx_draw_triangle (32, GFX_FULLVIEW_B_COORD, laser_x, laser_y,  48, GFX_FULLVIEW_B_COORD, GFX_COL_RED);
-		gfx_draw_triangle (208, GFX_FULLVIEW_B_COORD, laser_x, laser_y, 224, GFX_FULLVIEW_B_COORD, GFX_COL_RED);
+		gfx_draw_triangle (GFX_FULLVIEW_R_COORD - 32, GFX_FULLVIEW_B_COORD, laser_x, laser_y, GFX_FULLVIEW_R_COORD - 48, GFX_FULLVIEW_B_COORD, GFX_COL_RED);
 	}		 
 }
 
