@@ -49,7 +49,7 @@ function(
   var templateLoader = new TemplateLoader();
   var dataRequest = new HttpRequest(
     'GET',
-    '../../src/data/solarsystem.json',
+    './component/nk-solar-system/this/modules/solar-system/data/solarsystem.json',
     true
   );
 

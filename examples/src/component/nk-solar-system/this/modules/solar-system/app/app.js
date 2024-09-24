@@ -1,5 +1,5 @@
 require.config({
-    baseUrl: './src/app',
+    baseUrl: './component/nk-solar-system/this/modules/solar-system/app',
     paths: {
         twig: 'vendor/twig.js/twig',
         backbone: 'vendor/backbone/backbone',
