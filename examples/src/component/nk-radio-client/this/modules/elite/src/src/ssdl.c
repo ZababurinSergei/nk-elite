@@ -1063,8 +1063,8 @@ void gfx_polygon (int num_points, int *poly_list, int face_colour)
 #endif
 	Sint16 vx[MAX_POLYS], vy[MAX_POLYS];
 	for (int i = 0, j = 0; i < num_points; i++) {
-		vx[i] = poly_list[j++] + GFX_X_OFFSET;
-		vy[i] = poly_list[j++] + GFX_Y_OFFSET;
+		vx[i] = poly_list[j++];
+		vy[i] = poly_list[j++];
 	}
 	filledPolygonRGBA(sdl_ren, vx, vy, num_points, RGBA_PARAM(face_colour));
 }

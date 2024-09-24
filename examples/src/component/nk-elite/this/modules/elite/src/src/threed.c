@@ -626,7 +626,7 @@ void gfx_render_planet_line (int xo, int yo, int x, int y, int radius, int vx, i
 		
 	for (; sx <= ex; sx++)
 	{
-		if ((sx >= (GFX_VIEW_TX + GFX_X_OFFSET)) && (sx <= (GFX_VIEW_BX + GFX_X_OFFSET))) {
+		if ((sx >= (GFX_VIEW_TX)) && (sx <= (GFX_VIEW_BX ))) {
 			lx = rx / div;
 			ly = ry / div;
 			colour = landscape[lx][ly];
@@ -862,7 +862,7 @@ void draw_sun (struct univ_object *planet)
 		return; 
 
 	x = GFX_FULLVIEW_X_CENTER + x * GFX_FULLVIEW_X_SCALE;
-	y = GFX_FULLVIEW_X_CENTER + y * GFX_FULLVIEW_Y_SCALE;
+	y = GFX_FULLVIEW_Y_CENTER + y * GFX_FULLVIEW_Y_SCALE;
 
 	gfx_render_sun (x, y, radius);
 }

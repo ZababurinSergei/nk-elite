@@ -78,11 +78,10 @@ void update_intro1 (void)
 {
 	universe[0].location.z -= 100;
 
-	if (universe[0].location.z < 512 )
-		universe[0].location.z = 512; 
+	if (universe[0].location.z < 512 ) universe[0].location.z = 512; 
 
 	gfx_clear_display();
-	gfx_set_clip_region (GFX_FULLVIEW_L_COORD, GFX_FULLVIEW_T_COORD, GFX_FULLVIEW_R_COORD, GFX_FULLVIEW_B_COORD);
+	gfx_set_clip_region(GFX_FULLVIEW_L_COORD, GFX_FULLVIEW_T_COORD, GFX_FULLVIEW_R_COORD, GFX_FULLVIEW_B_COORD);
 
 	gfx_draw_simplerect(GFX_FULLVIEW_L_COORD, GFX_FULLVIEW_T_COORD, GFX_FULLVIEW_R_COORD, GFX_FULLVIEW_B_COORD, GFX_COL_WHITE);
 
@@ -145,6 +144,7 @@ void update_intro2 (void)
 	if (universe[0].location.z > 4500) next_ship(ship_bump);
 
 	gfx_clear_display();
+	
 	gfx_set_clip_region(GFX_FULLVIEW_L_COORD, GFX_FULLVIEW_T_COORD, GFX_FULLVIEW_R_COORD, GFX_FULLVIEW_B_COORD);
 	gfx_draw_simplerect(GFX_FULLVIEW_L_COORD, GFX_FULLVIEW_T_COORD, GFX_FULLVIEW_R_COORD, GFX_FULLVIEW_B_COORD, GFX_COL_WHITE);
 	

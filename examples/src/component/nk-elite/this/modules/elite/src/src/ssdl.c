@@ -449,8 +449,8 @@ void gfx_update_screen (void)
 	static int _fc = 0;
 
 	struct timeval tv;
-    gettimeofday( &tv, NULL) ;
-    uint64_t _tm = tv.tv_sec * (uint64_t)1000000 + tv.tv_usec;
+        gettimeofday( &tv, NULL) ;
+        uint64_t _tm = tv.tv_sec * (uint64_t)1000000 + tv.tv_usec;
 	if ( _nt != 0 ) {
 		uint64_t _diff = _tm - _nt;
 		if ( _diff > 1000000 ) {

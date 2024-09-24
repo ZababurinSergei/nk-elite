@@ -624,6 +624,7 @@ struct ship_face constrictor_face[]=
 
 	{GFX_COL_GREY_2,    0x00,  0x00, -0xA0, 4,  6,  3,  4, 5, 0, 0, 0, 0},
 	{GFX_COL_GREY_3,    0x00, -0x1B,  0x00, 6,  3,  6,  7, 0, 1, 2, 0, 0},
+
 	{GFX_COL_DARK_RED,    0x00, -0x1B,  0x00, 3, 12, 10, 14, 0, 0, 0, 0, 0},
 	{GFX_COL_DARK_RED,    0x00, -0x1B,  0x00, 3, 15, 11, 13, 0, 0, 0, 0, 0},
 };
