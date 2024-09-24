@@ -42,7 +42,7 @@
 <div class="header">
     <div class="logo">
         <img class="icon" src="./favicon.ico"/>
-           <pre class="__peer-header_logo_value">
+        <pre class="__peer-header_logo_value">
 						░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 						░░░░░░░░░░░░░░░░░░█░░░░░░░░░░░░░░░░░░░░░░░░░░░
 						░░░░░░████░░░░░░█████░░░░░░░░░░░░░░░░░░░░░░░░░
@@ -87,8 +87,8 @@
 </div>
 
 <nk-memory
-    id="nk-memory_0"
-    slot="nk-memory_0"
+        id="nk-memory_0"
+        slot="nk-memory_0"
 >
     <template>
         <div class="nk-memory">
@@ -109,8 +109,8 @@
             </div>
         </div>
         <nk-emulator
-            id="nk-emulator_0"
-            slot="nk-emulator_0"
+                id="nk-emulator_0"
+                slot="nk-emulator_0"
         >
             <template>
                 <div class="container">
@@ -122,9 +122,9 @@
                             <div class="queue">
                                 <div class="inputQueue"></div>
                                 <div class="outputQueue"></div>
-<!--                                <div class="atomicState"></div>-->
-<!--                                <div class="sampleRate"></div>-->
-<!--                                <div class="irArray"></div>-->
+                                <!--                                <div class="atomicState"></div>-->
+                                <!--                                <div class="sampleRate"></div>-->
+                                <!--                                <div class="irArray"></div>-->
                             </div>
                         </div>
                         <h2>Reader</h2>
@@ -376,7 +376,7 @@
                                             </div>
                                             <div id="mainDiv">
                                                 <div id="inputTextAreaDiv" style="visibility: visible;">
-                                                    <div id="inputTextArea" class="UIInput" >
+                                                    <div id="inputTextArea" class="UIInput">
                                                         0.1 0.32 0.64 0.96 0.64 0.32 0.1 -0.32 -0.64 -0.96 -0.64 -0.32
                                                         -0.1 0.32 0.64 0.96 0.64 0.32 0 -0.32 -0.64 -0.96 -0.64 -0.32 0
                                                         0.32 0.64 0.96 0.64 0.32 0.1 -0.32 -0.64 -0.96 -0.64 -0.32 0
@@ -784,7 +784,214 @@
         </div>
     </template>
 </nk-elite>
+<nk-solar-system>
+    <template>
+        <div class="solar-system">
+            <div slot="help-section" class="help-section">
+                <i data-open="info" class="fi-info"></i>
+            </div>
+            <div id="info" slot="system-modal" class="reveal info-modal" data-reveal data-close-on-click="true">
+                <div class="project-info row collapse">
+                    <h3>Project Info</h3>
+                    <!--            <span class="small-3 columns">Universe Scale</span><span class="small-9 columns">6.30957344 &times; 10<sup>-5</sup></span>-->
+                    <!--            <span class="small-3 columns">Orbit Scale</span><span-->
+                    <!--                class="small-9 columns">6.30957344 &times; 10<sup>-5</sup></span>-->
+                    <!--            <span class="small-3 columns">Celestial Scale</span><span class="small-9 columns">1.2589254 &times; 10<sup>-4</sup></span>-->
+                </div>
 
+                <div class="project-info row collapse">
+                    <h3>Controls</h3>
+                    <menu class="project-info-menu">
+                        <a id="project-info-menu" class="button large network" data-change="admin">Network</a>
+                        <a id="project-info-planet" class="button large map active-button" data-change="map">Map</a>
+                        <!--                <a id="project-info-system" class="button large" data-change="system">System</a>-->
+                    </menu>
+                    <!--            <span class="small-12 columns">Use your mouse or trackpad to navigate the scene. To zoom, use a scroll motion. When viewing a planet, you can move around a planet using a click + drag motion.</span>-->
+                </div>
+
+                <div class="project-info-footer">
+                    <a id="info-got-it" class="button large" data-close="info">Close</a>
+                </div>
+                <button class="close-button" data-close aria-label="Close modal" type="button">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div slot="solar-system" class="solar-system">
+                <div class="container-main">
+                    <div class="container-menu">
+                        <div id="menu" class="menu"></div>
+                        <div class="help-section">
+                            <i data-open="info" class="fi-info"></i>
+                        </div>
+                    </div>
+
+                    <div id="moons" class="moons"></div>
+                    <div id="current-target-title" class="current-target-title active">Solar System</div>
+                    <div id="toggle-effects" class="toggle-effects">
+                        <div class="control-holder">
+                            <label for="toggle-orbit-highlight">
+                                <input type="checkbox" id="toggle-orbit-highlight" class="toggle-control">
+                                <span>Orbit Color Effects</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="intro-screen">
+                        <div class="intro-text">
+                            <div class="intro-heading">
+                                <h1>Our Solar System</h1>
+                            </div>
+                            <div class="inner">
+                                <p>A solar system refers to a star and all the objects that travel in orbit around it.
+                                    Our solar
+                                    system consists of the sun, eight planets (and their natural satellites), dwarf
+                                    planets,
+                                    asteroids, and comets. Our solar system is located within the Orion Arm of the Milky
+                                    Way Galaxy,
+                                    which is located about 27,000 light-years away from the Milky Way Galactic
+                                    Center.</p>
+                                <p>This is a project powered by <a href="http://threejs.org/"
+                                                                   target="_blank">Three.js</a> and <a
+                                        href="https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API">WebGL</a>. All
+                                    objects
+                                    within this project have been modeled to <span data-tooltip aria-haspopup="true"
+                                                                                   class="has-tip"
+                                                                                   data-disable-hover="false"
+                                                                                   tabindex="1"
+                                                                                   title="Scale = 1 * 10^-4.2">scale</span>
+                                    based on
+                                    real astronomical data. The scene currently renders the sun, all eight planets (nine
+                                    if you side
+                                    with Pluto being a planet), each planet's moons, the asteriod belt and thousands of
+                                    stars.</p>
+                                <p>
+                                    <strong>For a better viewing experience, use a laptop or desktop with the latest
+                                        version of
+                                        Google Chrome or Safari Technology Preview.</strong>
+                                </p>
+                                <!--                    <div class="social-buttons social-buttons-intro-screen">-->
+                                <!--                        <a href="https://twitter.com/SanderBlue" class="twitter-follow-button" data-show-count="false">Follow-->
+                                <!--                            @SanderBlue</a>-->
+                                <!--                        <iframe src="https://ghbtns.com/github-btn.html?user=sanderblue&repo=solar-system-threejs&type=star&count=false"-->
+                                <!--                                class="github-button" frameborder="0" scrolling="0"></iframe>-->
+                                <!--                    </div>-->
+                                <div id="render-scene" class="button large render-scene">
+                                    <span>View Solar System</span>
+                                </div>
+                            </div>
+                            <div id="loading-prompt" class="loading-prompt">
+                                <span>Building the Solar System...</span>
+                                <div id="realtime-updates"></div>
+                                <div id="progress-bar" class="progress" role="progressbar" tabindex="0">
+                                    <div class="progress-meter"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="solar-system" class="scene"></div>
+                </div>
+
+                <div class="full reveal" id="exampleModal8" data-reveal>
+                    <p>Sorry, but this project is currently not viewable from a mobile device.</p>
+                    <img src="http://placekitten.com/1920/1280" alt="Intropsective Cage">
+                    <button class="close-button" data-close aria-label="Close reveal" type="button">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div id="browser-compatibility-modal" class="reveal browser-compatibility-modal">
+                    <h3>Browser Compatibility</h3>
+                    <p class="lead">This project utilizes some of JavaScript's lastest ES6 features. Currently this
+                        project is best
+                        viewed using the latest version of <a
+                                href="https://www.google.com/chrome/browser/desktop/index.html"
+                                class="browser-link" target="_blank">Google Chrome</a> or <a
+                                href="https://developer.apple.com/safari/download/" target="_blank"
+                                class="browser-link">Safari
+                            Technology Preview</a>. At a minimum, your browser must support the following ES6 features.
+                        If you can't
+                        navigate past this page, this project is not compatible with the browser you're using. Sorry,
+                        but this
+                        project is currently not viewable from a mobile device.</p>
+                    <ul>
+                        <li>Classes</li>
+                        <li>Arrow Functions</li>
+                    </ul>
+                    <button class="close-button" data-close aria-label="Close modal" type="button">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <span>
+                <a id="browser-compatibility-got-it" class="button large" data-close="browser-compatibility-modal">Got It</a>
+        </span>
+                    <span>
+                <a href="https://kangax.github.io/compat-table/es6/" class="button large es6-feature-link">ES6 feature support</a>
+        </span>
+                </div>
+
+                <!--    <div id="info" class="reveal info-modal" data-reveal data-close-on-click="true">-->
+                <!--        <div class="project-info row collapse">-->
+                <!--            <h3>Project Info</h3>-->
+                <!--            &lt;!&ndash;            <span class="small-3 columns">Universe Scale</span><span class="small-9 columns">6.30957344 &times; 10<sup>-5</sup></span>&ndash;&gt;-->
+                <!--            &lt;!&ndash;            <span class="small-3 columns">Orbit Scale</span><span&ndash;&gt;-->
+                <!--            &lt;!&ndash;                class="small-9 columns">6.30957344 &times; 10<sup>-5</sup></span>&ndash;&gt;-->
+                <!--            &lt;!&ndash;            <span class="small-3 columns">Celestial Scale</span><span class="small-9 columns">1.2589254 &times; 10<sup>-4</sup></span>&ndash;&gt;-->
+                <!--        </div>-->
+
+                <!--        <div class="project-info row collapse">-->
+                <!--            <h3>Controls</h3>-->
+                <!--            <menu class="project-info-menu">-->
+                <!--                <a id="project-info-menu" class="button large network" data-change="admin">Network</a>-->
+                <!--                <a id="project-info-planet" class="button large map active-button" data-change="map">Map</a>-->
+                <!--                &lt;!&ndash;                <a id="project-info-system" class="button large" data-change="system">System</a>&ndash;&gt;-->
+                <!--            </menu>-->
+                <!--            &lt;!&ndash;            <span class="small-12 columns">Use your mouse or trackpad to navigate the scene. To zoom, use a scroll motion. When viewing a planet, you can move around a planet using a click + drag motion.</span>&ndash;&gt;-->
+                <!--        </div>-->
+
+                <!--        <div class="project-info-footer">-->
+                <!--            <a id="info-got-it" class="button large" data-close="info">Close</a>-->
+                <!--        </div>-->
+                <!--        <button class="close-button" data-close aria-label="Close modal" type="button">-->
+                <!--            <span aria-hidden="true">&times;</span>-->
+                <!--        </button>-->
+                <!--    </div>-->
+
+                <div id="tutorial" class="reveal tutorial-modal" data-reveal data-close-on-click="true">
+                    <h3>Controls</h3>
+                    <p class="lead">Use your mouse or trackpad to navigate the scene. To zoom, use a scroll motion. When
+                        viewing a
+                        planet, you can move around a planet using a click + drag motion.</p>
+                    <button class="close-button" data-close aria-label="Close modal" type="button">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <a id="tutorial-got-it" class="button large" data-close="tutorial">Got It</a>
+                </div>
+
+                <script type="text/javascript">
+                    function isMobile() {
+                        return navigator.userAgent.match(/Android/i)
+                            || navigator.userAgent.match(/BlackBerry/i)
+                            || navigator.userAgent.match(/iPhone|iPad|iPod/i)
+                            || navigator.userAgent.match(/Opera Mini/i)
+                            || navigator.userAgent.match(/IEMobile/i);
+                    }
+
+                    if (isMobile()) {
+                        var viewButton = document.getElementById('render-scene');
+
+                        if (viewButton) {
+                            viewButton.innerHTML = '<span>Mobile version coming soon. Please view from laptop or desktop.</span>';
+                        }
+                    }
+                </script>
+                <script type="text/javascript" src="src/app/vendor/jquery/dist/jquery.min.js"></script>
+                <script type="text/javascript" src="src/app/vendor/foundation-sites/dist/foundation.min.js"></script>
+                <script type="text/javascript" src="src/app/vendor/stats/build/stats.min.js"></script>
+                <script type="text/javascript" src="src/app/vendor/tweenjs/build/tween.min.js"></script>
+                <script type="text/javascript" src="src/app/vendor/three.js/three.min.js"></script>
+                <script data-main="./src/app/app" src="src/app/vendor/requirejs/require.js"></script>
+            </div>
+        </div>
+    </template>
+</nk-solar-system>
 <nk-world id="nk-world_0">
     <template>
         <div class="container">
@@ -796,9 +1003,9 @@
                     <div class="menu">
                         <slot name="nk-menu_0"></slot>
                     </div>
-<!--                    <div class="chat">-->
-<!--                        <slot name="nk-chat_0"></slot>-->
-<!--                    </div>-->
+                    <!--                    <div class="chat">-->
+                    <!--                        <slot name="nk-chat_0"></slot>-->
+                    <!--                    </div>-->
                 </div>
             </div>
             <div class="item">
@@ -816,8 +1023,8 @@
                     <slot name="nk-elite-control"></slot>
                 </div>
                 <nk-elite-control
-                    id="nk-elite-control_0"
-                    slot="nk-elite-control"
+                        id="nk-elite-control_0"
+                        slot="nk-elite-control"
                 >
                     <template>
                         <div class="control">
@@ -901,14 +1108,16 @@
                                     <div class="item">
                                         <!--							<progress class="progress" max="100" value="70">70%</progress>-->
                                         <label class="item slider" style="--c: #BD1550">
-                                            <input class="input-slider" type="range" id="two" min="-50" max="50" step="1" value="0">
+                                            <input class="input-slider" type="range" id="two" min="-50" max="50"
+                                                   step="1" value="0">
                                             <output class="bottom" for="two" style="--min: -50;--max: 50"></output>
                                         </label>
                                         <div class="text">RL</div>
                                     </div>
                                     <div class="item">
                                         <label class="item slider" style="--c: #BD1550">
-                                            <input class="input-slider" type="range" id="three" min="-50" max="50" step="1"
+                                            <input class="input-slider" type="range" id="three" min="-50" max="50"
+                                                   step="1"
                                                    value="0">
                                             <output class="bottom" for="three" style="--min: -50;--max: 50"></output>
                                         </label>
@@ -968,7 +1177,7 @@
                                         <div class="item peerId">
                                             <p>ID Планета</p>
                                             <span class="planet-public-id self_peerId_p"></span>
-    	                                    </div>
+                                        </div>
                                         <div class="item self">
                                             <p>Приватный ID</p>
                                             <span class="planet-private-id self_p"></span>
@@ -1348,12 +1557,12 @@
     import {init} from './this/index.mjs'
 
     init({
-        components: ['nk-filter', 'nk-time-line', 'nk-switch', 'nk-osc', 'nk-emulator', 'nk-memory', 'nk-elite-control','nk-world','nk-menu', 'nk-elite', 'nk-radio', 'nk-p2p', 'nk-universe', 'nk-chat']
-    }).then().catch( error => console.log( error ) );
+        components: ['nk-solar-system', 'nk-filter', 'nk-time-line', 'nk-switch', 'nk-osc', 'nk-emulator', 'nk-memory', 'nk-elite-control', 'nk-world', 'nk-menu', 'nk-elite', 'nk-radio', 'nk-p2p', 'nk-universe', 'nk-chat']
+    }).then().catch(error => console.log(error));
 
-//        globalThis["LFreeQueue"].Store( "Key1", 10 );
-//        let key = globalThis["LFreeQueue"].Load( "Key1" );
-//        console.log( "Key1: value=" + key + "\n" );
+    //        globalThis["LFreeQueue"].Store( "Key1", 10 );
+    //        let key = globalThis["LFreeQueue"].Load( "Key1" );
+    //        console.log( "Key1: value=" + key + "\n" );
 
 </script>
 </html>
