@@ -663,7 +663,6 @@ void run_escape_sequence (void)
 		gfx_display_centre_text (358, "Escape pod launched - Ship auto-destuct initiated.", 120, GFX_COL_WHITE);
 		
 		update_console();
-		//gfx_update_screen();
 	}
 
 	
@@ -687,7 +686,7 @@ void run_escape_sequence (void)
 		update_starfield();
 		update_universe();
 		update_console();
-		//gfx_update_screen();
+
 	}
 
 	abandon_ship();
@@ -1096,7 +1095,6 @@ void save_commander_screen (void)
 	gfx_clear_display();
 	gfx_display_centre_text (10, "SAVE COMMANDER", 140, GFX_COL_GOLD);
 	gfx_draw_line (0, 36, GFX_FULLVIEW_R_COORD, 36);
-	//gfx_update_screen();
 	
 	strcpy (path, cmdr.name);
 	strcat (path, ".nkc");
@@ -1134,7 +1132,6 @@ void load_commander_screen (void)
 	gfx_clear_display();
 	gfx_display_centre_text (10, "LOAD COMMANDER", 140, GFX_COL_GOLD);
 	gfx_draw_line (0, 36, GFX_FULLVIEW_R_COORD, 36);
-	//gfx_update_screen();
 	
 	
 	strcpy (path, "jameson.nkc");
@@ -1151,7 +1148,7 @@ void load_commander_screen (void)
 		saved_cmdr = cmdr;
 		gfx_display_centre_text (175, "Error Loading Commander!", 140, GFX_COL_GOLD);
 		gfx_display_centre_text (200, "Press any key to continue.", 140, GFX_COL_GOLD);
-		//gfx_update_screen();
+
 		readkey();
 		return;
 	}
@@ -1223,7 +1220,7 @@ void run_game_over_screen()
 		update_starfield();
 		update_universe();
 		gfx_display_centre_text (190, "GAME OVER", 140, GFX_COL_GOLD);
-		//gfx_update_screen();
+
 	}
 }
 
@@ -1242,7 +1239,7 @@ void display_break_pattern (void)
 	for (i = 0; i < 20; i++) {
 		gfx_set_clip_region (1, 1, GFX_VIEW_R_COORD, (wnd_height - 129));	// put it here, to avoid overdraw console etc with circles when they are big enough
 		gfx_draw_circle (GFX_FULLVIEW_X_CENTER, ( wnd_height - 128 ) / 2, 30 + i * 15, GFX_COL_WHITE);
-		//gfx_update_screen();
+
 	}	
 
 	if (docked) {
@@ -1253,6 +1250,15 @@ void display_break_pattern (void)
 		current_screen = SCR_FRONT_VIEW;
 	}
 }
+
+void gfx_display_fps() {
+	if ( game_fps > 0 ) {
+		char buf[16];
+		sprintf(buf, "fps: %d", game_fps);
+		gfx_display_text(10, 10, buf);
+	}
+}
+
 
 void info_message (char *message)
 {
@@ -1349,6 +1355,7 @@ void secondary_main()
 			return;
 		} else if ( startup_part == 1 ) {
 			update_intro1();
+			gfx_display_fps();
 			if (kbd_y_pressed) {
 				snd_stop_midi();	
 				load_commander_screen();
@@ -1385,6 +1392,7 @@ void secondary_main()
 			return;
 		} else if ( startup_part == 1 ) {
 			update_intro2();
+			gfx_display_fps();
 			if (kbd_space_pressed) {
 				snd_stop_midi();	
 				startup_part = 0xffff;
@@ -1438,6 +1446,8 @@ void secondary_main()
 
 		gfx_set_clip_region (GFX_FULLVIEW_L_COORD, GFX_FULLVIEW_T_COORD, GFX_FULLVIEW_R_COORD, GFX_FULLVIEW_B_COORD);
 		gfx_draw_simplerect(GFX_FULLVIEW_L_COORD, GFX_FULLVIEW_T_COORD, GFX_FULLVIEW_R_COORD, GFX_FULLVIEW_B_COORD, GFX_COL_WHITE);
+
+		gfx_display_fps();
 
 		if (game_paused) return;
 		if (message_count > 0) message_count--;
@@ -1503,8 +1513,7 @@ void secondary_main()
 			if (hyper_ready)
 			{
 				display_hyper_status();
-				if ((mcount & 3) == 0)
-				{
+				if ((mcount & 3) == 0) {
 					countdown_hyperspace();
 				}
 			}
@@ -1529,11 +1538,8 @@ void secondary_main()
 					update_altitude();
 				}
 				
-				if ((mcount & 31) == 20)
-					update_cabin_temp();
-					
-				if ((mcount == 0) && (!witchspace))
-					random_encounter();
+				if ((mcount & 31) == 20) update_cabin_temp();
+				if ((mcount == 0) && (!witchspace)) random_encounter();
 					
 				cool_laser();				
 				time_ecm();
@@ -1575,8 +1581,6 @@ void secondary_main()
 		return;
 	}
 }
-
-
 
 int enablesecondchart( int _state ) {
 	venablesecondchart = _state;

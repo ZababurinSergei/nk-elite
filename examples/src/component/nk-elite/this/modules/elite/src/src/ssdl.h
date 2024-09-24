@@ -188,6 +188,8 @@ extern SDL_Texture	*sdl_tex;
 extern SDL_Window	*sdl_win;
 extern SDL_Renderer	*sdl_ren;
 
+extern int game_fps;
+
 SDL_RWops *datafile_open ( const char *fn );
 
 extern int  sdl_last_key_pressed;

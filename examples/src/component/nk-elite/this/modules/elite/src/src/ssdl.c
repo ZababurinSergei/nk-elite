@@ -37,7 +37,6 @@
 #include "sound.h"
 #include "file.h"
 
-
 SDL_Texture		*sdl_tex = NULL;
 SDL_Texture		*sdl_tex_pri = NULL;
 SDL_Window      *sdl_win = NULL;
@@ -50,6 +49,9 @@ int scanner_height;
 int wnd_width;
 int wnd_height;
 int wnd_fullscreen;
+
+int game_fps = 0;
+
 double wnd_scale;
 
 static int start_poly;
@@ -67,6 +69,38 @@ struct poly_data
 };
 
 static struct poly_data poly_chain[MAX_POLYS];
+
+
+#ifdef _WIN32
+#include <Windows.h>
+#include <stdint.h> 
+/*
+typedef struct timeval {
+    long tv_sec;
+    long tv_usec;
+} timeval;
+*/
+int gettimeofday(struct timeval * tp, struct timezone * tzp)
+{
+    // Note: some broken versions only have 8 trailing zero's, the correct epoch has 9 trailing zero's
+    // This magic number is the number of 100 nanosecond intervals since January 1, 1601 (UTC)
+    // until 00:00:00 January 1, 1970
+    static const uint64_t EPOCH = ((uint64_t) 116444736000000000ULL);
+    SYSTEMTIME  system_time;
+    FILETIME    file_time;
+    uint64_t    time;
+    GetSystemTime( &system_time );
+    SystemTimeToFileTime( &system_time, &file_time );
+    time =  ((uint64_t)file_time.dwLowDateTime )      ;
+    time += ((uint64_t)file_time.dwHighDateTime) << 32;
+    tp->tv_sec  = (long) ((time - EPOCH) / 10000000L);
+    tp->tv_usec = (long) (system_time.wMilliseconds * 1000);
+    return 0;
+}
+#else 
+#include <sys/time.h>
+#endif
+
 
 #define RGBA_PARAM(col)				the_palette_r[col],the_palette_g[col],the_palette_b[col],0xFF
 
@@ -280,7 +314,7 @@ int gfx_graphics_startup (void)
 	for ( int i = 0; i < rc_drv; i++ ) {
 		SDL_RendererInfo info;
 		SDL_GetRenderDriverInfo( i, &info );
-		printf( "InfoDrv: idx=%d name=%s\n", i, info.name );
+		printf( "InfoDrv: driver index=%d; name=%s\n", i, info.name );
 	}
 
 	sdl_ren = SDL_CreateRenderer(sdl_win, 0, SDL_RENDERER_ACCELERATED);
@@ -300,24 +334,6 @@ int gfx_graphics_startup (void)
 		ERROR_WINDOW("Cannot allocate pixel format: %s", SDL_GetError());
 		return 1;
 	}
-
-#if 0
-	datafile = load_datafile("elite.dat");
-	if (!datafile) {
-		set_gfx_mode(GFX_TEXT, 0, 0, 0, 0);
-		ERROR_WINDOW("Error loading %s!\n", "elite.dat");
-		return 1;
-	}
-#endif
-
-#if 0
-	scanner_image = load_bitmap(scanner_filename, the_palette);
-	if (!scanner_image) {
-		set_gfx_mode(GFX_TEXT, 0, 0, 0, 0);
-		ERROR_WINDOW("Error reading scanner bitmap file.\n");
-		return 1;
-	}
-#endif
 
 	sdl_tex = SDL_CreateTexture(sdl_ren, PIXEL_FORMAT, SDL_TEXTUREACCESS_TARGET, wnd_width, wnd_height);
 	if (!sdl_tex) {
@@ -415,7 +431,6 @@ int gfx_graphics_startup (void)
 
 void gfx_graphics_shutdown (void)
 {
-	puts("ETNK: graphics shutdown");
 #if 0
 	destroy_bitmap(scanner_image);
 	destroy_bitmap(gfx_screen);
@@ -430,6 +445,25 @@ void gfx_graphics_shutdown (void)
 
 void gfx_update_screen (void)
 {
+	static uint64_t _nt = 0;
+	static int _fc = 0;
+
+	struct timeval tv;
+    gettimeofday( &tv, NULL) ;
+    uint64_t _tm = tv.tv_sec * (uint64_t)1000000 + tv.tv_usec;
+	if ( _nt != 0 ) {
+		uint64_t _diff = _tm - _nt;
+		if ( _diff > 1000000 ) {
+			game_fps = _fc;
+			_nt = _tm;
+			_fc = 1;
+		} else {
+			_fc = _fc + 1;
+		}
+	} else {
+		_nt = _tm;
+	}
+
 	SDL_SetRenderTarget(sdl_ren, NULL);
 	SDL_SetRenderDrawColor(sdl_ren,0,0,0,0xFF);
 	SDL_RenderClear(sdl_ren);
@@ -438,6 +472,7 @@ void gfx_update_screen (void)
 	SDL_SetRenderTarget(sdl_ren, sdl_tex);
 	SDL_SetRenderDrawColor(sdl_ren,0,0,0,0xFF);
 	SDL_RenderClear(sdl_ren);
+
 
 //    #ifdef __EMSCRIPTEN__
 //        emscripten_sleep(speed_cap);
@@ -469,6 +504,7 @@ void gfx_plot_pixel (int x, int y, int circle_colour)
 	pixelRGBA( sdl_ren, x, y, the_palette_r[circle_colour], the_palette_g[circle_colour], the_palette_b[circle_colour], 0xff);
 }
 
+/*
 #define AA_BITS 3
 #define AA_AND  7
 #define AA_BASE 235
@@ -477,12 +513,14 @@ void gfx_plot_pixel (int x, int y, int circle_colour)
 #define frac(x) ((x) & 65535)
 #define invfrac(x) (65535-frac(x))
 #define plot(x,y,c) putpixel(gfx_screen, (x), (y), (c)+AA_BASE)
+*/
 
 /*
  * Draw anti-aliased wireframe circle.
  * By T.Harte.
  */
 
+/*
 void gfx_draw_aa_circle(int cx, int cy, int radius)
 {
 	int x,y;
@@ -500,7 +538,6 @@ void gfx_draw_aa_circle(int cx, int cy, int radius)
 
 	while (y <= x)
 	{
-		/* wide pixels */
 		sx = cx + (x >> AA_BITS); sy = cy + (y >> AA_BITS);
 
 		plot(sx,	sy,	AA_AND - (x&AA_AND));
@@ -521,7 +558,6 @@ void gfx_draw_aa_circle(int cx, int cy, int radius)
 		plot(sx,	sy,	AA_AND - (x&AA_AND));
 		plot(sx - 1,	sy,	x&AA_AND);
 
-		/* tall pixels */
 		sx = cx + (y >> AA_BITS); sy = cy + (x >> AA_BITS);
 
 		plot(sx,	sy,	AA_AND - (x&AA_AND));
@@ -553,12 +589,14 @@ void gfx_draw_aa_circle(int cx, int cy, int radius)
 	}
 }
 
+*/
 
 /*
  * Draw anti-aliased line.
  * By T.Harte.
  */
  
+/*
 void gfx_draw_aa_line (int x1, int y1, int x2, int y2)
 {
 	fixed grad, xd, yd;
@@ -587,8 +625,6 @@ void gfx_draw_aa_line (int x1, int y1, int x2, int y2)
 
 		grad = fdiv(yd, xd);
 
-		/* end point 1 */
-
 		xend = trunc(x1 + 32768);
 		yend = y1 + fmul(grad, xend-x1);
 
@@ -604,8 +640,6 @@ void gfx_draw_aa_line (int x1, int y1, int x2, int y2)
 		plot(ix1, iy1+1, brightness2 >> (16-AA_BITS));
 
 		yf = yend+grad;
-
-		/* end point 2; */
 
 		xend = trunc(x2 + 32768);
 		yend = y2 + fmul(grad, xend-x2);
@@ -644,8 +678,6 @@ void gfx_draw_aa_line (int x1, int y1, int x2, int y2)
 
 		grad = fdiv(xd, yd);
 
-		/* end point 1 */
-
 		yend = trunc(y1 + 32768);
 		xend = x1 + fmul(grad, yend-y1);
 
@@ -661,8 +693,6 @@ void gfx_draw_aa_line (int x1, int y1, int x2, int y2)
 		plot(ix1+1, iy1, brightness2 >> (16-AA_BITS));
 
 		xf = xend+grad;
-
-		/* end point 2; */
 
 		yend = trunc(y2 + 32768);
 		xend = x2 + fmul(grad, yend-y2);
@@ -700,6 +730,8 @@ void gfx_draw_aa_line (int x1, int y1, int x2, int y2)
 #undef AA_AND
 #undef AA_BASE
 
+*/
+
 void gfx_draw_circle (int cx, int cy, int radius, Uint32 circle_colour)
 {
 	circleRGBA(sdl_ren, cx, cy, radius, the_palette_r[circle_colour], the_palette_g[circle_colour], the_palette_b[circle_colour], 0xff);
@@ -714,20 +746,20 @@ void gfx_draw_line (int x1, int y1, int x2, int y2)
 {
 	if (y1 == y2)
 	{
-		hline (gfx_screen, x1 + GFX_X_OFFSET, y1 + GFX_Y_OFFSET, x2 + GFX_X_OFFSET, GFX_COL_WHITE);
+		hline (gfx_screen, x1, y1, x2, GFX_COL_WHITE);
 		return;
 	}
 
 	if (x1 == x2)
 	{
-		vline (gfx_screen, x1 + GFX_X_OFFSET, y1 + GFX_Y_OFFSET, y2 + GFX_Y_OFFSET, GFX_COL_WHITE);
+		vline (gfx_screen, x1, y1, y2, GFX_COL_WHITE);
 		return;
 	}
 
-	if (anti_alias_gfx)
-		gfx_draw_aa_line (itofix(x1), itofix(y1), itofix(x2), itofix(y2));
-	else
-		line (gfx_screen, x1 + GFX_X_OFFSET, y1 + GFX_Y_OFFSET, x2 + GFX_X_OFFSET, y2 + GFX_Y_OFFSET, GFX_COL_WHITE);
+//	if (anti_alias_gfx)
+//		gfx_draw_aa_line (itofix(x1), itofix(y1), itofix(x2), itofix(y2));
+//	else
+	line (gfx_screen, x1, y1, x2, y2, GFX_COL_WHITE);
 }
 
 int pixelGetRGBA( SDL_Surface *surface, int x, int y, Uint8 *r, Uint8 *g, Uint8 *b, Uint8 *a )
@@ -748,7 +780,7 @@ void pixelPutRGBA( SDL_Surface *surface, int x, int y, Uint32 pixel )
 	pixels[ ( y * surface->w ) + x ] = pixel;
 }
 
-
+/*
 int pixelRGBALogical(SDL_Renderer * renderer, Sint16 x, Sint16 y, Uint8 r, Uint8 g, Uint8 b, Uint8 a, Sint32 logical_mode)
 {
 	int result = 0;
@@ -760,7 +792,7 @@ int pixelRGBALogical(SDL_Renderer * renderer, Sint16 x, Sint16 y, Uint8 r, Uint8
 	//printf( "Render surface: %p\n", surface );
 	//result |= pixelGetRGBA(surface, x, y, &_r, &_g, &_b, &_a);
 	//SDL_UnlockTexture( texture );
-	printf( "Color: %d, %d, %d, %d\n", _r, _g, _b, _a );
+	//printf( "Color: %d, %d, %d, %d\n", _r, _g, _b, _a );
 	if ( logical_mode == 1 )
 		result |= SDL_SetRenderDrawColor(renderer, r^_r, g^_g, b^_b, a);
 	else if ( logical_mode == 2 )
@@ -770,8 +802,9 @@ int pixelRGBALogical(SDL_Renderer * renderer, Sint16 x, Sint16 y, Uint8 r, Uint8
 	result |= SDL_RenderDrawPoint(renderer, x, y);
 	return result;
 }
+*/
 
-
+/*
 void gfx_draw_colour_line_logical (int x1, int y1, int x2, int y2, unsigned int line_colour, int logical_mode )
 {
 	if ( x1 == x2 ) {
@@ -792,63 +825,43 @@ void gfx_draw_colour_line_logical (int x1, int y1, int x2, int y2, unsigned int 
 
 	gfx_draw_colour_line (x1, y1, x2, y2, line_colour);
 }
+*/
 
 void gfx_draw_colour_line (int x1, int y1, int x2, int y2, int line_colour)
 {
 	if (y1 == y2)
 	{
-		hline (gfx_screen, x1 + GFX_X_OFFSET, y1 + GFX_Y_OFFSET, x2 + GFX_X_OFFSET, line_colour);
+		hline (gfx_screen, x1, y1, x2, line_colour);
 		return;
 	}
 	if (x1 == x2)
 	{
-		vline (gfx_screen, x1 + GFX_X_OFFSET, y1 + GFX_Y_OFFSET, y2 + GFX_Y_OFFSET, line_colour);
+		vline (gfx_screen, x1, y1, y2, line_colour);
 		return;
 	}
-	if (anti_alias_gfx && (line_colour == GFX_COL_WHITE))
-		gfx_draw_aa_line (itofix(x1), itofix(y1), itofix(x2), itofix(y2));
-	else
-		line (gfx_screen, x1 + GFX_X_OFFSET, y1 + GFX_Y_OFFSET, x2 + GFX_X_OFFSET, y2 + GFX_Y_OFFSET, line_colour);
+	line (gfx_screen, x1, y1, x2, y2, line_colour);
 }
 
 void gfx_draw_triangle (int x1, int y1, int x2, int y2, int x3, int y3, int col)
 {
-	triangle (gfx_screen, x1 + GFX_X_OFFSET, y1 + GFX_Y_OFFSET, x2 + GFX_X_OFFSET, y2 + GFX_Y_OFFSET,
-				   x3 + GFX_X_OFFSET, y3 + GFX_Y_OFFSET, col);
+	triangle (gfx_screen, x1, y1, x2, y2,
+				   x3, y3, col);
 }
 
 void gfx_display_text (int x, int y, char *txt)
 {
-	//text_mode (-1);
 	textout (gfx_screen, datafile[ELITE_1].dat, txt, x, y, GFX_COL_WHITE);
 }
 
 void gfx_display_colour_text (int x, int y, char *txt, int col)
 {
-	//text_mode (-1);
 	textout (gfx_screen, datafile[ELITE_1].dat, txt, x, y, col);
 }
 
 void gfx_display_centre_text (int y, char *str, int psize, int col)
 {
 	int txt_colour;
-#if 0
-	// FIXME: add txt_size support!
-	int txt_size;
-	
-	if (psize == 140)
-	{
-		txt_size = ELITE_2;
-		txt_colour = -1;
-	}
-	else
-	{
-		txt_size = ELITE_1;
-		txt_colour = col;
-	}
-#endif
 	txt_colour = col;
-	//text_mode (-1);
 	textout_centre (gfx_screen,  datafile[txt_size].dat, str, GFX_FULLVIEW_X_CENTER, y, txt_colour);
 }
 
@@ -904,8 +917,7 @@ void gfx_display_pretty_text (int tx, int ty, int bx, int by, char *txt)
 	while (len > 0)
 	{
 		pos = maxlen;
-		if (pos > len)
-			pos = len;
+		if (pos > len) pos = len;
 
 		while ((str[pos] != ' ') && (str[pos] != ',') &&
 			   (str[pos] != '.') && (str[pos] != '\0'))
