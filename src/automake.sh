@@ -36,8 +36,8 @@ if [ "$1" = "clean" ]; then
 	exit 0
 fi
 
-echo $CC: free_queue.cpp -Llib -I../include -Iinclude -pthread $EMCCFLAGS -o $JS_WASM_JS_FILE
-$CC free_queue.cpp -Llib -I../include -Iinclude -pthread $EMCCFLAGS -o $JS_WASM_JS_FILE
+echo $CC: free_queue.c -Llib -I../include -Iinclude -pthread $EMCCFLAGS -o $JS_WASM_JS_FILE
+$CC free_queue.c -Llib -I../include -Iinclude -pthread $EMCCFLAGS -o $JS_WASM_JS_FILE
 
 ########################################################################################################
 ########################################################################################################

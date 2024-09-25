@@ -16,42 +16,63 @@
 #include <map> 
 #include <string> 
 
+/*
+EMSCRIPTEN_KEEPALIVE
+char* Load(char* name)
+{	
+  mutex.lock();
+
+  printf( "Load: Count %zu; Name %s\n", val_array.size(), name );
+
+  for ( size_t i = 0; i < val_array.size(); i++ ) {
+    if ( strcmp( val_array[i]->key.c_str(), name ) == 0 ) {
+      printf( "Load: %s %s\n", val_array[i]->key.c_str(), val_array[i]->value.c_str());
+      mutex.unlock();    
+      return const_cast<char*>(val_array[i]->value.c_str());
+    }
+  }
+
+  mutex.unlock();
+  return const_cast<char*>("undefined");
+}
+
+EMSCRIPTEN_KEEPALIVE
+void Store(char* name, char* value)
+{
+  mutex.lock();
+
+  printf( "Store: Count %zu; Name %s\n", val_array.size(), name );
+
+  for ( size_t i = 0; i < val_array.size(); i++ ) {
+    if ( strcmp( val_array[i]->key.c_str(), name ) == 0 ) {
+      printf( "Store: Key Is Present %s\n", name );
+      val_array[i]->value = value;
+      printf( "Store: New Value %s\n", name );
+
+      mutex.unlock();
+      return;
+    }
+  }
+
+  printf( "Store: Key Is Not Present %s\n", name );
+  struct varpair* val = new varpair( name, value );
+  val_array.push_back( val );
+  printf( "Store: New Count %zu\n", val_array.size() );
+
+  mutex.unlock();
+}
+
 
 std::timed_mutex mutex;
 static int treads_busy = 1;
 
-// std::map<std::string, std::string> val_array;
-struct varpair
-{
-  varpair() {
-    key = "";
-    value = "";
-  }
-  varpair( std::string _key, std::string _value ) {
-    key = _key;
-    value = _value;
-  }
-  std::string key;
-  std::string value;
-};
-
-std::vector<struct varpair*> val_array;
-
-pthread_t tid_consumer = 0;
-pthread_t tid_producer = 0;
-pthread_t tid_monitor = 0;
+*/
 
 struct FreeQueue {
   size_t buffer_length;
   size_t channel_count;
   double **channel_data;
   atomic_uint *state;
-
-};
-
-struct FreeQueueThread {
-  struct FreeQueue* instance;
-  int busy;
 };
 
 /**
@@ -65,12 +86,7 @@ enum FreeQueueState {
   WRITE = 1
 };
 
-void *producer( void *arg ); 
-void *consumer( void *arg );
-void *monitor( void *arg );
-
 static pthread_mutex_t tasks_mutex = PTHREAD_MUTEX_INITIALIZER;
-static struct FreeQueueThread memdata;
 
 uint32_t _getAvailableRead(
   struct FreeQueue *queue, 
@@ -169,51 +185,6 @@ bool FreeQueuePull(struct FreeQueue *queue, double **output, size_t block_length
 }
 
 EMSCRIPTEN_KEEPALIVE
-char* Load(std::string name)
-{	
-  mutex.lock();
-
-  printf( "Load: Count %zu; Name %s\n", val_array.size(), name.c_str() );
-
-  for ( size_t i = 0; i < val_array.size(); i++ ) {
-    if ( strcmp( val_array[i]->key.c_str(), name.c_str() ) == 0 ) {
-      printf( "Load: %s %s\n", val_array[i]->key.c_str(), val_array[i]->value.c_str());
-      mutex.unlock();    
-      return const_cast<char*>(val_array[i]->value.c_str());
-    }
-  }
-
-  mutex.unlock();
-  return const_cast<char*>("undefined");
-}
-
-EMSCRIPTEN_KEEPALIVE
-void Store(std::string name, std::string value)
-{
-  mutex.lock();
-
-  printf( "Store: Count %zu; Name %s\n", val_array.size(), name.c_str() );
-
-  for ( size_t i = 0; i < val_array.size(); i++ ) {
-    if ( strcmp( val_array[i]->key.c_str(), name.c_str() ) == 0 ) {
-      printf( "Store: Key Is Present %s\n", name.c_str() );
-      val_array[i]->value = value;
-      printf( "Store: New Value %s\n", name.c_str() );
-
-      mutex.unlock();
-      return;
-    }
-  }
-
-  printf( "Store: Key Is Not Present %s\n", name.c_str() );
-  struct varpair* val = new varpair( name, value );
-  val_array.push_back( val );
-  printf( "Store: New Count %zu\n", val_array.size() );
-
-  mutex.unlock();
-}
-
-EMSCRIPTEN_KEEPALIVE
 void *GetFreeQueuePointers( struct FreeQueue* queue, char* data ) 
 {
   if ( queue != nullptr ) 
@@ -227,21 +198,6 @@ void *GetFreeQueuePointers( struct FreeQueue* queue, char* data )
     } else if (strcmp(data, "channel_data") == 0) {
       return ( void* )&queue->channel_data;
     }
-  }
-  return 0;
-}
-
-EMSCRIPTEN_KEEPALIVE 
-int DestroyFreeQueueThreads() {
-  if ( memdata.instance != nullptr ) {
-    memdata.busy = 0;
-    pthread_join(tid_producer, 0);
-    pthread_join(tid_consumer, 0);
-    DestroyFreeQueue( memdata.instance );
-    tid_producer = 0;
-    tid_consumer = 0;
-    memdata.instance = nullptr;
-    return 1;
   }
   return 0;
 }
@@ -449,11 +405,11 @@ void *monitor( void *arg )
   return 0;
 
 }
-
+/*
 int main( int argc, char* argv[] )
 {
   memdata.instance = nullptr;
   memdata.busy = 1;
   return CreateFreeQueueThreads();
 }
-
+*/

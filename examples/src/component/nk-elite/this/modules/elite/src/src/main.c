@@ -27,6 +27,7 @@
 #include <time.h>
 #include <stdlib.h>
 
+
 #include "ssdl.h"
 #include "main.h"
 #include "vector.h"
@@ -58,9 +59,11 @@ char message_string[80];
 int rolling;
 int climbing;
 int game_paused;
+
 #ifdef HACKING
 int identify;
 #endif
+
 int scanner_zoom = 1;
 int remap_keys;
 
@@ -1419,6 +1422,8 @@ void secondary_main()
 		// Менюхи
 		///////////////////////////////////////////////////////////////
 
+
+
 		handle_flight_keys ();	
 		if ( current_screen == SCR_EQUIP_SHIP ) {
 			equip_ship (0);
@@ -1510,41 +1515,36 @@ void secondary_main()
 			if (message_count > 0)
 				gfx_display_centre_text (358, message_string, 120, GFX_COL_WHITE);
 					
-			if (hyper_ready)
-			{
+			if (hyper_ready) {
 				display_hyper_status();
-				if ((mcount & 3) == 0) {
-					countdown_hyperspace();
-				}
+				if ((mcount & 3) == 0) countdown_hyperspace();
 			}
 
 			gfx_release_screen();
 			
-				mcount--;
-				if (mcount < 0)
-					mcount = 255;
+			mcount--;
+			if (mcount < 0) mcount = 255;
 
-				if ((mcount & 7) == 0)
-					regenerate_shields();
+			if ((mcount & 7) == 0) regenerate_shields();
 
-				if ((mcount & 31) == 10)
+			if ((mcount & 31) == 10)
+			{
+				if (energy < 50)
 				{
-					if (energy < 50)
-					{
-						info_message ("ENERGY LOW");
-						snd_play_sample (SND_BEEP);
-					}
-
-					update_altitude();
+					info_message ("ENERGY LOW");
+					snd_play_sample (SND_BEEP);
 				}
-				
-				if ((mcount & 31) == 20) update_cabin_temp();
-				if ((mcount == 0) && (!witchspace)) random_encounter();
-					
-				cool_laser();				
-				time_ecm();
 
-				update_console();
+				update_altitude();
+			}
+				
+			if ((mcount & 31) == 20) update_cabin_temp();
+			if ((mcount == 0) && (!witchspace)) random_encounter();
+					
+			cool_laser();				
+			time_ecm();
+
+			update_console();
 		}
 
 		if (current_screen == SCR_BREAK_PATTERN) display_break_pattern();
@@ -1613,6 +1613,28 @@ int enablescreenname( int _state ) {
 }
 
 #ifdef __EMSCRIPTEN__
+
+EMSCRIPTEN_KEEPALIVE
+int GetGameParameter( char* _variable ) {
+	printf( "GetGameParameter: variable[\"%s\"]\n", _variable );
+	if ( strcmp( _variable, "vflight_speed" ) == 0 ) {
+		return flight_speed;
+	} else if ( strcmp( _variable, "vflight_roll" ) == 0 ) {
+		return flight_roll;
+	} else if ( strcmp( _variable, "vflight_climb" ) == 0 ) {
+		return flight_climb;
+	} else if ( strcmp( _variable, "venergy" ) == 0 ) {
+		return energy;
+	} else if ( strcmp( _variable, "vlaser_temp" ) == 0 ) {
+		return laser_temp;
+	} else if ( strcmp( _variable, "vaft_shield" ) == 0 ) {
+		return aft_shield;
+	} else if ( strcmp( _variable, "vfront_shield" ) == 0 ) {
+		return front_shield;
+	}
+	return -1;
+}
+
 EMSCRIPTEN_KEEPALIVE
 int SetGameParameter( char* _variable, char* _state ) {
 	printf( "SetGameParameter: variable[\"%s\"]=%s\n", _variable, _state );
