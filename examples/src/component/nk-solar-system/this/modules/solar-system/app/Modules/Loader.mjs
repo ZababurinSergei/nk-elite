@@ -87,8 +87,9 @@ export const Loader = async function () {
     // })
 
     renderButton.addEventListener('click', () => {
-      $('.inner').slideUp(500, ()=> {
-        progressPrompt.addClass('active');
+      // $('.inner').slideUp(500, ()=> {
+        progressPrompt.classList.add('active');
+        // progressPrompt.addClass('active');
 
         solarSystemFactory.build(solarSystemData).then(()=> {
           introScreen.fadeOut(2000, ()=> {
@@ -112,7 +113,7 @@ export const Loader = async function () {
             });
           });
         });
-      });
+      // });
     }, { once: true })
   });
 }
