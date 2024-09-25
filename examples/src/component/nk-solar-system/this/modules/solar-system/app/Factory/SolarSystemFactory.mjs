@@ -1,50 +1,16 @@
-define(
-[
-  'Environment/GridHelper',
-  'Modules/Scene',
-  'Factory/StarFactory',
-  'Factory/AsteroidBeltFactory',
-  'Factory/KuiperBeltFactory',
-  'Models/Sun',
-  'Models/Planet',
-  'Models/Moon',
-  'Controllers/RenderController',
-  'Controllers/OrbitController',
-  'Controllers/TravelController',
-  'Controllers/MenuController',
-  'Controllers/EffectsController',
-  'Modules/RandomColorGenerator',
-  'Environment/Constants',
-  'vendor/three-text2d/dist/three-text2d',
-  'Listeners/FactoryListener'
-],
-function(
-  GridHelper,
-  Scene,
-  StarFactory,
-  AsteroidBeltFactory,
-  KuiperBeltFactory,
-  Sun,
-  Planet,
-  Moon,
-  RenderController,
-  OrbitController,
-  TravelController,
-  MenuController,
-  EffectsController,
-  RandomColorGenerator,
-  Constants,
-  ThreeText
-) {
-  'use strict';
-
+import { Scene } from '../Modules/Scene.mjs'
+import { RandomColorGenerator } from '../Modules/RandomColorGenerator.mjs'
+import { renderControllerInit } from '../Controllers/RenderController.mjs'
+export const systemFactory = async function () {
+  let self = this
+  const RenderController = renderControllerInit.bind(this)
   /**
    * SolarSystemFactory
    *
    * @param {Object} data
    */
   function SolarSystemFactory(data) {
-    this.scene = new Scene();
+    this.scene = new Scene(self);
     this.data = data || {};
     this.parent = data.parent || null;
     this.planets = data.planets || [];
@@ -66,18 +32,18 @@ function(
    */
   SolarSystemFactory.prototype.build = function(data) {
     return new Promise((resolve)=> {
-      var startTime = new Date().getTime();
-      var startEvent = new CustomEvent('solarsystem.build.start', {
+      let startTime = new Date().getTime();
+      let startEvent = new CustomEvent('solarsystem.build.start', {
         detail: {
           timestamp: startTime
         }
       });
 
-      var sun = this.buildSun(data.parent);
+      let sun = this.buildSun(data.parent);
       this.solarSystemObjects.sun = sun;
       this.scene.add(sun.threeObject);
 
-      var map = {
+      let map = {
         '1': {
           buildGroup: this.buildPlanets.bind(this, data.planets, sun),
           timeout: 500
@@ -99,20 +65,20 @@ function(
         }
       };
 
-      var buildGroupsCount = Object.keys(map).length;
-      var i = 0;
+      let buildGroupsCount = Object.keys(map).length;
+      let i = 0;
 
       function run() {
         i++;
 
-        var groupStartTime = new Date().getTime();
+        let groupStartTime = new Date().getTime();
 
         if (map.hasOwnProperty(i)) {
           setTimeout(()=> {
             map[i].buildGroup.call().then((response)=> {
-              var groupEndTime = new Date().getTime();
-              var elapsedTime = (groupEndTime - groupStartTime) * 0.001;
-              var percentage = (i / 4) * 100;
+              let groupEndTime = new Date().getTime();
+              let elapsedTime = (groupEndTime - groupStartTime) * 0.001;
+              let percentage = (i / 4) * 100;
 
               this.updateProgress(percentage);
 
@@ -133,18 +99,19 @@ function(
   };
 
   SolarSystemFactory.prototype.renderScene = function(startTime) {
-    var renderController = new RenderController(this.scene);
-    var focalpoint = this.scene;
+    debugger
+    let renderController = new RenderController(this.scene);
+    let focalpoint = this.scene;
 
     focalpoint.add(this.scene.camera);
     this.scene.camera.up.set(0, 0, 1);
     this.scene.camera.position.set(
-      60000,
-      0,
-      15000
+        60000,
+        0,
+        15000
     );
 
-    var focalPointChangeEvent = new CustomEvent('solarsystem.focalpoint.change', {
+    let focalPointChangeEvent = new CustomEvent('solarsystem.focalpoint.change', {
       detail: {
         object: focalpoint
       }
@@ -155,8 +122,8 @@ function(
 
     this.initializeUserInterface();
 
-    var endTime = new Date().getTime();
-    var endEvent = new CustomEvent('solarsystem.build.end', {
+    let endTime = new Date().getTime();
+    let endEvent = new CustomEvent('solarsystem.build.end', {
       detail: {
         elapsedTime: (endTime - startTime) * 0.001
       }
@@ -177,20 +144,20 @@ function(
       throw new Error('Argument satellitesData must be an instanceof Array.');
     }
 
-    var mesh = new THREE.Mesh(
-      new THREE.SphereGeometry(
-          0.002,
-          16,
-          16
-        ),
-        new THREE.MeshPhongMaterial()
-      )
+    let mesh = new THREE.Mesh(
+            new THREE.SphereGeometry(
+                0.002,
+                16,
+                16
+            ),
+            new THREE.MeshPhongMaterial()
+        )
     ;
 
-    var threeRadius = planet.threeDiameter / 2;
-    var threeDistanceFromParent = threeRadius + 400 * Constants.universeScale;
+    let threeRadius = planet.threeDiameter / 2;
+    let threeDistanceFromParent = threeRadius + 400 * Constants.universeScale;
 
-    for (var i = 0; i < satellitesData.length; i++) {
+    for (let i = 0; i < satellitesData.length; i++) {
       planet.threeObject.add(mesh);
 
       mesh.position.x = threeDistanceFromParent;
@@ -198,15 +165,15 @@ function(
   };
 
   SolarSystemFactory.prototype.buildMoons = function(planetData, planet) {
-    for (var i = 0; i < planetData.satellites.length; i++) {
-      var orbitColor = this._randomColorGenerator.getRandomColor({
+    for (let i = 0; i < planetData.satellites.length; i++) {
+      let orbitColor = this._randomColorGenerator.getRandomColor({
         luminosity: 'light',
         format: 'hex',
         hue: 'blue'
       });
 
-      var moon = new Moon(planetData.satellites[i], planet, planetData, orbitColor);
-      var orbitCtrlMoon = new OrbitController(moon, false);
+      let moon = new Moon(planetData.satellites[i], planet, planetData, orbitColor);
+      let orbitCtrlMoon = new OrbitController(moon, false);
 
       this.solarSystemObjects.moons.push(moon);
 
@@ -216,7 +183,7 @@ function(
 
       planet.core.add(moon.orbitCentroid);
 
-      var buildEvent = new CustomEvent('solarsystem.build.object.complete', {
+      let buildEvent = new CustomEvent('solarsystem.build.object.complete', {
         detail: {
           object: moon
         }
@@ -228,9 +195,9 @@ function(
 
   SolarSystemFactory.prototype.buildPlanet = function(data, sun) {
     return new Promise((resolve)=> {
-      var startTime = new Date().getTime();
-      var planet = new Planet(data, sun);
-      var orbitCtrl = new OrbitController(planet);
+      let startTime = new Date().getTime();
+      let planet = new Planet(data, sun);
+      let orbitCtrl = new OrbitController(planet);
 
       this.scene.add(planet.orbitCentroid); // all 3d objects are attached to the orbit centroid
 
@@ -244,7 +211,7 @@ function(
 
       this.solarSystemObjects.planets.push(planet);
 
-      var endTime = new Date().getTime();
+      let endTime = new Date().getTime();
 
       resolve({
         planet: planet,
@@ -255,16 +222,16 @@ function(
 
   SolarSystemFactory.prototype.buildPlanets = function(planets, sun) {
     return new Promise((resolve)=> {
-      var startTime = new Date().getTime();
-      var promises = [];
-      var endCount = planets.length - 1;
-      var i;
+      let startTime = new Date().getTime();
+      let promises = [];
+      let endCount = planets.length - 1;
+      let i;
 
       for (i = 0; i < planets.length; i++) {
-        var startTime = new Date().getTime();
+        let startTime = new Date().getTime();
 
         promises.push(this.buildPlanet(planets[i], sun).then((response)=> {
-          var buildEvent = new CustomEvent('solarsystem.build.object.complete', {
+          let buildEvent = new CustomEvent('solarsystem.build.object.complete', {
             detail: {
               object: response.planet
             }
@@ -277,7 +244,7 @@ function(
       }
 
       Promise.all(promises).then(()=> {
-        var endTime = new Date().getTime();
+        let endTime = new Date().getTime();
 
         resolve({
           group: 'planets',
@@ -288,11 +255,11 @@ function(
   };
 
   SolarSystemFactory.prototype.buildSun = function(parentData) {
-    var sun = new Sun(parentData);
+    let sun = new Sun(parentData);
 
     this.solarSystemObjects.sun = sun;
 
-    var buildEvent = new CustomEvent('solarsystem.build.object.complete', {
+    let buildEvent = new CustomEvent('solarsystem.build.object.complete', {
       detail: {
         object: sun
       }
@@ -304,13 +271,13 @@ function(
   };
 
   SolarSystemFactory.prototype.buildAsteroidBelt = function(data) {
-    var startTime = new Date().getTime();
-    var asteroidBeltFactory = new AsteroidBeltFactory(this.scene, data);
+    let startTime = new Date().getTime();
+    let asteroidBeltFactory = new AsteroidBeltFactory(this.scene, data);
 
     return new Promise((resolve)=> {
       asteroidBeltFactory.build();
 
-      var endTime = new Date().getTime();
+      let endTime = new Date().getTime();
 
       resolve({
         group: 'asteroids',
@@ -320,13 +287,13 @@ function(
   };
 
   SolarSystemFactory.prototype.buildKuiperBelt = function(data) {
-    var startTime = new Date().getTime();
-    var kuiperBeltFactory = new KuiperBeltFactory(this.scene, data);
+    let startTime = new Date().getTime();
+    let kuiperBeltFactory = new KuiperBeltFactory(this.scene, data);
 
     return new Promise((resolve)=> {
       kuiperBeltFactory.build();
 
-      var endTime = new Date().getTime();
+      let endTime = new Date().getTime();
 
       resolve({
         group: 'asteroids',
@@ -336,12 +303,12 @@ function(
   };
 
   SolarSystemFactory.prototype.buildStars = function() {
-    var startTime = new Date().getTime();
-    var starFactory = new StarFactory(this.scene);
+    let startTime = new Date().getTime();
+    let starFactory = new StarFactory(this.scene);
 
     return new Promise((resolve)=> {
       starFactory.buildStarField().then(()=> {
-        var endTime = new Date().getTime();
+        let endTime = new Date().getTime();
 
         resolve({
           group: 'stars',
@@ -352,7 +319,7 @@ function(
   };
 
   SolarSystemFactory.prototype.initializeUserInterface = function(currentTarget) {
-    var menuController = new MenuController({
+    let menuController = new MenuController({
       el: '#menu',
       scene: this.scene,
       data: this.data,
@@ -360,7 +327,7 @@ function(
       currentTarget: currentTarget
     });
 
-    var effectsController = new EffectsController({
+    let effectsController = new EffectsController({
       el: '#toggle-effects',
       sceneObjects: this.solarSystemObjects.planets
     });
@@ -369,7 +336,7 @@ function(
   };
 
   SolarSystemFactory.prototype.updateProgress = function(percentage, elapsedTime) {
-    var meter = $('.progress-meter');
+    let meter = $('.progress-meter');
 
     meter.css({
       'transitionDuration': elapsedTime +'ms'
@@ -379,4 +346,4 @@ function(
   };
 
   return SolarSystemFactory;
-});
+}

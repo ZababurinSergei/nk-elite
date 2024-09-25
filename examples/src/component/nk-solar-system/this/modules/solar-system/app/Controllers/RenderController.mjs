@@ -1,4 +1,4 @@
-export const renderController = function () {
+export const renderControllerInit = function () {
 
   var tweening = false;
 

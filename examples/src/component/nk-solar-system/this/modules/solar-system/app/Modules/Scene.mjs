@@ -1,9 +1,11 @@
+import * as THREE from 'three';
+import {OrbitControls} from 'OrbitControls'
 export class Scene extends THREE.Scene {
-    constructor() {
+    constructor(self) {
         super();
-
-        this._sceneElement = document.getElementById('solar-system');
-        this._camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.05, 5 * Math.pow(10, 13));
+        this.self = self
+        this._sceneElement = this.self.shadowRoot.getElementById('solar-system');
+        this._camera = new THREE.PerspectiveCamera(45, self.innerWidth / self.innerHeight, 0.05, 5 * Math.pow(10, 13));
         this._orbitControls = new OrbitControls(this._camera, this._sceneElement);
 
         // this.setCamera();

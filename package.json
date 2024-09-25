@@ -26,6 +26,8 @@
     },
     "dependencies": {
         "path-browserify": "^1.0.1",
+        "three": "^0.168.0",
+        "three-orbitcontrols": "^2.110.2",
         "twig": "^1.17.1"
     }
 }

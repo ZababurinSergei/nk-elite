@@ -1,7 +1,8 @@
 import { Detector } from './Detector.mjs'
 import { TemplateLoader } from './TemplateLoader.mjs'
-
+import {systemFactory} from '../Factory/SolarSystemFactory.mjs'
 export const Loader = async function () {
+  const SolarSystemFactory = await systemFactory.call(this)
 
   const detector = Detector.call(this)
 
@@ -45,24 +46,26 @@ export const Loader = async function () {
 
   dataRequest.then((data)=> {
     solarSystemData = data;
-    debugger
     var updateUserInterfaceEvent = new CustomEvent('solarsystem.update.ui', { detail: data });
     var solarSystemFactory = new SolarSystemFactory(solarSystemData);
-    var introScreen = $('.intro-screen');
-    var renderButton = $('#render-scene');
-    var solarsystem = $('#solar-system');
-    var progressPrompt = $('#loading-prompt');
-    var progressBar = $('#progress-bar');
+    var introScreen = this.shadowRoot.querySelector('.intro-screen');
+    var renderButton = this.shadowRoot.querySelector('#render-scene');
+    var solarsystem = this.shadowRoot.querySelector('#solar-system');
+    var progressPrompt = this.shadowRoot.querySelector('#loading-prompt');
+    var progressBar = this.shadowRoot.querySelector('#progress-bar');
 
-    solarsystem.fadeOut();
+    // solarsystem.fadeOut();
 
-    $('.inner').slideUp(500, ()=> {
-      progressPrompt.addClass('active');
+    // console.log('dddddddddddddddd', this)
+    // debugger
+    //TODO слайдер уходит вверх
+    // $('.inner').slideUp(500, ()=> {
+      progressPrompt.classList.add('active');
 
       solarSystemFactory.build(solarSystemData).then(()=> {
-        introScreen.fadeOut(2000, ()=> {
-          introScreen.remove();
-          solarsystem.fadeIn(2000, ()=> {
+        // introScreen.fadeOut(2000, ()=> {
+        //   introScreen.remove();
+        //   solarsystem.fadeIn(2000, ()=> {
             var seenModal = false;
 
             if (window.localStorage) {
@@ -78,12 +81,12 @@ export const Loader = async function () {
                 }
               });
             }
-          });
-        });
+          // });
+        // });
       });
-    })
+    // })
 
-    renderButton.one('click', ()=> {
+    renderButton.addEventListener('click', () => {
       $('.inner').slideUp(500, ()=> {
         progressPrompt.addClass('active');
 
@@ -110,7 +113,7 @@ export const Loader = async function () {
           });
         });
       });
-    });
+    }, { once: true })
   });
 }
 // define(
