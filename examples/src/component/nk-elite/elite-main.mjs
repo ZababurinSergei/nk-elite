@@ -16,15 +16,14 @@ export const freeQueueInit = function(self)  {
         ///////////////////////////////////////////////////////////////////////////////////////
         // FreeQueue initialization
         ///////////////////////////////////////////////////////////////////////////////////////
-        self.LFreeQueue.callMain("");
+        //self.LFreeQueue.callMain("");
 
-        const GetFreeQueueThreads = self.LFreeQueue.cwrap('GetFreeQueueThreads', 'number', ['']);
         const GetFreeQueuePointers = self.LFreeQueue.cwrap('GetFreeQueuePointers', 'number', ['number', 'string']);
         const PrintQueueInfo = self.LFreeQueue.cwrap('PrintQueueInfo', '', ['number']);
         const CreateFreeQueue = self.LFreeQueue.cwrap('CreateFreeQueue', 'number', ['number', 'number']);
         const PrintQueueAddresses = self.LFreeQueue.cwrap('PrintQueueAddresses', '', ['number']);
 
-        self.pointer = GetFreeQueueThreads();
+        self.pointer = CreateFreeQueue( 1754 * 50 , 2 );
         const bufferLengthPtr = GetFreeQueuePointers(self.pointer, "buffer_length");
         const channelCountPtr = GetFreeQueuePointers(self.pointer, "channel_count");
         const statePtr = GetFreeQueuePointers(self.pointer, "state");
@@ -40,7 +39,7 @@ export const freeQueueInit = function(self)  {
         self.instance = FreeQueue.fromPointers(pointers);
         if (self.instance != undefined) self.instance.printAvailableReadAndWrite();
 
-        self.onRuntimeInitialized()
+//        self.onRuntimeInitialized()
     }
 
     initFreeQueue(self.LFreeQueue).then( async (module) => {

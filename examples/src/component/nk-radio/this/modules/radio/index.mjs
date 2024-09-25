@@ -93,15 +93,14 @@ const freeQueueInit = (CONFIG) => {
         ///////////////////////////////////////////////////////////////////////////////////////
         // FreeQueue initialization
         ///////////////////////////////////////////////////////////////////////////////////////
-        globalThis["LFreeQueue"].callMain("");
+        //globalThis["LFreeQueue"].callMain("");
 
-        const GetFreeQueueThreads = globalThis["LFreeQueue"].cwrap('GetFreeQueueThreads', 'number', ['']);
         const GetFreeQueuePointers = globalThis["LFreeQueue"].cwrap('GetFreeQueuePointers', 'number', ['number', 'string']);
         const PrintQueueInfo = globalThis["LFreeQueue"].cwrap('PrintQueueInfo', '', ['number']);
         const CreateFreeQueue = globalThis["LFreeQueue"].cwrap('CreateFreeQueue', 'number', ['number', 'number']);
         const PrintQueueAddresses = globalThis["LFreeQueue"].cwrap('PrintQueueAddresses', '', ['number']);
 
-        CONFIG.queue.pointer = GetFreeQueueThreads();
+        CONFIG.queue.pointer = CreateFreeQueue( 1754 * 50, 2 );
         const bufferLengthPtr = GetFreeQueuePointers(CONFIG.queue.pointer, "buffer_length");
         const channelCountPtr = GetFreeQueuePointers(CONFIG.queue.pointer, "channel_count");
         const statePtr = GetFreeQueuePointers(CONFIG.queue.pointer, "state");
