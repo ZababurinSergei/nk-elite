@@ -1,39 +1,51 @@
-export const Loader = function () {
+import { Detector } from './Detector.mjs'
+import { TemplateLoader } from './TemplateLoader.mjs'
 
-  var seenJsFeaturesModal = false;
+export const Loader = async function () {
+
+  const detector = Detector.call(this)
+
+  let seenJsFeaturesModal = false;
 
   if (window.localStorage) {
     seenJsFeaturesModal = localStorage.getItem('seenJsFeaturesModal');
   }
 
   if (!seenJsFeaturesModal) {
-    var browserAlert = new Foundation.Reveal($('#browser-compatibility-modal'));
-    browserAlert.open();
+    console.log('DIALOG НАДО ВСТАВИТЬ !!!!')
+    // var browserAlert = new Foundation.Reveal($('#browser-compatibility-modal'));
+    // browserAlert.open();
 
-    $('#browser-compatibility-got-it').on('click', ()=> {
-      if (window.localStorage) {
-        localStorage.setItem('seenJsFeaturesModal', 'true');
-      }
-    });
+    // $('#browser-compatibility-got-it').on('click', ()=> {
+    //   if (window.localStorage) {
+    //     localStorage.setItem('seenJsFeaturesModal', 'true');
+    //   }
+    // });
   }
 
-  if (!Detector.webgl) {
-    Detector.addGetWebGLMessage();
+  if (!detector.webgl) {
+    detector.addGetWebGLMessage();
     // notifyGa('Compatibility Check', 'Fail', window.navigator.userAgent);
     return;
   }
 
-  var solarSystemData = null;
-  var templateLoader = new TemplateLoader();
-  var dataRequest = new HttpRequest(
-      'GET',
-      './component/nk-solar-system/this/modules/solar-system/data/solarsystem.json',
-      true
-  );
+  let solarSystemData = null;
+  let templateLoader = new TemplateLoader();
+  let response = await fetch('./component/nk-solar-system/this/modules/solar-system/data/solarsystem.json');
+  let dataRequest
+  if (response.ok) {
+    dataRequest = response.json();
+  }
 
-  dataRequest.send().then((data)=> {
+  // var dataRequest = new HttpRequest(
+  //     'GET',
+  //     './component/nk-solar-system/this/modules/solar-system/data/solarsystem.json',
+  //     true
+  // );
+
+  dataRequest.then((data)=> {
     solarSystemData = data;
-
+    debugger
     var updateUserInterfaceEvent = new CustomEvent('solarsystem.update.ui', { detail: data });
     var solarSystemFactory = new SolarSystemFactory(solarSystemData);
     var introScreen = $('.intro-screen');

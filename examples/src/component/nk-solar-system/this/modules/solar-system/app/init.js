@@ -1,6 +1,6 @@
-import { loader } from ''
+import { Loader } from './Modules/Loader.mjs'
 export const init = function () {
-
+    Loader.call(this)
 }
 // define('jquery', function() {
 //     return jQuery;

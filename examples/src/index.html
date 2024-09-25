@@ -3,6 +3,8 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Org portal</title>
+        <script type="text/javascript" src="./this/modules/backbone-min.js"></script>
+
 <!--    <script type="text/javascript" src="./component/nk-solar-system/this/modules/solar-system/app/vendor/jquery/dist/jquery.min.js"></script>-->
 <!--    <script type="text/javascript" src="./component/nk-solar-system/this/modules/solar-system/app/vendor/foundation-sites/dist/foundation.min.js"></script>-->
 <!--    <script type="text/javascript" src="./component/nk-solar-system/this/modules/solar-system/app/vendor/stats/build/stats.min.js"></script>-->
@@ -13,7 +15,9 @@
     <script type="importmap">
         {
             "imports": {
+                "underscore": "./this/modules/underscore-esm.js",
                 "lokijs": "./this/modules/lib-lokijs.js",
+                "twig": "./this/modules/lib-solar-system-twig.js",
                 "@newkind/queue": "./this/queue.mjs",
                 "@libp2p/peer-id-factory": "./this/modules/lib-peerId-factory.js",
                 "@newkind/constants": "./this/constants.js",

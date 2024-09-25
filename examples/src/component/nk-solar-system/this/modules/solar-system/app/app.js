@@ -1,7 +1,7 @@
-// import { init } from './init.js'
+import { init } from './init.js'
 
 export const app = function () {
-
+ init.call(this)
 }
 // require.config({
 //     baseUrl: './component/nk-solar-system/this/modules/solar-system/app',

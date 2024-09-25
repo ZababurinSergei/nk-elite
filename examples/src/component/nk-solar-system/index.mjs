@@ -1,4 +1,5 @@
 import {Component} from '../index.mjs';
+import {app} from "./this/index.mjs";
 
 const name = 'nk-solar-system';
 const component = await Component();
@@ -14,6 +15,7 @@ Object.defineProperties(component.prototype, {
                 await: ['nk-p2p']
             }
 
+            await app.call(this)
             return true;
         },
         writable: true

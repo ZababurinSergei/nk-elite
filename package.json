@@ -23,5 +23,9 @@
     ],
     "devDependencies": {
         "nodemon": "^3.1.7"
+    },
+    "dependencies": {
+        "path-browserify": "^1.0.1",
+        "twig": "^1.17.1"
     }
 }
