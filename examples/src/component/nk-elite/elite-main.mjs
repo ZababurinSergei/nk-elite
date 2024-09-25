@@ -39,7 +39,7 @@ export const freeQueueInit = function(self)  {
         self.instance = FreeQueue.fromPointers(pointers);
         if (self.instance != undefined) self.instance.printAvailableReadAndWrite();
 
-//        self.onRuntimeInitialized()
+        self.onRuntimeInitialized();
     }
 
     initFreeQueue(self.LFreeQueue).then( async (module) => {
