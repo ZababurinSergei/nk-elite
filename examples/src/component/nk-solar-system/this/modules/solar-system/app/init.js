@@ -1,13 +1,17 @@
-define('jquery', function() {
-    return jQuery;
-});
+import { loader } from ''
+export const init = function () {
 
-require(
-[
-    'Modules/Loader'
-],
-function() {
-    if (window.Foundation) {
-        $(document).foundation();
-    }
-});
+}
+// define('jquery', function() {
+//     return jQuery;
+// });
+
+// require(
+// [
+//     'Modules/Loader'
+// ],
+// function() {
+//     if (window.Foundation) {
+//         $(document).foundation();
+//     }
+// });
