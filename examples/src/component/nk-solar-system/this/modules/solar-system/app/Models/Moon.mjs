@@ -1,4 +1,12 @@
-export const moon = function () {
+import {celestialObjectInit} from './CelestialObject.mjs'
+import { constantsInit } from '../Environment/Constants.mjs'
+import * as THREE from 'three'
+import {orbitInit} from './Orbit.mjs'
+
+export const moonInit = function () {
+  const Constants = constantsInit.call(this)
+  const CelestialObject = celestialObjectInit.call(this)
+  const Orbit = orbitInit.call(this)
 
   class Moon extends CelestialObject {
     constructor(data, threeParent, parentData, orbitColor) {

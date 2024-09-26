@@ -1,4 +1,6 @@
+import {celestialObjectInit} from "./CelestialObject.mjs";
 export const celestialObject = function () {
+  const CelestialObject = celestialObjectInit.call(this)
 
   class Asteroid extends CelestialObject {
     constructor(index, texture) {
