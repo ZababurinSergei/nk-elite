@@ -1,4 +1,11 @@
-export const sun = function () {
+import { celestialObjectInit } from './CelestialObject.mjs'
+import * as THREE from 'three'
+import { constantsInit } from '../Environment/Constants.mjs'
+
+export const sunInit = function () {
+  const self = this
+  const  CelestialObject = celestialObjectInit.call(this)
+  const Constants = constantsInit.call(this)
 
   const DISTANCE_TO_KUIPER_BELT = 7479893535; // Kuiper Belt radius
 

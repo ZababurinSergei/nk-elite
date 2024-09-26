@@ -1,4 +1,4 @@
-export const date = function () {
+export const dateInit = function () {
   /**
    * Gets the current day of the year.
    *

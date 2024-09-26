@@ -1,4 +1,8 @@
-export const orbit = function () {
+import * as THREE from 'three'
+import { constantsInit } from '../Environment/Constants.mjs'
+export const orbitInit = function () {
+  const self = this
+  const Constants = constantsInit.call(this)
 
   class Orbit {
     constructor(object, color) {

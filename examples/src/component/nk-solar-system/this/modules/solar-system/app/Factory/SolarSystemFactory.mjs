@@ -1,8 +1,15 @@
 import { Scene } from '../Modules/Scene.mjs'
 import { RandomColorGenerator } from '../Modules/RandomColorGenerator.mjs'
 import { renderControllerInit } from '../Controllers/RenderController.mjs'
+import { sunInit } from '../Models/Sun.mjs'
+import {planetInit} from '../Models/Planet.mjs'
+import {orbitControllerInit} from '../Controllers/OrbitController.mjs'
+
 export const systemFactory = async function () {
   let self = this
+  const Sun = sunInit.call(this)
+  const Planet = planetInit.call(this)
+  const OrbitController = orbitControllerInit.call(this)
   const RenderController = renderControllerInit.bind(this)
   /**
    * SolarSystemFactory

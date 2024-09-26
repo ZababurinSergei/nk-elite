@@ -1,3 +1,5 @@
+import {randomColor} from 'randomcolor'
+
 export class RandomColorGenerator {
     constructor() {
     }
@@ -7,6 +9,6 @@ export class RandomColorGenerator {
     }
 
     getRandomColor(options) {
-        return randomColor(options);
+        return randomColor.randomColor(options);
     }
 }

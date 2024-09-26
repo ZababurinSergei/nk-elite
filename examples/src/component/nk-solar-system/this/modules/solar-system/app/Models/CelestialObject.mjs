@@ -1,5 +1,6 @@
-export const celestialObject = function () {
-
+import * as THREE  from 'three'
+export const celestialObjectInit = function () {
+  const self = this
   class CelestialObject {
     constructor(diameter, mass, gravity, density) {
       this._diameter = diameter || 1;

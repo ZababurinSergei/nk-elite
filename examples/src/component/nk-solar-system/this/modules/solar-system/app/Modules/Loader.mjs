@@ -3,7 +3,6 @@ import { TemplateLoader } from './TemplateLoader.mjs'
 import {systemFactory} from '../Factory/SolarSystemFactory.mjs'
 export const Loader = async function () {
   const SolarSystemFactory = await systemFactory.call(this)
-
   const detector = Detector.call(this)
 
   let seenJsFeaturesModal = false;

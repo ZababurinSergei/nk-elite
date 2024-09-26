@@ -1,4 +1,4 @@
-export const Constants = function () {
+export const constantsInit = function () {
     /**
      * Constants
      *

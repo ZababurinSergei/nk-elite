@@ -1,5 +1,14 @@
-export const planet = function () {
+import {celestialObjectInit} from './CelestialObject.mjs'
+import * as THREE from 'three'
+import { constantsInit } from '../Environment/Constants.mjs'
+import { orbitInit } from './Orbit.mjs'
 
+export const planetInit = function () {
+  const self = this
+  const CelestialObject = celestialObjectInit.call(this)
+  const Constants = constantsInit.call(this)
+  const Orbit = orbitInit.call(this)
+  
   class Planet extends CelestialObject {
     constructor(data, threeParent) {
       super(data.diameter, data.mass, data.gravity, data.density);
@@ -342,6 +351,7 @@ export const planet = function () {
       var highlightDiameter = this._threeDiameter > 4 ? this._threeDiameter * 45 : this._threeDiameter * 75;
       var orbitAmplitude = amplitude || highlightDiameter;
       var orbitLine = new THREE.Geometry();
+      // var orbitLine = new Geometry();
       var material = new THREE.MeshBasicMaterial({
         color: '#ffbd00', // '#00ffff',
         transparent: true,

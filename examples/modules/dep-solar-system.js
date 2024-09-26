@@ -1,0 +1,1 @@
+export * as randomColor from "randomcolor";

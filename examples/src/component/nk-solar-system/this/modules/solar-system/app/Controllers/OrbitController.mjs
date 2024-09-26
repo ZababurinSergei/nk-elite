@@ -1,5 +1,10 @@
-export const orbitController = function () {
-
+import {Clock} from '../Modules/Clock.mjs'
+import {constantsInit} from "../Environment/Constants.mjs";
+import {dateInit} from '../Extensions/Date.mjs'
+export const orbitControllerInit = function () {
+  const self = this
+  const Constants = constantsInit.call(this)
+  dateInit.call(this)
   window.clock = new Clock();
   var prevTime = 0;
 
