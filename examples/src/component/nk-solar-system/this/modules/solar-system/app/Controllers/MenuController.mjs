@@ -1,4 +1,7 @@
-export const menuController = function () {
+import { travelControllerInit } from './TravelController.mjs'
+import { TemplateLoader } from '../Modules/TemplateLoader.mjs'
+export const menuControllerInit = function () {
+  const TravelController = travelControllerInit.call(this)
 
   const ORBIT_COLOR_DEFAULT = '#424242';
   const ORBIT_COLOR_HIGHLIGHT = '#197eaa';

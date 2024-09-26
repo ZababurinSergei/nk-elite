@@ -1,5 +1,10 @@
-export const asteroidBeltFactory = function () {
+import * as THREE from 'three'
+import {randomNumberGeneratorInit} from "../Modules/RandomNumberGenerator.mjs";
+import { constantsInit } from '../Environment/Constants.mjs'
 
+export const asteroidBeltFactoryInit = function () {
+ const RandomNumberGenerator = randomNumberGeneratorInit.call(this)
+  const Constants = constantsInit.call(this)
   class AsteroidBeltFactory {
     constructor(scene, data) {
       this._scene = scene || null;
@@ -8,7 +13,7 @@ export const asteroidBeltFactory = function () {
       this._distanceFromParentMin = data.asteroidBelt.distanceFromParent.min;
       this._distanceFromParentMax = data.asteroidBelt.distanceFromParent.max;
       this._distanceFromParentMedian = this.calculateDistanceFromParentMedian();
-      this._texture = new THREE.TextureLoader().load('src/assets/textures/asteroid.jpg');
+      this._texture = new THREE.TextureLoader().load('assets/textures/asteroid.jpg');
       this._randomNumberGenerator = new RandomNumberGenerator();
       this._orbitCentroid = new THREE.Object3D();
       this._orbitRadian = 360 / 1681.6;

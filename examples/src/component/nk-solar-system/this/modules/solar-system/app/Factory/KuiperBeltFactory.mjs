@@ -1,5 +1,10 @@
-export const kuiperBeltFactory = function (Scene, Constants, RandomNumberGenerator) {
+import * as THREE from 'three'
+import {randomNumberGeneratorInit} from "../Modules/RandomNumberGenerator.mjs";
+import { constantsInit } from '../Environment/Constants.mjs'
 
+export const kuiperBeltFactoryInit = function (Scene) {
+  const RandomNumberGenerator = randomNumberGeneratorInit.call(this)
+  const Constants = constantsInit.call(this)
   class KuiperBeltFactory {
     constructor(scene, data) {
       this._scene = scene || null;

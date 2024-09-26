@@ -2,13 +2,13 @@ import {celestialObjectInit} from './CelestialObject.mjs'
 import * as THREE from 'three'
 import { constantsInit } from '../Environment/Constants.mjs'
 import { orbitInit } from './Orbit.mjs'
-
+import {radialRingGeometryInit} from "../Extensions/RadialRingGeometry.mjs";
 export const planetInit = function () {
   const self = this
   const CelestialObject = celestialObjectInit.call(this)
   const Constants = constantsInit.call(this)
   const Orbit = orbitInit.call(this)
-  
+  const RadialRingGeometry = radialRingGeometryInit.call(this)
   class Planet extends CelestialObject {
     constructor(data, threeParent) {
       super(data.diameter, data.mass, data.gravity, data.density);

@@ -1,5 +1,6 @@
 import * as Twig from 'twig'
 
+console.log('----------------------------------------Twig', Twig)
 export class TemplateLoader {
     constructor(options) {
         // Twig.debug = options.debug || true;

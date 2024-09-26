@@ -7,14 +7,22 @@ import {orbitControllerInit} from '../Controllers/OrbitController.mjs'
 import { moonInit } from '../Models/Moon.mjs'
 import * as THREE from 'three'
 import { constantsInit } from '../Environment/Constants.mjs'
+import {asteroidBeltFactoryInit} from './AsteroidBeltFactory.mjs'
+import {kuiperBeltFactoryInit} from './KuiperBeltFactory.mjs'
+import {starFactoryInit} from './StarFactory.mjs'
+import {menuControllerInit} from '../Controllers/MenuController.mjs'
 export const systemFactory = async function () {
   let self = this
+  const AsteroidBeltFactory = asteroidBeltFactoryInit.call(this)
   const Sun = sunInit.call(this)
   const Moon = moonInit.call(this)
   const Planet = planetInit.call(this)
   const OrbitController = orbitControllerInit.call(this)
   const RenderController = renderControllerInit.bind(this)
   const Constants = constantsInit.call(this)
+  const KuiperBeltFactory = kuiperBeltFactoryInit.call(this)
+  const StarFactory = starFactoryInit.call(this)
+  const MenuController = menuControllerInit.call(this)
   /**
    * SolarSystemFactory
    *
@@ -110,7 +118,6 @@ export const systemFactory = async function () {
   };
 
   SolarSystemFactory.prototype.renderScene = function(startTime) {
-    debugger
     let renderController = new RenderController(this.scene);
     let focalpoint = this.scene;
 
@@ -342,18 +349,18 @@ export const systemFactory = async function () {
       el: '#toggle-effects',
       sceneObjects: this.solarSystemObjects.planets
     });
-
-    $('#social-buttons-corner').addClass('visible');
+    self.shadowRoot.querySelector('#social-buttons-corner').classList.add('visible')
+    // $('#social-buttons-corner').addClass('visible');
   };
 
   SolarSystemFactory.prototype.updateProgress = function(percentage, elapsedTime) {
-    let meter = $('.progress-meter');
+    let meter = self.shadowRoot.querySelector('.progress-meter');
+      meter.style.transitionDuration = elapsedTime +'ms'
+    // meter.css({
+    //   'transitionDuration': elapsedTime +'ms'
+    // });
 
-    meter.css({
-      'transitionDuration': elapsedTime +'ms'
-    });
-
-    meter.width(percentage+ '%');
+    meter.style.width = percentage + '%';
   };
 
   return SolarSystemFactory;

@@ -1,7 +1,12 @@
-export const radialRingGeometry = function () {
-  function RadialRingGeometry(innerRadius, outerRadius, thetaSegments) {
-    THREE.Geometry.call(this);
+import * as THREE from 'three'
+export const radialRingGeometryInit = function () {
 
+  function RadialRingGeometry(innerRadius, outerRadius, thetaSegments) {
+    // THREE.Geometry.call(this);
+    this.vertices = []
+    this.faces = []
+    this.faceVertexUvs = []
+    this.faceVertexUvs[0] = []
     innerRadius = innerRadius || 0;
     outerRadius = outerRadius || 50;
     thetaSegments   = thetaSegments || 8;

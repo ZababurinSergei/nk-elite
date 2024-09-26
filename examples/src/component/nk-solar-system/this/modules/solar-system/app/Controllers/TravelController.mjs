@@ -1,5 +1,6 @@
-export const travelController = function () {
-
+import * as THREE from 'three'
+import {ColorManager} from "../Modules/ColorManager.mjs";
+export const travelControllerInit = function () {
   class TravelController {
     constructor(scene) {
       this.scene = scene;

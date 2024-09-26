@@ -1,4 +1,10 @@
-export const starFactory = function (Constants, Scene, RandomNumberGenerator, AjaxRequest) {
+import * as THREE from 'three'
+import {randomNumberGeneratorInit} from "../Modules/RandomNumberGenerator.mjs";
+import { constantsInit } from '../Environment/Constants.mjs'
+
+export const starFactoryInit = function () {
+  const Constants = constantsInit.call(this)
+  const RandomNumberGenerator = randomNumberGeneratorInit.call(this)
 
   class StarFactory {
     constructor(scene) {
@@ -6,7 +12,7 @@ export const starFactory = function (Constants, Scene, RandomNumberGenerator, Aj
       this._starsCount = 8000;
       this._threeDistanceFromParent = 14959787070 * 40000 * Constants.orbitScale;
       this._randomNumberGenorator = new RandomNumberGenerator();
-      this._texture = new THREE.TextureLoader().load('src/assets/textures/star.jpg');
+      this._texture = new THREE.TextureLoader().load('assets/textures/star.jpg');
       this._scene = scene;
 
       this.getStarData();
