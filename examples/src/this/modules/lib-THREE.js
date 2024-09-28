@@ -5919,7 +5919,7 @@ var DirectGeometry = class {
     this.uvs = [];
     this.uvs2 = [];
     this.groups = [];
-    this.morphTargets = {};
+    this.morphTargets = [];
     this.skinWeights = [];
     this.skinIndices = [];
     this.boundingBox = null;
@@ -5961,8 +5961,9 @@ var DirectGeometry = class {
     const faceVertexUvs = geometry.faceVertexUvs;
     const hasFaceVertexUv = faceVertexUvs[0] && faceVertexUvs[0].length > 0;
     const hasFaceVertexUv2 = faceVertexUvs[1] && faceVertexUvs[1].length > 0;
+    console.log("ssssssssssssss morphTargetsLength fix ssssssssssssssssssss", geometry);
     const morphTargets = geometry.morphTargets;
-    const morphTargetsLength = morphTargets.length;
+    const morphTargetsLength = morphTargets?.length ? morphTargets.length : 0;
     let morphTargetsPosition;
     if (morphTargetsLength > 0) {
       morphTargetsPosition = [];
@@ -5974,8 +5975,9 @@ var DirectGeometry = class {
       }
       this.morphTargets.position = morphTargetsPosition;
     }
+    console.log("sssssssssssss morphNormalsLength fix sssssssssssssssssssss", geometry);
     const morphNormals = geometry.morphNormals;
-    const morphNormalsLength = morphNormals.length;
+    const morphNormalsLength = morphNormals?.length ? morphNormals.length : 0;
     let morphTargetsNormal;
     if (morphNormalsLength > 0) {
       morphTargetsNormal = [];
@@ -5987,8 +5989,9 @@ var DirectGeometry = class {
       }
       this.morphTargets.normal = morphTargetsNormal;
     }
-    const skinIndices = geometry.skinIndices;
-    const skinWeights = geometry.skinWeights;
+    console.log("============ skinIndices fix ===================");
+    const skinIndices = geometry.skinIndices ? geometry.skinIndices : [];
+    const skinWeights = geometry.skinWeights ? geometry.skinWeights : [];
     const hasSkinIndices = skinIndices.length === vertices.length;
     const hasSkinWeights = skinWeights.length === vertices.length;
     if (vertices.length > 0 && faces.length === 0) {
@@ -6053,7 +6056,8 @@ var DirectGeometry = class {
     if (geometry.boundingSphere !== null) {
       this.boundingSphere = geometry.boundingSphere.clone();
     }
-    if (geometry.boundingBox !== null) {
+    if (geometry.boundingBox !== null && geometry.boundingBox !== void 0) {
+      console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", geometry.boundingBox);
       this.boundingBox = geometry.boundingBox.clone();
     }
     return this;

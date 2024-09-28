@@ -36,18 +36,12 @@ export const init = (self) => {
                 self.children[i].remove();
             }
         } else {
-            if (self.children[0] !== undefined && self.children[0].tagName === 'TEMPLATE' && self.children[1] !== undefined) {
-                alert(`Если используется  template вся разметка должна быть внутри`);
-            } else {
-                for (let i = 0; i < self.children.length; ++i) {
-                    let isShadowDom = !self.children[i].tagName.includes('-');
-
-                    if (self.children[i].dataset.exclusion !== undefined) {
-                        isShadowDom = !isShadowDom;
-                    }
-
-                    if (isShadowDom) {
-                        container.shadowDom.push(self.children[i]);
+            for(let i = 0; i < self.children.length; ++i) {
+                if(self.children[i].tagName === 'TEMPLATE') {
+                    for (let i = 0; i < self.children.length; ++i) {
+                        const content = self.children[i].content;
+                        container = getChildren(content);
+                        self.children[i].remove();
                     }
                 }
             }

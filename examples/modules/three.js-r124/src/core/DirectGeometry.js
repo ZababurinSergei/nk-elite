@@ -12,7 +12,7 @@ class DirectGeometry {
 
 		this.groups = [];
 
-		this.morphTargets = {};
+		this.morphTargets = [];
 
 		this.skinWeights = [];
 		this.skinIndices = [];
@@ -88,9 +88,9 @@ class DirectGeometry {
 		const hasFaceVertexUv2 = faceVertexUvs[ 1 ] && faceVertexUvs[ 1 ].length > 0;
 
 		// morphs
-
+		console.log('ssssssssssssss morphTargetsLength fix ssssssssssssssssssss',  geometry)
 		const morphTargets = geometry.morphTargets;
-		const morphTargetsLength = morphTargets.length;
+		const morphTargetsLength = morphTargets?.length? morphTargets.length: 0;
 
 		let morphTargetsPosition;
 
@@ -111,8 +111,9 @@ class DirectGeometry {
 
 		}
 
+		console.log('sssssssssssss morphNormalsLength fix sssssssssssssssssssss',  geometry)
 		const morphNormals = geometry.morphNormals;
-		const morphNormalsLength = morphNormals.length;
+		const morphNormalsLength = morphNormals?.length ? morphNormals.length : 0;
 
 		let morphTargetsNormal;
 
@@ -135,8 +136,9 @@ class DirectGeometry {
 
 		// skins
 
-		const skinIndices = geometry.skinIndices;
-		const skinWeights = geometry.skinWeights;
+		console.log('============ skinIndices fix ===================')
+		const skinIndices = geometry.skinIndices? geometry.skinIndices: [] ;
+		const skinWeights = geometry.skinWeights? geometry.skinWeights: []
 
 		const hasSkinIndices = skinIndices.length === vertices.length;
 		const hasSkinWeights = skinWeights.length === vertices.length;
@@ -267,8 +269,9 @@ class DirectGeometry {
 
 		}
 
-		if ( geometry.boundingBox !== null ) {
+		if ( geometry.boundingBox !== null && geometry.boundingBox !== undefined ) {
 
+			console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!', geometry.boundingBox)
 			this.boundingBox = geometry.boundingBox.clone();
 
 		}
