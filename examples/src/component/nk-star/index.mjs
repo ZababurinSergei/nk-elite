@@ -16,11 +16,7 @@ Object.defineProperties(component.prototype, {
         value: async function (property) {
             log('Инициализация компонента: %b', Uint8Array.from([0, 1, 2, 3]))
 
-
-            // const three = (new URL('./this/modules/three/three.min.js', import.meta.url)).pathname
-            // const urlTrackboll = (new URL('./this/modules/three/TrackballControls.js', import.meta.url)).pathname
-            const jquery = (new URL('./this/modules/jquery/jquery-1.12.1.min.js', import.meta.url)).pathname
-            // const tween = (new URL('./this/modules/three/tween.js', import.meta.url)).pathname
+            // const jquery = (new URL('./this/modules/jquery/jquery-1.12.1.min.js', import.meta.url)).pathname
             const aladin = (new URL('./this/modules/aladin/v2/aladin.min.js', import.meta.url)).pathname
             const galaxydata = (new URL('./galaxydata.txt', import.meta.url)).pathname
             const galaxyname = (new URL('./galaxyname.txt', import.meta.url)).pathname
@@ -28,7 +24,7 @@ Object.defineProperties(component.prototype, {
             // await loader(tween)
             // await loader(three)
             // await loader(urlTrackboll)
-            await loader(jquery)
+            // await loader(jquery)
             await loader(aladin)
 
             // Create an empty scene

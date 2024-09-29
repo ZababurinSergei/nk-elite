@@ -68,35 +68,10 @@
     <link rel="stylesheet" href="./component/nk-solar-system/this/css/index.light.css">
     <link rel="stylesheet" href="./assets/index.light.css">
     <link rel="stylesheet" href="./component/nk-star/this/css/aladin.min.css">
-    <style>
-        * {
-            margin: 0;
-            font-family: 'Segoe UI', sans-serif;
-        }
-
-        h1,
-        h2,
-        h3 {
-            margin-block-start: 0.5em;
-            margin-block-end: 0.5em;
-            margin-inline-start: 0px;
-            margin-inline-end: 0px;
-        }
-
-        a {
-            color: #fff;
-        }
-
-        div {
-            padding-block-end: 0.5em;
-            padding-inline-start: 1em;
-            padding-inline-end: 1em;
-            background-color: rgba(30, 30, 30, 0.3)
-        }
-    </style>
     <script src="./src/app/vendor/tweenjs/build/tween.min.js"></script>
     <script src="./src/app/vendor/jquery/dist/jquery.min.js"></script>
     <script src="./component/nk-star/this/modules/three/three.min.js"></script>
+<!--    <script src="./src/app/vendor/three.js/three.js"></script>-->
     <script src="./component/nk-star/this/modules/three/TrackballControls.js"></script>
 </head>
 <body>
@@ -820,31 +795,31 @@
         </div>
     </template>
 </nk-radio>
-<nk-elite
-        id="nk-elite_0"
-        slot="nk-elite_0"
->
-    <template>
-        <div class="game-newkind">
-            <form class="game-newkind__form">
-                <span><input type="checkbox" id="showGameConsole" checked>Show console</span>
-                <span><input type="checkbox" id="showScreenName">Show greetings</span>
-                <span><input type="checkbox" id="showChart1" checked>Show Galactic Chart</span>
-                <span><input type="checkbox" id="showChart2" checked>Show Short Range Chart</span>
-            </form>
-            <button class="game-newkind__btn" id="showAndApply">Apply and Show</button>
-            <canvas class="game-newkind__canvas" id="nk-elitecanvas" oncontextmenu="event.preventDefault()"></canvas>
-            <div class="elite-control">
-                <button class="elite-run" data-type="run" disabled>RUN ELITE PROCESSOR</button>
-                <div class="queue">
-                    <div class="inputQueue"></div>
-                    <div class="outputQueue"></div>
-                </div>
-            </div>
-            <div class="config"></div>
-        </div>
-    </template>
-</nk-elite>
+<!--<nk-elite-->
+<!--        id="nk-elite_0"-->
+<!--        slot="nk-elite_0"-->
+<!--&gt;-->
+<!--    <template>-->
+<!--        <div class="game-newkind">-->
+<!--            <form class="game-newkind__form">-->
+<!--                <span><input type="checkbox" id="showGameConsole" checked>Show console</span>-->
+<!--                <span><input type="checkbox" id="showScreenName">Show greetings</span>-->
+<!--                <span><input type="checkbox" id="showChart1" checked>Show Galactic Chart</span>-->
+<!--                <span><input type="checkbox" id="showChart2" checked>Show Short Range Chart</span>-->
+<!--            </form>-->
+<!--            <button class="game-newkind__btn" id="showAndApply">Apply and Show</button>-->
+<!--            <canvas class="game-newkind__canvas" id="nk-elitecanvas" oncontextmenu="event.preventDefault()"></canvas>-->
+<!--            <div class="elite-control">-->
+<!--                <button class="elite-run" data-type="run" disabled>RUN ELITE PROCESSOR</button>-->
+<!--                <div class="queue">-->
+<!--                    <div class="inputQueue"></div>-->
+<!--                    <div class="outputQueue"></div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="config"></div>-->
+<!--        </div>-->
+<!--    </template>-->
+<!--</nk-elite>-->
 <nk-world id="nk-world_0">
     <template>
         <div class="container">
