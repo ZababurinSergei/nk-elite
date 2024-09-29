@@ -15,6 +15,12 @@ Object.defineProperties(component.prototype, {
     connected: {
         value: async function (property) {
             log('Инициализация компонента: %b', Uint8Array.from([0, 1, 2, 3]))
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            const isNkWorld = urlParams.has('nkWorld')
+            if (!isNkWorld) {
+                this.classList.add('inactive')
+            }
 
             // const jquery = (new URL('./this/modules/jquery/jquery-1.12.1.min.js', import.meta.url)).pathname
             const aladin = (new URL('./this/modules/aladin/v2/aladin.min.js', import.meta.url)).pathname
