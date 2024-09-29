@@ -18,7 +18,11 @@ Object.defineProperties(component.prototype, {
             const queryString = window.location.search;
             const urlParams = new URLSearchParams(queryString);
             const isNkWorld = urlParams.has('nkWorld')
-            if (!isNkWorld) {
+            const isNkStars = urlParams.has('stars')
+
+            if (isNkWorld && isNkStars) {
+
+            } else {
                 this.classList.add('inactive')
             }
 
