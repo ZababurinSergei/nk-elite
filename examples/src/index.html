@@ -3,27 +3,27 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Org portal</title>
-<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/twig.js/1.15.0/twig.min.js" integrity="sha512-R9w7cGfL8kjpDIAhW2Mgji+lbq06vKWJX/Qztpq0ya5tD8YMGvRS2fco4p2EYTy93V/lDwp7hRnlHVkCyIrnHw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>-->
-<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>-->
-<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.13.7/underscore-min.js" integrity="sha512-dvWGkLATSdw5qWb2qozZBRKJ80Omy2YN/aF3wTUVC5+D1eqbA+TjWpPpoj8vorK5xGLMa2ZqIeWCpDZP/+pQGQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>-->
-<!--    <script src="./this/modules/backbone.js"></script>-->
-<!--    <script type="text/javascript">-->
-<!--        function isMobile() {-->
-<!--            return navigator.userAgent.match(/Android/i)-->
-<!--                || navigator.userAgent.match(/BlackBerry/i)-->
-<!--                || navigator.userAgent.match(/iPhone|iPad|iPod/i)-->
-<!--                || navigator.userAgent.match(/Opera Mini/i)-->
-<!--                || navigator.userAgent.match(/IEMobile/i);-->
-<!--        }-->
+    <!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/twig.js/1.15.0/twig.min.js" integrity="sha512-R9w7cGfL8kjpDIAhW2Mgji+lbq06vKWJX/Qztpq0ya5tD8YMGvRS2fco4p2EYTy93V/lDwp7hRnlHVkCyIrnHw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>-->
+    <!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>-->
+    <!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.13.7/underscore-min.js" integrity="sha512-dvWGkLATSdw5qWb2qozZBRKJ80Omy2YN/aF3wTUVC5+D1eqbA+TjWpPpoj8vorK5xGLMa2ZqIeWCpDZP/+pQGQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>-->
+    <!--    <script src="./this/modules/backbone.js"></script>-->
+    <!--    <script type="text/javascript">-->
+    <!--        function isMobile() {-->
+    <!--            return navigator.userAgent.match(/Android/i)-->
+    <!--                || navigator.userAgent.match(/BlackBerry/i)-->
+    <!--                || navigator.userAgent.match(/iPhone|iPad|iPod/i)-->
+    <!--                || navigator.userAgent.match(/Opera Mini/i)-->
+    <!--                || navigator.userAgent.match(/IEMobile/i);-->
+    <!--        }-->
 
-<!--        if (isMobile()) {-->
-<!--            var viewButton = document.getElementById('render-scene');-->
+    <!--        if (isMobile()) {-->
+    <!--            var viewButton = document.getElementById('render-scene');-->
 
-<!--            if (viewButton) {-->
-<!--                viewButton.innerHTML = '<span>Mobile version coming soon. Please view from laptop or desktop.</span>';-->
-<!--            }-->
-<!--        }-->
-<!--    </script>-->
+    <!--            if (viewButton) {-->
+    <!--                viewButton.innerHTML = '<span>Mobile version coming soon. Please view from laptop or desktop.</span>';-->
+    <!--            }-->
+    <!--        }-->
+    <!--    </script>-->
 
     <script type="importmap">
         {
@@ -67,6 +67,37 @@
     </script>
     <link rel="stylesheet" href="./component/nk-solar-system/this/css/index.light.css">
     <link rel="stylesheet" href="./assets/index.light.css">
+    <link rel="stylesheet" href="./component/nk-star/this/css/aladin.min.css">
+    <style>
+        * {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        h1,
+        h2,
+        h3 {
+            margin-block-start: 0.5em;
+            margin-block-end: 0.5em;
+            margin-inline-start: 0px;
+            margin-inline-end: 0px;
+        }
+
+        a {
+            color: #fff;
+        }
+
+        div {
+            padding-block-end: 0.5em;
+            padding-inline-start: 1em;
+            padding-inline-end: 1em;
+            background-color: rgba(30, 30, 30, 0.3)
+        }
+    </style>
+    <script src="./src/app/vendor/tweenjs/build/tween.min.js"></script>
+    <script src="./src/app/vendor/jquery/dist/jquery.min.js"></script>
+    <script src="./component/nk-star/this/modules/three/three.min.js"></script>
+    <script src="./component/nk-star/this/modules/three/TrackballControls.js"></script>
 </head>
 <body>
 <div class="header">
@@ -848,217 +879,217 @@
                     <slot name="nk-menu_0"></slot>
                     <slot name="nk-elite-control"></slot>
                 </div>
-<!--                <nk-solar-system-->
-<!--                    id="nk-solar-system_9"-->
-<!--                    slot="nk-solar-system_9"-->
-<!--                >-->
-<!--                    <template>-->
-<!--                        <div class="body">-->
-<!--                            <div slot="help-section" class="help-section">-->
-<!--                                <i data-open="info" class="fi-info"></i>-->
-<!--                            </div>-->
-<!--                            <div id="info" slot="system-modal" class="reveal info-modal" data-reveal data-close-on-click="true">-->
-<!--                                <div class="project-info row collapse">-->
-<!--                                    <h3>Project Info</h3>-->
-<!--                                    &lt;!&ndash;            <span class="small-3 columns">Universe Scale</span><span class="small-9 columns">6.30957344 &times; 10<sup>-5</sup></span>&ndash;&gt;-->
-<!--                                    &lt;!&ndash;            <span class="small-3 columns">Orbit Scale</span><span&ndash;&gt;-->
-<!--                                    &lt;!&ndash;                class="small-9 columns">6.30957344 &times; 10<sup>-5</sup></span>&ndash;&gt;-->
-<!--                                    &lt;!&ndash;            <span class="small-3 columns">Celestial Scale</span><span class="small-9 columns">1.2589254 &times; 10<sup>-4</sup></span>&ndash;&gt;-->
-<!--                                </div>-->
+                <!--                <nk-solar-system-->
+                <!--                    id="nk-solar-system_9"-->
+                <!--                    slot="nk-solar-system_9"-->
+                <!--                >-->
+                <!--                    <template>-->
+                <!--                        <div class="body">-->
+                <!--                            <div slot="help-section" class="help-section">-->
+                <!--                                <i data-open="info" class="fi-info"></i>-->
+                <!--                            </div>-->
+                <!--                            <div id="info" slot="system-modal" class="reveal info-modal" data-reveal data-close-on-click="true">-->
+                <!--                                <div class="project-info row collapse">-->
+                <!--                                    <h3>Project Info</h3>-->
+                <!--                                    &lt;!&ndash;            <span class="small-3 columns">Universe Scale</span><span class="small-9 columns">6.30957344 &times; 10<sup>-5</sup></span>&ndash;&gt;-->
+                <!--                                    &lt;!&ndash;            <span class="small-3 columns">Orbit Scale</span><span&ndash;&gt;-->
+                <!--                                    &lt;!&ndash;                class="small-9 columns">6.30957344 &times; 10<sup>-5</sup></span>&ndash;&gt;-->
+                <!--                                    &lt;!&ndash;            <span class="small-3 columns">Celestial Scale</span><span class="small-9 columns">1.2589254 &times; 10<sup>-4</sup></span>&ndash;&gt;-->
+                <!--                                </div>-->
 
-<!--                                <div class="project-info row collapse">-->
-<!--                                    <h3>Controls</h3>-->
-<!--                                    <menu class="project-info-menu">-->
-<!--                                        <a id="project-info-menu" class="button large network" data-change="admin">Network</a>-->
-<!--                                        <a id="project-info-planet" class="button large map active-button" data-change="map">Map</a>-->
-<!--                                        &lt;!&ndash;                <a id="project-info-system" class="button large" data-change="system">System</a>&ndash;&gt;-->
-<!--                                    </menu>-->
-<!--                                    &lt;!&ndash;            <span class="small-12 columns">Use your mouse or trackpad to navigate the scene. To zoom, use a scroll motion. When viewing a planet, you can move around a planet using a click + drag motion.</span>&ndash;&gt;-->
-<!--                                </div>-->
+                <!--                                <div class="project-info row collapse">-->
+                <!--                                    <h3>Controls</h3>-->
+                <!--                                    <menu class="project-info-menu">-->
+                <!--                                        <a id="project-info-menu" class="button large network" data-change="admin">Network</a>-->
+                <!--                                        <a id="project-info-planet" class="button large map active-button" data-change="map">Map</a>-->
+                <!--                                        &lt;!&ndash;                <a id="project-info-system" class="button large" data-change="system">System</a>&ndash;&gt;-->
+                <!--                                    </menu>-->
+                <!--                                    &lt;!&ndash;            <span class="small-12 columns">Use your mouse or trackpad to navigate the scene. To zoom, use a scroll motion. When viewing a planet, you can move around a planet using a click + drag motion.</span>&ndash;&gt;-->
+                <!--                                </div>-->
 
-<!--                                <div class="project-info-footer">-->
-<!--                                    <a id="info-got-it" class="button large" data-close="info">Close</a>-->
-<!--                                </div>-->
-<!--                                <button class="close-button" data-close aria-label="Close modal" type="button">-->
-<!--                                    <span aria-hidden="true">&times;</span>-->
-<!--                                </button>-->
-<!--                            </div>-->
-<!--                            <div slot="solar-system" class="solar-system">-->
-<!--                                <div class="container-main">-->
-<!--                                    <div class="container-menu">-->
-<!--                                        <div id="menu" class="menu"></div>-->
-<!--                                        <div class="help-section">-->
-<!--                                            <i data-open="info" class="fi-info"></i>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
+                <!--                                <div class="project-info-footer">-->
+                <!--                                    <a id="info-got-it" class="button large" data-close="info">Close</a>-->
+                <!--                                </div>-->
+                <!--                                <button class="close-button" data-close aria-label="Close modal" type="button">-->
+                <!--                                    <span aria-hidden="true">&times;</span>-->
+                <!--                                </button>-->
+                <!--                            </div>-->
+                <!--                            <div slot="solar-system" class="solar-system">-->
+                <!--                                <div class="container-main">-->
+                <!--                                    <div class="container-menu">-->
+                <!--                                        <div id="menu" class="menu"></div>-->
+                <!--                                        <div class="help-section">-->
+                <!--                                            <i data-open="info" class="fi-info"></i>-->
+                <!--                                        </div>-->
+                <!--                                    </div>-->
 
-<!--                                    <div id="moons" class="moons"></div>-->
-<!--                                    <div id="current-target-title" class="current-target-title active">Solar System</div>-->
-<!--                                    <div id="toggle-effects" class="toggle-effects">-->
-<!--                                        <div class="control-holder">-->
-<!--                                            <label for="toggle-orbit-highlight">-->
-<!--                                                <input type="checkbox" id="toggle-orbit-highlight" class="toggle-control">-->
-<!--                                                <span>Orbit Color Effects</span>-->
-<!--                                            </label>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                    <div class="intro-screen">-->
-<!--                                        <div class="intro-text">-->
-<!--                                            <div class="intro-heading">-->
-<!--                                                <h1>Our Solar System</h1>-->
-<!--                                            </div>-->
-<!--                                            <div class="inner">-->
-<!--                                                <p>A solar system refers to a star and all the objects that travel in orbit around it.-->
-<!--                                                    Our solar-->
-<!--                                                    system consists of the sun, eight planets (and their natural satellites), dwarf-->
-<!--                                                    planets,-->
-<!--                                                    asteroids, and comets. Our solar system is located within the Orion Arm of the Milky-->
-<!--                                                    Way Galaxy,-->
-<!--                                                    which is located about 27,000 light-years away from the Milky Way Galactic-->
-<!--                                                    Center.</p>-->
-<!--                                                <p>This is a project powered by <a href="http://threejs.org/"-->
-<!--                                                                                   target="_blank">Three.js</a> and <a-->
-<!--                                                        href="https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API">WebGL</a>. All-->
-<!--                                                    objects-->
-<!--                                                    within this project have been modeled to <span data-tooltip aria-haspopup="true"-->
-<!--                                                                                                   class="has-tip"-->
-<!--                                                                                                   data-disable-hover="false"-->
-<!--                                                                                                   tabindex="1"-->
-<!--                                                                                                   title="Scale = 1 * 10^-4.2">scale</span>-->
-<!--                                                    based on-->
-<!--                                                    real astronomical data. The scene currently renders the sun, all eight planets (nine-->
-<!--                                                    if you side-->
-<!--                                                    with Pluto being a planet), each planet's moons, the asteriod belt and thousands of-->
-<!--                                                    stars.</p>-->
-<!--                                                <p>-->
-<!--                                                    <strong>For a better viewing experience, use a laptop or desktop with the latest-->
-<!--                                                        version of-->
-<!--                                                        Google Chrome or Safari Technology Preview.</strong>-->
-<!--                                                </p>-->
-<!--                                                &lt;!&ndash;                    <div class="social-buttons social-buttons-intro-screen">&ndash;&gt;-->
-<!--                                                &lt;!&ndash;                        <a href="https://twitter.com/SanderBlue" class="twitter-follow-button" data-show-count="false">Follow&ndash;&gt;-->
-<!--                                                &lt;!&ndash;                            @SanderBlue</a>&ndash;&gt;-->
-<!--                                                &lt;!&ndash;                        <iframe src="https://ghbtns.com/github-btn.html?user=sanderblue&repo=solar-system-threejs&type=star&count=false"&ndash;&gt;-->
-<!--                                                &lt;!&ndash;                                class="github-button" frameborder="0" scrolling="0"></iframe>&ndash;&gt;-->
-<!--                                                &lt;!&ndash;                    </div>&ndash;&gt;-->
-<!--                                                <div id="render-scene" class="button large render-scene">-->
-<!--                                                    <span>View Solar System</span>-->
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                            <div id="loading-prompt" class="loading-prompt">-->
-<!--                                                <span>Building the Solar System...</span>-->
-<!--                                                <div id="realtime-updates"></div>-->
-<!--                                                <div id="progress-bar" class="progress" role="progressbar" tabindex="0">-->
-<!--                                                    <div class="progress-meter"></div>-->
-<!--                                                </div>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                    <div id="solar-system" class="scene"></div>-->
-<!--                                </div>-->
+                <!--                                    <div id="moons" class="moons"></div>-->
+                <!--                                    <div id="current-target-title" class="current-target-title active">Solar System</div>-->
+                <!--                                    <div id="toggle-effects" class="toggle-effects">-->
+                <!--                                        <div class="control-holder">-->
+                <!--                                            <label for="toggle-orbit-highlight">-->
+                <!--                                                <input type="checkbox" id="toggle-orbit-highlight" class="toggle-control">-->
+                <!--                                                <span>Orbit Color Effects</span>-->
+                <!--                                            </label>-->
+                <!--                                        </div>-->
+                <!--                                    </div>-->
+                <!--                                    <div class="intro-screen">-->
+                <!--                                        <div class="intro-text">-->
+                <!--                                            <div class="intro-heading">-->
+                <!--                                                <h1>Our Solar System</h1>-->
+                <!--                                            </div>-->
+                <!--                                            <div class="inner">-->
+                <!--                                                <p>A solar system refers to a star and all the objects that travel in orbit around it.-->
+                <!--                                                    Our solar-->
+                <!--                                                    system consists of the sun, eight planets (and their natural satellites), dwarf-->
+                <!--                                                    planets,-->
+                <!--                                                    asteroids, and comets. Our solar system is located within the Orion Arm of the Milky-->
+                <!--                                                    Way Galaxy,-->
+                <!--                                                    which is located about 27,000 light-years away from the Milky Way Galactic-->
+                <!--                                                    Center.</p>-->
+                <!--                                                <p>This is a project powered by <a href="http://threejs.org/"-->
+                <!--                                                                                   target="_blank">Three.js</a> and <a-->
+                <!--                                                        href="https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API">WebGL</a>. All-->
+                <!--                                                    objects-->
+                <!--                                                    within this project have been modeled to <span data-tooltip aria-haspopup="true"-->
+                <!--                                                                                                   class="has-tip"-->
+                <!--                                                                                                   data-disable-hover="false"-->
+                <!--                                                                                                   tabindex="1"-->
+                <!--                                                                                                   title="Scale = 1 * 10^-4.2">scale</span>-->
+                <!--                                                    based on-->
+                <!--                                                    real astronomical data. The scene currently renders the sun, all eight planets (nine-->
+                <!--                                                    if you side-->
+                <!--                                                    with Pluto being a planet), each planet's moons, the asteriod belt and thousands of-->
+                <!--                                                    stars.</p>-->
+                <!--                                                <p>-->
+                <!--                                                    <strong>For a better viewing experience, use a laptop or desktop with the latest-->
+                <!--                                                        version of-->
+                <!--                                                        Google Chrome or Safari Technology Preview.</strong>-->
+                <!--                                                </p>-->
+                <!--                                                &lt;!&ndash;                    <div class="social-buttons social-buttons-intro-screen">&ndash;&gt;-->
+                <!--                                                &lt;!&ndash;                        <a href="https://twitter.com/SanderBlue" class="twitter-follow-button" data-show-count="false">Follow&ndash;&gt;-->
+                <!--                                                &lt;!&ndash;                            @SanderBlue</a>&ndash;&gt;-->
+                <!--                                                &lt;!&ndash;                        <iframe src="https://ghbtns.com/github-btn.html?user=sanderblue&repo=solar-system-threejs&type=star&count=false"&ndash;&gt;-->
+                <!--                                                &lt;!&ndash;                                class="github-button" frameborder="0" scrolling="0"></iframe>&ndash;&gt;-->
+                <!--                                                &lt;!&ndash;                    </div>&ndash;&gt;-->
+                <!--                                                <div id="render-scene" class="button large render-scene">-->
+                <!--                                                    <span>View Solar System</span>-->
+                <!--                                                </div>-->
+                <!--                                            </div>-->
+                <!--                                            <div id="loading-prompt" class="loading-prompt">-->
+                <!--                                                <span>Building the Solar System...</span>-->
+                <!--                                                <div id="realtime-updates"></div>-->
+                <!--                                                <div id="progress-bar" class="progress" role="progressbar" tabindex="0">-->
+                <!--                                                    <div class="progress-meter"></div>-->
+                <!--                                                </div>-->
+                <!--                                            </div>-->
+                <!--                                        </div>-->
+                <!--                                    </div>-->
+                <!--                                    <div id="solar-system" class="scene"></div>-->
+                <!--                                </div>-->
 
-<!--                                <div class="full reveal" id="exampleModal8" data-reveal>-->
-<!--                                    <p>Sorry, but this project is currently not viewable from a mobile device.</p>-->
-<!--                                    &lt;!&ndash;                    <img src="http://placekitten.com/1920/1280" alt="Intropsective Cage">&ndash;&gt;-->
-<!--                                    <button class="close-button" data-close aria-label="Close reveal" type="button">-->
-<!--                                        <span aria-hidden="true">&times;</span>-->
-<!--                                    </button>-->
-<!--                                </div>-->
+                <!--                                <div class="full reveal" id="exampleModal8" data-reveal>-->
+                <!--                                    <p>Sorry, but this project is currently not viewable from a mobile device.</p>-->
+                <!--                                    &lt;!&ndash;                    <img src="http://placekitten.com/1920/1280" alt="Intropsective Cage">&ndash;&gt;-->
+                <!--                                    <button class="close-button" data-close aria-label="Close reveal" type="button">-->
+                <!--                                        <span aria-hidden="true">&times;</span>-->
+                <!--                                    </button>-->
+                <!--                                </div>-->
 
-<!--                                <div id="browser-compatibility-modal" class="reveal browser-compatibility-modal">-->
-<!--                                    <h3>Browser Compatibility</h3>-->
-<!--                                    <p class="lead">This project utilizes some of JavaScript's lastest ES6 features. Currently this-->
-<!--                                        project is best-->
-<!--                                        viewed using the latest version of <a-->
-<!--                                                href="https://www.google.com/chrome/browser/desktop/index.html"-->
-<!--                                                class="browser-link" target="_blank">Google Chrome</a> or <a-->
-<!--                                                href="https://developer.apple.com/safari/download/" target="_blank"-->
-<!--                                                class="browser-link">Safari-->
-<!--                                            Technology Preview</a>. At a minimum, your browser must support the following ES6 features.-->
-<!--                                        If you can't-->
-<!--                                        navigate past this page, this project is not compatible with the browser you're using. Sorry,-->
-<!--                                        but this-->
-<!--                                        project is currently not viewable from a mobile device.</p>-->
-<!--                                    <ul>-->
-<!--                                        <li>Classes</li>-->
-<!--                                        <li>Arrow Functions</li>-->
-<!--                                    </ul>-->
-<!--                                    <button class="close-button" data-close aria-label="Close modal" type="button">-->
-<!--                                        <span aria-hidden="true">&times;</span>-->
-<!--                                    </button>-->
-<!--                                    <span>-->
-<!--                <a id="browser-compatibility-got-it" class="button large" data-close="browser-compatibility-modal">Got It</a>-->
-<!--        </span>-->
-<!--                                    <span>-->
-<!--                <a href="https://kangax.github.io/compat-table/es6/" class="button large es6-feature-link">ES6 feature support</a>-->
-<!--        </span>-->
-<!--                                </div>-->
+                <!--                                <div id="browser-compatibility-modal" class="reveal browser-compatibility-modal">-->
+                <!--                                    <h3>Browser Compatibility</h3>-->
+                <!--                                    <p class="lead">This project utilizes some of JavaScript's lastest ES6 features. Currently this-->
+                <!--                                        project is best-->
+                <!--                                        viewed using the latest version of <a-->
+                <!--                                                href="https://www.google.com/chrome/browser/desktop/index.html"-->
+                <!--                                                class="browser-link" target="_blank">Google Chrome</a> or <a-->
+                <!--                                                href="https://developer.apple.com/safari/download/" target="_blank"-->
+                <!--                                                class="browser-link">Safari-->
+                <!--                                            Technology Preview</a>. At a minimum, your browser must support the following ES6 features.-->
+                <!--                                        If you can't-->
+                <!--                                        navigate past this page, this project is not compatible with the browser you're using. Sorry,-->
+                <!--                                        but this-->
+                <!--                                        project is currently not viewable from a mobile device.</p>-->
+                <!--                                    <ul>-->
+                <!--                                        <li>Classes</li>-->
+                <!--                                        <li>Arrow Functions</li>-->
+                <!--                                    </ul>-->
+                <!--                                    <button class="close-button" data-close aria-label="Close modal" type="button">-->
+                <!--                                        <span aria-hidden="true">&times;</span>-->
+                <!--                                    </button>-->
+                <!--                                    <span>-->
+                <!--                <a id="browser-compatibility-got-it" class="button large" data-close="browser-compatibility-modal">Got It</a>-->
+                <!--        </span>-->
+                <!--                                    <span>-->
+                <!--                <a href="https://kangax.github.io/compat-table/es6/" class="button large es6-feature-link">ES6 feature support</a>-->
+                <!--        </span>-->
+                <!--                                </div>-->
 
-<!--                                &lt;!&ndash;    <div id="info" class="reveal info-modal" data-reveal data-close-on-click="true">&ndash;&gt;-->
-<!--                                &lt;!&ndash;        <div class="project-info row collapse">&ndash;&gt;-->
-<!--                                &lt;!&ndash;            <h3>Project Info</h3>&ndash;&gt;-->
-<!--                                &lt;!&ndash;            &lt;!&ndash;            <span class="small-3 columns">Universe Scale</span><span class="small-9 columns">6.30957344 &times; 10<sup>-5</sup></span>&ndash;&gt;&ndash;&gt;-->
-<!--                                &lt;!&ndash;            &lt;!&ndash;            <span class="small-3 columns">Orbit Scale</span><span&ndash;&gt;&ndash;&gt;-->
-<!--                                &lt;!&ndash;            &lt;!&ndash;                class="small-9 columns">6.30957344 &times; 10<sup>-5</sup></span>&ndash;&gt;&ndash;&gt;-->
-<!--                                &lt;!&ndash;            &lt;!&ndash;            <span class="small-3 columns">Celestial Scale</span><span class="small-9 columns">1.2589254 &times; 10<sup>-4</sup></span>&ndash;&gt;&ndash;&gt;-->
-<!--                                &lt;!&ndash;        </div>&ndash;&gt;-->
+                <!--                                &lt;!&ndash;    <div id="info" class="reveal info-modal" data-reveal data-close-on-click="true">&ndash;&gt;-->
+                <!--                                &lt;!&ndash;        <div class="project-info row collapse">&ndash;&gt;-->
+                <!--                                &lt;!&ndash;            <h3>Project Info</h3>&ndash;&gt;-->
+                <!--                                &lt;!&ndash;            &lt;!&ndash;            <span class="small-3 columns">Universe Scale</span><span class="small-9 columns">6.30957344 &times; 10<sup>-5</sup></span>&ndash;&gt;&ndash;&gt;-->
+                <!--                                &lt;!&ndash;            &lt;!&ndash;            <span class="small-3 columns">Orbit Scale</span><span&ndash;&gt;&ndash;&gt;-->
+                <!--                                &lt;!&ndash;            &lt;!&ndash;                class="small-9 columns">6.30957344 &times; 10<sup>-5</sup></span>&ndash;&gt;&ndash;&gt;-->
+                <!--                                &lt;!&ndash;            &lt;!&ndash;            <span class="small-3 columns">Celestial Scale</span><span class="small-9 columns">1.2589254 &times; 10<sup>-4</sup></span>&ndash;&gt;&ndash;&gt;-->
+                <!--                                &lt;!&ndash;        </div>&ndash;&gt;-->
 
-<!--                                &lt;!&ndash;        <div class="project-info row collapse">&ndash;&gt;-->
-<!--                                &lt;!&ndash;            <h3>Controls</h3>&ndash;&gt;-->
-<!--                                &lt;!&ndash;            <menu class="project-info-menu">&ndash;&gt;-->
-<!--                                &lt;!&ndash;                <a id="project-info-menu" class="button large network" data-change="admin">Network</a>&ndash;&gt;-->
-<!--                                &lt;!&ndash;                <a id="project-info-planet" class="button large map active-button" data-change="map">Map</a>&ndash;&gt;-->
-<!--                                &lt;!&ndash;                &lt;!&ndash;                <a id="project-info-system" class="button large" data-change="system">System</a>&ndash;&gt;&ndash;&gt;-->
-<!--                                &lt;!&ndash;            </menu>&ndash;&gt;-->
-<!--                                &lt;!&ndash;            &lt;!&ndash;            <span class="small-12 columns">Use your mouse or trackpad to navigate the scene. To zoom, use a scroll motion. When viewing a planet, you can move around a planet using a click + drag motion.</span>&ndash;&gt;&ndash;&gt;-->
-<!--                                &lt;!&ndash;        </div>&ndash;&gt;-->
+                <!--                                &lt;!&ndash;        <div class="project-info row collapse">&ndash;&gt;-->
+                <!--                                &lt;!&ndash;            <h3>Controls</h3>&ndash;&gt;-->
+                <!--                                &lt;!&ndash;            <menu class="project-info-menu">&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                <a id="project-info-menu" class="button large network" data-change="admin">Network</a>&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                <a id="project-info-planet" class="button large map active-button" data-change="map">Map</a>&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                &lt;!&ndash;                <a id="project-info-system" class="button large" data-change="system">System</a>&ndash;&gt;&ndash;&gt;-->
+                <!--                                &lt;!&ndash;            </menu>&ndash;&gt;-->
+                <!--                                &lt;!&ndash;            &lt;!&ndash;            <span class="small-12 columns">Use your mouse or trackpad to navigate the scene. To zoom, use a scroll motion. When viewing a planet, you can move around a planet using a click + drag motion.</span>&ndash;&gt;&ndash;&gt;-->
+                <!--                                &lt;!&ndash;        </div>&ndash;&gt;-->
 
-<!--                                &lt;!&ndash;        <div class="project-info-footer">&ndash;&gt;-->
-<!--                                &lt;!&ndash;            <a id="info-got-it" class="button large" data-close="info">Close</a>&ndash;&gt;-->
-<!--                                &lt;!&ndash;        </div>&ndash;&gt;-->
-<!--                                &lt;!&ndash;        <button class="close-button" data-close aria-label="Close modal" type="button">&ndash;&gt;-->
-<!--                                &lt;!&ndash;            <span aria-hidden="true">&times;</span>&ndash;&gt;-->
-<!--                                &lt;!&ndash;        </button>&ndash;&gt;-->
-<!--                                &lt;!&ndash;    </div>&ndash;&gt;-->
+                <!--                                &lt;!&ndash;        <div class="project-info-footer">&ndash;&gt;-->
+                <!--                                &lt;!&ndash;            <a id="info-got-it" class="button large" data-close="info">Close</a>&ndash;&gt;-->
+                <!--                                &lt;!&ndash;        </div>&ndash;&gt;-->
+                <!--                                &lt;!&ndash;        <button class="close-button" data-close aria-label="Close modal" type="button">&ndash;&gt;-->
+                <!--                                &lt;!&ndash;            <span aria-hidden="true">&times;</span>&ndash;&gt;-->
+                <!--                                &lt;!&ndash;        </button>&ndash;&gt;-->
+                <!--                                &lt;!&ndash;    </div>&ndash;&gt;-->
 
-<!--                                <div id="tutorial" class="reveal tutorial-modal" data-reveal data-close-on-click="true">-->
-<!--                                    <h3>Controls</h3>-->
-<!--                                    <p class="lead">Use your mouse or trackpad to navigate the scene. To zoom, use a scroll motion. When-->
-<!--                                        viewing a-->
-<!--                                        planet, you can move around a planet using a click + drag motion.</p>-->
-<!--                                    <button class="close-button" data-close aria-label="Close modal" type="button">-->
-<!--                                        <span aria-hidden="true">&times;</span>-->
-<!--                                    </button>-->
-<!--                                    <a id="tutorial-got-it" class="button large" data-close="tutorial">Got It</a>-->
-<!--                                </div>-->
+                <!--                                <div id="tutorial" class="reveal tutorial-modal" data-reveal data-close-on-click="true">-->
+                <!--                                    <h3>Controls</h3>-->
+                <!--                                    <p class="lead">Use your mouse or trackpad to navigate the scene. To zoom, use a scroll motion. When-->
+                <!--                                        viewing a-->
+                <!--                                        planet, you can move around a planet using a click + drag motion.</p>-->
+                <!--                                    <button class="close-button" data-close aria-label="Close modal" type="button">-->
+                <!--                                        <span aria-hidden="true">&times;</span>-->
+                <!--                                    </button>-->
+                <!--                                    <a id="tutorial-got-it" class="button large" data-close="tutorial">Got It</a>-->
+                <!--                                </div>-->
 
-<!--                                &lt;!&ndash;                <script type="text/javascript">&ndash;&gt;-->
-<!--                                &lt;!&ndash;                    function isMobile() {&ndash;&gt;-->
-<!--                                &lt;!&ndash;                        return navigator.userAgent.match(/Android/i)&ndash;&gt;-->
-<!--                                &lt;!&ndash;                            || navigator.userAgent.match(/BlackBerry/i)&ndash;&gt;-->
-<!--                                &lt;!&ndash;                            || navigator.userAgent.match(/iPhone|iPad|iPod/i)&ndash;&gt;-->
-<!--                                &lt;!&ndash;                            || navigator.userAgent.match(/Opera Mini/i)&ndash;&gt;-->
-<!--                                &lt;!&ndash;                            || navigator.userAgent.match(/IEMobile/i);&ndash;&gt;-->
-<!--                                &lt;!&ndash;                    }&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                <script type="text/javascript">&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                    function isMobile() {&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                        return navigator.userAgent.match(/Android/i)&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                            || navigator.userAgent.match(/BlackBerry/i)&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                            || navigator.userAgent.match(/iPhone|iPad|iPod/i)&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                            || navigator.userAgent.match(/Opera Mini/i)&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                            || navigator.userAgent.match(/IEMobile/i);&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                    }&ndash;&gt;-->
 
-<!--                                &lt;!&ndash;                    if (isMobile()) {&ndash;&gt;-->
-<!--                                &lt;!&ndash;                        var viewButton = document.getElementById('render-scene');&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                    if (isMobile()) {&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                        var viewButton = document.getElementById('render-scene');&ndash;&gt;-->
 
-<!--                                &lt;!&ndash;                        if (viewButton) {&ndash;&gt;-->
-<!--                                &lt;!&ndash;                            viewButton.innerHTML = '<span>Mobile version coming soon. Please view from laptop or desktop.</span>';&ndash;&gt;-->
-<!--                                &lt;!&ndash;                        }&ndash;&gt;-->
-<!--                                &lt;!&ndash;                    }&ndash;&gt;-->
-<!--                                &lt;!&ndash;                </script>&ndash;&gt;-->
-<!--                                &lt;!&ndash;                <script type="text/javascript" src="src/app/vendor/jquery/dist/jquery.min.js"></script>&ndash;&gt;-->
-<!--                                &lt;!&ndash;                <script type="text/javascript" src="src/app/vendor/foundation-sites/dist/foundation.min.js"></script>&ndash;&gt;-->
-<!--                                &lt;!&ndash;                <script type="text/javascript" src="src/app/vendor/stats/build/stats.min.js"></script>&ndash;&gt;-->
-<!--                                &lt;!&ndash;                <script type="text/javascript" src="src/app/vendor/tweenjs/build/tween.min.js"></script>&ndash;&gt;-->
-<!--                                &lt;!&ndash;                <script type="text/javascript" src="src/app/vendor/three.js/three.min.js"></script>&ndash;&gt;-->
-<!--                                &lt;!&ndash;                <script data-main="./src/app/app" src="src/app/vendor/requirejs/require.js"></script>&ndash;&gt;-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </template>-->
-<!--                </nk-solar-system>-->
+                <!--                                &lt;!&ndash;                        if (viewButton) {&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                            viewButton.innerHTML = '<span>Mobile version coming soon. Please view from laptop or desktop.</span>';&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                        }&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                    }&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                </script>&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                <script type="text/javascript" src="src/app/vendor/jquery/dist/jquery.min.js"></script>&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                <script type="text/javascript" src="src/app/vendor/foundation-sites/dist/foundation.min.js"></script>&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                <script type="text/javascript" src="src/app/vendor/stats/build/stats.min.js"></script>&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                <script type="text/javascript" src="src/app/vendor/tweenjs/build/tween.min.js"></script>&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                <script type="text/javascript" src="src/app/vendor/three.js/three.min.js"></script>&ndash;&gt;-->
+                <!--                                &lt;!&ndash;                <script data-main="./src/app/app" src="src/app/vendor/requirejs/require.js"></script>&ndash;&gt;-->
+                <!--                            </div>-->
+                <!--                        </div>-->
+                <!--                    </template>-->
+                <!--                </nk-solar-system>-->
                 <nk-elite-control
                         id="nk-elite-control_0"
                         slot="nk-elite-control"
@@ -1455,21 +1486,23 @@
                             <h1>Our Solar System</h1>
                         </div>
                         <div class="inner">
-                            <p>A solar system refers to a star and all the objects that travel in orbit around it. Our solar
+                            <p>A solar system refers to a star and all the objects that travel in orbit around it. Our
+                                solar
                                 system consists of the sun, eight planets (and their natural satellites), dwarf planets,
-                                asteroids, and comets. Our solar system is located within the Orion Arm of the Milky Way Galaxy,
+                                asteroids, and comets. Our solar system is located within the Orion Arm of the Milky Way
+                                Galaxy,
                                 which is located about 27,000 light-years away from the Milky Way Galactic Center.</p>
-<!--                            <p>This is a project powered by <a href="http://threejs.org/" target="_blank">Three.js</a> and <a-->
-<!--                                    href="https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API">WebGL</a>. All objects-->
-<!--                                within this project have been modeled to <span data-tooltip aria-haspopup="true" class="has-tip"-->
-<!--                                                                               data-disable-hover="false" tabindex="1"-->
-<!--                                                                               title="Scale = 1 * 10^-4.2">scale</span> based on-->
-<!--                                real astronomical data. The scene currently renders the sun, all eight planets (nine if you side-->
-<!--                                with Pluto being a planet), each planet's moons, the asteriod belt and thousands of stars.</p>-->
-<!--                            <p>-->
-<!--                                <strong>For a better viewing experience, use a laptop or desktop with the latest version of-->
-<!--                                    Google Chrome or Safari Technology Preview.</strong>-->
-<!--                            </p>-->
+                            <!--                            <p>This is a project powered by <a href="http://threejs.org/" target="_blank">Three.js</a> and <a-->
+                            <!--                                    href="https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API">WebGL</a>. All objects-->
+                            <!--                                within this project have been modeled to <span data-tooltip aria-haspopup="true" class="has-tip"-->
+                            <!--                                                                               data-disable-hover="false" tabindex="1"-->
+                            <!--                                                                               title="Scale = 1 * 10^-4.2">scale</span> based on-->
+                            <!--                                real astronomical data. The scene currently renders the sun, all eight planets (nine if you side-->
+                            <!--                                with Pluto being a planet), each planet's moons, the asteriod belt and thousands of stars.</p>-->
+                            <!--                            <p>-->
+                            <!--                                <strong>For a better viewing experience, use a laptop or desktop with the latest version of-->
+                            <!--                                    Google Chrome or Safari Technology Preview.</strong>-->
+                            <!--                            </p>-->
                             <!--                    <div class="social-buttons social-buttons-intro-screen">-->
                             <!--                        <a href="https://twitter.com/SanderBlue" class="twitter-follow-button" data-show-count="false">Follow-->
                             <!--                            @SanderBlue</a>-->
@@ -1502,12 +1535,16 @@
 
             <div id="browser-compatibility-modal" class="reveal browser-compatibility-modal">
                 <h3>Browser Compatibility</h3>
-                <p class="lead">This project utilizes some of JavaScript's lastest ES6 features. Currently this project is best
-                    viewed using the latest version of <a href="https://www.google.com/chrome/browser/desktop/index.html"
-                                                          class="browser-link" target="_blank">Google Chrome</a> or <a
+                <p class="lead">This project utilizes some of JavaScript's lastest ES6 features. Currently this project
+                    is best
+                    viewed using the latest version of <a
+                            href="https://www.google.com/chrome/browser/desktop/index.html"
+                            class="browser-link" target="_blank">Google Chrome</a> or <a
                             href="https://developer.apple.com/safari/download/" target="_blank" class="browser-link">Safari
-                        Technology Preview</a>. At a minimum, your browser must support the following ES6 features. If you can't
-                    navigate past this page, this project is not compatible with the browser you're using. Sorry, but this
+                        Technology Preview</a>. At a minimum, your browser must support the following ES6 features. If
+                    you can't
+                    navigate past this page, this project is not compatible with the browser you're using. Sorry, but
+                    this
                     project is currently not viewable from a mobile device.</p>
                 <ul>
                     <li>Classes</li>
@@ -1553,7 +1590,8 @@
 
             <div id="tutorial" class="reveal tutorial-modal" data-reveal data-close-on-click="true">
                 <h3>Controls</h3>
-                <p class="lead">Use your mouse or trackpad to navigate the scene. To zoom, use a scroll motion. When viewing a
+                <p class="lead">Use your mouse or trackpad to navigate the scene. To zoom, use a scroll motion. When
+                    viewing a
                     planet, you can move around a planet using a click + drag motion.</p>
                 <button class="close-button" data-close aria-label="Close modal" type="button">
                     <span aria-hidden="true">&times;</span>
@@ -1755,52 +1793,58 @@
     </template>
 </nk-p2p>
 <nk-star
-    id="nk-star_0"
-    slot="nk-star_0"
-    style="position:absolute;"
+        id="nk-star_0"
+        slot="nk-star_0"
+        style="position:absolute;"
 >
     <template>
-            <div data-exclusion style="position: absolute; color: rgb(255, 255, 255); top: 0px; right: 0px;">
-                <h2>4673 Galaxies &lt; 200 Mpc from Milky Way</h2><b>Each galaxy appears as a square of
-                side 32 kiloparsecs,<br> the diameter of Milky Way.</b>
-                <h3>Tools</h3>
-                Point at a galaxy: <b>Name, CDS, Simbad, Aladin, NED</b><br>
-                Mouse scroll or Pinch zoom: <b>Move to/from centered galaxy</b><br>
-                Left click and drag: <b>Rotate</b><br>
-                Right click and drag: <b>Pan</b><br>
-                Left click on a galaxy: <b>Center the galaxy (colored <span style="color:#ff0;">yellow</span>)</b><br>
-                Right click on a galaxy: <b>Select and color it <span style="color:#0f0;">green</span></b><br>
-                Point at a colored galaxy (except last colored): <b>Turn it back to white</b><br>
-                Milky Way: <b>Always <span style="color:#f0f;">magenta</span></b>
-            </div>
-            <div data-exclusion style="position: absolute; color: rgb(255, 255, 255); bottom: 10px; left: 0px;">
-                <h1>Galaxy Search</h1><input type="text" placeholder="Name / Catalog Number" id="srchkey"><button type="button"
-                                                                                                                  onclick="searchfunc();" id="srchbtn">Search</button><br>
+        <div data-exclusion style="position: absolute; color: rgb(255, 255, 255); top: 0px; right: 0px;">
+            <h2>4673 Galaxies &lt; 200 Mpc from Milky Way</h2><b>Each galaxy appears as a square of
+            side 32 kiloparsecs,<br> the diameter of Milky Way.</b>
+            <h3>Tools</h3>
+            Point at a galaxy: <b>Name, CDS, Simbad, Aladin, NED</b><br>
+            Mouse scroll or Pinch zoom: <b>Move to/from centered galaxy</b><br>
+            Left click and drag: <b>Rotate</b><br>
+            Right click and drag: <b>Pan</b><br>
+            Left click on a galaxy: <b>Center the galaxy (colored <span style="color:#ff0;">yellow</span>)</b><br>
+            Right click on a galaxy: <b>Select and color it <span style="color:#0f0;">green</span></b><br>
+            Point at a colored galaxy (except last colored): <b>Turn it back to white</b><br>
+            Milky Way: <b>Always <span style="color:#f0f;">magenta</span></b>
+        </div>
+        <div data-exclusion style="position: absolute; color: rgb(255, 255, 255); bottom: 10px; left: 0px;">
+            <h1>Galaxy Search</h1><input type="text" placeholder="Name / Catalog Number" id="srchkey">
+            <button type="button"
+                    onclick="searchfunc();" id="srchbtn">Search
+            </button>
+            <br>
 
-                <br>
-                <h3><a href="https://github.com/RiteshSingh/galaxies/blob/master/galaxyname.txt" target="_blank">List of all
-                    4673 galaxies</a></h3>
-            </div>
-            <div data-exclusion style="position: absolute; color: rgb(255, 255, 255); top: 0px; left: 0px;">
-                <h1 id="galaxyName2">Milky way</h1>
-                <p id="galaxyNames">Milky way</p>
-                <p style="margin-bottom: 1em;" id="galaxyDist">0.0 Mpc (0.0 Mly)</p>
+            <br>
+            <h3><a href="https://github.com/RiteshSingh/galaxies/blob/master/galaxyname.txt" target="_blank">List of all
+                4673 galaxies</a></h3>
+        </div>
+        <div data-exclusion style="position: absolute; color: rgb(255, 255, 255); top: 0px; left: 0px;">
+            <h1 id="galaxyName2">Milky way</h1>
+            <p id="galaxyNames">Milky way</p>
+            <p style="margin-bottom: 1em;" id="galaxyDist">0.0 Mpc (0.0 Mly)</p>
 
-                <img src="./assets/ESO-VLT-Laser-phot-33a-07.jpg"
-                     width="200" id="image" style="display:block;" />
-                <div id="aladin-lite-div" style="width:300px;height:300px; display:none"></div><br>
+            <img src="./assets/ESO-VLT-Laser-phot-33a-07.jpg"
+                 width="200" id="image" style="display:block;"/>
+            <div id="aladin-lite-div" style="width:300px;height:300px; display:none"></div>
+            <br>
 
-                <a href="" target="_blank" style="display:none;" id="cds">CDS</a>
-                <a href="" target="_blank" style="display:none;" id="simbad">Simbad</a>
-                <a href="" target="_blank" style="display:none;" id="aladin">Aladin</a>
-                <a href="" target="_blank" style="display:none;" id="ned">NED</a>
-            </div>
-            <div data-exclusion style="position: absolute; color: rgb(255, 255, 255); bottom: 0px; right: 0px;">
-                <p><span id="galaxyName" style="float: left;">Milky way</span> centered and colored <b><span id="galaxyColor"
-                                                                                                             style="color: #f0f">magenta</span></b></p>
-                <h3>Distance: <span id="centerdist">200</span> Mpc (<span id="centerdistly">652.31</span> million light-years)
-                </h3>
-            </div>
+            <a href="" target="_blank" style="display:none;" id="cds">CDS</a>
+            <a href="" target="_blank" style="display:none;" id="simbad">Simbad</a>
+            <a href="" target="_blank" style="display:none;" id="aladin">Aladin</a>
+            <a href="" target="_blank" style="display:none;" id="ned">NED</a>
+        </div>
+        <div data-exclusion style="position: absolute; color: rgb(255, 255, 255); bottom: 0px; right: 0px;">
+            <p><span id="galaxyName" style="float: left;">Milky way</span> centered and colored <b><span
+                    id="galaxyColor"
+                    style="color: #f0f">magenta</span></b></p>
+            <h3>Distance: <span id="centerdist">200</span> Mpc (<span id="centerdistly">652.31</span> million
+                light-years)
+            </h3>
+        </div>
     </template>
 </nk-star>
 </body>

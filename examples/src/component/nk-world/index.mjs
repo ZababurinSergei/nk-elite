@@ -22,11 +22,11 @@ Object.defineProperties(component.prototype, {
             }
 
             log('Инициализация компонента: %b', Uint8Array.from([0, 1, 2, 3]))
-            await loader('./src/app/vendor/stats/build/stats.min.js')
-            await loader('./src/app/vendor/jquery/dist/jquery.min.js')
+            // await loader('./src/app/vendor/three.js/three.min.js')
+            // await loader('./src/app/vendor/jquery/dist/jquery.min.js')
             await loader('./src/app/vendor/foundation-sites/dist/foundation.min.js')
-            await loader('./src/app/vendor/tweenjs/build/tween.min.js')
-            await loader('./src/app/vendor/three.js/three.min.js')
+            await loader('./src/app/vendor/stats/build/stats.min.js')
+            // await loader('./src/app/vendor/tweenjs/build/tween.min.js')
             await loader('./src/app/vendor/requirejs/require.js', {
                 main: './src/app/app'
             })
