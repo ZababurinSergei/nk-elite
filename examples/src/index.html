@@ -106,9 +106,15 @@
                 window.location.href = `${window.location.origin}${window.location.pathname}`
             })(this)"
         >
-            Core
+            Elite
         </button>
-
+        <button
+                onclick="(function(self) {
+                window.location.href = `${window.location.origin}${window.location.pathname}?radio`
+            })(this)"
+        >
+            Radio
+        </button>
         <button
                 onclick="(function(self) {
                 window.location.href = `${window.location.origin}${window.location.pathname}?nkWorld&bootstrap&pubsubPeerDiscovery`
@@ -1636,6 +1642,13 @@
                 >
                     Bootstrap && pubsubPeerDiscovery
                 </button>
+                <button
+                        onclick="(function(self) {
+                window.location.href = `${window.location.origin}${window.location.pathname}?bootstrap&pubsubPeerDiscovery&radio`
+            })(this)"
+                >
+                    Bootstrap && pubsubPeerDiscovery && radio
+                </button>
             </div>
             <div>
                 <label for="dial-multiaddr-input">Dial MultiAddr</label>
@@ -1730,6 +1743,14 @@
             })(this)"
                 >
                     Bootstrap && pubsubPeerDiscovery
+                </button>
+
+                <button
+                        onclick="(function(self) {
+                window.location.href = `${window.location.origin}${window.location.pathname}?bootstrap&pubsubPeerDiscovery&radio`
+            })(this)"
+                >
+                    Bootstrap && pubsubPeerDiscovery && radio
                 </button>
             </div>
             <div>
@@ -1841,8 +1862,19 @@
     import {lokijs, Parser, Joi} from 'lokijs'
     import {init} from './this/index.mjs'
 
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const isNkRadio = urlParams.has('radio')
+    let arrayComponent = []
+
+    if (isNkRadio) {
+        arrayComponent =['nk-p2p', 'nk-world', 'nk-radio']
+    } else {
+        arrayComponent = ['nk-star', 'nk-solar-system', 'nk-filter', 'nk-time-line', 'nk-switch', 'nk-osc', 'nk-emulator', 'nk-memory', 'nk-elite-control', 'nk-world', 'nk-menu', 'nk-elite', 'nk-radio', 'nk-p2p', 'nk-universe', 'nk-chat']
+    }
+
     init({
-        components: ['nk-star', 'nk-solar-system', 'nk-filter', 'nk-time-line', 'nk-switch', 'nk-osc', 'nk-emulator', 'nk-memory', 'nk-elite-control', 'nk-world', 'nk-menu', 'nk-elite', 'nk-radio', 'nk-p2p', 'nk-universe', 'nk-chat']
+        components: arrayComponent
     }).then().catch(error => console.log(error));
 
     //        globalThis["LFreeQueue"].Store( "Key1", 10 );

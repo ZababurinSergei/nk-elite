@@ -1,7 +1,6 @@
 import { FreeQueue } from "../../../../../this/queue.mjs";
 
-class WorkletBasicProcessor extends AudioWorkletProcessor 
-{
+class WorkletBasicProcessor extends AudioWorkletProcessor {
 	constructor(options) {
 		super();
 		this.instance = FreeQueue.fromObject(options.processorOptions.instance);
@@ -35,6 +34,7 @@ class WorkletBasicProcessor extends AudioWorkletProcessor
 			}
 
 			if ( this.instance != undefined && this.instance != null) {
+				console.log('============== AUDIO PROCESSOR ========================', dataArray)
 				const r = this.instance.push( dataArray, bufferSize );
 //				console.log( "processor: queue.push [ " + ( ( r == true ) ? "true" : "false" ) + " ]" );
 			}
