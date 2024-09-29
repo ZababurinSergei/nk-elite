@@ -235,13 +235,11 @@ void constrictor_mission_debrief (void)
 	gfx_display_pretty_text (116, 132, 400, wnd_height - 128, mission1_debrief);
 
 	gfx_display_centre_text (330, "Press space to continue.", 140, GFX_COL_GOLD);
-
-
 	
-	do
-	{
-		keyasc = kbd_read_key();
-	} while (keyasc != ' ');
+//	do {
+//		keyasc = kbd_read_key();
+//	} while (keyasc != ' ');
+
 }
 
 
@@ -260,10 +258,10 @@ void thargoid_mission_first_brief (void)
 	gfx_display_centre_text (330, "Press space to continue.", 140, GFX_COL_GOLD);
 
 	
-	do
-	{
-		keyasc = kbd_read_key();
-	} while (keyasc != ' ');
+//	do
+//	{
+//		keyasc = kbd_read_key();
+//	} while (keyasc != ' ');
 }
 
 
@@ -286,10 +284,10 @@ void thargoid_mission_second_brief (void)
 
 
 	
-	do
-	{
-		keyasc = kbd_read_key();
-	} while (keyasc != ' ');
+//	do
+//	{
+//		keyasc = kbd_read_key();
+//	} while (keyasc != ' ');
 }
 
 
@@ -312,10 +310,10 @@ void thargoid_mission_debrief (void)
 	gfx_display_centre_text (330, "Press space to continue.", 140, GFX_COL_GOLD);
 
 	
-	do
-	{
-		keyasc = kbd_read_key();
-	} while (keyasc != ' ');
+//	do
+//	{
+//		keyasc = kbd_read_key();
+//	} while (keyasc != ' ');
 }
 
 

@@ -50,8 +50,6 @@ int wnd_width;
 int wnd_height;
 int wnd_fullscreen;
 
-int game_fps = 0;
-
 double wnd_scale;
 
 static int start_poly;
@@ -67,6 +65,11 @@ struct poly_data
 	int point_list[16];
 	int next;
 };
+
+int game_fps = 0;
+
+uint64_t get_ticktime();
+uint64_t get_diffticktime( uint64_t _nt );
 
 static struct poly_data poly_chain[MAX_POLYS];
 
@@ -355,8 +358,7 @@ int gfx_graphics_startup (void)
 	SDL_SetRenderDrawColor(sdl_ren, 0, 0, 0, 0xFF);
 	SDL_RenderClear(sdl_ren);
 
-	for (int a = 0; a < IMG_NUM_OF; a++)
-		sprites[a].tex = NULL;
+	for (int a = 0; a < IMG_NUM_OF; a++) sprites[a].tex = NULL;
 
 	SDL_Surface *surface = NULL;
 
@@ -443,20 +445,35 @@ void gfx_graphics_shutdown (void)
  * Blit the back buffer to the screen.
  */
 
+uint64_t get_ticktime()
+{
+	struct timeval tv;
+    gettimeofday( &tv, NULL) ;
+    return tv.tv_sec * (uint64_t)1000000 + tv.tv_usec;
+}
+
+
+uint64_t get_diffticktime( uint64_t _nt )
+{
+	uint64_t _tm = get_ticktime();
+	return (( _tm - _nt ) / 1000);
+}
+
 void gfx_update_screen (void)
 {
 	static uint64_t _nt = 0;
 	static int _fc = 0;
 
 	struct timeval tv;
-        gettimeofday( &tv, NULL) ;
-        uint64_t _tm = tv.tv_sec * (uint64_t)1000000 + tv.tv_usec;
+    gettimeofday( &tv, NULL) ;
+    uint64_t _tm = tv.tv_sec * (uint64_t)1000000 + tv.tv_usec;
+
 	if ( _nt != 0 ) {
 		uint64_t _diff = _tm - _nt;
-		if ( _diff > 1000000 ) {
+		if ( _diff > 1000000 ) { 
 			game_fps = _fc;
 			_nt = _tm;
-			_fc = 1;
+			_fc = 0;
 		} else {
 			_fc = _fc + 1;
 		}
@@ -464,21 +481,20 @@ void gfx_update_screen (void)
 		_nt = _tm;
 	}
 
-	SDL_SetRenderTarget(sdl_ren, NULL);
-	SDL_SetRenderDrawColor(sdl_ren,0,0,0,0xFF);
-	SDL_RenderClear(sdl_ren);
-	SDL_RenderCopy(sdl_ren, sdl_tex, NULL, NULL);
-	SDL_RenderPresent(sdl_ren);
-	SDL_SetRenderTarget(sdl_ren, sdl_tex);
-	SDL_SetRenderDrawColor(sdl_ren,0,0,0,0xFF);
-	SDL_RenderClear(sdl_ren);
-
-
-//    #ifdef __EMSCRIPTEN__
-//        emscripten_sleep(speed_cap);
-//    #else
-//        SDL_Delay(speed_cap);
-//    #endif
+	SDL_SetRenderTarget( sdl_ren, NULL );
+	SDL_SetRenderDrawColor( sdl_ren, 0, 0, 0, 0xFF );
+	SDL_RenderClear( sdl_ren );
+	SDL_RenderCopy( sdl_ren, sdl_tex, NULL, NULL );
+	SDL_RenderPresent( sdl_ren );
+	SDL_SetRenderTarget( sdl_ren, sdl_tex );
+	SDL_SetRenderDrawColor( sdl_ren, 0, 0, 0, 0xFF );
+	SDL_RenderClear( sdl_ren );
+	
+    #ifdef __EMSCRIPTEN__
+        emscripten_sleep(speed_cap);
+    #else
+	    SDL_Delay(speed_cap);
+    #endif
 
 }
 
@@ -867,7 +883,7 @@ void gfx_display_centre_text (int y, char *str, int psize, int col)
 
 void gfx_clear_display (void)
 {
-	gfx_draw_simplerect (GFX_VIEW_L_COORD, GFX_WINDOW_T_COORD + GFX_BORDER_SIZE, GFX_VIEW_R_COORD, GFX_WINDOW_B_COORD - GFX_BORDER_SIZE, GFX_COL_BLACK);
+	gfx_draw_simplerect (GFX_WINDOW_WB_L_COORD, GFX_WINDOW_WB_R_COORD, GFX_WINDOW_WB_T_COORD, GFX_WINDOW_WB_B_COORD, GFX_COL_BLACK);
 }
 
 void gfx_clear_text_area (void)

@@ -18,28 +18,31 @@
 #include "planet.h"
 #include "trade.h"
 
+#define SCR_SUBZERO			0
 #define SCR_INTRO_ONE		1
 #define SCR_INTRO_TWO		2
-#define SCR_GALACTIC_CHART	3
-#define SCR_SHORT_RANGE		4
-#define	SCR_PLANET_DATA		5
-#define SCR_MARKET_PRICES	6
-#define SCR_CMDR_STATUS		7
-#define SCR_FRONT_VIEW		8
-#define SCR_REAR_VIEW		9
-#define SCR_LEFT_VIEW		10
-#define SCR_RIGHT_VIEW		11
-#define SCR_BREAK_PATTERN	12
-#define SCR_INVENTORY		13
-#define SCR_EQUIP_SHIP		14
-#define SCR_OPTIONS		15
-#define SCR_LOAD_CMDR		16
-#define SCR_SAVE_CMDR		17
-#define SCR_QUIT		18
-#define SCR_GAME_OVER		19
-#define SCR_SETTINGS		20
-#define SCR_ESCAPE_POD		21
-#define SCR_RESTART             22
+#define SCR_INITIALIZE      3
+#define SCR_GALACTIC_CHART	4
+#define SCR_SHORT_RANGE		5
+#define	SCR_PLANET_DATA		6
+#define SCR_MARKET_PRICES	7
+#define SCR_CMDR_STATUS		8
+#define SCR_FRONT_VIEW		9
+#define SCR_REAR_VIEW		10
+#define SCR_LEFT_VIEW		11
+#define SCR_RIGHT_VIEW		12
+#define SCR_BREAK_PATTERN	13
+#define SCR_INVENTORY		14
+#define SCR_EQUIP_SHIP		15
+#define SCR_OPTIONS		    16
+#define SCR_LOAD_CMDR		17
+#define SCR_SAVE_CMDR		18
+#define SCR_QUIT		    19
+#define SCR_GAME_OVER		20
+#define SCR_SETTINGS		21
+#define SCR_ESCAPE_POD		22
+#define SCR_RESTART         23
+
 
 #define PULSE_LASER		0x0F
 #define BEAM_LASER		0x8F

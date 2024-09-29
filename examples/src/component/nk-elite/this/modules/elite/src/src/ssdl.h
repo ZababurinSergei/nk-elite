@@ -63,6 +63,12 @@
 #define GFX_WINDOW_R_COORD    (GFX_WINDOW_W_SIZE - 1 + 1)  //???
 #define GFX_WINDOW_T_COORD    (0)
 #define GFX_WINDOW_B_COORD    (GFX_WINDOW_H_SIZE - 1 + 1)  //???
+
+#define GFX_WINDOW_WB_L_COORD (GFX_WINDOW_L_COORD + GFX_BORDER_SIZE)
+#define GFX_WINDOW_WB_R_COORD (GFX_WINDOW_R_COORD - GFX_BORDER_SIZE)
+#define GFX_WINDOW_WB_B_COORD (GFX_WINDOW_B_COORD - SCANNER_HEIGHT - GFX_BORDER_SIZE) 
+#define GFX_WINDOW_WB_T_COORD (GFX_WINDOW_T_COORD + GFX_BORDER_SIZE)
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GFX_VIEW_[xxxxx]
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -77,8 +83,8 @@
 #define GFX_VIEW_X_CENTER     (GFX_VIEW_L_COORD + GFX_VIEW_W_SIZE / 2)
 #define GFX_VIEW_Y_CENTER     (GFX_VIEW_T_COORD + GFX_VIEW_H_SIZE / 2)
 
-#define GFX_VIEW_KX_SCALE(kxx) (GFX_VIEW_X_CENTER / kxx ) // 136
-#define GFX_VIEW_KY_SCALE(kyy) (GFX_VIEW_Y_CENTER / kyy ) // 132
+#define GFX_VIEW_KX_SCALE(kxx) (GFX_VIEW_X_CENTER / kxx) // 136
+#define GFX_VIEW_KY_SCALE(kyy) (GFX_VIEW_Y_CENTER / kyy) // 132
 
 #define GFX_VIEW_X_SCALE      (GFX_VIEW_KX_SCALE(128)) // 136
 #define GFX_VIEW_Y_SCALE      (GFX_VIEW_KY_SCALE(48)) // 132
@@ -188,8 +194,6 @@ extern SDL_Texture	*sdl_tex;
 extern SDL_Window	*sdl_win;
 extern SDL_Renderer	*sdl_ren;
 
-extern int game_fps;
-
 SDL_RWops *datafile_open ( const char *fn );
 
 extern int  sdl_last_key_pressed;
@@ -237,5 +241,10 @@ extern int  gfx_request_file (char *title, char *path, char *ext);
 extern void gfx_texture_clone(void);
 extern void gfx_swap_textures(void);
 extern void gfx_set_clip ( int x1, int y1, int x2, int y2 );
+
+extern int game_fps;
+
+extern uint64_t get_ticktime();
+extern uint64_t get_diffticktime( uint64_t _nt );
 
 #endif

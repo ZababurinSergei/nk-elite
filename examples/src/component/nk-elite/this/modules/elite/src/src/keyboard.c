@@ -74,6 +74,7 @@ char old_key[KEY_MAX];
 
 // Allegro stuff, wait for key ...
 // It's kinda hard to translate Allegro to SDL, as Allegro seems to be a kinda strange stuff, and SDL is event based more
+/*
 int readkey ( void )
 {
 	for (;;) {
@@ -86,9 +87,9 @@ int readkey ( void )
 		usleep(1);	// FIXME: how to wait???
 	}
 }
+*/
 
-
-static int keypressed ( void )
+int keypressed ( void )
 {
 	return sdl_last_key_pressed;
 }
@@ -100,33 +101,34 @@ static int poll_keyboard ( void )
 	return 0;	// success
 }
 
-int keyboard_handle(void *userdata, SDL_Event *event) {
-		switch (event->type) {
-			case SDL_QUIT:
-				exit(0);	// FIXME: do it nicer ....
-			case SDL_KEYUP:
-			case SDL_KEYDOWN:
-				 printf("KEY: scan=%s[#%d] sym=%s[#%d] event=%s repeated=%d\n",
-					SDL_GetScancodeName(event->key.keysym.scancode),
-					event->key.keysym.scancode,
-					SDL_GetKeyName(event->key.keysym.sym),
-					event->key.keysym.sym,
-					event->key.state == SDL_PRESSED ? "DOWN": "UP",
-					event->key.repeat
-				);
-				if (!event->key.repeat) {
-					int game_code = decode_keysym(event->key.keysym.sym);
-					//printf("KEY_MAP=%d\n", game_code);
-					if (game_code >= 0) {
+int keyboard_handle(void *userdata, SDL_Event *event) 
+{
+	switch (event->type) {
+		case SDL_QUIT:
+			exit(0);	// FIXME: do it nicer ....
+		case SDL_KEYUP:
+		case SDL_KEYDOWN:
+			printf("KEY: scan=%s[#%d] sym=%s[#%d] event=%s repeated=%d\n",
+				SDL_GetScancodeName(event->key.keysym.scancode),
+				event->key.keysym.scancode,
+				SDL_GetKeyName(event->key.keysym.sym),
+				event->key.keysym.sym,
+				event->key.state == SDL_PRESSED ? "DOWN": "UP",
+				event->key.repeat
+			);
+			if (!event->key.repeat) {
+				int game_code = decode_keysym(event->key.keysym.sym);
+				//printf("KEY_MAP=%d\n", game_code);
+				if (game_code >= 0) {
 						if (event->key.state == SDL_PRESSED) {
 							key[game_code] = 1;
 							sdl_last_key_pressed = game_code;
 						} else {
 							key[game_code] = 0;
 						}
-					} 
-				}
-				break;
+				} 
+			}
+			break;
 		}
 
 	return 0;
@@ -208,11 +210,7 @@ int kbd_check_keys()
 	kbd_space_pressed = key[KEY_SPACE];
 
 	int lastkey = 0;
-	if (sdl_last_key_pressed) {
-		lastkey = sdl_last_key_pressed;
-//		sdl_last_key_pressed = 0;
-	}
-
+	if (sdl_last_key_pressed) lastkey = sdl_last_key_pressed;
 	return lastkey;
 }
 
@@ -224,10 +222,12 @@ void kbd_poll_keyboard (void)
 
     ///////////////////////////////////
 	// last key
-	while (keypressed())
-		readkey();
+	// while (keypressed())
+	//	readkey();
 }
 
+
+/*
 
 int kbd_read_key (void)
 {
@@ -263,3 +263,5 @@ void kbd_clear_key_buffer (void)
 	while (keypressed())
 		readkey();
 }
+
+*/

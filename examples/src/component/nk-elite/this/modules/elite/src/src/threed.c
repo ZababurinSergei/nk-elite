@@ -610,9 +610,7 @@ void gfx_render_planet_line (int xo, int yo, int x, int y, int radius, int vx, i
 
 	sy = y + yo;
 	
-	if ((sy < GFX_VIEW_TY + GFX_Y_OFFSET) ||
-		(sy > GFX_VIEW_BY + GFX_Y_OFFSET))
-		return;
+	if ((sy < GFX_FULLVIEW_T_COORD) || (sy > GFX_FULLVIEW_B_COORD)) return;
 					   
 	sx = xo - x;
 	ex = xo + x;
@@ -626,7 +624,7 @@ void gfx_render_planet_line (int xo, int yo, int x, int y, int radius, int vx, i
 		
 	for (; sx <= ex; sx++)
 	{
-		if ((sx >= (GFX_VIEW_TX)) && (sx <= (GFX_VIEW_BX ))) {
+		if ((sx >= (GFX_FULLVIEW_L_COORD)) && (sx <= (GFX_FULLVIEW_R_COORD ))) {
 			lx = rx / div;
 			ly = ry / div;
 			colour = landscape[lx][ly];
@@ -664,8 +662,14 @@ void gfx_render_planet (int xo, int yo, int radius, struct vector *vec)
 		bx = xo;
 		by = yo;
 
+		//bx = GFX_FULLVIEW_X_CENTER + bx * GFX_FULLVIEW_X_SCALE;
+		//by = GFX_FULLVIEW_Y_CENTER + by * GFX_FULLVIEW_Y_SCALE;
+
 		ex = x;
 		ey = y;
+
+		//ex = GFX_FULLVIEW_X_CENTER + ex * GFX_FULLVIEW_X_SCALE;
+		//ey = GFX_FULLVIEW_Y_CENTER + ey * GFX_FULLVIEW_Y_SCALE;
 
 		gfx_render_planet_line (bx, by, ex, ey, radius, vx, vy);
 		gfx_render_planet_line (bx, by, ex,-ey, radius, vx, vy);
@@ -742,7 +746,8 @@ void draw_planet (struct univ_object *planet)
 
 		case 2:
 		case 3:
-			gfx_render_planet (cx, cy, radius, planet->rotmat);
+			draw_wireframe_planet (cx, cy, radius, planet->rotmat);
+			//gfx_render_planet (cx, cy, radius, planet->rotmat);
 			break;
 	}
 }
@@ -760,9 +765,7 @@ void gfx_render_sun_line (int xo, int yo, int x, int y, int radius)
 	int inner2;
 	int mix;
 
-	if ((sy < GFX_VIEW_TY + GFX_Y_OFFSET) ||
-		(sy > GFX_VIEW_BY + GFX_Y_OFFSET))
-	return;
+	if ((sy < GFX_FULLVIEW_T_COORD) || (sy > GFX_FULLVIEW_B_COORD)) return;
 	
 	sx = xo - x;
 	ex = xo + x;
@@ -770,15 +773,9 @@ void gfx_render_sun_line (int xo, int yo, int x, int y, int radius)
 	sx -= (radius * (2 + (randint() & 7))) >> 8;
 	ex += (radius * (2 + (randint() & 7))) >> 8;
 	
-	if ((sx > GFX_VIEW_BX + GFX_X_OFFSET) ||
-		(ex < GFX_VIEW_TX + GFX_X_OFFSET))
-		return;
-	
-	if (sx < GFX_VIEW_TX + GFX_X_OFFSET)
-		sx = GFX_VIEW_TX + GFX_X_OFFSET;
-	
-	if (ex > GFX_VIEW_BX + GFX_X_OFFSET)
-		ex = GFX_VIEW_BX + GFX_X_OFFSET;
+	if ((sx > GFX_VIEW_BX + GFX_X_OFFSET) || (ex < GFX_VIEW_TX + GFX_X_OFFSET)) return;
+	if (sx < GFX_VIEW_TX + GFX_X_OFFSET) sx = GFX_VIEW_TX + GFX_X_OFFSET;
+	if (ex > GFX_VIEW_BX + GFX_X_OFFSET) ex = GFX_VIEW_BX + GFX_X_OFFSET;
 
 	inner = (radius * (200 + (randint() & 7))) >> 8;
 	inner *= inner;
@@ -1074,8 +1071,9 @@ void draw_ship (struct univ_object *ship)
 		(fabs(ship->location.y) > ship->location.z))
 		return;
 		
-	if (wireframe)
+	if (wireframe) {
 		draw_wireframe_ship (ship);
-	else
+	} else {
 		draw_solid_ship (ship);
+	}
 }

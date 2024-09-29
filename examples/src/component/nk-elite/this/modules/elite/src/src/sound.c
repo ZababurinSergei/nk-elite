@@ -72,7 +72,7 @@ static void audio_callback ( void *userdata, Uint8 *stream, int len )
 				playing_pos++;
 				if (playing_pos >= playing_end) {
 					playing_pos = NULL;
-					printf("AUDIO: end of sample");
+					printf("AUDIO: end of sample\n");
 				}
 			} else {
 				stream[i] = SILENCE;
@@ -125,7 +125,7 @@ int snd_sound_startup (void)
 int snd_sound_shutdown (void)
 {
 	if (audio) {
-		puts("AUDIO: closing");
+		printf("AUDIO: closing\n");
 		SDL_PauseAudioDevice(audio, 1);
 		SDL_CloseAudioDevice(audio);
 	}

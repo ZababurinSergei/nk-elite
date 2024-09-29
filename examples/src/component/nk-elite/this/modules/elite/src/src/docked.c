@@ -29,9 +29,6 @@
 #include "space.h"
 #include "keyboard.h"
 
-
-
-
 char *economy_type[] = {"Rich Industrial",
 						"Average Industrial",
 						"Poor Industrial",
@@ -467,8 +464,6 @@ void display_commander_status (void)
 	int i;
 	int x,y;
 	
-	current_screen = SCR_CMDR_STATUS;
-
 	gfx_clear_display();
 
 	sprintf (str, "COMMANDER %s", cmdr.name);

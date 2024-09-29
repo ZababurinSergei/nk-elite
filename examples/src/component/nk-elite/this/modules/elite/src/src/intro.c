@@ -103,13 +103,10 @@ void update_intro1 (void)
 
 static void next_ship(int bump)
 {
-  do
-  {
+  do {
     ship_no += bump;
-    if (ship_no > NO_OF_SHIPS)
-      ship_no = 1;
-    if (ship_no < 1)
-      ship_no = NO_OF_SHIPS;
+    if (ship_no > NO_OF_SHIPS) ship_no = 1;
+    if (ship_no < 1) ship_no = NO_OF_SHIPS;
   } while (min_dist[ship_no] == 0);
 
   show_time = 0;

@@ -476,6 +476,7 @@ void check_docking (int i)
 	{
 		snd_play_sample (SND_DOCK);					
 		dock_player();
+		startup_part = 0;
 		current_screen = SCR_BREAK_PATTERN;
 		return;
 	}
@@ -970,7 +971,6 @@ void display_hyper_status (void)
 	}
 }
 
-
 int rotate_byte_left (int x)
 {
 	return ((x << 1) | (x >> 7)) & 255;
@@ -992,10 +992,6 @@ void enter_next_galaxy (void)
 	hyperspace_planet = docked_planet;
 }
 
-
-
-
-
 void enter_witchspace (void)
 {
 	int i;
@@ -1008,13 +1004,13 @@ void enter_witchspace (void)
 	flight_speed = 12;
 	flight_roll = 0;
 	flight_climb = 0;
+
 	create_new_stars();
 	clear_universe();
 
 	nthg = (randint() & 3) + 1;
 	
-	for (i = 0; i < nthg; i++)
-		create_thargoid();	
+	for (i = 0; i < nthg; i++) create_thargoid();	
 	
 	current_screen = SCR_BREAK_PATTERN;
 	snd_play_sample (SND_HYPERSPACE);
@@ -1077,7 +1073,6 @@ void complete_hyperspace (void)
 	}
 
 	add_new_ship (SHIP_PLANET, px, py, pz, rotmat, 0, 0);
-
 
 	pz = -(((docked_planet.d & 7) | 1) << 16);
 	px = ((docked_planet.f & 3) << 16) | ((docked_planet.f & 3) << 8);
@@ -1192,6 +1187,7 @@ void engage_docking_computer (void)
 	if (ship_count[SHIP_CORIOLIS] || ship_count[SHIP_DODEC])
 	{
 		snd_play_sample (SND_DOCK);
+		startup_part = 0;
 		dock_player();
 		current_screen = SCR_BREAK_PATTERN;
 	}
@@ -1209,22 +1205,22 @@ void update_condition(void)
   else {
     int i;
     condition = COND_GREEN;
-    if (myship.altitude < 128 || myship.cabtemp >= 128)
-      condition = COND_YELLOW;
-    for (i = 0; i < MAX_UNIV_OBJECTS; i++) {
-      struct univ_object *un = &universe[i];
-      if (un->type <= 0)
-	continue;
-      if (un->flags & FLG_HOSTILE) {
-	condition = COND_RED;
-	break;
-      }
-      if (condition == COND_GREEN && 
-	  un->type != SHIP_ASTEROID && un->type != SHIP_CARGO &&
-	  un->type != SHIP_ALLOY && un->type != SHIP_ROCK &&
-	  un->type != SHIP_BOULDER && un->type != SHIP_ESCAPE_CAPSULE &&
-	  un->type != SHIP_CORIOLIS && un->type != SHIP_DODEC)
-	condition = COND_YELLOW;
+    if (myship.altitude < 128 || myship.cabtemp >= 128) condition = COND_YELLOW;
+    for (i = 0; i < MAX_UNIV_OBJECTS; i++) 
+	{
+        struct univ_object *un = &universe[i];
+        if (un->type <= 0) continue;
+        if (un->flags & FLG_HOSTILE) {
+		    condition = COND_RED;
+		    break;
+        }
+        if (condition == COND_GREEN && 
+		    un->type != SHIP_ASTEROID && un->type != SHIP_CARGO &&
+		    un->type != SHIP_ALLOY && un->type != SHIP_ROCK &&
+		    un->type != SHIP_BOULDER && un->type != SHIP_ESCAPE_CAPSULE &&
+		    un->type != SHIP_CORIOLIS && un->type != SHIP_DODEC
+		) 
+		condition = COND_YELLOW;
     }
   }
 }

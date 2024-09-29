@@ -42,4 +42,6 @@ extern int venablescreenname;
 extern int venablesecondchart;
 extern int venablefirstchart;
 
+extern unsigned int startup_part;
+
 #endif
