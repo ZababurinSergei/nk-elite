@@ -1,0 +1,29 @@
+:host {
+    position: relative;
+    display: flex;
+}
+
+* {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+h1,
+h2,
+h3 {
+    margin-block-start: 0.5em;
+    margin-block-end: 0.5em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+}
+
+a {
+    color: #fff;
+}
+
+div {
+    padding-block-end: 0.5em;
+    padding-inline-start: 1em;
+    padding-inline-end: 1em;
+    background-color: rgba(30, 30, 30, 0.3)
+}
