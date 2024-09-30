@@ -652,16 +652,32 @@ void update_scanner (void)
 			(universe[i].flags & FLG_DEAD) ||
 			(universe[i].flags & FLG_CLOAKED))
 			continue;
+
 		x = universe[i].location.x * scanner_zoom / 256;
 		y = universe[i].location.y * scanner_zoom / 256;
 		z = universe[i].location.z * scanner_zoom / 256;
+
 		x1 = x;
 		y1 = -z / 4;
 		y2 = y1 - y / 2;
+
 		if ((y2 < -28) || (y2 > 28) || (x1 < -50) || (x1 > 50)) continue;
+
 		x1 += scanner_cx;
 		y1 += scanner_cy;
 		y2 += scanner_cy;
+
+		printf( "xx1: %d\n", x1 );
+		printf( "yy1: %d\n", y1 );
+		printf( "yy2: %d\n", y2 );
+
+		y1 =  y1 + GFX_FULLVIEW_B_COORD + SCANNER_HEIGHT;
+		y2 = y2 + GFX_FULLVIEW_B_COORD + SCANNER_HEIGHT;
+
+		printf( "_x1: %d\n", x1 );
+		printf( "_y1: %d\n", y1 );
+		printf( "_y2: %d\n", y2 );
+
 		colour = (universe[i].flags & FLG_HOSTILE) ? GFX_COL_YELLOW_5 : GFX_COL_WHITE;
 		switch (universe[i].type) {
 			case SHIP_MISSILE:
@@ -721,7 +737,7 @@ void display_speed (void)
 	int colour;
 
 	sx = 417;
-	sy = ( wnd_height - 128 ) + 9;
+	sy = GFX_FULLVIEW_B_COORD + 9;
 
 	len = ((flight_speed * 64) / myship.max_speed) - 1;
 
@@ -743,14 +759,14 @@ void display_dial_bar (int len, int x, int y)
 {
 	int i = 0;
 
-	gfx_draw_colour_line (x, y + (wnd_height - 128), x + len, y + (wnd_height - 128), GFX_COL_GOLD);
+	gfx_draw_colour_line (x, y + GFX_FULLVIEW_B_COORD, x + len, y + GFX_FULLVIEW_B_COORD, GFX_COL_GOLD);
 	i++;
-	gfx_draw_colour_line (x, y + i + (wnd_height - 128), x + len, y + i + (wnd_height - 128), GFX_COL_GOLD);
+	gfx_draw_colour_line (x, y + i + GFX_FULLVIEW_B_COORD, x + len, y + i + GFX_FULLVIEW_B_COORD, GFX_COL_GOLD);
 	
 	for (i = 2; i < 7; i++)
-		gfx_draw_colour_line (x, y + i + (wnd_height - 128), x + len, y + i + (wnd_height - 128), GFX_COL_YELLOW_1);
+		gfx_draw_colour_line (x, y + i + GFX_FULLVIEW_B_COORD, x + len, y + i + GFX_FULLVIEW_B_COORD, GFX_COL_YELLOW_1);
 
-	gfx_draw_colour_line (x, y + i + (wnd_height - 128), x + len, y + i + (wnd_height - 128), GFX_COL_DARK_RED);
+	gfx_draw_colour_line (x, y + i + GFX_FULLVIEW_B_COORD, x + len, y + i + GFX_FULLVIEW_B_COORD, GFX_COL_DARK_RED);
 }
 
 
@@ -809,7 +825,7 @@ void display_flight_roll (void)
 	int pos;
 
 	sx = 416;
-	sy = (wnd_height - 128) + 9 + 14;
+	sy = GFX_FULLVIEW_B_COORD + 9 + 14;
 
 	pos = sx - ((flight_roll * 28) / myship.max_roll);
 	pos += 32;
@@ -825,7 +841,7 @@ void display_flight_climb (void)
 	int i;
 	int pos;
 	sx = 416;
-	sy = (wnd_height - 128) + 9 + 14 + 16;
+	sy = GFX_FULLVIEW_B_COORD + 9 + 14 + 16;
 	pos = sx + ((flight_climb * 28) / myship.max_climb);
 	pos += 32;
 	for (i = 0; i < 4; i++) {
@@ -850,7 +866,7 @@ void display_missiles (void)
 	nomiss = cmdr.missiles > 4 ? 4 : cmdr.missiles;
 
 	x = (4 - nomiss) * 16 + 35;
-	y = 113 + (wnd_height - 127);
+	y = 113 + GFX_FULLVIEW_B_COORD;
 	
 	if (missile_target != MISSILE_UNARMED)
 	{

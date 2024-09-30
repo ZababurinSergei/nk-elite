@@ -1186,8 +1186,8 @@ void main_process()
 			sprintf(buf, "x%d", scanner_zoom);
 			gfx_display_text(zoom_x, zoom_y, buf);
 	
-			if (ship_count[SHIP_CORIOLIS] || ship_count[SHIP_DODEC]) gfx_draw_sprite (IMG_BIG_S, 387, 490);
-			if (ecm_active) gfx_draw_sprite (IMG_BIG_E, 115, 490);
+			if (ship_count[SHIP_CORIOLIS] || ship_count[SHIP_DODEC]) gfx_draw_sprite (IMG_BIG_S, 387, GFX_FULLVIEW_B_COORD + 490);
+			if (ecm_active) gfx_draw_sprite (IMG_BIG_E, 115, GFX_FULLVIEW_B_COORD + 490);
 		}
 	} 
 	else 

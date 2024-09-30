@@ -23,9 +23,7 @@
 
 
 struct galaxy_seed docked_planet;
-
 struct galaxy_seed hyperspace_planet;
-
 struct planet_data current_planet_data;
 
 int curr_galaxy_num = 1;
