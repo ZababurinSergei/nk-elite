@@ -858,9 +858,9 @@
             <div class="item">
                 <slot name="nk-p2p_0"></slot>
             </div>
-            <div class="solar-system-container">
-                <slot name="solar-system-conent"></slot>
-            </div>
+<!--            <div class="solar-system-container">-->
+<!--                <slot name="solar-system-conent"></slot>-->
+<!--            </div>-->
         </div>
 
         <nk-universe
@@ -1868,7 +1868,7 @@
     let arrayComponent = []
 
     if (isNkRadio) {
-        arrayComponent =['nk-p2p', 'nk-world', 'nk-radio']
+        arrayComponent =['nk-p2p', 'nk-universe', 'nk-world', 'nk-radio', 'nk-chat', 'nk-world', 'nk-menu']
     } else {
         arrayComponent = ['nk-star', 'nk-solar-system', 'nk-filter', 'nk-time-line', 'nk-switch', 'nk-osc', 'nk-emulator', 'nk-memory', 'nk-elite-control', 'nk-world', 'nk-menu', 'nk-elite', 'nk-radio', 'nk-p2p', 'nk-universe', 'nk-chat']
     }

@@ -14,7 +14,7 @@ import {createLibp2p} from 'libp2p'
 import {fromString, toString} from 'uint8arrays'
 import {bootstrap} from '@libp2p/bootstrap'
 import {kadDHT, removePrivateAddressesMapper, removePublicAddressesMapper} from '@libp2p/kad-dht'
-import {PersistentPeerStore} from '@libp2p/peer-store'
+import {persistentPeerStore} from '@libp2p/peer-store'
 import {pubsubPeerDiscovery} from '@libp2p/pubsub-peer-discovery'
 import {IDBDatastore} from 'datastore-idb'
 import {ping} from '@libp2p/ping'
@@ -59,7 +59,7 @@ Object.defineProperties(component.prototype, {
 
                            if(isOne) {
                                connections.push(connection)
-                           } else {
+                           } else {http://localhost:4955/?bootstrap&pubsubPeerDiscovery&radio
                                if(conn.remoteAddr.toString().startsWith(conn.multiplexer)) {
                                    connections.push(connection)
                                }
@@ -118,7 +118,7 @@ Object.defineProperties(component.prototype, {
 
             this.get.peers = this.get.peers.bind(this)
 
-            const serverPeerId = '12D3KooWMkPhKVUYy5DhBe8Gr1YC7MZ1fT5YdrvzyiRXt28Q4A1E'
+            const serverPeerId = '12D3KooWAJKSV1yF6XVZRzMnh6YFd5tbXbQQZxwHAMxZXfWyQpm6'
             const port = 4955
             const RENDER_EXTERNAL_HOSTNAME = 'relay-tuem.onrender.com'
 
@@ -221,8 +221,8 @@ Object.defineProperties(component.prototype, {
             }
 
             this.libp2p = await createLibp2p({
-                peerId: peerObject.PeerId,
-                peerStore: PersistentPeerStore,
+                peerStore: persistentPeerStore,
+                // datastore: datastore,
                 addresses: {
                     listen: [
                         '/webrtc-direct',
@@ -236,22 +236,29 @@ Object.defineProperties(component.prototype, {
                     }),
                     webRTC(),
                     circuitRelayTransport({
-                        discoverRelays: 2
+                        discoverRelays: 4
                     })
                 ],
                 peerDiscovery: boot,
-                connectionEncryption: [noise()],
+                connectionEncrypters: [noise()],
                 streamMuxers: [yamux()],
+                connectionManager: {
+                    inboundConnectionThreshold: Infinity,
+                    maxConnections: Infinity
+                },
+                transportManager: {
+                    faultTolerance: FaultTolerance.NO_FATAL
+                },
                 services: {
                     identify: identify(),
                     identifyPush: identifyPush(),
                     pubsub: gossipsub(),
                     dcutr: dcutr(),
                     ping: ping(),
-                    dht: isDht ? kadDHT({
-                        kBucketSize: 12,
+                    dht: kadDHT({
+                        kBucketSize: 4,
                         kBucketSplitThreshold: `kBucketSize`,
-                        prefixLength: 32,
+                        prefixLength: 6,
                         clientMode: false,
                         querySelfInterval: 5000,
                         initialQuerySelfInterval: 1000,
@@ -262,18 +269,11 @@ Object.defineProperties(component.prototype, {
                         pingConcurrency: 10,
                         // maxInboundStreams: 32,
                         // maxOutboundStreams: 64,
-                        maxInboundStreams: 32,
-                        maxOutboundStreams: 64,
+                        maxInboundStreams: 3,
+                        maxOutboundStreams: 6,
                         // peerInfoMapper: removePrivateAddressesMapper,
                         peerInfoMapper: publicAddressesMapper,
-                    }) : () => {
-                    }
-                },
-                connectionManager: {
-                    minConnections: 20
-                },
-                transportManager: {
-                    faultTolerance: FaultTolerance.NO_FATAL
+                    })
                 },
                 connectionGater: {
                     denyDialPeer: (currentPeerId) => {
@@ -329,8 +329,12 @@ Object.defineProperties(component.prototype, {
 
             this.DOM.peerId().innerText = this.libp2p.peerId.toString()
 
-            this.libp2p.addEventListener('peer:discovery', (evt) => {
+            this.libp2p.addEventListener('peer:discovery', async (evt) => {
                 log('peer:discovery', evt.detail.id.toString())
+                console.log(`peer:discovery `, evt.detail.multiaddrs)
+                if(evt.detail.multiaddrs.length !== 0) {
+                    await this.libp2p.dial(evt.detail.multiaddrs)
+                }
             })
 
             this.libp2p.addEventListener('connection:open', async (event) => {
@@ -475,10 +479,10 @@ Object.defineProperties(component.prototype, {
             // }, 500)
 
             this.libp2p.services.pubsub.addEventListener('message', event => {
-                const topic = event.detail.topic
-                const message = toString(event.detail.data)
+                // const topic = event.detail.topic
+                // const message = toString(event.detail.data)
 
-                appendOutput(`Message received on topic '${topic}'`)
+                // appendOutput(`Message received on topic '${topic}'`)
                 // appendOutput(message)
             })
 

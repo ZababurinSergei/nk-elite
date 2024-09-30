@@ -29,9 +29,9 @@ var __toESM = (mod2, isNodeMode, target) => (target = mod2 != null ? __create(__
   mod2
 ));
 
-// node_modules/pvtsutils/build/index.js
+// ../../../node_modules/pvtsutils/build/index.js
 var require_build = __commonJS({
-  "node_modules/pvtsutils/build/index.js"(exports) {
+  "../../../node_modules/pvtsutils/build/index.js"(exports) {
     "use strict";
     var ARRAY_BUFFER_NAME = "[object ArrayBuffer]";
     var BufferSourceConverter2 = class _BufferSourceConverter {
@@ -408,10 +408,10 @@ var require_build = __commonJS({
   }
 });
 
-// node_modules/@libp2p/interface/dist/src/peer-id/index.js
+// ../../../node_modules/@libp2p/interface/dist/src/peer-id/index.js
 var peerIdSymbol = Symbol.for("@libp2p/peer-id");
 
-// node_modules/@libp2p/interface/dist/src/errors.js
+// ../../../node_modules/@libp2p/interface/dist/src/errors.js
 var CodeError = class extends Error {
   static {
     __name(this, "CodeError");
@@ -426,7 +426,7 @@ var CodeError = class extends Error {
   }
 };
 
-// node_modules/@libp2p/peer-id-factory/node_modules/@libp2p/crypto/dist/src/keys/ed25519-class.js
+// ../../../node_modules/@libp2p/crypto/dist/src/keys/ed25519-class.js
 var ed25519_class_exports = {};
 __export(ed25519_class_exports, {
   Ed25519PrivateKey: () => Ed25519PrivateKey,
@@ -437,14 +437,14 @@ __export(ed25519_class_exports, {
   unmarshalEd25519PublicKey: () => unmarshalEd25519PublicKey
 });
 
-// node_modules/multiformats/dist/src/bases/base58.js
+// ../../../node_modules/multiformats/dist/src/bases/base58.js
 var base58_exports = {};
 __export(base58_exports, {
   base58btc: () => base58btc,
   base58flickr: () => base58flickr
 });
 
-// node_modules/multiformats/dist/src/bytes.js
+// ../../../node_modules/multiformats/dist/src/bytes.js
 var empty = new Uint8Array(0);
 function equals(aa, bb) {
   if (aa === bb)
@@ -480,7 +480,7 @@ function toString(b) {
 }
 __name(toString, "toString");
 
-// node_modules/multiformats/dist/src/vendor/base-x.js
+// ../../../node_modules/multiformats/dist/src/vendor/base-x.js
 function base(ALPHABET, name2) {
   if (ALPHABET.length >= 255) {
     throw new TypeError("Alphabet too long");
@@ -620,7 +620,7 @@ var src = base;
 var _brrp__multiformats_scope_baseX = src;
 var base_x_default = _brrp__multiformats_scope_baseX;
 
-// node_modules/multiformats/dist/src/bases/base.js
+// ../../../node_modules/multiformats/dist/src/bases/base.js
 var Encoder = class {
   static {
     __name(this, "Encoder");
@@ -810,7 +810,7 @@ function rfc4648({ name: name2, prefix, bitsPerChar, alphabet: alphabet2 }) {
 }
 __name(rfc4648, "rfc4648");
 
-// node_modules/multiformats/dist/src/bases/base58.js
+// ../../../node_modules/multiformats/dist/src/bases/base58.js
 var base58btc = baseX({
   name: "base58btc",
   prefix: "z",
@@ -822,13 +822,13 @@ var base58flickr = baseX({
   alphabet: "123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ"
 });
 
-// node_modules/multiformats/dist/src/hashes/identity.js
+// ../../../node_modules/multiformats/dist/src/hashes/identity.js
 var identity_exports = {};
 __export(identity_exports, {
   identity: () => identity
 });
 
-// node_modules/multiformats/dist/src/vendor/varint.js
+// ../../../node_modules/multiformats/dist/src/vendor/varint.js
 var encode_1 = encode2;
 var MSB = 128;
 var REST = 127;
@@ -889,7 +889,7 @@ var varint = {
 var _brrp_varint = varint;
 var varint_default = _brrp_varint;
 
-// node_modules/multiformats/dist/src/varint.js
+// ../../../node_modules/multiformats/dist/src/varint.js
 function decode3(data, offset = 0) {
   const code2 = varint_default.decode(data, offset);
   return [code2, varint_default.decode.bytes];
@@ -905,7 +905,7 @@ function encodingLength(int) {
 }
 __name(encodingLength, "encodingLength");
 
-// node_modules/multiformats/dist/src/hashes/digest.js
+// ../../../node_modules/multiformats/dist/src/hashes/digest.js
 function create(code2, digest2) {
   const size = digest2.byteLength;
   const sizeOffset = encodingLength(code2);
@@ -956,7 +956,7 @@ var Digest = class {
   }
 };
 
-// node_modules/multiformats/dist/src/hashes/identity.js
+// ../../../node_modules/multiformats/dist/src/hashes/identity.js
 var code = 0;
 var name = "identity";
 var encode3 = coerce;
@@ -966,14 +966,14 @@ function digest(input) {
 __name(digest, "digest");
 var identity = { code, name, encode: encode3, digest };
 
-// node_modules/multiformats/dist/src/hashes/sha2-browser.js
+// ../../../node_modules/multiformats/dist/src/hashes/sha2-browser.js
 var sha2_browser_exports = {};
 __export(sha2_browser_exports, {
   sha256: () => sha256,
   sha512: () => sha512
 });
 
-// node_modules/multiformats/dist/src/hashes/hasher.js
+// ../../../node_modules/multiformats/dist/src/hashes/hasher.js
 function from2({ name: name2, code: code2, encode: encode5 }) {
   return new Hasher(name2, code2, encode5);
 }
@@ -1000,7 +1000,7 @@ var Hasher = class {
   }
 };
 
-// node_modules/multiformats/dist/src/hashes/sha2-browser.js
+// ../../../node_modules/multiformats/dist/src/hashes/sha2-browser.js
 function sha(name2) {
   return async (data) => new Uint8Array(await crypto.subtle.digest(name2, data));
 }
@@ -1016,7 +1016,7 @@ var sha512 = from2({
   encode: sha("SHA-512")
 });
 
-// node_modules/uint8arrays/dist/src/equals.js
+// ../../../node_modules/uint8arrays/dist/src/equals.js
 function equals3(a, b) {
   if (a === b) {
     return true;
@@ -1033,19 +1033,19 @@ function equals3(a, b) {
 }
 __name(equals3, "equals");
 
-// node_modules/uint8arrays/dist/src/alloc.js
+// ../../../node_modules/uint8arrays/dist/src/alloc.js
 function allocUnsafe(size = 0) {
   return new Uint8Array(size);
 }
 __name(allocUnsafe, "allocUnsafe");
 
-// node_modules/uint8arrays/dist/src/util/as-uint8array.js
+// ../../../node_modules/uint8arrays/dist/src/util/as-uint8array.js
 function asUint8Array(buf) {
   return buf;
 }
 __name(asUint8Array, "asUint8Array");
 
-// node_modules/uint8arrays/dist/src/concat.js
+// ../../../node_modules/uint8arrays/dist/src/concat.js
 function concat(arrays, length3) {
   if (length3 == null) {
     length3 = arrays.reduce((acc, curr) => acc + curr.length, 0);
@@ -1060,7 +1060,7 @@ function concat(arrays, length3) {
 }
 __name(concat, "concat");
 
-// node_modules/multiformats/dist/src/bases/base10.js
+// ../../../node_modules/multiformats/dist/src/bases/base10.js
 var base10_exports = {};
 __export(base10_exports, {
   base10: () => base10
@@ -1071,7 +1071,7 @@ var base10 = baseX({
   alphabet: "0123456789"
 });
 
-// node_modules/multiformats/dist/src/bases/base16.js
+// ../../../node_modules/multiformats/dist/src/bases/base16.js
 var base16_exports = {};
 __export(base16_exports, {
   base16: () => base16,
@@ -1090,7 +1090,7 @@ var base16upper = rfc4648({
   bitsPerChar: 4
 });
 
-// node_modules/multiformats/dist/src/bases/base2.js
+// ../../../node_modules/multiformats/dist/src/bases/base2.js
 var base2_exports = {};
 __export(base2_exports, {
   base2: () => base2
@@ -1102,7 +1102,7 @@ var base2 = rfc4648({
   bitsPerChar: 1
 });
 
-// node_modules/multiformats/dist/src/bases/base256emoji.js
+// ../../../node_modules/multiformats/dist/src/bases/base256emoji.js
 var base256emoji_exports = {};
 __export(base256emoji_exports, {
   base256emoji: () => base256emoji
@@ -1150,7 +1150,7 @@ var base256emoji = from({
   decode: decode5
 });
 
-// node_modules/multiformats/dist/src/bases/base32.js
+// ../../../node_modules/multiformats/dist/src/bases/base32.js
 var base32_exports = {};
 __export(base32_exports, {
   base32: () => base32,
@@ -1218,7 +1218,7 @@ var base32z = rfc4648({
   bitsPerChar: 5
 });
 
-// node_modules/multiformats/dist/src/bases/base36.js
+// ../../../node_modules/multiformats/dist/src/bases/base36.js
 var base36_exports = {};
 __export(base36_exports, {
   base36: () => base36,
@@ -1235,7 +1235,7 @@ var base36upper = baseX({
   alphabet: "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 });
 
-// node_modules/multiformats/dist/src/bases/base64.js
+// ../../../node_modules/multiformats/dist/src/bases/base64.js
 var base64_exports = {};
 __export(base64_exports, {
   base64: () => base64,
@@ -1268,7 +1268,7 @@ var base64urlpad = rfc4648({
   bitsPerChar: 6
 });
 
-// node_modules/multiformats/dist/src/bases/base8.js
+// ../../../node_modules/multiformats/dist/src/bases/base8.js
 var base8_exports = {};
 __export(base8_exports, {
   base8: () => base8
@@ -1280,7 +1280,7 @@ var base8 = rfc4648({
   bitsPerChar: 3
 });
 
-// node_modules/multiformats/dist/src/bases/identity.js
+// ../../../node_modules/multiformats/dist/src/bases/identity.js
 var identity_exports2 = {};
 __export(identity_exports2, {
   identity: () => identity2
@@ -1292,11 +1292,11 @@ var identity2 = from({
   decode: /* @__PURE__ */ __name((str) => fromString(str), "decode")
 });
 
-// node_modules/multiformats/dist/src/codecs/json.js
+// ../../../node_modules/multiformats/dist/src/codecs/json.js
 var textEncoder = new TextEncoder();
 var textDecoder = new TextDecoder();
 
-// node_modules/multiformats/dist/src/cid.js
+// ../../../node_modules/multiformats/dist/src/cid.js
 function format(link, base3) {
   const { bytes: bytes2, version } = link;
   switch (version) {
@@ -1641,11 +1641,11 @@ function encodeCID(version, code2, multihash) {
 __name(encodeCID, "encodeCID");
 var cidSymbol = Symbol.for("@ipld/js-cid/CID");
 
-// node_modules/multiformats/dist/src/basics.js
+// ../../../node_modules/multiformats/dist/src/basics.js
 var bases = { ...identity_exports2, ...base2_exports, ...base8_exports, ...base10_exports, ...base16_exports, ...base32_exports, ...base36_exports, ...base58_exports, ...base64_exports, ...base256emoji_exports };
 var hashes = { ...sha2_browser_exports, ...identity_exports };
 
-// node_modules/uint8arrays/dist/src/util/bases.js
+// ../../../node_modules/uint8arrays/dist/src/util/bases.js
 function createCodec(name2, prefix, encode5, decode6) {
   return {
     name: name2,
@@ -1693,7 +1693,7 @@ var BASES = {
 };
 var bases_default = BASES;
 
-// node_modules/uint8arrays/dist/src/from-string.js
+// ../../../node_modules/uint8arrays/dist/src/from-string.js
 function fromString2(string2, encoding = "utf8") {
   const base3 = bases_default[encoding];
   if (base3 == null) {
@@ -1703,7 +1703,7 @@ function fromString2(string2, encoding = "utf8") {
 }
 __name(fromString2, "fromString");
 
-// node_modules/@libp2p/peer-id-factory/node_modules/@libp2p/crypto/dist/src/util.js
+// ../../../node_modules/@libp2p/crypto/dist/src/util.js
 function isPromise(thing) {
   if (thing == null) {
     return false;
@@ -1712,7 +1712,7 @@ function isPromise(thing) {
 }
 __name(isPromise, "isPromise");
 
-// node_modules/@noble/hashes/esm/_assert.js
+// ../../../node_modules/@noble/hashes/esm/_assert.js
 function number(n) {
   if (!Number.isSafeInteger(n) || n < 0)
     throw new Error(`positive integer expected, not ${n}`);
@@ -1752,10 +1752,10 @@ function output(out, instance) {
 }
 __name(output, "output");
 
-// node_modules/@noble/hashes/esm/crypto.js
+// ../../../node_modules/@noble/hashes/esm/crypto.js
 var crypto2 = typeof globalThis === "object" && "crypto" in globalThis ? globalThis.crypto : void 0;
 
-// node_modules/@noble/hashes/esm/utils.js
+// ../../../node_modules/@noble/hashes/esm/utils.js
 var createView = /* @__PURE__ */ __name((arr) => new DataView(arr.buffer, arr.byteOffset, arr.byteLength), "createView");
 var rotr = /* @__PURE__ */ __name((word, shift) => word << 32 - shift | word >>> shift, "rotr");
 var isLE = new Uint8Array(new Uint32Array([287454020]).buffer)[0] === 68;
@@ -1839,7 +1839,7 @@ function randomBytes(bytesLength = 32) {
 }
 __name(randomBytes, "randomBytes");
 
-// node_modules/@noble/hashes/esm/_md.js
+// ../../../node_modules/@noble/hashes/esm/_md.js
 function setBigUint64(view, byteOffset, value, isLE2) {
   if (typeof view.setBigUint64 === "function")
     return view.setBigUint64(byteOffset, value, isLE2);
@@ -1945,7 +1945,7 @@ var HashMD = class extends Hash {
   }
 };
 
-// node_modules/@noble/hashes/esm/_u64.js
+// ../../../node_modules/@noble/hashes/esm/_u64.js
 var U32_MASK64 = /* @__PURE__ */ BigInt(2 ** 32 - 1);
 var _32n = /* @__PURE__ */ BigInt(32);
 function fromBig(n, le = false) {
@@ -2014,7 +2014,7 @@ var u64 = {
 };
 var u64_default = u64;
 
-// node_modules/@noble/hashes/esm/sha512.js
+// ../../../node_modules/@noble/hashes/esm/sha512.js
 var [SHA512_Kh, SHA512_Kl] = /* @__PURE__ */ (() => u64_default.split([
   "0x428a2f98d728ae22",
   "0x7137449123ef65cd",
@@ -2216,7 +2216,7 @@ var SHA512 = class extends HashMD {
 };
 var sha5122 = /* @__PURE__ */ wrapConstructor(() => new SHA512());
 
-// node_modules/@noble/curves/esm/abstract/utils.js
+// ../../../node_modules/@noble/curves/esm/abstract/utils.js
 var utils_exports = {};
 __export(utils_exports, {
   aInRange: () => aInRange,
@@ -2509,7 +2509,7 @@ function memoized(fn) {
 }
 __name(memoized, "memoized");
 
-// node_modules/@noble/curves/esm/abstract/modular.js
+// ../../../node_modules/@noble/curves/esm/abstract/modular.js
 var _0n2 = BigInt(0);
 var _1n2 = BigInt(1);
 var _2n2 = BigInt(2);
@@ -2790,7 +2790,7 @@ function mapHashToField(key, fieldOrder, isLE2 = false) {
 }
 __name(mapHashToField, "mapHashToField");
 
-// node_modules/@noble/curves/esm/abstract/curve.js
+// ../../../node_modules/@noble/curves/esm/abstract/curve.js
 var _0n3 = BigInt(0);
 var _1n3 = BigInt(1);
 var pointPrecomputes = /* @__PURE__ */ new WeakMap();
@@ -2961,7 +2961,7 @@ function validateBasic(curve) {
 }
 __name(validateBasic, "validateBasic");
 
-// node_modules/@noble/curves/esm/abstract/edwards.js
+// ../../../node_modules/@noble/curves/esm/abstract/edwards.js
 var _0n4 = BigInt(0);
 var _1n4 = BigInt(1);
 var _2n3 = BigInt(2);
@@ -3361,7 +3361,7 @@ function twistedEdwards(curveDef) {
 }
 __name(twistedEdwards, "twistedEdwards");
 
-// node_modules/@noble/curves/esm/ed25519.js
+// ../../../node_modules/@noble/curves/esm/ed25519.js
 var ED25519_P = BigInt("57896044618658097711785492504343953926634992332820282019728792003956564819949");
 var ED25519_SQRT_M1 = /* @__PURE__ */ BigInt("19681161376707505956807079304988542015446066515923890162744021073123829784752");
 var _0n5 = BigInt(0);
@@ -3444,7 +3444,7 @@ var ed25519Defaults = /* @__PURE__ */ (() => ({
 }))();
 var ed25519 = /* @__PURE__ */ (() => twistedEdwards(ed25519Defaults))();
 
-// node_modules/@libp2p/peer-id-factory/node_modules/@libp2p/crypto/dist/src/keys/ed25519-browser.js
+// ../../../node_modules/@libp2p/crypto/dist/src/keys/ed25519-browser.js
 var PUBLIC_KEY_BYTE_LENGTH = 32;
 var PRIVATE_KEY_BYTE_LENGTH = 64;
 var KEYS_BYTE_LENGTH = 32;
@@ -3492,7 +3492,7 @@ function concatKeys(privateKeyRaw, publicKey) {
 }
 __name(concatKeys, "concatKeys");
 
-// node_modules/@libp2p/peer-id-factory/node_modules/@libp2p/crypto/dist/src/webcrypto-browser.js
+// ../../../node_modules/@libp2p/crypto/dist/src/webcrypto-browser.js
 var webcrypto_browser_default = {
   get(win = globalThis) {
     const nativeCrypto = win.crypto;
@@ -3503,7 +3503,7 @@ var webcrypto_browser_default = {
   }
 };
 
-// node_modules/@libp2p/peer-id-factory/node_modules/@libp2p/crypto/dist/src/ciphers/aes-gcm.browser.js
+// ../../../node_modules/@libp2p/crypto/dist/src/ciphers/aes-gcm.browser.js
 var derivedEmptyPasswordKey = { alg: "A128GCM", ext: true, k: "scm9jmO_4BJAgdwWGVulLg", key_ops: ["encrypt", "decrypt"], kty: "oct" };
 function create2(opts) {
   const algorithm = opts?.algorithm ?? "AES-GCM";
@@ -3574,7 +3574,7 @@ function create2(opts) {
 }
 __name(create2, "create");
 
-// node_modules/@libp2p/peer-id-factory/node_modules/@libp2p/crypto/dist/src/keys/exporter.js
+// ../../../node_modules/@libp2p/crypto/dist/src/keys/exporter.js
 async function exporter(privateKey, password) {
   const cipher = create2();
   const encryptedKey = await cipher.encrypt(privateKey, password);
@@ -3582,7 +3582,7 @@ async function exporter(privateKey, password) {
 }
 __name(exporter, "exporter");
 
-// node_modules/uint8-varint/dist/src/index.js
+// ../../../node_modules/uint8-varint/dist/src/index.js
 var N12 = Math.pow(2, 7);
 var N22 = Math.pow(2, 14);
 var N32 = Math.pow(2, 21);
@@ -3707,7 +3707,7 @@ function decodeUint8Array(buf, offset) {
 }
 __name(decodeUint8Array, "decodeUint8Array");
 
-// node_modules/protons-runtime/dist/src/utils/float.js
+// ../../../node_modules/protons-runtime/dist/src/utils/float.js
 var f32 = new Float32Array([-0]);
 var f8b = new Uint8Array(f32.buffer);
 function writeFloatLE(val, buf, pos) {
@@ -3753,7 +3753,7 @@ function readDoubleLE(buf, pos) {
 }
 __name(readDoubleLE, "readDoubleLE");
 
-// node_modules/protons-runtime/dist/src/utils/longbits.js
+// ../../../node_modules/protons-runtime/dist/src/utils/longbits.js
 var MAX_SAFE_NUMBER_INTEGER = BigInt(Number.MAX_SAFE_INTEGER);
 var MIN_SAFE_NUMBER_INTEGER = BigInt(Number.MIN_SAFE_INTEGER);
 var LongBits = class _LongBits {
@@ -3911,7 +3911,7 @@ zero.length = function() {
 };
 var TWO_32 = 4294967296n;
 
-// node_modules/protons-runtime/dist/src/utils/utf8.js
+// ../../../node_modules/protons-runtime/dist/src/utils/utf8.js
 function length2(string2) {
   let len = 0;
   let c = 0;
@@ -3995,7 +3995,7 @@ function write(string2, buffer, offset) {
 }
 __name(write, "write");
 
-// node_modules/protons-runtime/dist/src/utils/reader.js
+// ../../../node_modules/protons-runtime/dist/src/utils/reader.js
 function indexOutOfRange(reader, writeLength) {
   return RangeError(`index out of range: ${reader.pos} + ${writeLength ?? 1} > ${reader.len}`);
 }
@@ -4330,14 +4330,14 @@ function createReader(buf) {
 }
 __name(createReader, "createReader");
 
-// node_modules/protons-runtime/dist/src/decode.js
+// ../../../node_modules/protons-runtime/dist/src/decode.js
 function decodeMessage(buf, codec, opts) {
   const reader = createReader(buf);
   return codec.decode(reader, void 0, opts);
 }
 __name(decodeMessage, "decodeMessage");
 
-// node_modules/protons-runtime/dist/src/utils/pool.js
+// ../../../node_modules/protons-runtime/dist/src/utils/pool.js
 function pool(size) {
   const SIZE = size ?? 8192;
   const MAX = SIZE >>> 1;
@@ -4360,7 +4360,7 @@ function pool(size) {
 }
 __name(pool, "pool");
 
-// node_modules/protons-runtime/dist/src/utils/writer.js
+// ../../../node_modules/protons-runtime/dist/src/utils/writer.js
 var Op = class {
   static {
     __name(this, "Op");
@@ -4763,7 +4763,7 @@ function createWriter() {
 }
 __name(createWriter, "createWriter");
 
-// node_modules/protons-runtime/dist/src/encode.js
+// ../../../node_modules/protons-runtime/dist/src/encode.js
 function encodeMessage(message2, codec) {
   const w = createWriter();
   codec.encode(message2, w, {
@@ -4773,7 +4773,7 @@ function encodeMessage(message2, codec) {
 }
 __name(encodeMessage, "encodeMessage");
 
-// node_modules/protons-runtime/dist/src/codec.js
+// ../../../node_modules/protons-runtime/dist/src/codec.js
 var CODEC_TYPES;
 (function(CODEC_TYPES2) {
   CODEC_TYPES2[CODEC_TYPES2["VARINT"] = 0] = "VARINT";
@@ -4793,7 +4793,7 @@ function createCodec2(name2, type, encode5, decode6) {
 }
 __name(createCodec2, "createCodec");
 
-// node_modules/protons-runtime/dist/src/codecs/enum.js
+// ../../../node_modules/protons-runtime/dist/src/codecs/enum.js
 function enumeration(v) {
   function findValue(val) {
     if (v[val.toString()] == null) {
@@ -4814,13 +4814,13 @@ function enumeration(v) {
 }
 __name(enumeration, "enumeration");
 
-// node_modules/protons-runtime/dist/src/codecs/message.js
+// ../../../node_modules/protons-runtime/dist/src/codecs/message.js
 function message(encode5, decode6) {
   return createCodec2("message", CODEC_TYPES.LENGTH_DELIMITED, encode5, decode6);
 }
 __name(message, "message");
 
-// node_modules/@libp2p/peer-id-factory/node_modules/@libp2p/crypto/dist/src/keys/keys.js
+// ../../../node_modules/@libp2p/crypto/dist/src/keys/keys.js
 var KeyType;
 (function(KeyType2) {
   KeyType2["RSA"] = "RSA";
@@ -4937,7 +4937,7 @@ var PrivateKey;
   };
 })(PrivateKey || (PrivateKey = {}));
 
-// node_modules/@libp2p/peer-id-factory/node_modules/@libp2p/crypto/dist/src/keys/ed25519-class.js
+// ../../../node_modules/@libp2p/crypto/dist/src/keys/ed25519-class.js
 var Ed25519PublicKey = class {
   static {
     __name(this, "Ed25519PublicKey");
@@ -5070,7 +5070,7 @@ function ensureKey(key, length3) {
 }
 __name(ensureKey, "ensureKey");
 
-// node_modules/uint8arrays/dist/src/to-string.js
+// ../../../node_modules/uint8arrays/dist/src/to-string.js
 function toString2(array, encoding = "utf8") {
   const base3 = bases_default[encoding];
   if (base3 == null) {
@@ -5080,7 +5080,7 @@ function toString2(array, encoding = "utf8") {
 }
 __name(toString2, "toString");
 
-// node_modules/@libp2p/peer-id-factory/node_modules/@libp2p/crypto/dist/src/keys/rsa-class.js
+// ../../../node_modules/@libp2p/crypto/dist/src/keys/rsa-class.js
 var rsa_class_exports = {};
 __export(rsa_class_exports, {
   MAX_RSA_KEY_SIZE: () => MAX_RSA_KEY_SIZE,
@@ -5092,7 +5092,7 @@ __export(rsa_class_exports, {
   unmarshalRsaPublicKey: () => unmarshalRsaPublicKey
 });
 
-// node_modules/@libp2p/peer-id-factory/node_modules/@libp2p/crypto/dist/src/random-bytes.js
+// ../../../node_modules/@libp2p/crypto/dist/src/random-bytes.js
 function randomBytes2(length3) {
   if (isNaN(length3) || length3 <= 0) {
     throw new CodeError("random bytes length must be a Number bigger than 0", "ERR_INVALID_LENGTH");
@@ -5101,7 +5101,7 @@ function randomBytes2(length3) {
 }
 __name(randomBytes2, "randomBytes");
 
-// node_modules/@libp2p/peer-id-factory/node_modules/@libp2p/crypto/dist/src/keys/rsa-utils.js
+// ../../../node_modules/@libp2p/crypto/dist/src/keys/rsa-utils.js
 var rsa_utils_exports = {};
 __export(rsa_utils_exports, {
   exportToPem: () => exportToPem,
@@ -5112,7 +5112,7 @@ __export(rsa_utils_exports, {
   pkixToJwk: () => pkixToJwk
 });
 
-// node_modules/@noble/hashes/esm/hmac.js
+// ../../../node_modules/@noble/hashes/esm/hmac.js
 var HMAC = class extends Hash {
   static {
     __name(this, "HMAC");
@@ -5180,7 +5180,7 @@ var HMAC = class extends Hash {
 var hmac = /* @__PURE__ */ __name((hash2, key, message2) => new HMAC(hash2, key).update(message2).digest(), "hmac");
 hmac.create = (hash2, key) => new HMAC(hash2, key);
 
-// node_modules/@noble/hashes/esm/pbkdf2.js
+// ../../../node_modules/@noble/hashes/esm/pbkdf2.js
 function pbkdf2Init(hash2, _password, _salt, _opts) {
   hash(hash2);
   const opts = checkOpts({ dkLen: 32, asyncTick: 10 }, _opts);
@@ -5228,10 +5228,10 @@ async function pbkdf2Async(hash2, password, salt, opts) {
 }
 __name(pbkdf2Async, "pbkdf2Async");
 
-// node_modules/asn1js/build/index.es.js
+// ../../../node_modules/asn1js/build/index.es.js
 var pvtsutils = __toESM(require_build());
 
-// node_modules/pvutils/build/utils.es.js
+// ../../../node_modules/pvutils/build/utils.es.js
 function utilFromBase(inputBuffer, inputBase) {
   let result = 0;
   if (inputBuffer.length === 1) {
@@ -5376,7 +5376,7 @@ function padNumber(inputNumber, fullLength) {
 __name(padNumber, "padNumber");
 var log2 = Math.log(2);
 
-// node_modules/asn1js/build/index.es.js
+// ../../../node_modules/asn1js/build/index.es.js
 function assertBigInt() {
   if (typeof BigInt === "undefined") {
     throw new Error("BigInt is not defined. Your environment doesn't implement BigInt.");
@@ -8173,7 +8173,7 @@ _a = TIME;
 })();
 TIME.NAME = "TIME";
 
-// node_modules/@libp2p/peer-id-factory/node_modules/@libp2p/crypto/dist/src/keys/rsa-utils.js
+// ../../../node_modules/@libp2p/crypto/dist/src/keys/rsa-utils.js
 function pkcs1ToJwk(bytes2) {
   const { result } = fromBER(bytes2);
   const values = result.valueBlock.value;
@@ -8468,7 +8468,7 @@ function toUint8Array(buf) {
 }
 __name(toUint8Array, "toUint8Array");
 
-// node_modules/@libp2p/peer-id-factory/node_modules/@libp2p/crypto/dist/src/keys/rsa-browser.js
+// ../../../node_modules/@libp2p/crypto/dist/src/keys/rsa-browser.js
 async function generateKey2(bits) {
   const pair = await webcrypto_browser_default.get().subtle.generateKey({
     name: "RSASSA-PKCS1-v1_5",
@@ -8551,7 +8551,7 @@ function keySize(jwk) {
 }
 __name(keySize, "keySize");
 
-// node_modules/@libp2p/peer-id-factory/node_modules/@libp2p/crypto/dist/src/keys/rsa-class.js
+// ../../../node_modules/@libp2p/crypto/dist/src/keys/rsa-class.js
 var MAX_RSA_KEY_SIZE = 8192;
 var RsaPublicKey = class {
   static {
@@ -8687,7 +8687,7 @@ async function generateKeyPair2(bits) {
 }
 __name(generateKeyPair2, "generateKeyPair");
 
-// node_modules/@libp2p/peer-id-factory/node_modules/@libp2p/crypto/dist/src/keys/secp256k1-class.js
+// ../../../node_modules/@libp2p/crypto/dist/src/keys/secp256k1-class.js
 var secp256k1_class_exports = {};
 __export(secp256k1_class_exports, {
   Secp256k1PrivateKey: () => Secp256k1PrivateKey,
@@ -8697,7 +8697,7 @@ __export(secp256k1_class_exports, {
   unmarshalSecp256k1PublicKey: () => unmarshalSecp256k1PublicKey
 });
 
-// node_modules/@noble/hashes/esm/sha256.js
+// ../../../node_modules/@noble/hashes/esm/sha256.js
 var SHA256_K = /* @__PURE__ */ new Uint32Array([
   1116352408,
   1899447441,
@@ -8850,7 +8850,7 @@ var SHA256 = class extends HashMD {
 };
 var sha2562 = /* @__PURE__ */ wrapConstructor(() => new SHA256());
 
-// node_modules/@noble/curves/esm/abstract/weierstrass.js
+// ../../../node_modules/@noble/curves/esm/abstract/weierstrass.js
 function validateSigVerOpts(opts) {
   if (opts.lowS !== void 0)
     abool("lowS", opts.lowS);
@@ -9736,7 +9736,7 @@ function weierstrass(curveDef) {
 }
 __name(weierstrass, "weierstrass");
 
-// node_modules/@noble/curves/esm/_shortw_utils.js
+// ../../../node_modules/@noble/curves/esm/_shortw_utils.js
 function getHash(hash2) {
   return {
     hash: hash2,
@@ -9751,7 +9751,7 @@ function createCurve(curveDef, defHash) {
 }
 __name(createCurve, "createCurve");
 
-// node_modules/@noble/curves/esm/secp256k1.js
+// ../../../node_modules/@noble/curves/esm/secp256k1.js
 var secp256k1P = BigInt("0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2f");
 var secp256k1N = BigInt("0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141");
 var _1n7 = BigInt(1);
@@ -9832,7 +9832,7 @@ var secp256k1 = createCurve({
 var _0n7 = BigInt(0);
 var Point = secp256k1.ProjectivePoint;
 
-// node_modules/@libp2p/peer-id-factory/node_modules/@libp2p/crypto/dist/src/keys/secp256k1-browser.js
+// ../../../node_modules/@libp2p/crypto/dist/src/keys/secp256k1-browser.js
 function generateKey3() {
   return secp256k1.utils.randomPrivateKey();
 }
@@ -9895,7 +9895,7 @@ function computePublicKey(privateKey) {
 }
 __name(computePublicKey, "computePublicKey");
 
-// node_modules/@libp2p/peer-id-factory/node_modules/@libp2p/crypto/dist/src/keys/secp256k1-class.js
+// ../../../node_modules/@libp2p/crypto/dist/src/keys/secp256k1-class.js
 var Secp256k1PublicKey = class {
   static {
     __name(this, "Secp256k1PublicKey");
@@ -10004,7 +10004,7 @@ async function generateKeyPair3() {
 }
 __name(generateKeyPair3, "generateKeyPair");
 
-// node_modules/@libp2p/peer-id-factory/node_modules/@libp2p/crypto/dist/src/keys/index.js
+// ../../../node_modules/@libp2p/crypto/dist/src/keys/index.js
 var supportedKeys = {
   rsa: rsa_class_exports,
   ed25519: ed25519_class_exports,
@@ -10070,7 +10070,7 @@ function marshalPrivateKey(key, type) {
 }
 __name(marshalPrivateKey, "marshalPrivateKey");
 
-// node_modules/@libp2p/peer-id/dist/src/index.js
+// ../../../node_modules/@libp2p/peer-id/dist/src/index.js
 var inspect = Symbol.for("nodejs.util.inspect.custom");
 var baseDecoder = Object.values(bases).map((codec) => codec.decoder).reduce((acc, curr) => acc.or(curr), bases.identity.decoder);
 var LIBP2P_KEY_CODE = 114;
@@ -10287,7 +10287,7 @@ async function peerIdFromKeys(publicKey, privateKey) {
 }
 __name(peerIdFromKeys, "peerIdFromKeys");
 
-// node_modules/@libp2p/peer-id-factory/dist/src/proto.js
+// ../../../node_modules/@libp2p/peer-id-factory/dist/src/proto.js
 var PeerIdProto;
 (function(PeerIdProto2) {
   let _codec;
@@ -10345,7 +10345,7 @@ var PeerIdProto;
   };
 })(PeerIdProto || (PeerIdProto = {}));
 
-// node_modules/@libp2p/peer-id-factory/dist/src/index.js
+// ../../../node_modules/@libp2p/peer-id-factory/dist/src/index.js
 var createEd25519PeerId = /* @__PURE__ */ __name(async () => {
   const key = await generateKeyPair4("Ed25519");
   const id = await createFromPrivKey(key);

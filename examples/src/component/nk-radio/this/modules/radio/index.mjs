@@ -59,6 +59,11 @@ const ctx = async (CONFIG) => {
         channelInterpretation: "speakers"
     });
 
+    // CONFIG.audio.node.connect((...arg)=> {
+    //     console.log('ddddddddddddd', arg)
+    //     debugger
+    // })
+
     CONFIG.audio.node.connect(CONFIG.audio.ctx.destination);
 
     CONFIG.audio.ctx.suspend();

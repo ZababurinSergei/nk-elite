@@ -29,322 +29,6 @@ var __toESM = (mod2, isNodeMode, target) => (target = mod2 != null ? __create(__
   mod2
 ));
 
-// node_modules/denque/index.js
-var require_denque = __commonJS({
-  "node_modules/denque/index.js"(exports, module) {
-    "use strict";
-    function Denque2(array, options) {
-      var options = options || {};
-      this._capacity = options.capacity;
-      this._head = 0;
-      this._tail = 0;
-      if (Array.isArray(array)) {
-        this._fromArray(array);
-      } else {
-        this._capacityMask = 3;
-        this._list = new Array(4);
-      }
-    }
-    __name(Denque2, "Denque");
-    Denque2.prototype.peekAt = /* @__PURE__ */ __name(function peekAt(index) {
-      var i = index;
-      if (i !== (i | 0)) {
-        return void 0;
-      }
-      var len = this.size();
-      if (i >= len || i < -len) return void 0;
-      if (i < 0) i += len;
-      i = this._head + i & this._capacityMask;
-      return this._list[i];
-    }, "peekAt");
-    Denque2.prototype.get = /* @__PURE__ */ __name(function get(i) {
-      return this.peekAt(i);
-    }, "get");
-    Denque2.prototype.peek = /* @__PURE__ */ __name(function peek() {
-      if (this._head === this._tail) return void 0;
-      return this._list[this._head];
-    }, "peek");
-    Denque2.prototype.peekFront = /* @__PURE__ */ __name(function peekFront() {
-      return this.peek();
-    }, "peekFront");
-    Denque2.prototype.peekBack = /* @__PURE__ */ __name(function peekBack() {
-      return this.peekAt(-1);
-    }, "peekBack");
-    Object.defineProperty(Denque2.prototype, "length", {
-      get: /* @__PURE__ */ __name(function length3() {
-        return this.size();
-      }, "length")
-    });
-    Denque2.prototype.size = /* @__PURE__ */ __name(function size() {
-      if (this._head === this._tail) return 0;
-      if (this._head < this._tail) return this._tail - this._head;
-      else return this._capacityMask + 1 - (this._head - this._tail);
-    }, "size");
-    Denque2.prototype.unshift = /* @__PURE__ */ __name(function unshift(item) {
-      if (arguments.length === 0) return this.size();
-      var len = this._list.length;
-      this._head = this._head - 1 + len & this._capacityMask;
-      this._list[this._head] = item;
-      if (this._tail === this._head) this._growArray();
-      if (this._capacity && this.size() > this._capacity) this.pop();
-      if (this._head < this._tail) return this._tail - this._head;
-      else return this._capacityMask + 1 - (this._head - this._tail);
-    }, "unshift");
-    Denque2.prototype.shift = /* @__PURE__ */ __name(function shift() {
-      var head = this._head;
-      if (head === this._tail) return void 0;
-      var item = this._list[head];
-      this._list[head] = void 0;
-      this._head = head + 1 & this._capacityMask;
-      if (head < 2 && this._tail > 1e4 && this._tail <= this._list.length >>> 2) this._shrinkArray();
-      return item;
-    }, "shift");
-    Denque2.prototype.push = /* @__PURE__ */ __name(function push(item) {
-      if (arguments.length === 0) return this.size();
-      var tail = this._tail;
-      this._list[tail] = item;
-      this._tail = tail + 1 & this._capacityMask;
-      if (this._tail === this._head) {
-        this._growArray();
-      }
-      if (this._capacity && this.size() > this._capacity) {
-        this.shift();
-      }
-      if (this._head < this._tail) return this._tail - this._head;
-      else return this._capacityMask + 1 - (this._head - this._tail);
-    }, "push");
-    Denque2.prototype.pop = /* @__PURE__ */ __name(function pop() {
-      var tail = this._tail;
-      if (tail === this._head) return void 0;
-      var len = this._list.length;
-      this._tail = tail - 1 + len & this._capacityMask;
-      var item = this._list[this._tail];
-      this._list[this._tail] = void 0;
-      if (this._head < 2 && tail > 1e4 && tail <= len >>> 2) this._shrinkArray();
-      return item;
-    }, "pop");
-    Denque2.prototype.removeOne = /* @__PURE__ */ __name(function removeOne(index) {
-      var i = index;
-      if (i !== (i | 0)) {
-        return void 0;
-      }
-      if (this._head === this._tail) return void 0;
-      var size = this.size();
-      var len = this._list.length;
-      if (i >= size || i < -size) return void 0;
-      if (i < 0) i += size;
-      i = this._head + i & this._capacityMask;
-      var item = this._list[i];
-      var k;
-      if (index < size / 2) {
-        for (k = index; k > 0; k--) {
-          this._list[i] = this._list[i = i - 1 + len & this._capacityMask];
-        }
-        this._list[i] = void 0;
-        this._head = this._head + 1 + len & this._capacityMask;
-      } else {
-        for (k = size - 1 - index; k > 0; k--) {
-          this._list[i] = this._list[i = i + 1 + len & this._capacityMask];
-        }
-        this._list[i] = void 0;
-        this._tail = this._tail - 1 + len & this._capacityMask;
-      }
-      return item;
-    }, "removeOne");
-    Denque2.prototype.remove = /* @__PURE__ */ __name(function remove(index, count) {
-      var i = index;
-      var removed;
-      var del_count = count;
-      if (i !== (i | 0)) {
-        return void 0;
-      }
-      if (this._head === this._tail) return void 0;
-      var size = this.size();
-      var len = this._list.length;
-      if (i >= size || i < -size || count < 1) return void 0;
-      if (i < 0) i += size;
-      if (count === 1 || !count) {
-        removed = new Array(1);
-        removed[0] = this.removeOne(i);
-        return removed;
-      }
-      if (i === 0 && i + count >= size) {
-        removed = this.toArray();
-        this.clear();
-        return removed;
-      }
-      if (i + count > size) count = size - i;
-      var k;
-      removed = new Array(count);
-      for (k = 0; k < count; k++) {
-        removed[k] = this._list[this._head + i + k & this._capacityMask];
-      }
-      i = this._head + i & this._capacityMask;
-      if (index + count === size) {
-        this._tail = this._tail - count + len & this._capacityMask;
-        for (k = count; k > 0; k--) {
-          this._list[i = i + 1 + len & this._capacityMask] = void 0;
-        }
-        return removed;
-      }
-      if (index === 0) {
-        this._head = this._head + count + len & this._capacityMask;
-        for (k = count - 1; k > 0; k--) {
-          this._list[i = i + 1 + len & this._capacityMask] = void 0;
-        }
-        return removed;
-      }
-      if (i < size / 2) {
-        this._head = this._head + index + count + len & this._capacityMask;
-        for (k = index; k > 0; k--) {
-          this.unshift(this._list[i = i - 1 + len & this._capacityMask]);
-        }
-        i = this._head - 1 + len & this._capacityMask;
-        while (del_count > 0) {
-          this._list[i = i - 1 + len & this._capacityMask] = void 0;
-          del_count--;
-        }
-        if (index < 0) this._tail = i;
-      } else {
-        this._tail = i;
-        i = i + count + len & this._capacityMask;
-        for (k = size - (count + index); k > 0; k--) {
-          this.push(this._list[i++]);
-        }
-        i = this._tail;
-        while (del_count > 0) {
-          this._list[i = i + 1 + len & this._capacityMask] = void 0;
-          del_count--;
-        }
-      }
-      if (this._head < 2 && this._tail > 1e4 && this._tail <= len >>> 2) this._shrinkArray();
-      return removed;
-    }, "remove");
-    Denque2.prototype.splice = /* @__PURE__ */ __name(function splice(index, count) {
-      var i = index;
-      if (i !== (i | 0)) {
-        return void 0;
-      }
-      var size = this.size();
-      if (i < 0) i += size;
-      if (i > size) return void 0;
-      if (arguments.length > 2) {
-        var k;
-        var temp;
-        var removed;
-        var arg_len = arguments.length;
-        var len = this._list.length;
-        var arguments_index = 2;
-        if (!size || i < size / 2) {
-          temp = new Array(i);
-          for (k = 0; k < i; k++) {
-            temp[k] = this._list[this._head + k & this._capacityMask];
-          }
-          if (count === 0) {
-            removed = [];
-            if (i > 0) {
-              this._head = this._head + i + len & this._capacityMask;
-            }
-          } else {
-            removed = this.remove(i, count);
-            this._head = this._head + i + len & this._capacityMask;
-          }
-          while (arg_len > arguments_index) {
-            this.unshift(arguments[--arg_len]);
-          }
-          for (k = i; k > 0; k--) {
-            this.unshift(temp[k - 1]);
-          }
-        } else {
-          temp = new Array(size - (i + count));
-          var leng = temp.length;
-          for (k = 0; k < leng; k++) {
-            temp[k] = this._list[this._head + i + count + k & this._capacityMask];
-          }
-          if (count === 0) {
-            removed = [];
-            if (i != size) {
-              this._tail = this._head + i + len & this._capacityMask;
-            }
-          } else {
-            removed = this.remove(i, count);
-            this._tail = this._tail - leng + len & this._capacityMask;
-          }
-          while (arguments_index < arg_len) {
-            this.push(arguments[arguments_index++]);
-          }
-          for (k = 0; k < leng; k++) {
-            this.push(temp[k]);
-          }
-        }
-        return removed;
-      } else {
-        return this.remove(i, count);
-      }
-    }, "splice");
-    Denque2.prototype.clear = /* @__PURE__ */ __name(function clear() {
-      this._list = new Array(this._list.length);
-      this._head = 0;
-      this._tail = 0;
-    }, "clear");
-    Denque2.prototype.isEmpty = /* @__PURE__ */ __name(function isEmpty() {
-      return this._head === this._tail;
-    }, "isEmpty");
-    Denque2.prototype.toArray = /* @__PURE__ */ __name(function toArray() {
-      return this._copyArray(false);
-    }, "toArray");
-    Denque2.prototype._fromArray = /* @__PURE__ */ __name(function _fromArray(array) {
-      var length3 = array.length;
-      var capacity = this._nextPowerOf2(length3);
-      this._list = new Array(capacity);
-      this._capacityMask = capacity - 1;
-      this._tail = length3;
-      for (var i = 0; i < length3; i++) this._list[i] = array[i];
-    }, "_fromArray");
-    Denque2.prototype._copyArray = /* @__PURE__ */ __name(function _copyArray(fullCopy, size) {
-      var src2 = this._list;
-      var capacity = src2.length;
-      var length3 = this.length;
-      size = size | length3;
-      if (size == length3 && this._head < this._tail) {
-        return this._list.slice(this._head, this._tail);
-      }
-      var dest = new Array(size);
-      var k = 0;
-      var i;
-      if (fullCopy || this._head > this._tail) {
-        for (i = this._head; i < capacity; i++) dest[k++] = src2[i];
-        for (i = 0; i < this._tail; i++) dest[k++] = src2[i];
-      } else {
-        for (i = this._head; i < this._tail; i++) dest[k++] = src2[i];
-      }
-      return dest;
-    }, "_copyArray");
-    Denque2.prototype._growArray = /* @__PURE__ */ __name(function _growArray() {
-      if (this._head != 0) {
-        var newList = this._copyArray(true, this._list.length << 1);
-        this._tail = this._list.length;
-        this._head = 0;
-        this._list = newList;
-      } else {
-        this._tail = this._list.length;
-        this._list.length <<= 1;
-      }
-      this._capacityMask = this._capacityMask << 1 | 1;
-    }, "_growArray");
-    Denque2.prototype._shrinkArray = /* @__PURE__ */ __name(function _shrinkArray() {
-      this._list.length >>>= 1;
-      this._capacityMask >>>= 1;
-    }, "_shrinkArray");
-    Denque2.prototype._nextPowerOf2 = /* @__PURE__ */ __name(function _nextPowerOf2(num) {
-      var log22 = Math.log(num) / Math.log(2);
-      var nextPow2 = 1 << log22 + 1;
-      return Math.max(nextPow2, 4);
-    }, "_nextPowerOf2");
-    module.exports = Denque2;
-  }
-});
-
 // node_modules/pvtsutils/build/index.js
 var require_build = __commonJS({
   "node_modules/pvtsutils/build/index.js"(exports) {
@@ -724,6 +408,322 @@ var require_build = __commonJS({
   }
 });
 
+// node_modules/denque/index.js
+var require_denque = __commonJS({
+  "node_modules/denque/index.js"(exports, module) {
+    "use strict";
+    function Denque2(array, options) {
+      var options = options || {};
+      this._capacity = options.capacity;
+      this._head = 0;
+      this._tail = 0;
+      if (Array.isArray(array)) {
+        this._fromArray(array);
+      } else {
+        this._capacityMask = 3;
+        this._list = new Array(4);
+      }
+    }
+    __name(Denque2, "Denque");
+    Denque2.prototype.peekAt = /* @__PURE__ */ __name(function peekAt(index) {
+      var i = index;
+      if (i !== (i | 0)) {
+        return void 0;
+      }
+      var len = this.size();
+      if (i >= len || i < -len) return void 0;
+      if (i < 0) i += len;
+      i = this._head + i & this._capacityMask;
+      return this._list[i];
+    }, "peekAt");
+    Denque2.prototype.get = /* @__PURE__ */ __name(function get(i) {
+      return this.peekAt(i);
+    }, "get");
+    Denque2.prototype.peek = /* @__PURE__ */ __name(function peek() {
+      if (this._head === this._tail) return void 0;
+      return this._list[this._head];
+    }, "peek");
+    Denque2.prototype.peekFront = /* @__PURE__ */ __name(function peekFront() {
+      return this.peek();
+    }, "peekFront");
+    Denque2.prototype.peekBack = /* @__PURE__ */ __name(function peekBack() {
+      return this.peekAt(-1);
+    }, "peekBack");
+    Object.defineProperty(Denque2.prototype, "length", {
+      get: /* @__PURE__ */ __name(function length3() {
+        return this.size();
+      }, "length")
+    });
+    Denque2.prototype.size = /* @__PURE__ */ __name(function size() {
+      if (this._head === this._tail) return 0;
+      if (this._head < this._tail) return this._tail - this._head;
+      else return this._capacityMask + 1 - (this._head - this._tail);
+    }, "size");
+    Denque2.prototype.unshift = /* @__PURE__ */ __name(function unshift(item) {
+      if (arguments.length === 0) return this.size();
+      var len = this._list.length;
+      this._head = this._head - 1 + len & this._capacityMask;
+      this._list[this._head] = item;
+      if (this._tail === this._head) this._growArray();
+      if (this._capacity && this.size() > this._capacity) this.pop();
+      if (this._head < this._tail) return this._tail - this._head;
+      else return this._capacityMask + 1 - (this._head - this._tail);
+    }, "unshift");
+    Denque2.prototype.shift = /* @__PURE__ */ __name(function shift() {
+      var head = this._head;
+      if (head === this._tail) return void 0;
+      var item = this._list[head];
+      this._list[head] = void 0;
+      this._head = head + 1 & this._capacityMask;
+      if (head < 2 && this._tail > 1e4 && this._tail <= this._list.length >>> 2) this._shrinkArray();
+      return item;
+    }, "shift");
+    Denque2.prototype.push = /* @__PURE__ */ __name(function push(item) {
+      if (arguments.length === 0) return this.size();
+      var tail = this._tail;
+      this._list[tail] = item;
+      this._tail = tail + 1 & this._capacityMask;
+      if (this._tail === this._head) {
+        this._growArray();
+      }
+      if (this._capacity && this.size() > this._capacity) {
+        this.shift();
+      }
+      if (this._head < this._tail) return this._tail - this._head;
+      else return this._capacityMask + 1 - (this._head - this._tail);
+    }, "push");
+    Denque2.prototype.pop = /* @__PURE__ */ __name(function pop() {
+      var tail = this._tail;
+      if (tail === this._head) return void 0;
+      var len = this._list.length;
+      this._tail = tail - 1 + len & this._capacityMask;
+      var item = this._list[this._tail];
+      this._list[this._tail] = void 0;
+      if (this._head < 2 && tail > 1e4 && tail <= len >>> 2) this._shrinkArray();
+      return item;
+    }, "pop");
+    Denque2.prototype.removeOne = /* @__PURE__ */ __name(function removeOne(index) {
+      var i = index;
+      if (i !== (i | 0)) {
+        return void 0;
+      }
+      if (this._head === this._tail) return void 0;
+      var size = this.size();
+      var len = this._list.length;
+      if (i >= size || i < -size) return void 0;
+      if (i < 0) i += size;
+      i = this._head + i & this._capacityMask;
+      var item = this._list[i];
+      var k;
+      if (index < size / 2) {
+        for (k = index; k > 0; k--) {
+          this._list[i] = this._list[i = i - 1 + len & this._capacityMask];
+        }
+        this._list[i] = void 0;
+        this._head = this._head + 1 + len & this._capacityMask;
+      } else {
+        for (k = size - 1 - index; k > 0; k--) {
+          this._list[i] = this._list[i = i + 1 + len & this._capacityMask];
+        }
+        this._list[i] = void 0;
+        this._tail = this._tail - 1 + len & this._capacityMask;
+      }
+      return item;
+    }, "removeOne");
+    Denque2.prototype.remove = /* @__PURE__ */ __name(function remove(index, count) {
+      var i = index;
+      var removed;
+      var del_count = count;
+      if (i !== (i | 0)) {
+        return void 0;
+      }
+      if (this._head === this._tail) return void 0;
+      var size = this.size();
+      var len = this._list.length;
+      if (i >= size || i < -size || count < 1) return void 0;
+      if (i < 0) i += size;
+      if (count === 1 || !count) {
+        removed = new Array(1);
+        removed[0] = this.removeOne(i);
+        return removed;
+      }
+      if (i === 0 && i + count >= size) {
+        removed = this.toArray();
+        this.clear();
+        return removed;
+      }
+      if (i + count > size) count = size - i;
+      var k;
+      removed = new Array(count);
+      for (k = 0; k < count; k++) {
+        removed[k] = this._list[this._head + i + k & this._capacityMask];
+      }
+      i = this._head + i & this._capacityMask;
+      if (index + count === size) {
+        this._tail = this._tail - count + len & this._capacityMask;
+        for (k = count; k > 0; k--) {
+          this._list[i = i + 1 + len & this._capacityMask] = void 0;
+        }
+        return removed;
+      }
+      if (index === 0) {
+        this._head = this._head + count + len & this._capacityMask;
+        for (k = count - 1; k > 0; k--) {
+          this._list[i = i + 1 + len & this._capacityMask] = void 0;
+        }
+        return removed;
+      }
+      if (i < size / 2) {
+        this._head = this._head + index + count + len & this._capacityMask;
+        for (k = index; k > 0; k--) {
+          this.unshift(this._list[i = i - 1 + len & this._capacityMask]);
+        }
+        i = this._head - 1 + len & this._capacityMask;
+        while (del_count > 0) {
+          this._list[i = i - 1 + len & this._capacityMask] = void 0;
+          del_count--;
+        }
+        if (index < 0) this._tail = i;
+      } else {
+        this._tail = i;
+        i = i + count + len & this._capacityMask;
+        for (k = size - (count + index); k > 0; k--) {
+          this.push(this._list[i++]);
+        }
+        i = this._tail;
+        while (del_count > 0) {
+          this._list[i = i + 1 + len & this._capacityMask] = void 0;
+          del_count--;
+        }
+      }
+      if (this._head < 2 && this._tail > 1e4 && this._tail <= len >>> 2) this._shrinkArray();
+      return removed;
+    }, "remove");
+    Denque2.prototype.splice = /* @__PURE__ */ __name(function splice(index, count) {
+      var i = index;
+      if (i !== (i | 0)) {
+        return void 0;
+      }
+      var size = this.size();
+      if (i < 0) i += size;
+      if (i > size) return void 0;
+      if (arguments.length > 2) {
+        var k;
+        var temp;
+        var removed;
+        var arg_len = arguments.length;
+        var len = this._list.length;
+        var arguments_index = 2;
+        if (!size || i < size / 2) {
+          temp = new Array(i);
+          for (k = 0; k < i; k++) {
+            temp[k] = this._list[this._head + k & this._capacityMask];
+          }
+          if (count === 0) {
+            removed = [];
+            if (i > 0) {
+              this._head = this._head + i + len & this._capacityMask;
+            }
+          } else {
+            removed = this.remove(i, count);
+            this._head = this._head + i + len & this._capacityMask;
+          }
+          while (arg_len > arguments_index) {
+            this.unshift(arguments[--arg_len]);
+          }
+          for (k = i; k > 0; k--) {
+            this.unshift(temp[k - 1]);
+          }
+        } else {
+          temp = new Array(size - (i + count));
+          var leng = temp.length;
+          for (k = 0; k < leng; k++) {
+            temp[k] = this._list[this._head + i + count + k & this._capacityMask];
+          }
+          if (count === 0) {
+            removed = [];
+            if (i != size) {
+              this._tail = this._head + i + len & this._capacityMask;
+            }
+          } else {
+            removed = this.remove(i, count);
+            this._tail = this._tail - leng + len & this._capacityMask;
+          }
+          while (arguments_index < arg_len) {
+            this.push(arguments[arguments_index++]);
+          }
+          for (k = 0; k < leng; k++) {
+            this.push(temp[k]);
+          }
+        }
+        return removed;
+      } else {
+        return this.remove(i, count);
+      }
+    }, "splice");
+    Denque2.prototype.clear = /* @__PURE__ */ __name(function clear() {
+      this._list = new Array(this._list.length);
+      this._head = 0;
+      this._tail = 0;
+    }, "clear");
+    Denque2.prototype.isEmpty = /* @__PURE__ */ __name(function isEmpty() {
+      return this._head === this._tail;
+    }, "isEmpty");
+    Denque2.prototype.toArray = /* @__PURE__ */ __name(function toArray() {
+      return this._copyArray(false);
+    }, "toArray");
+    Denque2.prototype._fromArray = /* @__PURE__ */ __name(function _fromArray(array) {
+      var length3 = array.length;
+      var capacity = this._nextPowerOf2(length3);
+      this._list = new Array(capacity);
+      this._capacityMask = capacity - 1;
+      this._tail = length3;
+      for (var i = 0; i < length3; i++) this._list[i] = array[i];
+    }, "_fromArray");
+    Denque2.prototype._copyArray = /* @__PURE__ */ __name(function _copyArray(fullCopy, size) {
+      var src2 = this._list;
+      var capacity = src2.length;
+      var length3 = this.length;
+      size = size | length3;
+      if (size == length3 && this._head < this._tail) {
+        return this._list.slice(this._head, this._tail);
+      }
+      var dest = new Array(size);
+      var k = 0;
+      var i;
+      if (fullCopy || this._head > this._tail) {
+        for (i = this._head; i < capacity; i++) dest[k++] = src2[i];
+        for (i = 0; i < this._tail; i++) dest[k++] = src2[i];
+      } else {
+        for (i = this._head; i < this._tail; i++) dest[k++] = src2[i];
+      }
+      return dest;
+    }, "_copyArray");
+    Denque2.prototype._growArray = /* @__PURE__ */ __name(function _growArray() {
+      if (this._head != 0) {
+        var newList = this._copyArray(true, this._list.length << 1);
+        this._tail = this._list.length;
+        this._head = 0;
+        this._list = newList;
+      } else {
+        this._tail = this._list.length;
+        this._list.length <<= 1;
+      }
+      this._capacityMask = this._capacityMask << 1 | 1;
+    }, "_growArray");
+    Denque2.prototype._shrinkArray = /* @__PURE__ */ __name(function _shrinkArray() {
+      this._list.length >>>= 1;
+      this._capacityMask >>>= 1;
+    }, "_shrinkArray");
+    Denque2.prototype._nextPowerOf2 = /* @__PURE__ */ __name(function _nextPowerOf2(num) {
+      var log22 = Math.log(num) / Math.log(2);
+      var nextPow2 = 1 << log22 + 1;
+      return Math.max(nextPow2, 4);
+    }, "_nextPowerOf2");
+    module.exports = Denque2;
+  }
+});
+
 // node_modules/@libp2p/interface/dist/src/peer-id/index.js
 var peerIdSymbol = Symbol.for("@libp2p/peer-id");
 
@@ -736,19 +736,35 @@ var TopicValidatorResult;
   TopicValidatorResult2["Ignore"] = "ignore";
   TopicValidatorResult2["Reject"] = "reject";
 })(TopicValidatorResult || (TopicValidatorResult = {}));
+var pubSubSymbol = Symbol.for("@libp2p/pubsub");
 
 // node_modules/@libp2p/interface/dist/src/errors.js
-var CodeError = class extends Error {
-  static {
-    __name(this, "CodeError");
-  }
-  code;
-  props;
-  constructor(message2, code2, props) {
+var InvalidParametersError = class extends Error {
+  static name = "InvalidParametersError";
+  constructor(message2 = "Invalid parameters") {
     super(message2);
-    this.code = code2;
-    this.name = props?.name ?? "CodeError";
-    this.props = props ?? {};
+    this.name = "InvalidParametersError";
+  }
+};
+var InvalidPublicKeyError = class extends Error {
+  static name = "InvalidPublicKeyError";
+  constructor(message2 = "Invalid public key") {
+    super(message2);
+    this.name = "InvalidPublicKeyError";
+  }
+};
+var InvalidMultihashError = class extends Error {
+  static name = "InvalidMultihashError";
+  constructor(message2 = "Invalid Multihash") {
+    super(message2);
+    this.name = "InvalidMultihashError";
+  }
+};
+var UnsupportedKeyTypeError = class extends Error {
+  static name = "UnsupportedKeyTypeError";
+  constructor(message2 = "Unsupported key type") {
+    super(message2);
+    this.name = "UnsupportedKeyTypeError";
   }
 };
 
@@ -814,10 +830,9 @@ var TypedEventEmitter = class extends EventTarget {
     return result;
   }
   safeDispatchEvent(type, detail = {}) {
-    return this.dispatchEvent(new CustomEvent2(type, detail));
+    return this.dispatchEvent(new CustomEvent(type, detail));
   }
 };
-var CustomEvent2 = globalThis.CustomEvent;
 
 // node_modules/@libp2p/interface/dist/src/index.js
 var serviceCapabilities = Symbol.for("@libp2p/service-capabilities");
@@ -1208,96 +1223,6 @@ var base58flickr = baseX({
   alphabet: "123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ"
 });
 
-// node_modules/multiformats/dist/src/bases/base10.js
-var base10_exports = {};
-__export(base10_exports, {
-  base10: () => base10
-});
-var base10 = baseX({
-  prefix: "9",
-  name: "base10",
-  alphabet: "0123456789"
-});
-
-// node_modules/multiformats/dist/src/bases/base16.js
-var base16_exports = {};
-__export(base16_exports, {
-  base16: () => base16,
-  base16upper: () => base16upper
-});
-var base16 = rfc4648({
-  prefix: "f",
-  name: "base16",
-  alphabet: "0123456789abcdef",
-  bitsPerChar: 4
-});
-var base16upper = rfc4648({
-  prefix: "F",
-  name: "base16upper",
-  alphabet: "0123456789ABCDEF",
-  bitsPerChar: 4
-});
-
-// node_modules/multiformats/dist/src/bases/base2.js
-var base2_exports = {};
-__export(base2_exports, {
-  base2: () => base2
-});
-var base2 = rfc4648({
-  prefix: "0",
-  name: "base2",
-  alphabet: "01",
-  bitsPerChar: 1
-});
-
-// node_modules/multiformats/dist/src/bases/base256emoji.js
-var base256emoji_exports = {};
-__export(base256emoji_exports, {
-  base256emoji: () => base256emoji
-});
-var alphabet = Array.from("\u{1F680}\u{1FA90}\u2604\u{1F6F0}\u{1F30C}\u{1F311}\u{1F312}\u{1F313}\u{1F314}\u{1F315}\u{1F316}\u{1F317}\u{1F318}\u{1F30D}\u{1F30F}\u{1F30E}\u{1F409}\u2600\u{1F4BB}\u{1F5A5}\u{1F4BE}\u{1F4BF}\u{1F602}\u2764\u{1F60D}\u{1F923}\u{1F60A}\u{1F64F}\u{1F495}\u{1F62D}\u{1F618}\u{1F44D}\u{1F605}\u{1F44F}\u{1F601}\u{1F525}\u{1F970}\u{1F494}\u{1F496}\u{1F499}\u{1F622}\u{1F914}\u{1F606}\u{1F644}\u{1F4AA}\u{1F609}\u263A\u{1F44C}\u{1F917}\u{1F49C}\u{1F614}\u{1F60E}\u{1F607}\u{1F339}\u{1F926}\u{1F389}\u{1F49E}\u270C\u2728\u{1F937}\u{1F631}\u{1F60C}\u{1F338}\u{1F64C}\u{1F60B}\u{1F497}\u{1F49A}\u{1F60F}\u{1F49B}\u{1F642}\u{1F493}\u{1F929}\u{1F604}\u{1F600}\u{1F5A4}\u{1F603}\u{1F4AF}\u{1F648}\u{1F447}\u{1F3B6}\u{1F612}\u{1F92D}\u2763\u{1F61C}\u{1F48B}\u{1F440}\u{1F62A}\u{1F611}\u{1F4A5}\u{1F64B}\u{1F61E}\u{1F629}\u{1F621}\u{1F92A}\u{1F44A}\u{1F973}\u{1F625}\u{1F924}\u{1F449}\u{1F483}\u{1F633}\u270B\u{1F61A}\u{1F61D}\u{1F634}\u{1F31F}\u{1F62C}\u{1F643}\u{1F340}\u{1F337}\u{1F63B}\u{1F613}\u2B50\u2705\u{1F97A}\u{1F308}\u{1F608}\u{1F918}\u{1F4A6}\u2714\u{1F623}\u{1F3C3}\u{1F490}\u2639\u{1F38A}\u{1F498}\u{1F620}\u261D\u{1F615}\u{1F33A}\u{1F382}\u{1F33B}\u{1F610}\u{1F595}\u{1F49D}\u{1F64A}\u{1F639}\u{1F5E3}\u{1F4AB}\u{1F480}\u{1F451}\u{1F3B5}\u{1F91E}\u{1F61B}\u{1F534}\u{1F624}\u{1F33C}\u{1F62B}\u26BD\u{1F919}\u2615\u{1F3C6}\u{1F92B}\u{1F448}\u{1F62E}\u{1F646}\u{1F37B}\u{1F343}\u{1F436}\u{1F481}\u{1F632}\u{1F33F}\u{1F9E1}\u{1F381}\u26A1\u{1F31E}\u{1F388}\u274C\u270A\u{1F44B}\u{1F630}\u{1F928}\u{1F636}\u{1F91D}\u{1F6B6}\u{1F4B0}\u{1F353}\u{1F4A2}\u{1F91F}\u{1F641}\u{1F6A8}\u{1F4A8}\u{1F92C}\u2708\u{1F380}\u{1F37A}\u{1F913}\u{1F619}\u{1F49F}\u{1F331}\u{1F616}\u{1F476}\u{1F974}\u25B6\u27A1\u2753\u{1F48E}\u{1F4B8}\u2B07\u{1F628}\u{1F31A}\u{1F98B}\u{1F637}\u{1F57A}\u26A0\u{1F645}\u{1F61F}\u{1F635}\u{1F44E}\u{1F932}\u{1F920}\u{1F927}\u{1F4CC}\u{1F535}\u{1F485}\u{1F9D0}\u{1F43E}\u{1F352}\u{1F617}\u{1F911}\u{1F30A}\u{1F92F}\u{1F437}\u260E\u{1F4A7}\u{1F62F}\u{1F486}\u{1F446}\u{1F3A4}\u{1F647}\u{1F351}\u2744\u{1F334}\u{1F4A3}\u{1F438}\u{1F48C}\u{1F4CD}\u{1F940}\u{1F922}\u{1F445}\u{1F4A1}\u{1F4A9}\u{1F450}\u{1F4F8}\u{1F47B}\u{1F910}\u{1F92E}\u{1F3BC}\u{1F975}\u{1F6A9}\u{1F34E}\u{1F34A}\u{1F47C}\u{1F48D}\u{1F4E3}\u{1F942}");
-var alphabetBytesToChars = alphabet.reduce((p, c, i) => {
-  p[i] = c;
-  return p;
-}, []);
-var alphabetCharsToBytes = alphabet.reduce((p, c, i) => {
-  const codePoint = c.codePointAt(0);
-  if (codePoint == null) {
-    throw new Error(`Invalid character: ${c}`);
-  }
-  p[codePoint] = i;
-  return p;
-}, []);
-function encode2(data) {
-  return data.reduce((p, c) => {
-    p += alphabetBytesToChars[c];
-    return p;
-  }, "");
-}
-__name(encode2, "encode");
-function decode2(str) {
-  const byts = [];
-  for (const char of str) {
-    const codePoint = char.codePointAt(0);
-    if (codePoint == null) {
-      throw new Error(`Invalid character: ${char}`);
-    }
-    const byt = alphabetCharsToBytes[codePoint];
-    if (byt == null) {
-      throw new Error(`Non-base256emoji character: ${char}`);
-    }
-    byts.push(byt);
-  }
-  return new Uint8Array(byts);
-}
-__name(decode2, "decode");
-var base256emoji = from({
-  prefix: "\u{1F680}",
-  name: "base256emoji",
-  encode: encode2,
-  decode: decode2
-});
-
 // node_modules/multiformats/dist/src/bases/base32.js
 var base32_exports = {};
 __export(base32_exports, {
@@ -1383,80 +1308,13 @@ var base36upper = baseX({
   alphabet: "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 });
 
-// node_modules/multiformats/dist/src/bases/base64.js
-var base64_exports = {};
-__export(base64_exports, {
-  base64: () => base64,
-  base64pad: () => base64pad,
-  base64url: () => base64url,
-  base64urlpad: () => base64urlpad
-});
-var base64 = rfc4648({
-  prefix: "m",
-  name: "base64",
-  alphabet: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",
-  bitsPerChar: 6
-});
-var base64pad = rfc4648({
-  prefix: "M",
-  name: "base64pad",
-  alphabet: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
-  bitsPerChar: 6
-});
-var base64url = rfc4648({
-  prefix: "u",
-  name: "base64url",
-  alphabet: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_",
-  bitsPerChar: 6
-});
-var base64urlpad = rfc4648({
-  prefix: "U",
-  name: "base64urlpad",
-  alphabet: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_=",
-  bitsPerChar: 6
-});
-
-// node_modules/multiformats/dist/src/bases/base8.js
-var base8_exports = {};
-__export(base8_exports, {
-  base8: () => base8
-});
-var base8 = rfc4648({
-  prefix: "7",
-  name: "base8",
-  alphabet: "01234567",
-  bitsPerChar: 3
-});
-
-// node_modules/multiformats/dist/src/bases/identity.js
-var identity_exports = {};
-__export(identity_exports, {
-  identity: () => identity
-});
-var identity = from({
-  prefix: "\0",
-  name: "identity",
-  encode: /* @__PURE__ */ __name((buf) => toString(buf), "encode"),
-  decode: /* @__PURE__ */ __name((str) => fromString(str), "decode")
-});
-
-// node_modules/multiformats/dist/src/codecs/json.js
-var textEncoder = new TextEncoder();
-var textDecoder = new TextDecoder();
-
-// node_modules/multiformats/dist/src/hashes/identity.js
-var identity_exports2 = {};
-__export(identity_exports2, {
-  identity: () => identity2
-});
-
 // node_modules/multiformats/dist/src/vendor/varint.js
-var encode_1 = encode3;
+var encode_1 = encode2;
 var MSB = 128;
 var REST = 127;
 var MSBALL = ~REST;
 var INT = Math.pow(2, 31);
-function encode3(num, out, offset) {
+function encode2(num, out, offset) {
   out = out || [];
   offset = offset || 0;
   var oldOffset = offset;
@@ -1469,11 +1327,11 @@ function encode3(num, out, offset) {
     num >>>= 7;
   }
   out[offset] = num | 0;
-  encode3.bytes = offset - oldOffset + 1;
+  encode2.bytes = offset - oldOffset + 1;
   return out;
 }
-__name(encode3, "encode");
-var decode3 = read;
+__name(encode2, "encode");
+var decode2 = read;
 var MSB$1 = 128;
 var REST$1 = 127;
 function read(buf, offset) {
@@ -1505,18 +1363,18 @@ var length = /* @__PURE__ */ __name(function(value) {
 }, "length");
 var varint = {
   encode: encode_1,
-  decode: decode3,
+  decode: decode2,
   encodingLength: length
 };
 var _brrp_varint = varint;
 var varint_default = _brrp_varint;
 
 // node_modules/multiformats/dist/src/varint.js
-function decode4(data, offset = 0) {
+function decode3(data, offset = 0) {
   const code2 = varint_default.decode(data, offset);
   return [code2, varint_default.decode.bytes];
 }
-__name(decode4, "decode");
+__name(decode3, "decode");
 function encodeTo(int, target, offset = 0) {
   varint_default.encode(int, target, offset);
   return target;
@@ -1539,17 +1397,17 @@ function create(code2, digest2) {
   return new Digest(code2, size, digest2, bytes2);
 }
 __name(create, "create");
-function decode5(multihash) {
+function decode4(multihash) {
   const bytes2 = coerce(multihash);
-  const [code2, sizeOffset] = decode4(bytes2);
-  const [size, digestOffset] = decode4(bytes2.subarray(sizeOffset));
+  const [code2, sizeOffset] = decode3(bytes2);
+  const [size, digestOffset] = decode3(bytes2.subarray(sizeOffset));
   const digest2 = bytes2.subarray(sizeOffset + digestOffset);
   if (digest2.byteLength !== size) {
     throw new Error("Incorrect length");
   }
   return new Digest(code2, size, digest2, bytes2);
 }
-__name(decode5, "decode");
+__name(decode4, "decode");
 function equals2(a, b) {
   if (a === b) {
     return true;
@@ -1577,66 +1435,6 @@ var Digest = class {
     this.bytes = bytes2;
   }
 };
-
-// node_modules/multiformats/dist/src/hashes/identity.js
-var code = 0;
-var name = "identity";
-var encode4 = coerce;
-function digest(input) {
-  return create(code, encode4(input));
-}
-__name(digest, "digest");
-var identity2 = { code, name, encode: encode4, digest };
-
-// node_modules/multiformats/dist/src/hashes/sha2-browser.js
-var sha2_browser_exports = {};
-__export(sha2_browser_exports, {
-  sha256: () => sha256,
-  sha512: () => sha512
-});
-
-// node_modules/multiformats/dist/src/hashes/hasher.js
-function from2({ name: name2, code: code2, encode: encode7 }) {
-  return new Hasher(name2, code2, encode7);
-}
-__name(from2, "from");
-var Hasher = class {
-  static {
-    __name(this, "Hasher");
-  }
-  name;
-  code;
-  encode;
-  constructor(name2, code2, encode7) {
-    this.name = name2;
-    this.code = code2;
-    this.encode = encode7;
-  }
-  digest(input) {
-    if (input instanceof Uint8Array) {
-      const result = this.encode(input);
-      return result instanceof Uint8Array ? create(this.code, result) : result.then((digest2) => create(this.code, digest2));
-    } else {
-      throw Error("Unknown type, must be binary type");
-    }
-  }
-};
-
-// node_modules/multiformats/dist/src/hashes/sha2-browser.js
-function sha(name2) {
-  return async (data) => new Uint8Array(await crypto.subtle.digest(name2, data));
-}
-__name(sha, "sha");
-var sha256 = from2({
-  name: "sha2-256",
-  code: 18,
-  encode: sha("SHA-256")
-});
-var sha512 = from2({
-  name: "sha2-512",
-  code: 19,
-  encode: sha("SHA-512")
-});
 
 // node_modules/multiformats/dist/src/cid.js
 function format(link, base3) {
@@ -1776,7 +1574,7 @@ var CID = class _CID {
       return new _CID(version, code2, multihash, bytes2 ?? encodeCID(version, code2, multihash.bytes));
     } else if (value[cidSymbol] === true) {
       const { version, multihash, code: code2 } = value;
-      const digest2 = decode5(multihash);
+      const digest2 = decode4(multihash);
       return _CID.create(version, code2, digest2);
     } else {
       return null;
@@ -1873,7 +1671,7 @@ var CID = class _CID {
   static inspectBytes(initialBytes) {
     let offset = 0;
     const next = /* @__PURE__ */ __name(() => {
-      const [i, length3] = decode4(initialBytes.subarray(offset));
+      const [i, length3] = decode3(initialBytes.subarray(offset));
       offset += length3;
       return i;
     }, "next");
@@ -1983,9 +1781,19 @@ function encodeCID(version, code2, multihash) {
 __name(encodeCID, "encodeCID");
 var cidSymbol = Symbol.for("@ipld/js-cid/CID");
 
-// node_modules/multiformats/dist/src/basics.js
-var bases = { ...identity_exports, ...base2_exports, ...base8_exports, ...base10_exports, ...base16_exports, ...base32_exports, ...base36_exports, ...base58_exports, ...base64_exports, ...base256emoji_exports };
-var hashes = { ...sha2_browser_exports, ...identity_exports2 };
+// node_modules/multiformats/dist/src/hashes/identity.js
+var identity_exports = {};
+__export(identity_exports, {
+  identity: () => identity
+});
+var code = 0;
+var name = "identity";
+var encode3 = coerce;
+function digest(input) {
+  return create(code, encode3(input));
+}
+__name(digest, "digest");
+var identity = { code, name, encode: encode3, digest };
 
 // node_modules/uint8arrays/dist/src/equals.js
 function equals3(a, b) {
@@ -2003,5451 +1811,6 @@ function equals3(a, b) {
   return true;
 }
 __name(equals3, "equals");
-
-// node_modules/uint8arrays/dist/src/alloc.js
-function alloc(size = 0) {
-  return new Uint8Array(size);
-}
-__name(alloc, "alloc");
-function allocUnsafe(size = 0) {
-  return new Uint8Array(size);
-}
-__name(allocUnsafe, "allocUnsafe");
-
-// node_modules/uint8arrays/dist/src/util/bases.js
-function createCodec(name2, prefix, encode7, decode8) {
-  return {
-    name: name2,
-    prefix,
-    encoder: {
-      name: name2,
-      prefix,
-      encode: encode7
-    },
-    decoder: {
-      decode: decode8
-    }
-  };
-}
-__name(createCodec, "createCodec");
-var string = createCodec("utf8", "u", (buf) => {
-  const decoder = new TextDecoder("utf8");
-  return "u" + decoder.decode(buf);
-}, (str) => {
-  const encoder = new TextEncoder();
-  return encoder.encode(str.substring(1));
-});
-var ascii = createCodec("ascii", "a", (buf) => {
-  let string2 = "a";
-  for (let i = 0; i < buf.length; i++) {
-    string2 += String.fromCharCode(buf[i]);
-  }
-  return string2;
-}, (str) => {
-  str = str.substring(1);
-  const buf = allocUnsafe(str.length);
-  for (let i = 0; i < str.length; i++) {
-    buf[i] = str.charCodeAt(i);
-  }
-  return buf;
-});
-var BASES = {
-  utf8: string,
-  "utf-8": string,
-  hex: bases.base16,
-  latin1: ascii,
-  ascii,
-  binary: ascii,
-  ...bases
-};
-var bases_default = BASES;
-
-// node_modules/uint8arrays/dist/src/from-string.js
-function fromString2(string2, encoding = "utf8") {
-  const base3 = bases_default[encoding];
-  if (base3 == null) {
-    throw new Error(`Unsupported encoding "${encoding}"`);
-  }
-  return base3.decoder.decode(`${base3.prefix}${string2}`);
-}
-__name(fromString2, "fromString");
-
-// node_modules/uint8arrays/dist/src/to-string.js
-function toString2(array, encoding = "utf8") {
-  const base3 = bases_default[encoding];
-  if (base3 == null) {
-    throw new Error(`Unsupported encoding "${encoding}"`);
-  }
-  return base3.encoder.encode(array).substring(1);
-}
-__name(toString2, "toString");
-
-// node_modules/@libp2p/peer-id/dist/src/index.js
-var inspect = Symbol.for("nodejs.util.inspect.custom");
-var baseDecoder = Object.values(bases).map((codec) => codec.decoder).reduce((acc, curr) => acc.or(curr), bases.identity.decoder);
-var LIBP2P_KEY_CODE = 114;
-var MARSHALLED_ED225519_PUBLIC_KEY_LENGTH = 36;
-var MARSHALLED_SECP256K1_PUBLIC_KEY_LENGTH = 37;
-var PeerIdImpl = class {
-  static {
-    __name(this, "PeerIdImpl");
-  }
-  type;
-  multihash;
-  privateKey;
-  publicKey;
-  string;
-  constructor(init) {
-    this.type = init.type;
-    this.multihash = init.multihash;
-    this.privateKey = init.privateKey;
-    Object.defineProperty(this, "string", {
-      enumerable: false,
-      writable: true
-    });
-  }
-  get [Symbol.toStringTag]() {
-    return `PeerId(${this.toString()})`;
-  }
-  [peerIdSymbol] = true;
-  toString() {
-    if (this.string == null) {
-      this.string = base58btc.encode(this.multihash.bytes).slice(1);
-    }
-    return this.string;
-  }
-  // return self-describing String representation
-  // in default format from RFC 0001: https://github.com/libp2p/specs/pull/209
-  toCID() {
-    return CID.createV1(LIBP2P_KEY_CODE, this.multihash);
-  }
-  toBytes() {
-    return this.multihash.bytes;
-  }
-  /**
-   * Returns Multiaddr as a JSON string
-   */
-  toJSON() {
-    return this.toString();
-  }
-  /**
-   * Checks the equality of `this` peer against a given PeerId
-   */
-  equals(id) {
-    if (id == null) {
-      return false;
-    }
-    if (id instanceof Uint8Array) {
-      return equals3(this.multihash.bytes, id);
-    } else if (typeof id === "string") {
-      return peerIdFromString(id).equals(this);
-    } else if (id?.multihash?.bytes != null) {
-      return equals3(this.multihash.bytes, id.multihash.bytes);
-    } else {
-      throw new Error("not valid Id");
-    }
-  }
-  /**
-   * Returns PeerId as a human-readable string
-   * https://nodejs.org/api/util.html#utilinspectcustom
-   *
-   * @example
-   * ```TypeScript
-   * import { peerIdFromString } from '@libp2p/peer-id'
-   *
-   * console.info(peerIdFromString('QmFoo'))
-   * // 'PeerId(QmFoo)'
-   * ```
-   */
-  [inspect]() {
-    return `PeerId(${this.toString()})`;
-  }
-};
-var RSAPeerIdImpl = class extends PeerIdImpl {
-  static {
-    __name(this, "RSAPeerIdImpl");
-  }
-  type = "RSA";
-  publicKey;
-  constructor(init) {
-    super({ ...init, type: "RSA" });
-    this.publicKey = init.publicKey;
-  }
-};
-var Ed25519PeerIdImpl = class extends PeerIdImpl {
-  static {
-    __name(this, "Ed25519PeerIdImpl");
-  }
-  type = "Ed25519";
-  publicKey;
-  constructor(init) {
-    super({ ...init, type: "Ed25519" });
-    this.publicKey = init.multihash.digest;
-  }
-};
-var Secp256k1PeerIdImpl = class extends PeerIdImpl {
-  static {
-    __name(this, "Secp256k1PeerIdImpl");
-  }
-  type = "secp256k1";
-  publicKey;
-  constructor(init) {
-    super({ ...init, type: "secp256k1" });
-    this.publicKey = init.multihash.digest;
-  }
-};
-var TRANSPORT_IPFS_GATEWAY_HTTP_CODE = 2336;
-var URLPeerIdImpl = class {
-  static {
-    __name(this, "URLPeerIdImpl");
-  }
-  type = "url";
-  multihash;
-  privateKey;
-  publicKey;
-  url;
-  constructor(url) {
-    this.url = url.toString();
-    this.multihash = identity2.digest(fromString2(this.url));
-  }
-  [inspect]() {
-    return `PeerId(${this.url})`;
-  }
-  [peerIdSymbol] = true;
-  toString() {
-    return this.toCID().toString();
-  }
-  toCID() {
-    return CID.createV1(TRANSPORT_IPFS_GATEWAY_HTTP_CODE, this.multihash);
-  }
-  toBytes() {
-    return this.toCID().bytes;
-  }
-  equals(other) {
-    if (other == null) {
-      return false;
-    }
-    if (other instanceof Uint8Array) {
-      other = toString2(other);
-    }
-    return other.toString() === this.toString();
-  }
-};
-function peerIdFromString(str, decoder) {
-  decoder = decoder ?? baseDecoder;
-  if (str.charAt(0) === "1" || str.charAt(0) === "Q") {
-    const multihash = decode5(base58btc.decode(`z${str}`));
-    if (str.startsWith("12D")) {
-      return new Ed25519PeerIdImpl({ multihash });
-    } else if (str.startsWith("16U")) {
-      return new Secp256k1PeerIdImpl({ multihash });
-    } else {
-      return new RSAPeerIdImpl({ multihash });
-    }
-  }
-  return peerIdFromBytes(baseDecoder.decode(str));
-}
-__name(peerIdFromString, "peerIdFromString");
-function peerIdFromBytes(buf) {
-  try {
-    const multihash = decode5(buf);
-    if (multihash.code === identity2.code) {
-      if (multihash.digest.length === MARSHALLED_ED225519_PUBLIC_KEY_LENGTH) {
-        return new Ed25519PeerIdImpl({ multihash });
-      } else if (multihash.digest.length === MARSHALLED_SECP256K1_PUBLIC_KEY_LENGTH) {
-        return new Secp256k1PeerIdImpl({ multihash });
-      }
-    }
-    if (multihash.code === sha256.code) {
-      return new RSAPeerIdImpl({ multihash });
-    }
-  } catch {
-    return peerIdFromCID(CID.decode(buf));
-  }
-  throw new Error("Supplied PeerID CID is invalid");
-}
-__name(peerIdFromBytes, "peerIdFromBytes");
-function peerIdFromCID(cid) {
-  if (cid?.multihash == null || cid.version == null || cid.version === 1 && cid.code !== LIBP2P_KEY_CODE && cid.code !== TRANSPORT_IPFS_GATEWAY_HTTP_CODE) {
-    throw new Error("Supplied PeerID CID is invalid");
-  }
-  if (cid.code === TRANSPORT_IPFS_GATEWAY_HTTP_CODE) {
-    const url = toString2(cid.multihash.digest);
-    return new URLPeerIdImpl(new URL(url));
-  }
-  const multihash = cid.multihash;
-  if (multihash.code === sha256.code) {
-    return new RSAPeerIdImpl({ multihash: cid.multihash });
-  } else if (multihash.code === identity2.code) {
-    if (multihash.digest.length === MARSHALLED_ED225519_PUBLIC_KEY_LENGTH) {
-      return new Ed25519PeerIdImpl({ multihash: cid.multihash });
-    } else if (multihash.digest.length === MARSHALLED_SECP256K1_PUBLIC_KEY_LENGTH) {
-      return new Secp256k1PeerIdImpl({ multihash: cid.multihash });
-    }
-  }
-  throw new Error("Supplied PeerID CID is invalid");
-}
-__name(peerIdFromCID, "peerIdFromCID");
-
-// node_modules/uint8-varint/dist/src/index.js
-var N12 = Math.pow(2, 7);
-var N22 = Math.pow(2, 14);
-var N32 = Math.pow(2, 21);
-var N42 = Math.pow(2, 28);
-var N52 = Math.pow(2, 35);
-var N62 = Math.pow(2, 42);
-var N72 = Math.pow(2, 49);
-var MSB2 = 128;
-var REST2 = 127;
-function encodingLength2(value) {
-  if (value < N12) {
-    return 1;
-  }
-  if (value < N22) {
-    return 2;
-  }
-  if (value < N32) {
-    return 3;
-  }
-  if (value < N42) {
-    return 4;
-  }
-  if (value < N52) {
-    return 5;
-  }
-  if (value < N62) {
-    return 6;
-  }
-  if (value < N72) {
-    return 7;
-  }
-  if (Number.MAX_SAFE_INTEGER != null && value > Number.MAX_SAFE_INTEGER) {
-    throw new RangeError("Could not encode varint");
-  }
-  return 8;
-}
-__name(encodingLength2, "encodingLength");
-function encodeUint8Array(value, buf, offset = 0) {
-  switch (encodingLength2(value)) {
-    case 8: {
-      buf[offset++] = value & 255 | MSB2;
-      value /= 128;
-    }
-    case 7: {
-      buf[offset++] = value & 255 | MSB2;
-      value /= 128;
-    }
-    case 6: {
-      buf[offset++] = value & 255 | MSB2;
-      value /= 128;
-    }
-    case 5: {
-      buf[offset++] = value & 255 | MSB2;
-      value /= 128;
-    }
-    case 4: {
-      buf[offset++] = value & 255 | MSB2;
-      value >>>= 7;
-    }
-    case 3: {
-      buf[offset++] = value & 255 | MSB2;
-      value >>>= 7;
-    }
-    case 2: {
-      buf[offset++] = value & 255 | MSB2;
-      value >>>= 7;
-    }
-    case 1: {
-      buf[offset++] = value & 255;
-      value >>>= 7;
-      break;
-    }
-    default:
-      throw new Error("unreachable");
-  }
-  return buf;
-}
-__name(encodeUint8Array, "encodeUint8Array");
-function encodeUint8ArrayList(value, buf, offset = 0) {
-  switch (encodingLength2(value)) {
-    case 8: {
-      buf.set(offset++, value & 255 | MSB2);
-      value /= 128;
-    }
-    case 7: {
-      buf.set(offset++, value & 255 | MSB2);
-      value /= 128;
-    }
-    case 6: {
-      buf.set(offset++, value & 255 | MSB2);
-      value /= 128;
-    }
-    case 5: {
-      buf.set(offset++, value & 255 | MSB2);
-      value /= 128;
-    }
-    case 4: {
-      buf.set(offset++, value & 255 | MSB2);
-      value >>>= 7;
-    }
-    case 3: {
-      buf.set(offset++, value & 255 | MSB2);
-      value >>>= 7;
-    }
-    case 2: {
-      buf.set(offset++, value & 255 | MSB2);
-      value >>>= 7;
-    }
-    case 1: {
-      buf.set(offset++, value & 255);
-      value >>>= 7;
-      break;
-    }
-    default:
-      throw new Error("unreachable");
-  }
-  return buf;
-}
-__name(encodeUint8ArrayList, "encodeUint8ArrayList");
-function decodeUint8Array(buf, offset) {
-  let b = buf[offset];
-  let res = 0;
-  res += b & REST2;
-  if (b < MSB2) {
-    return res;
-  }
-  b = buf[offset + 1];
-  res += (b & REST2) << 7;
-  if (b < MSB2) {
-    return res;
-  }
-  b = buf[offset + 2];
-  res += (b & REST2) << 14;
-  if (b < MSB2) {
-    return res;
-  }
-  b = buf[offset + 3];
-  res += (b & REST2) << 21;
-  if (b < MSB2) {
-    return res;
-  }
-  b = buf[offset + 4];
-  res += (b & REST2) * N42;
-  if (b < MSB2) {
-    return res;
-  }
-  b = buf[offset + 5];
-  res += (b & REST2) * N52;
-  if (b < MSB2) {
-    return res;
-  }
-  b = buf[offset + 6];
-  res += (b & REST2) * N62;
-  if (b < MSB2) {
-    return res;
-  }
-  b = buf[offset + 7];
-  res += (b & REST2) * N72;
-  if (b < MSB2) {
-    return res;
-  }
-  throw new RangeError("Could not decode varint");
-}
-__name(decodeUint8Array, "decodeUint8Array");
-function decodeUint8ArrayList(buf, offset) {
-  let b = buf.get(offset);
-  let res = 0;
-  res += b & REST2;
-  if (b < MSB2) {
-    return res;
-  }
-  b = buf.get(offset + 1);
-  res += (b & REST2) << 7;
-  if (b < MSB2) {
-    return res;
-  }
-  b = buf.get(offset + 2);
-  res += (b & REST2) << 14;
-  if (b < MSB2) {
-    return res;
-  }
-  b = buf.get(offset + 3);
-  res += (b & REST2) << 21;
-  if (b < MSB2) {
-    return res;
-  }
-  b = buf.get(offset + 4);
-  res += (b & REST2) * N42;
-  if (b < MSB2) {
-    return res;
-  }
-  b = buf.get(offset + 5);
-  res += (b & REST2) * N52;
-  if (b < MSB2) {
-    return res;
-  }
-  b = buf.get(offset + 6);
-  res += (b & REST2) * N62;
-  if (b < MSB2) {
-    return res;
-  }
-  b = buf.get(offset + 7);
-  res += (b & REST2) * N72;
-  if (b < MSB2) {
-    return res;
-  }
-  throw new RangeError("Could not decode varint");
-}
-__name(decodeUint8ArrayList, "decodeUint8ArrayList");
-function encode5(value, buf, offset = 0) {
-  if (buf == null) {
-    buf = allocUnsafe(encodingLength2(value));
-  }
-  if (buf instanceof Uint8Array) {
-    return encodeUint8Array(value, buf, offset);
-  } else {
-    return encodeUint8ArrayList(value, buf, offset);
-  }
-}
-__name(encode5, "encode");
-function decode6(buf, offset = 0) {
-  if (buf instanceof Uint8Array) {
-    return decodeUint8Array(buf, offset);
-  } else {
-    return decodeUint8ArrayList(buf, offset);
-  }
-}
-__name(decode6, "decode");
-
-// node_modules/uint8arrays/dist/src/util/as-uint8array.js
-function asUint8Array(buf) {
-  return buf;
-}
-__name(asUint8Array, "asUint8Array");
-
-// node_modules/uint8arrays/dist/src/concat.js
-function concat(arrays, length3) {
-  if (length3 == null) {
-    length3 = arrays.reduce((acc, curr) => acc + curr.length, 0);
-  }
-  const output2 = allocUnsafe(length3);
-  let offset = 0;
-  for (const arr of arrays) {
-    output2.set(arr, offset);
-    offset += arr.length;
-  }
-  return asUint8Array(output2);
-}
-__name(concat, "concat");
-
-// node_modules/uint8arraylist/dist/src/index.js
-var symbol = Symbol.for("@achingbrain/uint8arraylist");
-function findBufAndOffset(bufs, index) {
-  if (index == null || index < 0) {
-    throw new RangeError("index is out of bounds");
-  }
-  let offset = 0;
-  for (const buf of bufs) {
-    const bufEnd = offset + buf.byteLength;
-    if (index < bufEnd) {
-      return {
-        buf,
-        index: index - offset
-      };
-    }
-    offset = bufEnd;
-  }
-  throw new RangeError("index is out of bounds");
-}
-__name(findBufAndOffset, "findBufAndOffset");
-function isUint8ArrayList(value) {
-  return Boolean(value?.[symbol]);
-}
-__name(isUint8ArrayList, "isUint8ArrayList");
-var Uint8ArrayList = class _Uint8ArrayList {
-  static {
-    __name(this, "Uint8ArrayList");
-  }
-  bufs;
-  length;
-  [symbol] = true;
-  constructor(...data) {
-    this.bufs = [];
-    this.length = 0;
-    if (data.length > 0) {
-      this.appendAll(data);
-    }
-  }
-  *[Symbol.iterator]() {
-    yield* this.bufs;
-  }
-  get byteLength() {
-    return this.length;
-  }
-  /**
-   * Add one or more `bufs` to the end of this Uint8ArrayList
-   */
-  append(...bufs) {
-    this.appendAll(bufs);
-  }
-  /**
-   * Add all `bufs` to the end of this Uint8ArrayList
-   */
-  appendAll(bufs) {
-    let length3 = 0;
-    for (const buf of bufs) {
-      if (buf instanceof Uint8Array) {
-        length3 += buf.byteLength;
-        this.bufs.push(buf);
-      } else if (isUint8ArrayList(buf)) {
-        length3 += buf.byteLength;
-        this.bufs.push(...buf.bufs);
-      } else {
-        throw new Error("Could not append value, must be an Uint8Array or a Uint8ArrayList");
-      }
-    }
-    this.length += length3;
-  }
-  /**
-   * Add one or more `bufs` to the start of this Uint8ArrayList
-   */
-  prepend(...bufs) {
-    this.prependAll(bufs);
-  }
-  /**
-   * Add all `bufs` to the start of this Uint8ArrayList
-   */
-  prependAll(bufs) {
-    let length3 = 0;
-    for (const buf of bufs.reverse()) {
-      if (buf instanceof Uint8Array) {
-        length3 += buf.byteLength;
-        this.bufs.unshift(buf);
-      } else if (isUint8ArrayList(buf)) {
-        length3 += buf.byteLength;
-        this.bufs.unshift(...buf.bufs);
-      } else {
-        throw new Error("Could not prepend value, must be an Uint8Array or a Uint8ArrayList");
-      }
-    }
-    this.length += length3;
-  }
-  /**
-   * Read the value at `index`
-   */
-  get(index) {
-    const res = findBufAndOffset(this.bufs, index);
-    return res.buf[res.index];
-  }
-  /**
-   * Set the value at `index` to `value`
-   */
-  set(index, value) {
-    const res = findBufAndOffset(this.bufs, index);
-    res.buf[res.index] = value;
-  }
-  /**
-   * Copy bytes from `buf` to the index specified by `offset`
-   */
-  write(buf, offset = 0) {
-    if (buf instanceof Uint8Array) {
-      for (let i = 0; i < buf.length; i++) {
-        this.set(offset + i, buf[i]);
-      }
-    } else if (isUint8ArrayList(buf)) {
-      for (let i = 0; i < buf.length; i++) {
-        this.set(offset + i, buf.get(i));
-      }
-    } else {
-      throw new Error("Could not write value, must be an Uint8Array or a Uint8ArrayList");
-    }
-  }
-  /**
-   * Remove bytes from the front of the pool
-   */
-  consume(bytes2) {
-    bytes2 = Math.trunc(bytes2);
-    if (Number.isNaN(bytes2) || bytes2 <= 0) {
-      return;
-    }
-    if (bytes2 === this.byteLength) {
-      this.bufs = [];
-      this.length = 0;
-      return;
-    }
-    while (this.bufs.length > 0) {
-      if (bytes2 >= this.bufs[0].byteLength) {
-        bytes2 -= this.bufs[0].byteLength;
-        this.length -= this.bufs[0].byteLength;
-        this.bufs.shift();
-      } else {
-        this.bufs[0] = this.bufs[0].subarray(bytes2);
-        this.length -= bytes2;
-        break;
-      }
-    }
-  }
-  /**
-   * Extracts a section of an array and returns a new array.
-   *
-   * This is a copy operation as it is with Uint8Arrays and Arrays
-   * - note this is different to the behaviour of Node Buffers.
-   */
-  slice(beginInclusive, endExclusive) {
-    const { bufs, length: length3 } = this._subList(beginInclusive, endExclusive);
-    return concat(bufs, length3);
-  }
-  /**
-   * Returns a alloc from the given start and end element index.
-   *
-   * In the best case where the data extracted comes from a single Uint8Array
-   * internally this is a no-copy operation otherwise it is a copy operation.
-   */
-  subarray(beginInclusive, endExclusive) {
-    const { bufs, length: length3 } = this._subList(beginInclusive, endExclusive);
-    if (bufs.length === 1) {
-      return bufs[0];
-    }
-    return concat(bufs, length3);
-  }
-  /**
-   * Returns a allocList from the given start and end element index.
-   *
-   * This is a no-copy operation.
-   */
-  sublist(beginInclusive, endExclusive) {
-    const { bufs, length: length3 } = this._subList(beginInclusive, endExclusive);
-    const list = new _Uint8ArrayList();
-    list.length = length3;
-    list.bufs = [...bufs];
-    return list;
-  }
-  _subList(beginInclusive, endExclusive) {
-    beginInclusive = beginInclusive ?? 0;
-    endExclusive = endExclusive ?? this.length;
-    if (beginInclusive < 0) {
-      beginInclusive = this.length + beginInclusive;
-    }
-    if (endExclusive < 0) {
-      endExclusive = this.length + endExclusive;
-    }
-    if (beginInclusive < 0 || endExclusive > this.length) {
-      throw new RangeError("index is out of bounds");
-    }
-    if (beginInclusive === endExclusive) {
-      return { bufs: [], length: 0 };
-    }
-    if (beginInclusive === 0 && endExclusive === this.length) {
-      return { bufs: this.bufs, length: this.length };
-    }
-    const bufs = [];
-    let offset = 0;
-    for (let i = 0; i < this.bufs.length; i++) {
-      const buf = this.bufs[i];
-      const bufStart = offset;
-      const bufEnd = bufStart + buf.byteLength;
-      offset = bufEnd;
-      if (beginInclusive >= bufEnd) {
-        continue;
-      }
-      const sliceStartInBuf = beginInclusive >= bufStart && beginInclusive < bufEnd;
-      const sliceEndsInBuf = endExclusive > bufStart && endExclusive <= bufEnd;
-      if (sliceStartInBuf && sliceEndsInBuf) {
-        if (beginInclusive === bufStart && endExclusive === bufEnd) {
-          bufs.push(buf);
-          break;
-        }
-        const start = beginInclusive - bufStart;
-        bufs.push(buf.subarray(start, start + (endExclusive - beginInclusive)));
-        break;
-      }
-      if (sliceStartInBuf) {
-        if (beginInclusive === 0) {
-          bufs.push(buf);
-          continue;
-        }
-        bufs.push(buf.subarray(beginInclusive - bufStart));
-        continue;
-      }
-      if (sliceEndsInBuf) {
-        if (endExclusive === bufEnd) {
-          bufs.push(buf);
-          break;
-        }
-        bufs.push(buf.subarray(0, endExclusive - bufStart));
-        break;
-      }
-      bufs.push(buf);
-    }
-    return { bufs, length: endExclusive - beginInclusive };
-  }
-  indexOf(search, offset = 0) {
-    if (!isUint8ArrayList(search) && !(search instanceof Uint8Array)) {
-      throw new TypeError('The "value" argument must be a Uint8ArrayList or Uint8Array');
-    }
-    const needle = search instanceof Uint8Array ? search : search.subarray();
-    offset = Number(offset ?? 0);
-    if (isNaN(offset)) {
-      offset = 0;
-    }
-    if (offset < 0) {
-      offset = this.length + offset;
-    }
-    if (offset < 0) {
-      offset = 0;
-    }
-    if (search.length === 0) {
-      return offset > this.length ? this.length : offset;
-    }
-    const M = needle.byteLength;
-    if (M === 0) {
-      throw new TypeError("search must be at least 1 byte long");
-    }
-    const radix = 256;
-    const rightmostPositions = new Int32Array(radix);
-    for (let c = 0; c < radix; c++) {
-      rightmostPositions[c] = -1;
-    }
-    for (let j = 0; j < M; j++) {
-      rightmostPositions[needle[j]] = j;
-    }
-    const right = rightmostPositions;
-    const lastIndex = this.byteLength - needle.byteLength;
-    const lastPatIndex = needle.byteLength - 1;
-    let skip;
-    for (let i = offset; i <= lastIndex; i += skip) {
-      skip = 0;
-      for (let j = lastPatIndex; j >= 0; j--) {
-        const char = this.get(i + j);
-        if (needle[j] !== char) {
-          skip = Math.max(1, j - right[char]);
-          break;
-        }
-      }
-      if (skip === 0) {
-        return i;
-      }
-    }
-    return -1;
-  }
-  getInt8(byteOffset) {
-    const buf = this.subarray(byteOffset, byteOffset + 1);
-    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
-    return view.getInt8(0);
-  }
-  setInt8(byteOffset, value) {
-    const buf = allocUnsafe(1);
-    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
-    view.setInt8(0, value);
-    this.write(buf, byteOffset);
-  }
-  getInt16(byteOffset, littleEndian) {
-    const buf = this.subarray(byteOffset, byteOffset + 2);
-    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
-    return view.getInt16(0, littleEndian);
-  }
-  setInt16(byteOffset, value, littleEndian) {
-    const buf = alloc(2);
-    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
-    view.setInt16(0, value, littleEndian);
-    this.write(buf, byteOffset);
-  }
-  getInt32(byteOffset, littleEndian) {
-    const buf = this.subarray(byteOffset, byteOffset + 4);
-    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
-    return view.getInt32(0, littleEndian);
-  }
-  setInt32(byteOffset, value, littleEndian) {
-    const buf = alloc(4);
-    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
-    view.setInt32(0, value, littleEndian);
-    this.write(buf, byteOffset);
-  }
-  getBigInt64(byteOffset, littleEndian) {
-    const buf = this.subarray(byteOffset, byteOffset + 8);
-    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
-    return view.getBigInt64(0, littleEndian);
-  }
-  setBigInt64(byteOffset, value, littleEndian) {
-    const buf = alloc(8);
-    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
-    view.setBigInt64(0, value, littleEndian);
-    this.write(buf, byteOffset);
-  }
-  getUint8(byteOffset) {
-    const buf = this.subarray(byteOffset, byteOffset + 1);
-    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
-    return view.getUint8(0);
-  }
-  setUint8(byteOffset, value) {
-    const buf = allocUnsafe(1);
-    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
-    view.setUint8(0, value);
-    this.write(buf, byteOffset);
-  }
-  getUint16(byteOffset, littleEndian) {
-    const buf = this.subarray(byteOffset, byteOffset + 2);
-    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
-    return view.getUint16(0, littleEndian);
-  }
-  setUint16(byteOffset, value, littleEndian) {
-    const buf = alloc(2);
-    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
-    view.setUint16(0, value, littleEndian);
-    this.write(buf, byteOffset);
-  }
-  getUint32(byteOffset, littleEndian) {
-    const buf = this.subarray(byteOffset, byteOffset + 4);
-    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
-    return view.getUint32(0, littleEndian);
-  }
-  setUint32(byteOffset, value, littleEndian) {
-    const buf = alloc(4);
-    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
-    view.setUint32(0, value, littleEndian);
-    this.write(buf, byteOffset);
-  }
-  getBigUint64(byteOffset, littleEndian) {
-    const buf = this.subarray(byteOffset, byteOffset + 8);
-    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
-    return view.getBigUint64(0, littleEndian);
-  }
-  setBigUint64(byteOffset, value, littleEndian) {
-    const buf = alloc(8);
-    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
-    view.setBigUint64(0, value, littleEndian);
-    this.write(buf, byteOffset);
-  }
-  getFloat32(byteOffset, littleEndian) {
-    const buf = this.subarray(byteOffset, byteOffset + 4);
-    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
-    return view.getFloat32(0, littleEndian);
-  }
-  setFloat32(byteOffset, value, littleEndian) {
-    const buf = alloc(4);
-    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
-    view.setFloat32(0, value, littleEndian);
-    this.write(buf, byteOffset);
-  }
-  getFloat64(byteOffset, littleEndian) {
-    const buf = this.subarray(byteOffset, byteOffset + 8);
-    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
-    return view.getFloat64(0, littleEndian);
-  }
-  setFloat64(byteOffset, value, littleEndian) {
-    const buf = alloc(8);
-    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
-    view.setFloat64(0, value, littleEndian);
-    this.write(buf, byteOffset);
-  }
-  equals(other) {
-    if (other == null) {
-      return false;
-    }
-    if (!(other instanceof _Uint8ArrayList)) {
-      return false;
-    }
-    if (other.bufs.length !== this.bufs.length) {
-      return false;
-    }
-    for (let i = 0; i < this.bufs.length; i++) {
-      if (!equals3(this.bufs[i], other.bufs[i])) {
-        return false;
-      }
-    }
-    return true;
-  }
-  /**
-   * Create a Uint8ArrayList from a pre-existing list of Uint8Arrays.  Use this
-   * method if you know the total size of all the Uint8Arrays ahead of time.
-   */
-  static fromUint8Arrays(bufs, length3) {
-    const list = new _Uint8ArrayList();
-    list.bufs = bufs;
-    if (length3 == null) {
-      length3 = bufs.reduce((acc, curr) => acc + curr.byteLength, 0);
-    }
-    list.length = length3;
-    return list;
-  }
-};
-
-// node_modules/it-length-prefixed/dist/src/utils.js
-function isAsyncIterable(thing) {
-  return thing[Symbol.asyncIterator] != null;
-}
-__name(isAsyncIterable, "isAsyncIterable");
-
-// node_modules/it-length-prefixed/dist/src/encode.js
-var defaultEncoder = /* @__PURE__ */ __name((length3) => {
-  const lengthLength = encodingLength2(length3);
-  const lengthBuf = allocUnsafe(lengthLength);
-  encode5(length3, lengthBuf);
-  defaultEncoder.bytes = lengthLength;
-  return lengthBuf;
-}, "defaultEncoder");
-defaultEncoder.bytes = 0;
-function encode6(source, options) {
-  options = options ?? {};
-  const encodeLength = options.lengthEncoder ?? defaultEncoder;
-  function* maybeYield(chunk) {
-    const length3 = encodeLength(chunk.byteLength);
-    if (length3 instanceof Uint8Array) {
-      yield length3;
-    } else {
-      yield* length3;
-    }
-    if (chunk instanceof Uint8Array) {
-      yield chunk;
-    } else {
-      yield* chunk;
-    }
-  }
-  __name(maybeYield, "maybeYield");
-  if (isAsyncIterable(source)) {
-    return async function* () {
-      for await (const chunk of source) {
-        yield* maybeYield(chunk);
-      }
-    }();
-  }
-  return function* () {
-    for (const chunk of source) {
-      yield* maybeYield(chunk);
-    }
-  }();
-}
-__name(encode6, "encode");
-encode6.single = (chunk, options) => {
-  options = options ?? {};
-  const encodeLength = options.lengthEncoder ?? defaultEncoder;
-  return new Uint8ArrayList(encodeLength(chunk.byteLength), chunk);
-};
-
-// node_modules/it-length-prefixed/dist/src/errors.js
-var InvalidMessageLengthError = class extends Error {
-  static {
-    __name(this, "InvalidMessageLengthError");
-  }
-  name = "InvalidMessageLengthError";
-  code = "ERR_INVALID_MSG_LENGTH";
-};
-var InvalidDataLengthError = class extends Error {
-  static {
-    __name(this, "InvalidDataLengthError");
-  }
-  name = "InvalidDataLengthError";
-  code = "ERR_MSG_DATA_TOO_LONG";
-};
-var InvalidDataLengthLengthError = class extends Error {
-  static {
-    __name(this, "InvalidDataLengthLengthError");
-  }
-  name = "InvalidDataLengthLengthError";
-  code = "ERR_MSG_LENGTH_TOO_LONG";
-};
-var UnexpectedEOFError = class extends Error {
-  static {
-    __name(this, "UnexpectedEOFError");
-  }
-  name = "UnexpectedEOFError";
-  code = "ERR_UNEXPECTED_EOF";
-};
-
-// node_modules/it-length-prefixed/dist/src/decode.js
-var MAX_LENGTH_LENGTH = 8;
-var MAX_DATA_LENGTH = 1024 * 1024 * 4;
-var ReadMode;
-(function(ReadMode2) {
-  ReadMode2[ReadMode2["LENGTH"] = 0] = "LENGTH";
-  ReadMode2[ReadMode2["DATA"] = 1] = "DATA";
-})(ReadMode || (ReadMode = {}));
-var defaultDecoder = /* @__PURE__ */ __name((buf) => {
-  const length3 = decode6(buf);
-  defaultDecoder.bytes = encodingLength2(length3);
-  return length3;
-}, "defaultDecoder");
-defaultDecoder.bytes = 0;
-function decode7(source, options) {
-  const buffer = new Uint8ArrayList();
-  let mode = ReadMode.LENGTH;
-  let dataLength = -1;
-  const lengthDecoder = options?.lengthDecoder ?? defaultDecoder;
-  const maxLengthLength = options?.maxLengthLength ?? MAX_LENGTH_LENGTH;
-  const maxDataLength = options?.maxDataLength ?? MAX_DATA_LENGTH;
-  function* maybeYield() {
-    while (buffer.byteLength > 0) {
-      if (mode === ReadMode.LENGTH) {
-        try {
-          dataLength = lengthDecoder(buffer);
-          if (dataLength < 0) {
-            throw new InvalidMessageLengthError("Invalid message length");
-          }
-          if (dataLength > maxDataLength) {
-            throw new InvalidDataLengthError("Message length too long");
-          }
-          const dataLengthLength = lengthDecoder.bytes;
-          buffer.consume(dataLengthLength);
-          if (options?.onLength != null) {
-            options.onLength(dataLength);
-          }
-          mode = ReadMode.DATA;
-        } catch (err) {
-          if (err instanceof RangeError) {
-            if (buffer.byteLength > maxLengthLength) {
-              throw new InvalidDataLengthLengthError("Message length length too long");
-            }
-            break;
-          }
-          throw err;
-        }
-      }
-      if (mode === ReadMode.DATA) {
-        if (buffer.byteLength < dataLength) {
-          break;
-        }
-        const data = buffer.sublist(0, dataLength);
-        buffer.consume(dataLength);
-        if (options?.onData != null) {
-          options.onData(data);
-        }
-        yield data;
-        mode = ReadMode.LENGTH;
-      }
-    }
-  }
-  __name(maybeYield, "maybeYield");
-  if (isAsyncIterable(source)) {
-    return async function* () {
-      for await (const buf of source) {
-        buffer.append(buf);
-        yield* maybeYield();
-      }
-      if (buffer.byteLength > 0) {
-        throw new UnexpectedEOFError("Unexpected end of input");
-      }
-    }();
-  }
-  return function* () {
-    for (const buf of source) {
-      buffer.append(buf);
-      yield* maybeYield();
-    }
-    if (buffer.byteLength > 0) {
-      throw new UnexpectedEOFError("Unexpected end of input");
-    }
-  }();
-}
-__name(decode7, "decode");
-decode7.fromReader = (reader, options) => {
-  let byteLength = 1;
-  const varByteSource = async function* () {
-    while (true) {
-      try {
-        const { done, value } = await reader.next(byteLength);
-        if (done === true) {
-          return;
-        }
-        if (value != null) {
-          yield value;
-        }
-      } catch (err) {
-        if (err.code === "ERR_UNDER_READ") {
-          return { done: true, value: null };
-        }
-        throw err;
-      } finally {
-        byteLength = 1;
-      }
-    }
-  }();
-  const onLength = /* @__PURE__ */ __name((l) => {
-    byteLength = l;
-  }, "onLength");
-  return decode7(varByteSource, {
-    ...options ?? {},
-    onLength
-  });
-};
-
-// node_modules/p-defer/index.js
-function pDefer() {
-  const deferred = {};
-  deferred.promise = new Promise((resolve, reject) => {
-    deferred.resolve = resolve;
-    deferred.reject = reject;
-  });
-  return deferred;
-}
-__name(pDefer, "pDefer");
-
-// node_modules/it-pushable/dist/src/fifo.js
-var FixedFIFO = class {
-  static {
-    __name(this, "FixedFIFO");
-  }
-  buffer;
-  mask;
-  top;
-  btm;
-  next;
-  constructor(hwm) {
-    if (!(hwm > 0) || (hwm - 1 & hwm) !== 0) {
-      throw new Error("Max size for a FixedFIFO should be a power of two");
-    }
-    this.buffer = new Array(hwm);
-    this.mask = hwm - 1;
-    this.top = 0;
-    this.btm = 0;
-    this.next = null;
-  }
-  push(data) {
-    if (this.buffer[this.top] !== void 0) {
-      return false;
-    }
-    this.buffer[this.top] = data;
-    this.top = this.top + 1 & this.mask;
-    return true;
-  }
-  shift() {
-    const last = this.buffer[this.btm];
-    if (last === void 0) {
-      return void 0;
-    }
-    this.buffer[this.btm] = void 0;
-    this.btm = this.btm + 1 & this.mask;
-    return last;
-  }
-  isEmpty() {
-    return this.buffer[this.btm] === void 0;
-  }
-};
-var FIFO = class {
-  static {
-    __name(this, "FIFO");
-  }
-  size;
-  hwm;
-  head;
-  tail;
-  constructor(options = {}) {
-    this.hwm = options.splitLimit ?? 16;
-    this.head = new FixedFIFO(this.hwm);
-    this.tail = this.head;
-    this.size = 0;
-  }
-  calculateSize(obj) {
-    if (obj?.byteLength != null) {
-      return obj.byteLength;
-    }
-    return 1;
-  }
-  push(val) {
-    if (val?.value != null) {
-      this.size += this.calculateSize(val.value);
-    }
-    if (!this.head.push(val)) {
-      const prev = this.head;
-      this.head = prev.next = new FixedFIFO(2 * this.head.buffer.length);
-      this.head.push(val);
-    }
-  }
-  shift() {
-    let val = this.tail.shift();
-    if (val === void 0 && this.tail.next != null) {
-      const next = this.tail.next;
-      this.tail.next = null;
-      this.tail = next;
-      val = this.tail.shift();
-    }
-    if (val?.value != null) {
-      this.size -= this.calculateSize(val.value);
-    }
-    return val;
-  }
-  isEmpty() {
-    return this.head.isEmpty();
-  }
-};
-
-// node_modules/it-pushable/dist/src/index.js
-var AbortError = class extends Error {
-  static {
-    __name(this, "AbortError");
-  }
-  type;
-  code;
-  constructor(message2, code2) {
-    super(message2 ?? "The operation was aborted");
-    this.type = "aborted";
-    this.code = code2 ?? "ABORT_ERR";
-  }
-};
-function pushable(options = {}) {
-  const getNext = /* @__PURE__ */ __name((buffer) => {
-    const next = buffer.shift();
-    if (next == null) {
-      return { done: true };
-    }
-    if (next.error != null) {
-      throw next.error;
-    }
-    return {
-      done: next.done === true,
-      // @ts-expect-error if done is false, value will be present
-      value: next.value
-    };
-  }, "getNext");
-  return _pushable(getNext, options);
-}
-__name(pushable, "pushable");
-function _pushable(getNext, options) {
-  options = options ?? {};
-  let onEnd = options.onEnd;
-  let buffer = new FIFO();
-  let pushable2;
-  let onNext;
-  let ended;
-  let drain = pDefer();
-  const waitNext = /* @__PURE__ */ __name(async () => {
-    try {
-      if (!buffer.isEmpty()) {
-        return getNext(buffer);
-      }
-      if (ended) {
-        return { done: true };
-      }
-      return await new Promise((resolve, reject) => {
-        onNext = /* @__PURE__ */ __name((next) => {
-          onNext = null;
-          buffer.push(next);
-          try {
-            resolve(getNext(buffer));
-          } catch (err) {
-            reject(err);
-          }
-          return pushable2;
-        }, "onNext");
-      });
-    } finally {
-      if (buffer.isEmpty()) {
-        queueMicrotask(() => {
-          drain.resolve();
-          drain = pDefer();
-        });
-      }
-    }
-  }, "waitNext");
-  const bufferNext = /* @__PURE__ */ __name((next) => {
-    if (onNext != null) {
-      return onNext(next);
-    }
-    buffer.push(next);
-    return pushable2;
-  }, "bufferNext");
-  const bufferError = /* @__PURE__ */ __name((err) => {
-    buffer = new FIFO();
-    if (onNext != null) {
-      return onNext({ error: err });
-    }
-    buffer.push({ error: err });
-    return pushable2;
-  }, "bufferError");
-  const push = /* @__PURE__ */ __name((value) => {
-    if (ended) {
-      return pushable2;
-    }
-    if (options?.objectMode !== true && value?.byteLength == null) {
-      throw new Error("objectMode was not true but tried to push non-Uint8Array value");
-    }
-    return bufferNext({ done: false, value });
-  }, "push");
-  const end = /* @__PURE__ */ __name((err) => {
-    if (ended)
-      return pushable2;
-    ended = true;
-    return err != null ? bufferError(err) : bufferNext({ done: true });
-  }, "end");
-  const _return = /* @__PURE__ */ __name(() => {
-    buffer = new FIFO();
-    end();
-    return { done: true };
-  }, "_return");
-  const _throw = /* @__PURE__ */ __name((err) => {
-    end(err);
-    return { done: true };
-  }, "_throw");
-  pushable2 = {
-    [Symbol.asyncIterator]() {
-      return this;
-    },
-    next: waitNext,
-    return: _return,
-    throw: _throw,
-    push,
-    end,
-    get readableLength() {
-      return buffer.size;
-    },
-    onEmpty: /* @__PURE__ */ __name(async (options2) => {
-      const signal = options2?.signal;
-      signal?.throwIfAborted();
-      if (buffer.isEmpty()) {
-        return;
-      }
-      let cancel;
-      let listener;
-      if (signal != null) {
-        cancel = new Promise((resolve, reject) => {
-          listener = /* @__PURE__ */ __name(() => {
-            reject(new AbortError());
-          }, "listener");
-          signal.addEventListener("abort", listener);
-        });
-      }
-      try {
-        await Promise.race([
-          drain.promise,
-          cancel
-        ]);
-      } finally {
-        if (listener != null && signal != null) {
-          signal?.removeEventListener("abort", listener);
-        }
-      }
-    }, "onEmpty")
-  };
-  if (onEnd == null) {
-    return pushable2;
-  }
-  const _pushable2 = pushable2;
-  pushable2 = {
-    [Symbol.asyncIterator]() {
-      return this;
-    },
-    next() {
-      return _pushable2.next();
-    },
-    throw(err) {
-      _pushable2.throw(err);
-      if (onEnd != null) {
-        onEnd(err);
-        onEnd = void 0;
-      }
-      return { done: true };
-    },
-    return() {
-      _pushable2.return();
-      if (onEnd != null) {
-        onEnd();
-        onEnd = void 0;
-      }
-      return { done: true };
-    },
-    push,
-    end(err) {
-      _pushable2.end(err);
-      if (onEnd != null) {
-        onEnd(err);
-        onEnd = void 0;
-      }
-      return pushable2;
-    },
-    get readableLength() {
-      return _pushable2.readableLength;
-    },
-    onEmpty: /* @__PURE__ */ __name((opts) => {
-      return _pushable2.onEmpty(opts);
-    }, "onEmpty")
-  };
-  return pushable2;
-}
-__name(_pushable, "_pushable");
-
-// node_modules/it-merge/dist/src/index.js
-function isAsyncIterable2(thing) {
-  return thing[Symbol.asyncIterator] != null;
-}
-__name(isAsyncIterable2, "isAsyncIterable");
-function merge(...sources) {
-  const syncSources = [];
-  for (const source of sources) {
-    if (!isAsyncIterable2(source)) {
-      syncSources.push(source);
-    }
-  }
-  if (syncSources.length === sources.length) {
-    return function* () {
-      for (const source of syncSources) {
-        yield* source;
-      }
-    }();
-  }
-  return async function* () {
-    const output2 = pushable({
-      objectMode: true
-    });
-    void Promise.resolve().then(async () => {
-      try {
-        await Promise.all(sources.map(async (source) => {
-          for await (const item of source) {
-            output2.push(item);
-          }
-        }));
-        output2.end();
-      } catch (err) {
-        output2.end(err);
-      }
-    });
-    yield* output2;
-  }();
-}
-__name(merge, "merge");
-var src_default = merge;
-
-// node_modules/it-pipe/dist/src/index.js
-function pipe(first, ...rest) {
-  if (first == null) {
-    throw new Error("Empty pipeline");
-  }
-  if (isDuplex(first)) {
-    const duplex = first;
-    first = /* @__PURE__ */ __name(() => duplex.source, "first");
-  } else if (isIterable(first) || isAsyncIterable3(first)) {
-    const source = first;
-    first = /* @__PURE__ */ __name(() => source, "first");
-  }
-  const fns = [first, ...rest];
-  if (fns.length > 1) {
-    if (isDuplex(fns[fns.length - 1])) {
-      fns[fns.length - 1] = fns[fns.length - 1].sink;
-    }
-  }
-  if (fns.length > 2) {
-    for (let i = 1; i < fns.length - 1; i++) {
-      if (isDuplex(fns[i])) {
-        fns[i] = duplexPipelineFn(fns[i]);
-      }
-    }
-  }
-  return rawPipe(...fns);
-}
-__name(pipe, "pipe");
-var rawPipe = /* @__PURE__ */ __name((...fns) => {
-  let res;
-  while (fns.length > 0) {
-    res = fns.shift()(res);
-  }
-  return res;
-}, "rawPipe");
-var isAsyncIterable3 = /* @__PURE__ */ __name((obj) => {
-  return obj?.[Symbol.asyncIterator] != null;
-}, "isAsyncIterable");
-var isIterable = /* @__PURE__ */ __name((obj) => {
-  return obj?.[Symbol.iterator] != null;
-}, "isIterable");
-var isDuplex = /* @__PURE__ */ __name((obj) => {
-  if (obj == null) {
-    return false;
-  }
-  return obj.sink != null && obj.source != null;
-}, "isDuplex");
-var duplexPipelineFn = /* @__PURE__ */ __name((duplex) => {
-  return (source) => {
-    const p = duplex.sink(source);
-    if (p?.then != null) {
-      const stream = pushable({
-        objectMode: true
-      });
-      p.then(() => {
-        stream.end();
-      }, (err) => {
-        stream.end(err);
-      });
-      let sourceWrap;
-      const source2 = duplex.source;
-      if (isAsyncIterable3(source2)) {
-        sourceWrap = /* @__PURE__ */ __name(async function* () {
-          yield* source2;
-          stream.end();
-        }, "sourceWrap");
-      } else if (isIterable(source2)) {
-        sourceWrap = /* @__PURE__ */ __name(function* () {
-          yield* source2;
-          stream.end();
-        }, "sourceWrap");
-      } else {
-        throw new Error("Unknown duplex source type - must be Iterable or AsyncIterable");
-      }
-      return src_default(stream, sourceWrap());
-    }
-    return duplex.source;
-  };
-}, "duplexPipelineFn");
-
-// node_modules/@chainsafe/libp2p-gossipsub/dist/src/constants.js
-var second = 1e3;
-var minute = 60 * second;
-var FloodsubID = "/floodsub/1.0.0";
-var GossipsubIDv10 = "/meshsub/1.0.0";
-var GossipsubIDv11 = "/meshsub/1.1.0";
-var GossipsubD = 6;
-var GossipsubDlo = 4;
-var GossipsubDhi = 12;
-var GossipsubDscore = 4;
-var GossipsubDout = 2;
-var GossipsubHistoryLength = 5;
-var GossipsubHistoryGossip = 3;
-var GossipsubDlazy = 6;
-var GossipsubGossipFactor = 0.25;
-var GossipsubGossipRetransmission = 3;
-var GossipsubHeartbeatInitialDelay = 100;
-var GossipsubHeartbeatInterval = second;
-var GossipsubFanoutTTL = minute;
-var GossipsubPrunePeers = 16;
-var GossipsubPruneBackoff = minute;
-var GossipsubUnsubscribeBackoff = 10 * second;
-var GossipsubPruneBackoffTicks = 15;
-var GossipsubConnectionTimeout = 30 * second;
-var GossipsubDirectConnectTicks = 300;
-var GossipsubDirectConnectInitialDelay = second;
-var GossipsubOpportunisticGraftTicks = 60;
-var GossipsubOpportunisticGraftPeers = 2;
-var GossipsubGraftFloodThreshold = 10 * second;
-var GossipsubMaxIHaveLength = 5e3;
-var GossipsubMaxIHaveMessages = 10;
-var GossipsubIWantFollowupTime = 3 * second;
-var GossipsubSeenTTL = 2 * minute;
-var TimeCacheDuration = 120 * 1e3;
-var ERR_TOPIC_VALIDATOR_REJECT = "ERR_TOPIC_VALIDATOR_REJECT";
-var ERR_TOPIC_VALIDATOR_IGNORE = "ERR_TOPIC_VALIDATOR_IGNORE";
-var ACCEPT_FROM_WHITELIST_THRESHOLD_SCORE = 0;
-var ACCEPT_FROM_WHITELIST_MAX_MESSAGES = 128;
-var ACCEPT_FROM_WHITELIST_DURATION_MS = 1e3;
-var DEFAULT_METRIC_MESH_MESSAGE_DELIVERIES_WINDOWS = 1e3;
-var BACKOFF_SLACK = 1;
-
-// node_modules/@chainsafe/libp2p-gossipsub/dist/src/message/decodeRpc.js
-var defaultDecodeRpcLimits = {
-  maxSubscriptions: Infinity,
-  maxMessages: Infinity,
-  maxIhaveMessageIDs: Infinity,
-  maxIwantMessageIDs: Infinity,
-  maxControlMessages: Infinity,
-  maxPeerInfos: Infinity
-};
-
-// node_modules/@chainsafe/libp2p-gossipsub/node_modules/protons-runtime/dist/src/utils/float.js
-var f32 = new Float32Array([-0]);
-var f8b = new Uint8Array(f32.buffer);
-function writeFloatLE(val, buf, pos) {
-  f32[0] = val;
-  buf[pos] = f8b[0];
-  buf[pos + 1] = f8b[1];
-  buf[pos + 2] = f8b[2];
-  buf[pos + 3] = f8b[3];
-}
-__name(writeFloatLE, "writeFloatLE");
-function readFloatLE(buf, pos) {
-  f8b[0] = buf[pos];
-  f8b[1] = buf[pos + 1];
-  f8b[2] = buf[pos + 2];
-  f8b[3] = buf[pos + 3];
-  return f32[0];
-}
-__name(readFloatLE, "readFloatLE");
-var f64 = new Float64Array([-0]);
-var d8b = new Uint8Array(f64.buffer);
-function writeDoubleLE(val, buf, pos) {
-  f64[0] = val;
-  buf[pos] = d8b[0];
-  buf[pos + 1] = d8b[1];
-  buf[pos + 2] = d8b[2];
-  buf[pos + 3] = d8b[3];
-  buf[pos + 4] = d8b[4];
-  buf[pos + 5] = d8b[5];
-  buf[pos + 6] = d8b[6];
-  buf[pos + 7] = d8b[7];
-}
-__name(writeDoubleLE, "writeDoubleLE");
-function readDoubleLE(buf, pos) {
-  d8b[0] = buf[pos];
-  d8b[1] = buf[pos + 1];
-  d8b[2] = buf[pos + 2];
-  d8b[3] = buf[pos + 3];
-  d8b[4] = buf[pos + 4];
-  d8b[5] = buf[pos + 5];
-  d8b[6] = buf[pos + 6];
-  d8b[7] = buf[pos + 7];
-  return f64[0];
-}
-__name(readDoubleLE, "readDoubleLE");
-
-// node_modules/@chainsafe/libp2p-gossipsub/node_modules/protons-runtime/dist/src/utils/longbits.js
-var MAX_SAFE_NUMBER_INTEGER = BigInt(Number.MAX_SAFE_INTEGER);
-var MIN_SAFE_NUMBER_INTEGER = BigInt(Number.MIN_SAFE_INTEGER);
-var LongBits = class _LongBits {
-  static {
-    __name(this, "LongBits");
-  }
-  lo;
-  hi;
-  constructor(lo, hi) {
-    this.lo = lo | 0;
-    this.hi = hi | 0;
-  }
-  /**
-   * Converts this long bits to a possibly unsafe JavaScript number
-   */
-  toNumber(unsigned = false) {
-    if (!unsigned && this.hi >>> 31 > 0) {
-      const lo = ~this.lo + 1 >>> 0;
-      let hi = ~this.hi >>> 0;
-      if (lo === 0) {
-        hi = hi + 1 >>> 0;
-      }
-      return -(lo + hi * 4294967296);
-    }
-    return this.lo + this.hi * 4294967296;
-  }
-  /**
-   * Converts this long bits to a bigint
-   */
-  toBigInt(unsigned = false) {
-    if (unsigned) {
-      return BigInt(this.lo >>> 0) + (BigInt(this.hi >>> 0) << 32n);
-    }
-    if (this.hi >>> 31 !== 0) {
-      const lo = ~this.lo + 1 >>> 0;
-      let hi = ~this.hi >>> 0;
-      if (lo === 0) {
-        hi = hi + 1 >>> 0;
-      }
-      return -(BigInt(lo) + (BigInt(hi) << 32n));
-    }
-    return BigInt(this.lo >>> 0) + (BigInt(this.hi >>> 0) << 32n);
-  }
-  /**
-   * Converts this long bits to a string
-   */
-  toString(unsigned = false) {
-    return this.toBigInt(unsigned).toString();
-  }
-  /**
-   * Zig-zag encodes this long bits
-   */
-  zzEncode() {
-    const mask = this.hi >> 31;
-    this.hi = ((this.hi << 1 | this.lo >>> 31) ^ mask) >>> 0;
-    this.lo = (this.lo << 1 ^ mask) >>> 0;
-    return this;
-  }
-  /**
-   * Zig-zag decodes this long bits
-   */
-  zzDecode() {
-    const mask = -(this.lo & 1);
-    this.lo = ((this.lo >>> 1 | this.hi << 31) ^ mask) >>> 0;
-    this.hi = (this.hi >>> 1 ^ mask) >>> 0;
-    return this;
-  }
-  /**
-   * Calculates the length of this longbits when encoded as a varint.
-   */
-  length() {
-    const part0 = this.lo;
-    const part1 = (this.lo >>> 28 | this.hi << 4) >>> 0;
-    const part2 = this.hi >>> 24;
-    return part2 === 0 ? part1 === 0 ? part0 < 16384 ? part0 < 128 ? 1 : 2 : part0 < 2097152 ? 3 : 4 : part1 < 16384 ? part1 < 128 ? 5 : 6 : part1 < 2097152 ? 7 : 8 : part2 < 128 ? 9 : 10;
-  }
-  /**
-   * Constructs new long bits from the specified number
-   */
-  static fromBigInt(value) {
-    if (value === 0n) {
-      return zero;
-    }
-    if (value < MAX_SAFE_NUMBER_INTEGER && value > MIN_SAFE_NUMBER_INTEGER) {
-      return this.fromNumber(Number(value));
-    }
-    const negative = value < 0n;
-    if (negative) {
-      value = -value;
-    }
-    let hi = value >> 32n;
-    let lo = value - (hi << 32n);
-    if (negative) {
-      hi = ~hi | 0n;
-      lo = ~lo | 0n;
-      if (++lo > TWO_32) {
-        lo = 0n;
-        if (++hi > TWO_32) {
-          hi = 0n;
-        }
-      }
-    }
-    return new _LongBits(Number(lo), Number(hi));
-  }
-  /**
-   * Constructs new long bits from the specified number
-   */
-  static fromNumber(value) {
-    if (value === 0) {
-      return zero;
-    }
-    const sign = value < 0;
-    if (sign) {
-      value = -value;
-    }
-    let lo = value >>> 0;
-    let hi = (value - lo) / 4294967296 >>> 0;
-    if (sign) {
-      hi = ~hi >>> 0;
-      lo = ~lo >>> 0;
-      if (++lo > 4294967295) {
-        lo = 0;
-        if (++hi > 4294967295) {
-          hi = 0;
-        }
-      }
-    }
-    return new _LongBits(lo, hi);
-  }
-  /**
-   * Constructs new long bits from a number, long or string
-   */
-  static from(value) {
-    if (typeof value === "number") {
-      return _LongBits.fromNumber(value);
-    }
-    if (typeof value === "bigint") {
-      return _LongBits.fromBigInt(value);
-    }
-    if (typeof value === "string") {
-      return _LongBits.fromBigInt(BigInt(value));
-    }
-    return value.low != null || value.high != null ? new _LongBits(value.low >>> 0, value.high >>> 0) : zero;
-  }
-};
-var zero = new LongBits(0, 0);
-zero.toBigInt = function() {
-  return 0n;
-};
-zero.zzEncode = zero.zzDecode = function() {
-  return this;
-};
-zero.length = function() {
-  return 1;
-};
-var TWO_32 = 4294967296n;
-
-// node_modules/@chainsafe/libp2p-gossipsub/node_modules/protons-runtime/dist/src/utils/utf8.js
-function length2(string2) {
-  let len = 0;
-  let c = 0;
-  for (let i = 0; i < string2.length; ++i) {
-    c = string2.charCodeAt(i);
-    if (c < 128) {
-      len += 1;
-    } else if (c < 2048) {
-      len += 2;
-    } else if ((c & 64512) === 55296 && (string2.charCodeAt(i + 1) & 64512) === 56320) {
-      ++i;
-      len += 4;
-    } else {
-      len += 3;
-    }
-  }
-  return len;
-}
-__name(length2, "length");
-function read2(buffer, start, end) {
-  const len = end - start;
-  if (len < 1) {
-    return "";
-  }
-  let parts;
-  const chunk = [];
-  let i = 0;
-  let t;
-  while (start < end) {
-    t = buffer[start++];
-    if (t < 128) {
-      chunk[i++] = t;
-    } else if (t > 191 && t < 224) {
-      chunk[i++] = (t & 31) << 6 | buffer[start++] & 63;
-    } else if (t > 239 && t < 365) {
-      t = ((t & 7) << 18 | (buffer[start++] & 63) << 12 | (buffer[start++] & 63) << 6 | buffer[start++] & 63) - 65536;
-      chunk[i++] = 55296 + (t >> 10);
-      chunk[i++] = 56320 + (t & 1023);
-    } else {
-      chunk[i++] = (t & 15) << 12 | (buffer[start++] & 63) << 6 | buffer[start++] & 63;
-    }
-    if (i > 8191) {
-      (parts ?? (parts = [])).push(String.fromCharCode.apply(String, chunk));
-      i = 0;
-    }
-  }
-  if (parts != null) {
-    if (i > 0) {
-      parts.push(String.fromCharCode.apply(String, chunk.slice(0, i)));
-    }
-    return parts.join("");
-  }
-  return String.fromCharCode.apply(String, chunk.slice(0, i));
-}
-__name(read2, "read");
-function write(string2, buffer, offset) {
-  const start = offset;
-  let c1;
-  let c2;
-  for (let i = 0; i < string2.length; ++i) {
-    c1 = string2.charCodeAt(i);
-    if (c1 < 128) {
-      buffer[offset++] = c1;
-    } else if (c1 < 2048) {
-      buffer[offset++] = c1 >> 6 | 192;
-      buffer[offset++] = c1 & 63 | 128;
-    } else if ((c1 & 64512) === 55296 && ((c2 = string2.charCodeAt(i + 1)) & 64512) === 56320) {
-      c1 = 65536 + ((c1 & 1023) << 10) + (c2 & 1023);
-      ++i;
-      buffer[offset++] = c1 >> 18 | 240;
-      buffer[offset++] = c1 >> 12 & 63 | 128;
-      buffer[offset++] = c1 >> 6 & 63 | 128;
-      buffer[offset++] = c1 & 63 | 128;
-    } else {
-      buffer[offset++] = c1 >> 12 | 224;
-      buffer[offset++] = c1 >> 6 & 63 | 128;
-      buffer[offset++] = c1 & 63 | 128;
-    }
-  }
-  return offset - start;
-}
-__name(write, "write");
-
-// node_modules/@chainsafe/libp2p-gossipsub/node_modules/protons-runtime/dist/src/utils/reader.js
-function indexOutOfRange(reader, writeLength) {
-  return RangeError(`index out of range: ${reader.pos} + ${writeLength ?? 1} > ${reader.len}`);
-}
-__name(indexOutOfRange, "indexOutOfRange");
-function readFixed32End(buf, end) {
-  return (buf[end - 4] | buf[end - 3] << 8 | buf[end - 2] << 16 | buf[end - 1] << 24) >>> 0;
-}
-__name(readFixed32End, "readFixed32End");
-var Uint8ArrayReader = class {
-  static {
-    __name(this, "Uint8ArrayReader");
-  }
-  buf;
-  pos;
-  len;
-  _slice = Uint8Array.prototype.subarray;
-  constructor(buffer) {
-    this.buf = buffer;
-    this.pos = 0;
-    this.len = buffer.length;
-  }
-  /**
-   * Reads a varint as an unsigned 32 bit value
-   */
-  uint32() {
-    let value = 4294967295;
-    value = (this.buf[this.pos] & 127) >>> 0;
-    if (this.buf[this.pos++] < 128)
-      return value;
-    value = (value | (this.buf[this.pos] & 127) << 7) >>> 0;
-    if (this.buf[this.pos++] < 128)
-      return value;
-    value = (value | (this.buf[this.pos] & 127) << 14) >>> 0;
-    if (this.buf[this.pos++] < 128)
-      return value;
-    value = (value | (this.buf[this.pos] & 127) << 21) >>> 0;
-    if (this.buf[this.pos++] < 128)
-      return value;
-    value = (value | (this.buf[this.pos] & 15) << 28) >>> 0;
-    if (this.buf[this.pos++] < 128)
-      return value;
-    if ((this.pos += 5) > this.len) {
-      this.pos = this.len;
-      throw indexOutOfRange(this, 10);
-    }
-    return value;
-  }
-  /**
-   * Reads a varint as a signed 32 bit value
-   */
-  int32() {
-    return this.uint32() | 0;
-  }
-  /**
-   * Reads a zig-zag encoded varint as a signed 32 bit value
-   */
-  sint32() {
-    const value = this.uint32();
-    return value >>> 1 ^ -(value & 1) | 0;
-  }
-  /**
-   * Reads a varint as a boolean
-   */
-  bool() {
-    return this.uint32() !== 0;
-  }
-  /**
-   * Reads fixed 32 bits as an unsigned 32 bit integer
-   */
-  fixed32() {
-    if (this.pos + 4 > this.len) {
-      throw indexOutOfRange(this, 4);
-    }
-    const res = readFixed32End(this.buf, this.pos += 4);
-    return res;
-  }
-  /**
-   * Reads fixed 32 bits as a signed 32 bit integer
-   */
-  sfixed32() {
-    if (this.pos + 4 > this.len) {
-      throw indexOutOfRange(this, 4);
-    }
-    const res = readFixed32End(this.buf, this.pos += 4) | 0;
-    return res;
-  }
-  /**
-   * Reads a float (32 bit) as a number
-   */
-  float() {
-    if (this.pos + 4 > this.len) {
-      throw indexOutOfRange(this, 4);
-    }
-    const value = readFloatLE(this.buf, this.pos);
-    this.pos += 4;
-    return value;
-  }
-  /**
-   * Reads a double (64 bit float) as a number
-   */
-  double() {
-    if (this.pos + 8 > this.len) {
-      throw indexOutOfRange(this, 4);
-    }
-    const value = readDoubleLE(this.buf, this.pos);
-    this.pos += 8;
-    return value;
-  }
-  /**
-   * Reads a sequence of bytes preceded by its length as a varint
-   */
-  bytes() {
-    const length3 = this.uint32();
-    const start = this.pos;
-    const end = this.pos + length3;
-    if (end > this.len) {
-      throw indexOutOfRange(this, length3);
-    }
-    this.pos += length3;
-    return start === end ? new Uint8Array(0) : this.buf.subarray(start, end);
-  }
-  /**
-   * Reads a string preceded by its byte length as a varint
-   */
-  string() {
-    const bytes2 = this.bytes();
-    return read2(bytes2, 0, bytes2.length);
-  }
-  /**
-   * Skips the specified number of bytes if specified, otherwise skips a varint
-   */
-  skip(length3) {
-    if (typeof length3 === "number") {
-      if (this.pos + length3 > this.len) {
-        throw indexOutOfRange(this, length3);
-      }
-      this.pos += length3;
-    } else {
-      do {
-        if (this.pos >= this.len) {
-          throw indexOutOfRange(this);
-        }
-      } while ((this.buf[this.pos++] & 128) !== 0);
-    }
-    return this;
-  }
-  /**
-   * Skips the next element of the specified wire type
-   */
-  skipType(wireType) {
-    switch (wireType) {
-      case 0:
-        this.skip();
-        break;
-      case 1:
-        this.skip(8);
-        break;
-      case 2:
-        this.skip(this.uint32());
-        break;
-      case 3:
-        while ((wireType = this.uint32() & 7) !== 4) {
-          this.skipType(wireType);
-        }
-        break;
-      case 5:
-        this.skip(4);
-        break;
-      /* istanbul ignore next */
-      default:
-        throw Error(`invalid wire type ${wireType} at offset ${this.pos}`);
-    }
-    return this;
-  }
-  readLongVarint() {
-    const bits = new LongBits(0, 0);
-    let i = 0;
-    if (this.len - this.pos > 4) {
-      for (; i < 4; ++i) {
-        bits.lo = (bits.lo | (this.buf[this.pos] & 127) << i * 7) >>> 0;
-        if (this.buf[this.pos++] < 128) {
-          return bits;
-        }
-      }
-      bits.lo = (bits.lo | (this.buf[this.pos] & 127) << 28) >>> 0;
-      bits.hi = (bits.hi | (this.buf[this.pos] & 127) >> 4) >>> 0;
-      if (this.buf[this.pos++] < 128) {
-        return bits;
-      }
-      i = 0;
-    } else {
-      for (; i < 3; ++i) {
-        if (this.pos >= this.len) {
-          throw indexOutOfRange(this);
-        }
-        bits.lo = (bits.lo | (this.buf[this.pos] & 127) << i * 7) >>> 0;
-        if (this.buf[this.pos++] < 128) {
-          return bits;
-        }
-      }
-      bits.lo = (bits.lo | (this.buf[this.pos++] & 127) << i * 7) >>> 0;
-      return bits;
-    }
-    if (this.len - this.pos > 4) {
-      for (; i < 5; ++i) {
-        bits.hi = (bits.hi | (this.buf[this.pos] & 127) << i * 7 + 3) >>> 0;
-        if (this.buf[this.pos++] < 128) {
-          return bits;
-        }
-      }
-    } else {
-      for (; i < 5; ++i) {
-        if (this.pos >= this.len) {
-          throw indexOutOfRange(this);
-        }
-        bits.hi = (bits.hi | (this.buf[this.pos] & 127) << i * 7 + 3) >>> 0;
-        if (this.buf[this.pos++] < 128) {
-          return bits;
-        }
-      }
-    }
-    throw Error("invalid varint encoding");
-  }
-  readFixed64() {
-    if (this.pos + 8 > this.len) {
-      throw indexOutOfRange(this, 8);
-    }
-    const lo = readFixed32End(this.buf, this.pos += 4);
-    const hi = readFixed32End(this.buf, this.pos += 4);
-    return new LongBits(lo, hi);
-  }
-  /**
-   * Reads a varint as a signed 64 bit value
-   */
-  int64() {
-    return this.readLongVarint().toBigInt();
-  }
-  /**
-   * Reads a varint as a signed 64 bit value returned as a possibly unsafe
-   * JavaScript number
-   */
-  int64Number() {
-    return this.readLongVarint().toNumber();
-  }
-  /**
-   * Reads a varint as a signed 64 bit value returned as a string
-   */
-  int64String() {
-    return this.readLongVarint().toString();
-  }
-  /**
-   * Reads a varint as an unsigned 64 bit value
-   */
-  uint64() {
-    return this.readLongVarint().toBigInt(true);
-  }
-  /**
-   * Reads a varint as an unsigned 64 bit value returned as a possibly unsafe
-   * JavaScript number
-   */
-  uint64Number() {
-    const value = decodeUint8Array(this.buf, this.pos);
-    this.pos += encodingLength2(value);
-    return value;
-  }
-  /**
-   * Reads a varint as an unsigned 64 bit value returned as a string
-   */
-  uint64String() {
-    return this.readLongVarint().toString(true);
-  }
-  /**
-   * Reads a zig-zag encoded varint as a signed 64 bit value
-   */
-  sint64() {
-    return this.readLongVarint().zzDecode().toBigInt();
-  }
-  /**
-   * Reads a zig-zag encoded varint as a signed 64 bit value returned as a
-   * possibly unsafe JavaScript number
-   */
-  sint64Number() {
-    return this.readLongVarint().zzDecode().toNumber();
-  }
-  /**
-   * Reads a zig-zag encoded varint as a signed 64 bit value returned as a
-   * string
-   */
-  sint64String() {
-    return this.readLongVarint().zzDecode().toString();
-  }
-  /**
-   * Reads fixed 64 bits
-   */
-  fixed64() {
-    return this.readFixed64().toBigInt();
-  }
-  /**
-   * Reads fixed 64 bits returned as a possibly unsafe JavaScript number
-   */
-  fixed64Number() {
-    return this.readFixed64().toNumber();
-  }
-  /**
-   * Reads fixed 64 bits returned as a string
-   */
-  fixed64String() {
-    return this.readFixed64().toString();
-  }
-  /**
-   * Reads zig-zag encoded fixed 64 bits
-   */
-  sfixed64() {
-    return this.readFixed64().toBigInt();
-  }
-  /**
-   * Reads zig-zag encoded fixed 64 bits returned as a possibly unsafe
-   * JavaScript number
-   */
-  sfixed64Number() {
-    return this.readFixed64().toNumber();
-  }
-  /**
-   * Reads zig-zag encoded fixed 64 bits returned as a string
-   */
-  sfixed64String() {
-    return this.readFixed64().toString();
-  }
-};
-function createReader(buf) {
-  return new Uint8ArrayReader(buf instanceof Uint8Array ? buf : buf.subarray());
-}
-__name(createReader, "createReader");
-
-// node_modules/@chainsafe/libp2p-gossipsub/node_modules/protons-runtime/dist/src/decode.js
-function decodeMessage(buf, codec, opts) {
-  const reader = createReader(buf);
-  return codec.decode(reader, void 0, opts);
-}
-__name(decodeMessage, "decodeMessage");
-
-// node_modules/@chainsafe/libp2p-gossipsub/node_modules/protons-runtime/dist/src/utils/pool.js
-function pool(size) {
-  const SIZE = size ?? 8192;
-  const MAX = SIZE >>> 1;
-  let slab;
-  let offset = SIZE;
-  return /* @__PURE__ */ __name(function poolAlloc(size2) {
-    if (size2 < 1 || size2 > MAX) {
-      return allocUnsafe(size2);
-    }
-    if (offset + size2 > SIZE) {
-      slab = allocUnsafe(SIZE);
-      offset = 0;
-    }
-    const buf = slab.subarray(offset, offset += size2);
-    if ((offset & 7) !== 0) {
-      offset = (offset | 7) + 1;
-    }
-    return buf;
-  }, "poolAlloc");
-}
-__name(pool, "pool");
-
-// node_modules/@chainsafe/libp2p-gossipsub/node_modules/protons-runtime/dist/src/utils/writer.js
-var Op = class {
-  static {
-    __name(this, "Op");
-  }
-  /**
-   * Function to call
-   */
-  fn;
-  /**
-   * Value byte length
-   */
-  len;
-  /**
-   * Next operation
-   */
-  next;
-  /**
-   * Value to write
-   */
-  val;
-  constructor(fn, len, val) {
-    this.fn = fn;
-    this.len = len;
-    this.next = void 0;
-    this.val = val;
-  }
-};
-function noop() {
-}
-__name(noop, "noop");
-var State = class {
-  static {
-    __name(this, "State");
-  }
-  /**
-   * Current head
-   */
-  head;
-  /**
-   * Current tail
-   */
-  tail;
-  /**
-   * Current buffer length
-   */
-  len;
-  /**
-   * Next state
-   */
-  next;
-  constructor(writer) {
-    this.head = writer.head;
-    this.tail = writer.tail;
-    this.len = writer.len;
-    this.next = writer.states;
-  }
-};
-var bufferPool = pool();
-function alloc2(size) {
-  if (globalThis.Buffer != null) {
-    return allocUnsafe(size);
-  }
-  return bufferPool(size);
-}
-__name(alloc2, "alloc");
-var Uint8ArrayWriter = class {
-  static {
-    __name(this, "Uint8ArrayWriter");
-  }
-  /**
-   * Current length
-   */
-  len;
-  /**
-   * Operations head
-   */
-  head;
-  /**
-   * Operations tail
-   */
-  tail;
-  /**
-   * Linked forked states
-   */
-  states;
-  constructor() {
-    this.len = 0;
-    this.head = new Op(noop, 0, 0);
-    this.tail = this.head;
-    this.states = null;
-  }
-  /**
-   * Pushes a new operation to the queue
-   */
-  _push(fn, len, val) {
-    this.tail = this.tail.next = new Op(fn, len, val);
-    this.len += len;
-    return this;
-  }
-  /**
-   * Writes an unsigned 32 bit value as a varint
-   */
-  uint32(value) {
-    this.len += (this.tail = this.tail.next = new VarintOp((value = value >>> 0) < 128 ? 1 : value < 16384 ? 2 : value < 2097152 ? 3 : value < 268435456 ? 4 : 5, value)).len;
-    return this;
-  }
-  /**
-   * Writes a signed 32 bit value as a varint`
-   */
-  int32(value) {
-    return value < 0 ? this._push(writeVarint64, 10, LongBits.fromNumber(value)) : this.uint32(value);
-  }
-  /**
-   * Writes a 32 bit value as a varint, zig-zag encoded
-   */
-  sint32(value) {
-    return this.uint32((value << 1 ^ value >> 31) >>> 0);
-  }
-  /**
-   * Writes an unsigned 64 bit value as a varint
-   */
-  uint64(value) {
-    const bits = LongBits.fromBigInt(value);
-    return this._push(writeVarint64, bits.length(), bits);
-  }
-  /**
-   * Writes an unsigned 64 bit value as a varint
-   */
-  uint64Number(value) {
-    return this._push(encodeUint8Array, encodingLength2(value), value);
-  }
-  /**
-   * Writes an unsigned 64 bit value as a varint
-   */
-  uint64String(value) {
-    return this.uint64(BigInt(value));
-  }
-  /**
-   * Writes a signed 64 bit value as a varint
-   */
-  int64(value) {
-    return this.uint64(value);
-  }
-  /**
-   * Writes a signed 64 bit value as a varint
-   */
-  int64Number(value) {
-    return this.uint64Number(value);
-  }
-  /**
-   * Writes a signed 64 bit value as a varint
-   */
-  int64String(value) {
-    return this.uint64String(value);
-  }
-  /**
-   * Writes a signed 64 bit value as a varint, zig-zag encoded
-   */
-  sint64(value) {
-    const bits = LongBits.fromBigInt(value).zzEncode();
-    return this._push(writeVarint64, bits.length(), bits);
-  }
-  /**
-   * Writes a signed 64 bit value as a varint, zig-zag encoded
-   */
-  sint64Number(value) {
-    const bits = LongBits.fromNumber(value).zzEncode();
-    return this._push(writeVarint64, bits.length(), bits);
-  }
-  /**
-   * Writes a signed 64 bit value as a varint, zig-zag encoded
-   */
-  sint64String(value) {
-    return this.sint64(BigInt(value));
-  }
-  /**
-   * Writes a boolish value as a varint
-   */
-  bool(value) {
-    return this._push(writeByte, 1, value ? 1 : 0);
-  }
-  /**
-   * Writes an unsigned 32 bit value as fixed 32 bits
-   */
-  fixed32(value) {
-    return this._push(writeFixed32, 4, value >>> 0);
-  }
-  /**
-   * Writes a signed 32 bit value as fixed 32 bits
-   */
-  sfixed32(value) {
-    return this.fixed32(value);
-  }
-  /**
-   * Writes an unsigned 64 bit value as fixed 64 bits
-   */
-  fixed64(value) {
-    const bits = LongBits.fromBigInt(value);
-    return this._push(writeFixed32, 4, bits.lo)._push(writeFixed32, 4, bits.hi);
-  }
-  /**
-   * Writes an unsigned 64 bit value as fixed 64 bits
-   */
-  fixed64Number(value) {
-    const bits = LongBits.fromNumber(value);
-    return this._push(writeFixed32, 4, bits.lo)._push(writeFixed32, 4, bits.hi);
-  }
-  /**
-   * Writes an unsigned 64 bit value as fixed 64 bits
-   */
-  fixed64String(value) {
-    return this.fixed64(BigInt(value));
-  }
-  /**
-   * Writes a signed 64 bit value as fixed 64 bits
-   */
-  sfixed64(value) {
-    return this.fixed64(value);
-  }
-  /**
-   * Writes a signed 64 bit value as fixed 64 bits
-   */
-  sfixed64Number(value) {
-    return this.fixed64Number(value);
-  }
-  /**
-   * Writes a signed 64 bit value as fixed 64 bits
-   */
-  sfixed64String(value) {
-    return this.fixed64String(value);
-  }
-  /**
-   * Writes a float (32 bit)
-   */
-  float(value) {
-    return this._push(writeFloatLE, 4, value);
-  }
-  /**
-   * Writes a double (64 bit float).
-   *
-   * @function
-   * @param {number} value - Value to write
-   * @returns {Writer} `this`
-   */
-  double(value) {
-    return this._push(writeDoubleLE, 8, value);
-  }
-  /**
-   * Writes a sequence of bytes
-   */
-  bytes(value) {
-    const len = value.length >>> 0;
-    if (len === 0) {
-      return this._push(writeByte, 1, 0);
-    }
-    return this.uint32(len)._push(writeBytes, len, value);
-  }
-  /**
-   * Writes a string
-   */
-  string(value) {
-    const len = length2(value);
-    return len !== 0 ? this.uint32(len)._push(write, len, value) : this._push(writeByte, 1, 0);
-  }
-  /**
-   * Forks this writer's state by pushing it to a stack.
-   * Calling {@link Writer#reset|reset} or {@link Writer#ldelim|ldelim} resets the writer to the previous state.
-   */
-  fork() {
-    this.states = new State(this);
-    this.head = this.tail = new Op(noop, 0, 0);
-    this.len = 0;
-    return this;
-  }
-  /**
-   * Resets this instance to the last state
-   */
-  reset() {
-    if (this.states != null) {
-      this.head = this.states.head;
-      this.tail = this.states.tail;
-      this.len = this.states.len;
-      this.states = this.states.next;
-    } else {
-      this.head = this.tail = new Op(noop, 0, 0);
-      this.len = 0;
-    }
-    return this;
-  }
-  /**
-   * Resets to the last state and appends the fork state's current write length as a varint followed by its operations.
-   */
-  ldelim() {
-    const head = this.head;
-    const tail = this.tail;
-    const len = this.len;
-    this.reset().uint32(len);
-    if (len !== 0) {
-      this.tail.next = head.next;
-      this.tail = tail;
-      this.len += len;
-    }
-    return this;
-  }
-  /**
-   * Finishes the write operation
-   */
-  finish() {
-    let head = this.head.next;
-    const buf = alloc2(this.len);
-    let pos = 0;
-    while (head != null) {
-      head.fn(head.val, buf, pos);
-      pos += head.len;
-      head = head.next;
-    }
-    return buf;
-  }
-};
-function writeByte(val, buf, pos) {
-  buf[pos] = val & 255;
-}
-__name(writeByte, "writeByte");
-function writeVarint32(val, buf, pos) {
-  while (val > 127) {
-    buf[pos++] = val & 127 | 128;
-    val >>>= 7;
-  }
-  buf[pos] = val;
-}
-__name(writeVarint32, "writeVarint32");
-var VarintOp = class extends Op {
-  static {
-    __name(this, "VarintOp");
-  }
-  next;
-  constructor(len, val) {
-    super(writeVarint32, len, val);
-    this.next = void 0;
-  }
-};
-function writeVarint64(val, buf, pos) {
-  while (val.hi !== 0) {
-    buf[pos++] = val.lo & 127 | 128;
-    val.lo = (val.lo >>> 7 | val.hi << 25) >>> 0;
-    val.hi >>>= 7;
-  }
-  while (val.lo > 127) {
-    buf[pos++] = val.lo & 127 | 128;
-    val.lo = val.lo >>> 7;
-  }
-  buf[pos++] = val.lo;
-}
-__name(writeVarint64, "writeVarint64");
-function writeFixed32(val, buf, pos) {
-  buf[pos] = val & 255;
-  buf[pos + 1] = val >>> 8 & 255;
-  buf[pos + 2] = val >>> 16 & 255;
-  buf[pos + 3] = val >>> 24;
-}
-__name(writeFixed32, "writeFixed32");
-function writeBytes(val, buf, pos) {
-  buf.set(val, pos);
-}
-__name(writeBytes, "writeBytes");
-if (globalThis.Buffer != null) {
-  Uint8ArrayWriter.prototype.bytes = function(value) {
-    const len = value.length >>> 0;
-    this.uint32(len);
-    if (len > 0) {
-      this._push(writeBytesBuffer, len, value);
-    }
-    return this;
-  };
-  Uint8ArrayWriter.prototype.string = function(value) {
-    const len = globalThis.Buffer.byteLength(value);
-    this.uint32(len);
-    if (len > 0) {
-      this._push(writeStringBuffer, len, value);
-    }
-    return this;
-  };
-}
-function writeBytesBuffer(val, buf, pos) {
-  buf.set(val, pos);
-}
-__name(writeBytesBuffer, "writeBytesBuffer");
-function writeStringBuffer(val, buf, pos) {
-  if (val.length < 40) {
-    write(val, buf, pos);
-  } else if (buf.utf8Write != null) {
-    buf.utf8Write(val, pos);
-  } else {
-    buf.set(fromString2(val), pos);
-  }
-}
-__name(writeStringBuffer, "writeStringBuffer");
-function createWriter() {
-  return new Uint8ArrayWriter();
-}
-__name(createWriter, "createWriter");
-
-// node_modules/@chainsafe/libp2p-gossipsub/node_modules/protons-runtime/dist/src/encode.js
-function encodeMessage(message2, codec) {
-  const w = createWriter();
-  codec.encode(message2, w, {
-    lengthDelimited: false
-  });
-  return w.finish();
-}
-__name(encodeMessage, "encodeMessage");
-
-// node_modules/@chainsafe/libp2p-gossipsub/node_modules/protons-runtime/dist/src/codec.js
-var CODEC_TYPES;
-(function(CODEC_TYPES2) {
-  CODEC_TYPES2[CODEC_TYPES2["VARINT"] = 0] = "VARINT";
-  CODEC_TYPES2[CODEC_TYPES2["BIT64"] = 1] = "BIT64";
-  CODEC_TYPES2[CODEC_TYPES2["LENGTH_DELIMITED"] = 2] = "LENGTH_DELIMITED";
-  CODEC_TYPES2[CODEC_TYPES2["START_GROUP"] = 3] = "START_GROUP";
-  CODEC_TYPES2[CODEC_TYPES2["END_GROUP"] = 4] = "END_GROUP";
-  CODEC_TYPES2[CODEC_TYPES2["BIT32"] = 5] = "BIT32";
-})(CODEC_TYPES || (CODEC_TYPES = {}));
-function createCodec2(name2, type, encode7, decode8) {
-  return {
-    name: name2,
-    type,
-    encode: encode7,
-    decode: decode8
-  };
-}
-__name(createCodec2, "createCodec");
-
-// node_modules/@chainsafe/libp2p-gossipsub/node_modules/protons-runtime/dist/src/codecs/enum.js
-function enumeration(v) {
-  function findValue(val) {
-    if (v[val.toString()] == null) {
-      throw new Error("Invalid enum value");
-    }
-    return v[val];
-  }
-  __name(findValue, "findValue");
-  const encode7 = /* @__PURE__ */ __name(function enumEncode(val, writer) {
-    const enumValue = findValue(val);
-    writer.int32(enumValue);
-  }, "enumEncode");
-  const decode8 = /* @__PURE__ */ __name(function enumDecode(reader) {
-    const val = reader.int32();
-    return findValue(val);
-  }, "enumDecode");
-  return createCodec2("enum", CODEC_TYPES.VARINT, encode7, decode8);
-}
-__name(enumeration, "enumeration");
-
-// node_modules/@chainsafe/libp2p-gossipsub/node_modules/protons-runtime/dist/src/codecs/message.js
-function message(encode7, decode8) {
-  return createCodec2("message", CODEC_TYPES.LENGTH_DELIMITED, encode7, decode8);
-}
-__name(message, "message");
-
-// node_modules/@chainsafe/libp2p-gossipsub/node_modules/protons-runtime/dist/src/index.js
-var CodeError2 = class extends Error {
-  static {
-    __name(this, "CodeError");
-  }
-  code;
-  constructor(message2, code2, options) {
-    super(message2, options);
-    this.code = code2;
-  }
-};
-
-// node_modules/@chainsafe/libp2p-gossipsub/dist/src/message/rpc.js
-var RPC;
-(function(RPC2) {
-  let SubOpts;
-  (function(SubOpts2) {
-    let _codec2;
-    SubOpts2.codec = () => {
-      if (_codec2 == null) {
-        _codec2 = message((obj, w, opts = {}) => {
-          if (opts.lengthDelimited !== false) {
-            w.fork();
-          }
-          if (obj.subscribe != null) {
-            w.uint32(8);
-            w.bool(obj.subscribe);
-          }
-          if (obj.topic != null) {
-            w.uint32(18);
-            w.string(obj.topic);
-          }
-          if (opts.lengthDelimited !== false) {
-            w.ldelim();
-          }
-        }, (reader, length3, opts = {}) => {
-          const obj = {};
-          const end = length3 == null ? reader.len : reader.pos + length3;
-          while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-              case 1: {
-                obj.subscribe = reader.bool();
-                break;
-              }
-              case 2: {
-                obj.topic = reader.string();
-                break;
-              }
-              default: {
-                reader.skipType(tag & 7);
-                break;
-              }
-            }
-          }
-          return obj;
-        });
-      }
-      return _codec2;
-    };
-    SubOpts2.encode = (obj) => {
-      return encodeMessage(obj, SubOpts2.codec());
-    };
-    SubOpts2.decode = (buf, opts) => {
-      return decodeMessage(buf, SubOpts2.codec(), opts);
-    };
-  })(SubOpts = RPC2.SubOpts || (RPC2.SubOpts = {}));
-  let Message;
-  (function(Message2) {
-    let _codec2;
-    Message2.codec = () => {
-      if (_codec2 == null) {
-        _codec2 = message((obj, w, opts = {}) => {
-          if (opts.lengthDelimited !== false) {
-            w.fork();
-          }
-          if (obj.from != null) {
-            w.uint32(10);
-            w.bytes(obj.from);
-          }
-          if (obj.data != null) {
-            w.uint32(18);
-            w.bytes(obj.data);
-          }
-          if (obj.seqno != null) {
-            w.uint32(26);
-            w.bytes(obj.seqno);
-          }
-          if (obj.topic != null && obj.topic !== "") {
-            w.uint32(34);
-            w.string(obj.topic);
-          }
-          if (obj.signature != null) {
-            w.uint32(42);
-            w.bytes(obj.signature);
-          }
-          if (obj.key != null) {
-            w.uint32(50);
-            w.bytes(obj.key);
-          }
-          if (opts.lengthDelimited !== false) {
-            w.ldelim();
-          }
-        }, (reader, length3, opts = {}) => {
-          const obj = {
-            topic: ""
-          };
-          const end = length3 == null ? reader.len : reader.pos + length3;
-          while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-              case 1: {
-                obj.from = reader.bytes();
-                break;
-              }
-              case 2: {
-                obj.data = reader.bytes();
-                break;
-              }
-              case 3: {
-                obj.seqno = reader.bytes();
-                break;
-              }
-              case 4: {
-                obj.topic = reader.string();
-                break;
-              }
-              case 5: {
-                obj.signature = reader.bytes();
-                break;
-              }
-              case 6: {
-                obj.key = reader.bytes();
-                break;
-              }
-              default: {
-                reader.skipType(tag & 7);
-                break;
-              }
-            }
-          }
-          return obj;
-        });
-      }
-      return _codec2;
-    };
-    Message2.encode = (obj) => {
-      return encodeMessage(obj, Message2.codec());
-    };
-    Message2.decode = (buf, opts) => {
-      return decodeMessage(buf, Message2.codec(), opts);
-    };
-  })(Message = RPC2.Message || (RPC2.Message = {}));
-  let ControlMessage;
-  (function(ControlMessage2) {
-    let _codec2;
-    ControlMessage2.codec = () => {
-      if (_codec2 == null) {
-        _codec2 = message((obj, w, opts = {}) => {
-          if (opts.lengthDelimited !== false) {
-            w.fork();
-          }
-          if (obj.ihave != null) {
-            for (const value of obj.ihave) {
-              w.uint32(10);
-              RPC2.ControlIHave.codec().encode(value, w);
-            }
-          }
-          if (obj.iwant != null) {
-            for (const value of obj.iwant) {
-              w.uint32(18);
-              RPC2.ControlIWant.codec().encode(value, w);
-            }
-          }
-          if (obj.graft != null) {
-            for (const value of obj.graft) {
-              w.uint32(26);
-              RPC2.ControlGraft.codec().encode(value, w);
-            }
-          }
-          if (obj.prune != null) {
-            for (const value of obj.prune) {
-              w.uint32(34);
-              RPC2.ControlPrune.codec().encode(value, w);
-            }
-          }
-          if (opts.lengthDelimited !== false) {
-            w.ldelim();
-          }
-        }, (reader, length3, opts = {}) => {
-          const obj = {
-            ihave: [],
-            iwant: [],
-            graft: [],
-            prune: []
-          };
-          const end = length3 == null ? reader.len : reader.pos + length3;
-          while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-              case 1: {
-                if (opts.limits?.ihave != null && obj.ihave.length === opts.limits.ihave) {
-                  throw new CodeError2('decode error - map field "ihave" had too many elements', "ERR_MAX_LENGTH");
-                }
-                obj.ihave.push(RPC2.ControlIHave.codec().decode(reader, reader.uint32()));
-                break;
-              }
-              case 2: {
-                if (opts.limits?.iwant != null && obj.iwant.length === opts.limits.iwant) {
-                  throw new CodeError2('decode error - map field "iwant" had too many elements', "ERR_MAX_LENGTH");
-                }
-                obj.iwant.push(RPC2.ControlIWant.codec().decode(reader, reader.uint32()));
-                break;
-              }
-              case 3: {
-                if (opts.limits?.graft != null && obj.graft.length === opts.limits.graft) {
-                  throw new CodeError2('decode error - map field "graft" had too many elements', "ERR_MAX_LENGTH");
-                }
-                obj.graft.push(RPC2.ControlGraft.codec().decode(reader, reader.uint32()));
-                break;
-              }
-              case 4: {
-                if (opts.limits?.prune != null && obj.prune.length === opts.limits.prune) {
-                  throw new CodeError2('decode error - map field "prune" had too many elements', "ERR_MAX_LENGTH");
-                }
-                obj.prune.push(RPC2.ControlPrune.codec().decode(reader, reader.uint32()));
-                break;
-              }
-              default: {
-                reader.skipType(tag & 7);
-                break;
-              }
-            }
-          }
-          return obj;
-        });
-      }
-      return _codec2;
-    };
-    ControlMessage2.encode = (obj) => {
-      return encodeMessage(obj, ControlMessage2.codec());
-    };
-    ControlMessage2.decode = (buf, opts) => {
-      return decodeMessage(buf, ControlMessage2.codec(), opts);
-    };
-  })(ControlMessage = RPC2.ControlMessage || (RPC2.ControlMessage = {}));
-  let ControlIHave;
-  (function(ControlIHave2) {
-    let _codec2;
-    ControlIHave2.codec = () => {
-      if (_codec2 == null) {
-        _codec2 = message((obj, w, opts = {}) => {
-          if (opts.lengthDelimited !== false) {
-            w.fork();
-          }
-          if (obj.topicID != null) {
-            w.uint32(10);
-            w.string(obj.topicID);
-          }
-          if (obj.messageIDs != null) {
-            for (const value of obj.messageIDs) {
-              w.uint32(18);
-              w.bytes(value);
-            }
-          }
-          if (opts.lengthDelimited !== false) {
-            w.ldelim();
-          }
-        }, (reader, length3, opts = {}) => {
-          const obj = {
-            messageIDs: []
-          };
-          const end = length3 == null ? reader.len : reader.pos + length3;
-          while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-              case 1: {
-                obj.topicID = reader.string();
-                break;
-              }
-              case 2: {
-                if (opts.limits?.messageIDs != null && obj.messageIDs.length === opts.limits.messageIDs) {
-                  throw new CodeError2('decode error - map field "messageIDs" had too many elements', "ERR_MAX_LENGTH");
-                }
-                obj.messageIDs.push(reader.bytes());
-                break;
-              }
-              default: {
-                reader.skipType(tag & 7);
-                break;
-              }
-            }
-          }
-          return obj;
-        });
-      }
-      return _codec2;
-    };
-    ControlIHave2.encode = (obj) => {
-      return encodeMessage(obj, ControlIHave2.codec());
-    };
-    ControlIHave2.decode = (buf, opts) => {
-      return decodeMessage(buf, ControlIHave2.codec(), opts);
-    };
-  })(ControlIHave = RPC2.ControlIHave || (RPC2.ControlIHave = {}));
-  let ControlIWant;
-  (function(ControlIWant2) {
-    let _codec2;
-    ControlIWant2.codec = () => {
-      if (_codec2 == null) {
-        _codec2 = message((obj, w, opts = {}) => {
-          if (opts.lengthDelimited !== false) {
-            w.fork();
-          }
-          if (obj.messageIDs != null) {
-            for (const value of obj.messageIDs) {
-              w.uint32(10);
-              w.bytes(value);
-            }
-          }
-          if (opts.lengthDelimited !== false) {
-            w.ldelim();
-          }
-        }, (reader, length3, opts = {}) => {
-          const obj = {
-            messageIDs: []
-          };
-          const end = length3 == null ? reader.len : reader.pos + length3;
-          while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-              case 1: {
-                if (opts.limits?.messageIDs != null && obj.messageIDs.length === opts.limits.messageIDs) {
-                  throw new CodeError2('decode error - map field "messageIDs" had too many elements', "ERR_MAX_LENGTH");
-                }
-                obj.messageIDs.push(reader.bytes());
-                break;
-              }
-              default: {
-                reader.skipType(tag & 7);
-                break;
-              }
-            }
-          }
-          return obj;
-        });
-      }
-      return _codec2;
-    };
-    ControlIWant2.encode = (obj) => {
-      return encodeMessage(obj, ControlIWant2.codec());
-    };
-    ControlIWant2.decode = (buf, opts) => {
-      return decodeMessage(buf, ControlIWant2.codec(), opts);
-    };
-  })(ControlIWant = RPC2.ControlIWant || (RPC2.ControlIWant = {}));
-  let ControlGraft;
-  (function(ControlGraft2) {
-    let _codec2;
-    ControlGraft2.codec = () => {
-      if (_codec2 == null) {
-        _codec2 = message((obj, w, opts = {}) => {
-          if (opts.lengthDelimited !== false) {
-            w.fork();
-          }
-          if (obj.topicID != null) {
-            w.uint32(10);
-            w.string(obj.topicID);
-          }
-          if (opts.lengthDelimited !== false) {
-            w.ldelim();
-          }
-        }, (reader, length3, opts = {}) => {
-          const obj = {};
-          const end = length3 == null ? reader.len : reader.pos + length3;
-          while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-              case 1: {
-                obj.topicID = reader.string();
-                break;
-              }
-              default: {
-                reader.skipType(tag & 7);
-                break;
-              }
-            }
-          }
-          return obj;
-        });
-      }
-      return _codec2;
-    };
-    ControlGraft2.encode = (obj) => {
-      return encodeMessage(obj, ControlGraft2.codec());
-    };
-    ControlGraft2.decode = (buf, opts) => {
-      return decodeMessage(buf, ControlGraft2.codec(), opts);
-    };
-  })(ControlGraft = RPC2.ControlGraft || (RPC2.ControlGraft = {}));
-  let ControlPrune;
-  (function(ControlPrune2) {
-    let _codec2;
-    ControlPrune2.codec = () => {
-      if (_codec2 == null) {
-        _codec2 = message((obj, w, opts = {}) => {
-          if (opts.lengthDelimited !== false) {
-            w.fork();
-          }
-          if (obj.topicID != null) {
-            w.uint32(10);
-            w.string(obj.topicID);
-          }
-          if (obj.peers != null) {
-            for (const value of obj.peers) {
-              w.uint32(18);
-              RPC2.PeerInfo.codec().encode(value, w);
-            }
-          }
-          if (obj.backoff != null) {
-            w.uint32(24);
-            w.uint64Number(obj.backoff);
-          }
-          if (opts.lengthDelimited !== false) {
-            w.ldelim();
-          }
-        }, (reader, length3, opts = {}) => {
-          const obj = {
-            peers: []
-          };
-          const end = length3 == null ? reader.len : reader.pos + length3;
-          while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-              case 1: {
-                obj.topicID = reader.string();
-                break;
-              }
-              case 2: {
-                if (opts.limits?.peers != null && obj.peers.length === opts.limits.peers) {
-                  throw new CodeError2('decode error - map field "peers" had too many elements', "ERR_MAX_LENGTH");
-                }
-                obj.peers.push(RPC2.PeerInfo.codec().decode(reader, reader.uint32()));
-                break;
-              }
-              case 3: {
-                obj.backoff = reader.uint64Number();
-                break;
-              }
-              default: {
-                reader.skipType(tag & 7);
-                break;
-              }
-            }
-          }
-          return obj;
-        });
-      }
-      return _codec2;
-    };
-    ControlPrune2.encode = (obj) => {
-      return encodeMessage(obj, ControlPrune2.codec());
-    };
-    ControlPrune2.decode = (buf, opts) => {
-      return decodeMessage(buf, ControlPrune2.codec(), opts);
-    };
-  })(ControlPrune = RPC2.ControlPrune || (RPC2.ControlPrune = {}));
-  let PeerInfo;
-  (function(PeerInfo2) {
-    let _codec2;
-    PeerInfo2.codec = () => {
-      if (_codec2 == null) {
-        _codec2 = message((obj, w, opts = {}) => {
-          if (opts.lengthDelimited !== false) {
-            w.fork();
-          }
-          if (obj.peerID != null) {
-            w.uint32(10);
-            w.bytes(obj.peerID);
-          }
-          if (obj.signedPeerRecord != null) {
-            w.uint32(18);
-            w.bytes(obj.signedPeerRecord);
-          }
-          if (opts.lengthDelimited !== false) {
-            w.ldelim();
-          }
-        }, (reader, length3, opts = {}) => {
-          const obj = {};
-          const end = length3 == null ? reader.len : reader.pos + length3;
-          while (reader.pos < end) {
-            const tag = reader.uint32();
-            switch (tag >>> 3) {
-              case 1: {
-                obj.peerID = reader.bytes();
-                break;
-              }
-              case 2: {
-                obj.signedPeerRecord = reader.bytes();
-                break;
-              }
-              default: {
-                reader.skipType(tag & 7);
-                break;
-              }
-            }
-          }
-          return obj;
-        });
-      }
-      return _codec2;
-    };
-    PeerInfo2.encode = (obj) => {
-      return encodeMessage(obj, PeerInfo2.codec());
-    };
-    PeerInfo2.decode = (buf, opts) => {
-      return decodeMessage(buf, PeerInfo2.codec(), opts);
-    };
-  })(PeerInfo = RPC2.PeerInfo || (RPC2.PeerInfo = {}));
-  let _codec;
-  RPC2.codec = () => {
-    if (_codec == null) {
-      _codec = message((obj, w, opts = {}) => {
-        if (opts.lengthDelimited !== false) {
-          w.fork();
-        }
-        if (obj.subscriptions != null) {
-          for (const value of obj.subscriptions) {
-            w.uint32(10);
-            RPC2.SubOpts.codec().encode(value, w);
-          }
-        }
-        if (obj.messages != null) {
-          for (const value of obj.messages) {
-            w.uint32(18);
-            RPC2.Message.codec().encode(value, w);
-          }
-        }
-        if (obj.control != null) {
-          w.uint32(26);
-          RPC2.ControlMessage.codec().encode(obj.control, w);
-        }
-        if (opts.lengthDelimited !== false) {
-          w.ldelim();
-        }
-      }, (reader, length3, opts = {}) => {
-        const obj = {
-          subscriptions: [],
-          messages: []
-        };
-        const end = length3 == null ? reader.len : reader.pos + length3;
-        while (reader.pos < end) {
-          const tag = reader.uint32();
-          switch (tag >>> 3) {
-            case 1: {
-              if (opts.limits?.subscriptions != null && obj.subscriptions.length === opts.limits.subscriptions) {
-                throw new CodeError2('decode error - map field "subscriptions" had too many elements', "ERR_MAX_LENGTH");
-              }
-              obj.subscriptions.push(RPC2.SubOpts.codec().decode(reader, reader.uint32()));
-              break;
-            }
-            case 2: {
-              if (opts.limits?.messages != null && obj.messages.length === opts.limits.messages) {
-                throw new CodeError2('decode error - map field "messages" had too many elements', "ERR_MAX_LENGTH");
-              }
-              obj.messages.push(RPC2.Message.codec().decode(reader, reader.uint32()));
-              break;
-            }
-            case 3: {
-              obj.control = RPC2.ControlMessage.codec().decode(reader, reader.uint32());
-              break;
-            }
-            default: {
-              reader.skipType(tag & 7);
-              break;
-            }
-          }
-        }
-        return obj;
-      });
-    }
-    return _codec;
-  };
-  RPC2.encode = (obj) => {
-    return encodeMessage(obj, RPC2.codec());
-  };
-  RPC2.decode = (buf, opts) => {
-    return decodeMessage(buf, RPC2.codec(), opts);
-  };
-})(RPC || (RPC = {}));
-
-// node_modules/@chainsafe/libp2p-gossipsub/dist/src/message-cache.js
-var MessageCache = class {
-  static {
-    __name(this, "MessageCache");
-  }
-  gossip;
-  msgs = /* @__PURE__ */ new Map();
-  msgIdToStrFn;
-  history = [];
-  /** Track with accounting of messages in the mcache that are not yet validated */
-  notValidatedCount = 0;
-  /**
-   * Holds history of messages in timebounded history arrays
-   */
-  constructor(gossip, historyCapacity, msgIdToStrFn) {
-    this.gossip = gossip;
-    this.msgIdToStrFn = msgIdToStrFn;
-    for (let i = 0; i < historyCapacity; i++) {
-      this.history[i] = [];
-    }
-  }
-  get size() {
-    return this.msgs.size;
-  }
-  /**
-   * Adds a message to the current window and the cache
-   * Returns true if the message is not known and is inserted in the cache
-   */
-  put(messageId, msg, validated = false) {
-    const { msgIdStr } = messageId;
-    if (this.msgs.has(msgIdStr)) {
-      return false;
-    }
-    this.msgs.set(msgIdStr, {
-      message: msg,
-      validated,
-      originatingPeers: /* @__PURE__ */ new Set(),
-      iwantCounts: /* @__PURE__ */ new Map()
-    });
-    this.history[0].push({ ...messageId, topic: msg.topic });
-    if (!validated) {
-      this.notValidatedCount++;
-    }
-    return true;
-  }
-  observeDuplicate(msgId2, fromPeerIdStr) {
-    const entry = this.msgs.get(msgId2);
-    if (entry != null && // if the message is already validated, we don't need to store extra peers sending us
-    // duplicates as the message has already been forwarded
-    !entry.validated) {
-      entry.originatingPeers.add(fromPeerIdStr);
-    }
-  }
-  /**
-   * Retrieves a message from the cache by its ID, if it is still present
-   */
-  get(msgId2) {
-    return this.msgs.get(this.msgIdToStrFn(msgId2))?.message;
-  }
-  /**
-   * Increases the iwant count for the given message by one and returns the message together
-   * with the iwant if the message exists.
-   */
-  getWithIWantCount(msgIdStr, p) {
-    const msg = this.msgs.get(msgIdStr);
-    if (msg == null) {
-      return null;
-    }
-    const count = (msg.iwantCounts.get(p) ?? 0) + 1;
-    msg.iwantCounts.set(p, count);
-    return { msg: msg.message, count };
-  }
-  /**
-   * Retrieves a list of message IDs for a set of topics
-   */
-  getGossipIDs(topics) {
-    const msgIdsByTopic = /* @__PURE__ */ new Map();
-    for (let i = 0; i < this.gossip; i++) {
-      this.history[i].forEach((entry) => {
-        const msg = this.msgs.get(entry.msgIdStr);
-        if ((msg?.validated ?? false) && topics.has(entry.topic)) {
-          let msgIds = msgIdsByTopic.get(entry.topic);
-          if (msgIds == null) {
-            msgIds = [];
-            msgIdsByTopic.set(entry.topic, msgIds);
-          }
-          msgIds.push(entry.msgId);
-        }
-      });
-    }
-    return msgIdsByTopic;
-  }
-  /**
-   * Gets a message with msgId and tags it as validated.
-   * This function also returns the known peers that have sent us this message. This is used to
-   * prevent us sending redundant messages to peers who have already propagated it.
-   */
-  validate(msgId2) {
-    const entry = this.msgs.get(msgId2);
-    if (entry == null) {
-      return null;
-    }
-    if (!entry.validated) {
-      this.notValidatedCount--;
-    }
-    const { message: message2, originatingPeers } = entry;
-    entry.validated = true;
-    entry.originatingPeers = /* @__PURE__ */ new Set();
-    return { message: message2, originatingPeers };
-  }
-  /**
-   * Shifts the current window, discarding messages older than this.history.length of the cache
-   */
-  shift() {
-    const lastCacheEntries = this.history[this.history.length - 1];
-    lastCacheEntries.forEach((cacheEntry) => {
-      const entry = this.msgs.get(cacheEntry.msgIdStr);
-      if (entry != null) {
-        this.msgs.delete(cacheEntry.msgIdStr);
-        if (!entry.validated) {
-          this.notValidatedCount--;
-        }
-      }
-    });
-    this.history.pop();
-    this.history.unshift([]);
-  }
-  remove(msgId2) {
-    const entry = this.msgs.get(msgId2);
-    if (entry == null) {
-      return null;
-    }
-    this.msgs.delete(msgId2);
-    return entry;
-  }
-};
-
-// node_modules/@chainsafe/libp2p-gossipsub/dist/src/types.js
-var SignaturePolicy;
-(function(SignaturePolicy2) {
-  SignaturePolicy2["StrictSign"] = "StrictSign";
-  SignaturePolicy2["StrictNoSign"] = "StrictNoSign";
-})(SignaturePolicy || (SignaturePolicy = {}));
-var PublishConfigType;
-(function(PublishConfigType2) {
-  PublishConfigType2[PublishConfigType2["Signing"] = 0] = "Signing";
-  PublishConfigType2[PublishConfigType2["Anonymous"] = 1] = "Anonymous";
-})(PublishConfigType || (PublishConfigType = {}));
-var RejectReason;
-(function(RejectReason2) {
-  RejectReason2["Error"] = "error";
-  RejectReason2["Ignore"] = "ignore";
-  RejectReason2["Reject"] = "reject";
-  RejectReason2["Blacklisted"] = "blacklisted";
-})(RejectReason || (RejectReason = {}));
-var ValidateError;
-(function(ValidateError2) {
-  ValidateError2["InvalidSignature"] = "invalid_signature";
-  ValidateError2["InvalidSeqno"] = "invalid_seqno";
-  ValidateError2["InvalidPeerId"] = "invalid_peerid";
-  ValidateError2["SignaturePresent"] = "signature_present";
-  ValidateError2["SeqnoPresent"] = "seqno_present";
-  ValidateError2["FromPresent"] = "from_present";
-  ValidateError2["TransformFailed"] = "transform_failed";
-})(ValidateError || (ValidateError = {}));
-var MessageStatus;
-(function(MessageStatus2) {
-  MessageStatus2["duplicate"] = "duplicate";
-  MessageStatus2["invalid"] = "invalid";
-  MessageStatus2["valid"] = "valid";
-})(MessageStatus || (MessageStatus = {}));
-function rejectReasonFromAcceptance(acceptance) {
-  switch (acceptance) {
-    case TopicValidatorResult.Ignore:
-      return RejectReason.Ignore;
-    case TopicValidatorResult.Reject:
-      return RejectReason.Reject;
-    default:
-      throw new Error("Unreachable");
-  }
-}
-__name(rejectReasonFromAcceptance, "rejectReasonFromAcceptance");
-
-// node_modules/@chainsafe/libp2p-gossipsub/dist/src/metrics.js
-var MessageSource;
-(function(MessageSource2) {
-  MessageSource2["forward"] = "forward";
-  MessageSource2["publish"] = "publish";
-})(MessageSource || (MessageSource = {}));
-var InclusionReason;
-(function(InclusionReason2) {
-  InclusionReason2["Fanout"] = "fanout";
-  InclusionReason2["Random"] = "random";
-  InclusionReason2["Subscribed"] = "subscribed";
-  InclusionReason2["Outbound"] = "outbound";
-  InclusionReason2["NotEnough"] = "not_enough";
-  InclusionReason2["Opportunistic"] = "opportunistic";
-})(InclusionReason || (InclusionReason = {}));
-var ChurnReason;
-(function(ChurnReason2) {
-  ChurnReason2["Dc"] = "disconnected";
-  ChurnReason2["BadScore"] = "bad_score";
-  ChurnReason2["Prune"] = "prune";
-  ChurnReason2["Excess"] = "excess";
-})(ChurnReason || (ChurnReason = {}));
-var ScorePenalty;
-(function(ScorePenalty2) {
-  ScorePenalty2["GraftBackoff"] = "graft_backoff";
-  ScorePenalty2["BrokenPromise"] = "broken_promise";
-  ScorePenalty2["MessageDeficit"] = "message_deficit";
-  ScorePenalty2["IPColocation"] = "IP_colocation";
-})(ScorePenalty || (ScorePenalty = {}));
-var IHaveIgnoreReason;
-(function(IHaveIgnoreReason2) {
-  IHaveIgnoreReason2["LowScore"] = "low_score";
-  IHaveIgnoreReason2["MaxIhave"] = "max_ihave";
-  IHaveIgnoreReason2["MaxIasked"] = "max_iasked";
-})(IHaveIgnoreReason || (IHaveIgnoreReason = {}));
-var ScoreThreshold;
-(function(ScoreThreshold2) {
-  ScoreThreshold2["graylist"] = "graylist";
-  ScoreThreshold2["publish"] = "publish";
-  ScoreThreshold2["gossip"] = "gossip";
-  ScoreThreshold2["mesh"] = "mesh";
-})(ScoreThreshold || (ScoreThreshold = {}));
-function getMetrics(register, topicStrToLabel, opts) {
-  return {
-    /* Metrics for static config */
-    protocolsEnabled: register.gauge({
-      name: "gossipsub_protocol",
-      help: "Status of enabled protocols",
-      labelNames: ["protocol"]
-    }),
-    /* Metrics per known topic */
-    /**
-     * Status of our subscription to this topic. This metric allows analyzing other topic metrics
-     * filtered by our current subscription status.
-     * = rust-libp2p `topic_subscription_status` */
-    topicSubscriptionStatus: register.gauge({
-      name: "gossipsub_topic_subscription_status",
-      help: "Status of our subscription to this topic",
-      labelNames: ["topicStr"]
-    }),
-    /** Number of peers subscribed to each topic. This allows us to analyze a topic's behaviour
-     * regardless of our subscription status. */
-    topicPeersCount: register.gauge({
-      name: "gossipsub_topic_peer_count",
-      help: "Number of peers subscribed to each topic",
-      labelNames: ["topicStr"]
-    }),
-    /* Metrics regarding mesh state */
-    /**
-     * Number of peers in our mesh. This metric should be updated with the count of peers for a
-     * topic in the mesh regardless of inclusion and churn events.
-     * = rust-libp2p `mesh_peer_counts` */
-    meshPeerCounts: register.gauge({
-      name: "gossipsub_mesh_peer_count",
-      help: "Number of peers in our mesh",
-      labelNames: ["topicStr"]
-    }),
-    /**
-     * Number of times we include peers in a topic mesh for different reasons.
-     * = rust-libp2p `mesh_peer_inclusion_events` */
-    meshPeerInclusionEventsFanout: register.gauge({
-      name: "gossipsub_mesh_peer_inclusion_events_fanout_total",
-      help: "Number of times we include peers in a topic mesh for fanout reasons",
-      labelNames: ["topic"]
-    }),
-    meshPeerInclusionEventsRandom: register.gauge({
-      name: "gossipsub_mesh_peer_inclusion_events_random_total",
-      help: "Number of times we include peers in a topic mesh for random reasons",
-      labelNames: ["topic"]
-    }),
-    meshPeerInclusionEventsSubscribed: register.gauge({
-      name: "gossipsub_mesh_peer_inclusion_events_subscribed_total",
-      help: "Number of times we include peers in a topic mesh for subscribed reasons",
-      labelNames: ["topic"]
-    }),
-    meshPeerInclusionEventsOutbound: register.gauge({
-      name: "gossipsub_mesh_peer_inclusion_events_outbound_total",
-      help: "Number of times we include peers in a topic mesh for outbound reasons",
-      labelNames: ["topic"]
-    }),
-    meshPeerInclusionEventsNotEnough: register.gauge({
-      name: "gossipsub_mesh_peer_inclusion_events_not_enough_total",
-      help: "Number of times we include peers in a topic mesh for not_enough reasons",
-      labelNames: ["topic"]
-    }),
-    meshPeerInclusionEventsOpportunistic: register.gauge({
-      name: "gossipsub_mesh_peer_inclusion_events_opportunistic_total",
-      help: "Number of times we include peers in a topic mesh for opportunistic reasons",
-      labelNames: ["topic"]
-    }),
-    meshPeerInclusionEventsUnknown: register.gauge({
-      name: "gossipsub_mesh_peer_inclusion_events_unknown_total",
-      help: "Number of times we include peers in a topic mesh for unknown reasons",
-      labelNames: ["topic"]
-    }),
-    /**
-     * Number of times we remove peers in a topic mesh for different reasons.
-     * = rust-libp2p `mesh_peer_churn_events` */
-    meshPeerChurnEventsDisconnected: register.gauge({
-      name: "gossipsub_peer_churn_events_disconnected_total",
-      help: "Number of times we remove peers in a topic mesh for disconnected reasons",
-      labelNames: ["topic"]
-    }),
-    meshPeerChurnEventsBadScore: register.gauge({
-      name: "gossipsub_peer_churn_events_bad_score_total",
-      help: "Number of times we remove peers in a topic mesh for bad_score reasons",
-      labelNames: ["topic"]
-    }),
-    meshPeerChurnEventsPrune: register.gauge({
-      name: "gossipsub_peer_churn_events_prune_total",
-      help: "Number of times we remove peers in a topic mesh for prune reasons",
-      labelNames: ["topic"]
-    }),
-    meshPeerChurnEventsExcess: register.gauge({
-      name: "gossipsub_peer_churn_events_excess_total",
-      help: "Number of times we remove peers in a topic mesh for excess reasons",
-      labelNames: ["topic"]
-    }),
-    meshPeerChurnEventsUnknown: register.gauge({
-      name: "gossipsub_peer_churn_events_unknown_total",
-      help: "Number of times we remove peers in a topic mesh for unknown reasons",
-      labelNames: ["topic"]
-    }),
-    /* General Metrics */
-    /**
-     * Gossipsub supports floodsub, gossipsub v1.0 and gossipsub v1.1. Peers are classified based
-     * on which protocol they support. This metric keeps track of the number of peers that are
-     * connected of each type. */
-    peersPerProtocol: register.gauge({
-      name: "gossipsub_peers_per_protocol_count",
-      help: "Peers connected for each topic",
-      labelNames: ["protocol"]
-    }),
-    /** The time it takes to complete one iteration of the heartbeat. */
-    heartbeatDuration: register.histogram({
-      name: "gossipsub_heartbeat_duration_seconds",
-      help: "The time it takes to complete one iteration of the heartbeat",
-      // Should take <10ms, over 1s it's a huge issue that needs debugging, since a heartbeat will be cancelled
-      buckets: [0.01, 0.1, 1]
-    }),
-    /** Heartbeat run took longer than heartbeat interval so next is skipped */
-    heartbeatSkipped: register.gauge({
-      name: "gossipsub_heartbeat_skipped",
-      help: "Heartbeat run took longer than heartbeat interval so next is skipped"
-    }),
-    /**
-     * Message validation results for each topic.
-     * Invalid == Reject?
-     * = rust-libp2p `invalid_messages`, `accepted_messages`, `ignored_messages`, `rejected_messages` */
-    acceptedMessagesTotal: register.gauge({
-      name: "gossipsub_accepted_messages_total",
-      help: "Total accepted messages for each topic",
-      labelNames: ["topic"]
-    }),
-    ignoredMessagesTotal: register.gauge({
-      name: "gossipsub_ignored_messages_total",
-      help: "Total ignored messages for each topic",
-      labelNames: ["topic"]
-    }),
-    rejectedMessagesTotal: register.gauge({
-      name: "gossipsub_rejected_messages_total",
-      help: "Total rejected messages for each topic",
-      labelNames: ["topic"]
-    }),
-    unknownValidationResultsTotal: register.gauge({
-      name: "gossipsub_unknown_validation_results_total",
-      help: "Total unknown validation results for each topic",
-      labelNames: ["topic"]
-    }),
-    /**
-     * When the user validates a message, it tries to re propagate it to its mesh peers. If the
-     * message expires from the memcache before it can be validated, we count this a cache miss
-     * and it is an indicator that the memcache size should be increased.
-     * = rust-libp2p `mcache_misses` */
-    asyncValidationMcacheHit: register.gauge({
-      name: "gossipsub_async_validation_mcache_hit_total",
-      help: "Async validation result reported by the user layer",
-      labelNames: ["hit"]
-    }),
-    asyncValidationDelayFromFirstSeenSec: register.histogram({
-      name: "gossipsub_async_validation_delay_from_first_seen",
-      help: "Async validation report delay from first seen in second",
-      buckets: [0.01, 0.03, 0.1, 0.3, 1, 3, 10]
-    }),
-    asyncValidationUnknownFirstSeen: register.gauge({
-      name: "gossipsub_async_validation_unknown_first_seen_count_total",
-      help: "Async validation report unknown first seen value for message"
-    }),
-    // peer stream
-    peerReadStreamError: register.gauge({
-      name: "gossipsub_peer_read_stream_err_count_total",
-      help: "Peer read stream error"
-    }),
-    // RPC outgoing. Track byte length + data structure sizes
-    rpcRecvBytes: register.gauge({ name: "gossipsub_rpc_recv_bytes_total", help: "RPC recv" }),
-    rpcRecvCount: register.gauge({ name: "gossipsub_rpc_recv_count_total", help: "RPC recv" }),
-    rpcRecvSubscription: register.gauge({ name: "gossipsub_rpc_recv_subscription_total", help: "RPC recv" }),
-    rpcRecvMessage: register.gauge({ name: "gossipsub_rpc_recv_message_total", help: "RPC recv" }),
-    rpcRecvControl: register.gauge({ name: "gossipsub_rpc_recv_control_total", help: "RPC recv" }),
-    rpcRecvIHave: register.gauge({ name: "gossipsub_rpc_recv_ihave_total", help: "RPC recv" }),
-    rpcRecvIWant: register.gauge({ name: "gossipsub_rpc_recv_iwant_total", help: "RPC recv" }),
-    rpcRecvGraft: register.gauge({ name: "gossipsub_rpc_recv_graft_total", help: "RPC recv" }),
-    rpcRecvPrune: register.gauge({ name: "gossipsub_rpc_recv_prune_total", help: "RPC recv" }),
-    rpcDataError: register.gauge({ name: "gossipsub_rpc_data_err_count_total", help: "RPC data error" }),
-    rpcRecvError: register.gauge({ name: "gossipsub_rpc_recv_err_count_total", help: "RPC recv error" }),
-    /** Total count of RPC dropped because acceptFrom() == false */
-    rpcRecvNotAccepted: register.gauge({
-      name: "gossipsub_rpc_rcv_not_accepted_total",
-      help: "Total count of RPC dropped because acceptFrom() == false"
-    }),
-    // RPC incoming. Track byte length + data structure sizes
-    rpcSentBytes: register.gauge({ name: "gossipsub_rpc_sent_bytes_total", help: "RPC sent" }),
-    rpcSentCount: register.gauge({ name: "gossipsub_rpc_sent_count_total", help: "RPC sent" }),
-    rpcSentSubscription: register.gauge({ name: "gossipsub_rpc_sent_subscription_total", help: "RPC sent" }),
-    rpcSentMessage: register.gauge({ name: "gossipsub_rpc_sent_message_total", help: "RPC sent" }),
-    rpcSentControl: register.gauge({ name: "gossipsub_rpc_sent_control_total", help: "RPC sent" }),
-    rpcSentIHave: register.gauge({ name: "gossipsub_rpc_sent_ihave_total", help: "RPC sent" }),
-    rpcSentIWant: register.gauge({ name: "gossipsub_rpc_sent_iwant_total", help: "RPC sent" }),
-    rpcSentGraft: register.gauge({ name: "gossipsub_rpc_sent_graft_total", help: "RPC sent" }),
-    rpcSentPrune: register.gauge({ name: "gossipsub_rpc_sent_prune_total", help: "RPC sent" }),
-    // publish message. Track peers sent to and bytes
-    /** Total count of msg published by topic */
-    msgPublishCount: register.gauge({
-      name: "gossipsub_msg_publish_count_total",
-      help: "Total count of msg published by topic",
-      labelNames: ["topic"]
-    }),
-    /** Total count of peers that we publish a msg to */
-    msgPublishPeersByTopic: register.gauge({
-      name: "gossipsub_msg_publish_peers_total",
-      help: "Total count of peers that we publish a msg to",
-      labelNames: ["topic"]
-    }),
-    /** Total count of peers (by group) that we publish a msg to */
-    directPeersPublishedTotal: register.gauge({
-      name: "gossipsub_direct_peers_published_total",
-      help: "Total direct peers that we publish a msg to",
-      labelNames: ["topic"]
-    }),
-    floodsubPeersPublishedTotal: register.gauge({
-      name: "gossipsub_floodsub_peers_published_total",
-      help: "Total floodsub peers that we publish a msg to",
-      labelNames: ["topic"]
-    }),
-    meshPeersPublishedTotal: register.gauge({
-      name: "gossipsub_mesh_peers_published_total",
-      help: "Total mesh peers that we publish a msg to",
-      labelNames: ["topic"]
-    }),
-    fanoutPeersPublishedTotal: register.gauge({
-      name: "gossipsub_fanout_peers_published_total",
-      help: "Total fanout peers that we publish a msg to",
-      labelNames: ["topic"]
-    }),
-    /** Total count of msg publish data.length bytes */
-    msgPublishBytes: register.gauge({
-      name: "gossipsub_msg_publish_bytes_total",
-      help: "Total count of msg publish data.length bytes",
-      labelNames: ["topic"]
-    }),
-    /** Total time in seconds to publish a message */
-    msgPublishTime: register.histogram({
-      name: "gossipsub_msg_publish_seconds",
-      help: "Total time in seconds to publish a message",
-      buckets: [1e-3, 2e-3, 5e-3, 0.01, 0.1, 0.5, 1],
-      labelNames: ["topic"]
-    }),
-    /** Total count of msg forwarded by topic */
-    msgForwardCount: register.gauge({
-      name: "gossipsub_msg_forward_count_total",
-      help: "Total count of msg forwarded by topic",
-      labelNames: ["topic"]
-    }),
-    /** Total count of peers that we forward a msg to */
-    msgForwardPeers: register.gauge({
-      name: "gossipsub_msg_forward_peers_total",
-      help: "Total count of peers that we forward a msg to",
-      labelNames: ["topic"]
-    }),
-    /** Total count of recv msgs before any validation */
-    msgReceivedPreValidation: register.gauge({
-      name: "gossipsub_msg_received_prevalidation_total",
-      help: "Total count of recv msgs before any validation",
-      labelNames: ["topic"]
-    }),
-    /** Total count of recv msgs error */
-    msgReceivedError: register.gauge({
-      name: "gossipsub_msg_received_error_total",
-      help: "Total count of recv msgs error",
-      labelNames: ["topic"]
-    }),
-    /** Tracks distribution of recv msgs by duplicate, invalid, valid */
-    prevalidationInvalidTotal: register.gauge({
-      name: "gossipsub_pre_validation_invalid_total",
-      help: "Total count of invalid messages received",
-      labelNames: ["topic"]
-    }),
-    prevalidationValidTotal: register.gauge({
-      name: "gossipsub_pre_validation_valid_total",
-      help: "Total count of valid messages received",
-      labelNames: ["topic"]
-    }),
-    prevalidationDuplicateTotal: register.gauge({
-      name: "gossipsub_pre_validation_duplicate_total",
-      help: "Total count of duplicate messages received",
-      labelNames: ["topic"]
-    }),
-    prevalidationUnknownTotal: register.gauge({
-      name: "gossipsub_pre_validation_unknown_status_total",
-      help: "Total count of unknown_status messages received",
-      labelNames: ["topic"]
-    }),
-    /** Tracks specific reason of invalid */
-    msgReceivedInvalid: register.gauge({
-      name: "gossipsub_msg_received_invalid_total",
-      help: "Tracks specific reason of invalid",
-      labelNames: ["error"]
-    }),
-    msgReceivedInvalidByTopic: register.gauge({
-      name: "gossipsub_msg_received_invalid_by_topic_total",
-      help: "Tracks specific invalid message by topic",
-      labelNames: ["topic"]
-    }),
-    /** Track duplicate message delivery time */
-    duplicateMsgDeliveryDelay: register.histogram({
-      name: "gossisub_duplicate_msg_delivery_delay_seconds",
-      help: "Time since the 1st duplicated message validated",
-      labelNames: ["topic"],
-      buckets: [
-        0.25 * opts.maxMeshMessageDeliveriesWindowSec,
-        0.5 * opts.maxMeshMessageDeliveriesWindowSec,
-        Number(opts.maxMeshMessageDeliveriesWindowSec),
-        2 * opts.maxMeshMessageDeliveriesWindowSec,
-        4 * opts.maxMeshMessageDeliveriesWindowSec
-      ]
-    }),
-    /** Total count of late msg delivery total by topic */
-    duplicateMsgLateDelivery: register.gauge({
-      name: "gossisub_duplicate_msg_late_delivery_total",
-      help: "Total count of late duplicate message delivery by topic, which triggers P3 penalty",
-      labelNames: ["topic"]
-    }),
-    duplicateMsgIgnored: register.gauge({
-      name: "gossisub_ignored_published_duplicate_msgs_total",
-      help: "Total count of published duplicate message ignored by topic",
-      labelNames: ["topic"]
-    }),
-    /* Metrics related to scoring */
-    /** Total times score() is called */
-    scoreFnCalls: register.gauge({
-      name: "gossipsub_score_fn_calls_total",
-      help: "Total times score() is called"
-    }),
-    /** Total times score() call actually computed computeScore(), no cache */
-    scoreFnRuns: register.gauge({
-      name: "gossipsub_score_fn_runs_total",
-      help: "Total times score() call actually computed computeScore(), no cache"
-    }),
-    scoreCachedDelta: register.histogram({
-      name: "gossipsub_score_cache_delta",
-      help: "Delta of score between cached values that expired",
-      buckets: [10, 100, 1e3]
-    }),
-    /** Current count of peers by score threshold */
-    peersByScoreThreshold: register.gauge({
-      name: "gossipsub_peers_by_score_threshold_count",
-      help: "Current count of peers by score threshold",
-      labelNames: ["threshold"]
-    }),
-    score: register.avgMinMax({
-      name: "gossipsub_score",
-      help: "Avg min max of gossip scores"
-    }),
-    /**
-     * Separate score weights
-     * Need to use 2-label metrics in this case to debug the score weights
-     **/
-    scoreWeights: register.avgMinMax({
-      name: "gossipsub_score_weights",
-      help: "Separate score weights",
-      labelNames: ["topic", "p"]
-    }),
-    /** Histogram of the scores for each mesh topic. */
-    // TODO: Not implemented
-    scorePerMesh: register.avgMinMax({
-      name: "gossipsub_score_per_mesh",
-      help: "Histogram of the scores for each mesh topic",
-      labelNames: ["topic"]
-    }),
-    /** A counter of the kind of penalties being applied to peers. */
-    // TODO: Not fully implemented
-    scoringPenalties: register.gauge({
-      name: "gossipsub_scoring_penalties_total",
-      help: "A counter of the kind of penalties being applied to peers",
-      labelNames: ["penalty"]
-    }),
-    behaviourPenalty: register.histogram({
-      name: "gossipsub_peer_stat_behaviour_penalty",
-      help: "Current peer stat behaviour_penalty at each scrape",
-      buckets: [
-        0.25 * opts.behaviourPenaltyThreshold,
-        0.5 * opts.behaviourPenaltyThreshold,
-        Number(opts.behaviourPenaltyThreshold),
-        2 * opts.behaviourPenaltyThreshold,
-        4 * opts.behaviourPenaltyThreshold
-      ]
-    }),
-    // TODO:
-    // - iasked per peer (on heartbeat)
-    // - when promise is resolved, track messages from promises
-    /** Total received IHAVE messages that we ignore for some reason */
-    ihaveRcvIgnored: register.gauge({
-      name: "gossipsub_ihave_rcv_ignored_total",
-      help: "Total received IHAVE messages that we ignore for some reason",
-      labelNames: ["reason"]
-    }),
-    /** Total received IHAVE messages by topic */
-    ihaveRcvMsgids: register.gauge({
-      name: "gossipsub_ihave_rcv_msgids_total",
-      help: "Total received IHAVE messages by topic",
-      labelNames: ["topic"]
-    }),
-    /**
-     * Total messages per topic we don't have. Not actual requests.
-     * The number of times we have decided that an IWANT control message is required for this
-     * topic. A very high metric might indicate an underperforming network.
-     * = rust-libp2p `topic_iwant_msgs` */
-    ihaveRcvNotSeenMsgids: register.gauge({
-      name: "gossipsub_ihave_rcv_not_seen_msgids_total",
-      help: "Total messages per topic we do not have, not actual requests",
-      labelNames: ["topic"]
-    }),
-    /** Total received IWANT messages by topic */
-    iwantRcvMsgids: register.gauge({
-      name: "gossipsub_iwant_rcv_msgids_total",
-      help: "Total received IWANT messages by topic",
-      labelNames: ["topic"]
-    }),
-    /** Total requested messageIDs that we don't have */
-    iwantRcvDonthaveMsgids: register.gauge({
-      name: "gossipsub_iwant_rcv_dont_have_msgids_total",
-      help: "Total requested messageIDs that we do not have"
-    }),
-    iwantPromiseStarted: register.gauge({
-      name: "gossipsub_iwant_promise_sent_total",
-      help: "Total count of started IWANT promises"
-    }),
-    /** Total count of resolved IWANT promises */
-    iwantPromiseResolved: register.gauge({
-      name: "gossipsub_iwant_promise_resolved_total",
-      help: "Total count of resolved IWANT promises"
-    }),
-    /** Total count of resolved IWANT promises from duplicate messages */
-    iwantPromiseResolvedFromDuplicate: register.gauge({
-      name: "gossipsub_iwant_promise_resolved_from_duplicate_total",
-      help: "Total count of resolved IWANT promises from duplicate messages"
-    }),
-    /** Total count of peers we have asked IWANT promises that are resolved */
-    iwantPromiseResolvedPeers: register.gauge({
-      name: "gossipsub_iwant_promise_resolved_peers",
-      help: "Total count of peers we have asked IWANT promises that are resolved"
-    }),
-    iwantPromiseBroken: register.gauge({
-      name: "gossipsub_iwant_promise_broken",
-      help: "Total count of broken IWANT promises"
-    }),
-    iwantMessagePruned: register.gauge({
-      name: "gossipsub_iwant_message_pruned",
-      help: "Total count of pruned IWANT messages"
-    }),
-    /** Histogram of delivery time of resolved IWANT promises */
-    iwantPromiseDeliveryTime: register.histogram({
-      name: "gossipsub_iwant_promise_delivery_seconds",
-      help: "Histogram of delivery time of resolved IWANT promises",
-      buckets: [
-        0.5 * opts.gossipPromiseExpireSec,
-        Number(opts.gossipPromiseExpireSec),
-        2 * opts.gossipPromiseExpireSec,
-        4 * opts.gossipPromiseExpireSec
-      ]
-    }),
-    iwantPromiseUntracked: register.gauge({
-      name: "gossip_iwant_promise_untracked",
-      help: "Total count of untracked IWANT promise"
-    }),
-    /** Backoff time */
-    connectedPeersBackoffSec: register.histogram({
-      name: "gossipsub_connected_peers_backoff_seconds",
-      help: "Backoff time in seconds",
-      // Using 1 seconds as minimum as that's close to the heartbeat duration, no need for more resolution.
-      // As per spec, backoff times are 10 seconds for UnsubscribeBackoff and 60 seconds for PruneBackoff.
-      // Higher values of 60 seconds should not occur, but we add 120 seconds just in case
-      // https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/gossipsub-v1.1.md#overview-of-new-parameters
-      buckets: [1, 2, 4, 10, 20, 60, 120]
-    }),
-    /* Data structure sizes */
-    /** Unbounded cache sizes */
-    cacheSize: register.gauge({
-      name: "gossipsub_cache_size",
-      help: "Unbounded cache sizes",
-      labelNames: ["cache"]
-    }),
-    /** Current mcache msg count */
-    mcacheSize: register.gauge({
-      name: "gossipsub_mcache_size",
-      help: "Current mcache msg count"
-    }),
-    mcacheNotValidatedCount: register.gauge({
-      name: "gossipsub_mcache_not_validated_count",
-      help: "Current mcache msg count not validated"
-    }),
-    fastMsgIdCacheCollision: register.gauge({
-      name: "gossipsub_fastmsgid_cache_collision_total",
-      help: "Total count of key collisions on fastmsgid cache put"
-    }),
-    newConnectionCount: register.gauge({
-      name: "gossipsub_new_connection_total",
-      help: "Total new connection by status",
-      labelNames: ["status"]
-    }),
-    topicStrToLabel,
-    toTopic(topicStr) {
-      return this.topicStrToLabel.get(topicStr) ?? topicStr;
-    },
-    /** We joined a topic */
-    onJoin(topicStr) {
-      this.topicSubscriptionStatus.set({ topicStr }, 1);
-      this.meshPeerCounts.set({ topicStr }, 0);
-    },
-    /** We left a topic */
-    onLeave(topicStr) {
-      this.topicSubscriptionStatus.set({ topicStr }, 0);
-      this.meshPeerCounts.set({ topicStr }, 0);
-    },
-    /** Register the inclusion of peers in our mesh due to some reason. */
-    onAddToMesh(topicStr, reason, count) {
-      const topic = this.toTopic(topicStr);
-      switch (reason) {
-        case InclusionReason.Fanout:
-          this.meshPeerInclusionEventsFanout.inc({ topic }, count);
-          break;
-        case InclusionReason.Random:
-          this.meshPeerInclusionEventsRandom.inc({ topic }, count);
-          break;
-        case InclusionReason.Subscribed:
-          this.meshPeerInclusionEventsSubscribed.inc({ topic }, count);
-          break;
-        case InclusionReason.Outbound:
-          this.meshPeerInclusionEventsOutbound.inc({ topic }, count);
-          break;
-        case InclusionReason.NotEnough:
-          this.meshPeerInclusionEventsNotEnough.inc({ topic }, count);
-          break;
-        case InclusionReason.Opportunistic:
-          this.meshPeerInclusionEventsOpportunistic.inc({ topic }, count);
-          break;
-        default:
-          this.meshPeerInclusionEventsUnknown.inc({ topic }, count);
-          break;
-      }
-    },
-    /** Register the removal of peers in our mesh due to some reason */
-    // - remove_peer_from_mesh()
-    // - heartbeat() Churn::BadScore
-    // - heartbeat() Churn::Excess
-    // - on_disconnect() Churn::Ds
-    onRemoveFromMesh(topicStr, reason, count) {
-      const topic = this.toTopic(topicStr);
-      switch (reason) {
-        case ChurnReason.Dc:
-          this.meshPeerChurnEventsDisconnected.inc({ topic }, count);
-          break;
-        case ChurnReason.BadScore:
-          this.meshPeerChurnEventsBadScore.inc({ topic }, count);
-          break;
-        case ChurnReason.Prune:
-          this.meshPeerChurnEventsPrune.inc({ topic }, count);
-          break;
-        case ChurnReason.Excess:
-          this.meshPeerChurnEventsExcess.inc({ topic }, count);
-          break;
-        default:
-          this.meshPeerChurnEventsUnknown.inc({ topic }, count);
-          break;
-      }
-    },
-    /**
-     * Update validation result to metrics
-     *
-     * @param messageRecord - null means the message's mcache record was not known at the time of acceptance report
-     */
-    onReportValidation(messageRecord, acceptance, firstSeenTimestampMs) {
-      this.asyncValidationMcacheHit.inc({ hit: messageRecord != null ? "hit" : "miss" });
-      if (messageRecord != null) {
-        const topic = this.toTopic(messageRecord.message.topic);
-        switch (acceptance) {
-          case TopicValidatorResult.Accept:
-            this.acceptedMessagesTotal.inc({ topic });
-            break;
-          case TopicValidatorResult.Ignore:
-            this.ignoredMessagesTotal.inc({ topic });
-            break;
-          case TopicValidatorResult.Reject:
-            this.rejectedMessagesTotal.inc({ topic });
-            break;
-          default:
-            this.unknownValidationResultsTotal.inc({ topic });
-            break;
-        }
-      }
-      if (firstSeenTimestampMs != null) {
-        this.asyncValidationDelayFromFirstSeenSec.observe((Date.now() - firstSeenTimestampMs) / 1e3);
-      } else {
-        this.asyncValidationUnknownFirstSeen.inc();
-      }
-    },
-    /**
-     * - in handle_graft() Penalty::GraftBackoff
-     * - in apply_iwant_penalties() Penalty::BrokenPromise
-     * - in metric_score() P3 Penalty::MessageDeficit
-     * - in metric_score() P6 Penalty::IPColocation
-     */
-    onScorePenalty(penalty) {
-      this.scoringPenalties.inc({ penalty }, 1);
-    },
-    onIhaveRcv(topicStr, ihave, idonthave) {
-      const topic = this.toTopic(topicStr);
-      this.ihaveRcvMsgids.inc({ topic }, ihave);
-      this.ihaveRcvNotSeenMsgids.inc({ topic }, idonthave);
-    },
-    onIwantRcv(iwantByTopic, iwantDonthave) {
-      for (const [topicStr, iwant] of iwantByTopic) {
-        const topic = this.toTopic(topicStr);
-        this.iwantRcvMsgids.inc({ topic }, iwant);
-      }
-      this.iwantRcvDonthaveMsgids.inc(iwantDonthave);
-    },
-    onForwardMsg(topicStr, tosendCount) {
-      const topic = this.toTopic(topicStr);
-      this.msgForwardCount.inc({ topic }, 1);
-      this.msgForwardPeers.inc({ topic }, tosendCount);
-    },
-    onPublishMsg(topicStr, tosendGroupCount, tosendCount, dataLen, ms) {
-      const topic = this.toTopic(topicStr);
-      this.msgPublishCount.inc({ topic }, 1);
-      this.msgPublishBytes.inc({ topic }, tosendCount * dataLen);
-      this.msgPublishPeersByTopic.inc({ topic }, tosendCount);
-      this.directPeersPublishedTotal.inc({ topic }, tosendGroupCount.direct);
-      this.floodsubPeersPublishedTotal.inc({ topic }, tosendGroupCount.floodsub);
-      this.meshPeersPublishedTotal.inc({ topic }, tosendGroupCount.mesh);
-      this.fanoutPeersPublishedTotal.inc({ topic }, tosendGroupCount.fanout);
-      this.msgPublishTime.observe({ topic }, ms / 1e3);
-    },
-    onMsgRecvPreValidation(topicStr) {
-      const topic = this.toTopic(topicStr);
-      this.msgReceivedPreValidation.inc({ topic }, 1);
-    },
-    onMsgRecvError(topicStr) {
-      const topic = this.toTopic(topicStr);
-      this.msgReceivedError.inc({ topic }, 1);
-    },
-    onPrevalidationResult(topicStr, status) {
-      const topic = this.toTopic(topicStr);
-      switch (status) {
-        case MessageStatus.duplicate:
-          this.prevalidationDuplicateTotal.inc({ topic });
-          break;
-        case MessageStatus.invalid:
-          this.prevalidationInvalidTotal.inc({ topic });
-          break;
-        case MessageStatus.valid:
-          this.prevalidationValidTotal.inc({ topic });
-          break;
-        default:
-          this.prevalidationUnknownTotal.inc({ topic });
-          break;
-      }
-    },
-    onMsgRecvInvalid(topicStr, reason) {
-      const topic = this.toTopic(topicStr);
-      const error = reason.reason === RejectReason.Error ? reason.error : reason.reason;
-      this.msgReceivedInvalid.inc({ error }, 1);
-      this.msgReceivedInvalidByTopic.inc({ topic }, 1);
-    },
-    onDuplicateMsgDelivery(topicStr, deliveryDelayMs, isLateDelivery) {
-      const topic = this.toTopic(topicStr);
-      this.duplicateMsgDeliveryDelay.observe({ topic }, deliveryDelayMs / 1e3);
-      if (isLateDelivery) {
-        this.duplicateMsgLateDelivery.inc({ topic }, 1);
-      }
-    },
-    onPublishDuplicateMsg(topicStr) {
-      const topic = this.toTopic(topicStr);
-      this.duplicateMsgIgnored.inc({ topic }, 1);
-    },
-    onPeerReadStreamError() {
-      this.peerReadStreamError.inc(1);
-    },
-    onRpcRecvError() {
-      this.rpcRecvError.inc(1);
-    },
-    onRpcDataError() {
-      this.rpcDataError.inc(1);
-    },
-    onRpcRecv(rpc, rpcBytes) {
-      this.rpcRecvBytes.inc(rpcBytes);
-      this.rpcRecvCount.inc(1);
-      if (rpc.subscriptions != null)
-        this.rpcRecvSubscription.inc(rpc.subscriptions.length);
-      if (rpc.messages != null)
-        this.rpcRecvMessage.inc(rpc.messages.length);
-      if (rpc.control != null) {
-        this.rpcRecvControl.inc(1);
-        if (rpc.control.ihave != null)
-          this.rpcRecvIHave.inc(rpc.control.ihave.length);
-        if (rpc.control.iwant != null)
-          this.rpcRecvIWant.inc(rpc.control.iwant.length);
-        if (rpc.control.graft != null)
-          this.rpcRecvGraft.inc(rpc.control.graft.length);
-        if (rpc.control.prune != null)
-          this.rpcRecvPrune.inc(rpc.control.prune.length);
-      }
-    },
-    onRpcSent(rpc, rpcBytes) {
-      this.rpcSentBytes.inc(rpcBytes);
-      this.rpcSentCount.inc(1);
-      if (rpc.subscriptions != null)
-        this.rpcSentSubscription.inc(rpc.subscriptions.length);
-      if (rpc.messages != null)
-        this.rpcSentMessage.inc(rpc.messages.length);
-      if (rpc.control != null) {
-        const ihave = rpc.control.ihave?.length ?? 0;
-        const iwant = rpc.control.iwant?.length ?? 0;
-        const graft = rpc.control.graft?.length ?? 0;
-        const prune = rpc.control.prune?.length ?? 0;
-        if (ihave > 0)
-          this.rpcSentIHave.inc(ihave);
-        if (iwant > 0)
-          this.rpcSentIWant.inc(iwant);
-        if (graft > 0)
-          this.rpcSentGraft.inc(graft);
-        if (prune > 0)
-          this.rpcSentPrune.inc(prune);
-        if (ihave > 0 || iwant > 0 || graft > 0 || prune > 0)
-          this.rpcSentControl.inc(1);
-      }
-    },
-    registerScores(scores, scoreThresholds) {
-      let graylist = 0;
-      let publish = 0;
-      let gossip = 0;
-      let mesh = 0;
-      for (const score of scores) {
-        if (score >= scoreThresholds.graylistThreshold)
-          graylist++;
-        if (score >= scoreThresholds.publishThreshold)
-          publish++;
-        if (score >= scoreThresholds.gossipThreshold)
-          gossip++;
-        if (score >= 0)
-          mesh++;
-      }
-      this.peersByScoreThreshold.set({ threshold: ScoreThreshold.graylist }, graylist);
-      this.peersByScoreThreshold.set({ threshold: ScoreThreshold.publish }, publish);
-      this.peersByScoreThreshold.set({ threshold: ScoreThreshold.gossip }, gossip);
-      this.peersByScoreThreshold.set({ threshold: ScoreThreshold.mesh }, mesh);
-      this.score.set(scores);
-    },
-    registerScoreWeights(sw) {
-      for (const [topic, wsTopic] of sw.byTopic) {
-        this.scoreWeights.set({ topic, p: "p1" }, wsTopic.p1w);
-        this.scoreWeights.set({ topic, p: "p2" }, wsTopic.p2w);
-        this.scoreWeights.set({ topic, p: "p3" }, wsTopic.p3w);
-        this.scoreWeights.set({ topic, p: "p3b" }, wsTopic.p3bw);
-        this.scoreWeights.set({ topic, p: "p4" }, wsTopic.p4w);
-      }
-      this.scoreWeights.set({ p: "p5" }, sw.p5w);
-      this.scoreWeights.set({ p: "p6" }, sw.p6w);
-      this.scoreWeights.set({ p: "p7" }, sw.p7w);
-    },
-    registerScorePerMesh(mesh, scoreByPeer) {
-      const peersPerTopicLabel = /* @__PURE__ */ new Map();
-      mesh.forEach((peers, topicStr) => {
-        const topicLabel = this.topicStrToLabel.get(topicStr) ?? "unknown";
-        let peersInMesh = peersPerTopicLabel.get(topicLabel);
-        if (peersInMesh == null) {
-          peersInMesh = /* @__PURE__ */ new Set();
-          peersPerTopicLabel.set(topicLabel, peersInMesh);
-        }
-        peers.forEach((p) => peersInMesh?.add(p));
-      });
-      for (const [topic, peers] of peersPerTopicLabel) {
-        const meshScores = [];
-        peers.forEach((peer) => {
-          meshScores.push(scoreByPeer.get(peer) ?? 0);
-        });
-        this.scorePerMesh.set({ topic }, meshScores);
-      }
-    }
-  };
-}
-__name(getMetrics, "getMetrics");
-
-// node_modules/@chainsafe/libp2p-gossipsub/dist/src/score/constants.js
-var ERR_INVALID_PEER_SCORE_PARAMS = "ERR_INVALID_PEER_SCORE_PARAMS";
-
-// node_modules/@chainsafe/libp2p-gossipsub/dist/src/score/peer-score-params.js
-var defaultPeerScoreParams = {
-  topics: {},
-  topicScoreCap: 10,
-  appSpecificScore: /* @__PURE__ */ __name(() => 0, "appSpecificScore"),
-  appSpecificWeight: 10,
-  IPColocationFactorWeight: -5,
-  IPColocationFactorThreshold: 10,
-  IPColocationFactorWhitelist: /* @__PURE__ */ new Set(),
-  behaviourPenaltyWeight: -10,
-  behaviourPenaltyThreshold: 0,
-  behaviourPenaltyDecay: 0.2,
-  decayInterval: 1e3,
-  decayToZero: 0.1,
-  retainScore: 3600 * 1e3
-};
-var defaultTopicScoreParams = {
-  topicWeight: 0.5,
-  timeInMeshWeight: 1,
-  timeInMeshQuantum: 1,
-  timeInMeshCap: 3600,
-  firstMessageDeliveriesWeight: 1,
-  firstMessageDeliveriesDecay: 0.5,
-  firstMessageDeliveriesCap: 2e3,
-  meshMessageDeliveriesWeight: -1,
-  meshMessageDeliveriesDecay: 0.5,
-  meshMessageDeliveriesCap: 100,
-  meshMessageDeliveriesThreshold: 20,
-  meshMessageDeliveriesWindow: 10,
-  meshMessageDeliveriesActivation: 5e3,
-  meshFailurePenaltyWeight: -1,
-  meshFailurePenaltyDecay: 0.5,
-  invalidMessageDeliveriesWeight: -1,
-  invalidMessageDeliveriesDecay: 0.3
-};
-function createPeerScoreParams(p = {}) {
-  return {
-    ...defaultPeerScoreParams,
-    ...p,
-    topics: p.topics != null ? Object.entries(p.topics).reduce((topics, [topic, topicScoreParams]) => {
-      topics[topic] = createTopicScoreParams(topicScoreParams);
-      return topics;
-    }, {}) : {}
-  };
-}
-__name(createPeerScoreParams, "createPeerScoreParams");
-function createTopicScoreParams(p = {}) {
-  return {
-    ...defaultTopicScoreParams,
-    ...p
-  };
-}
-__name(createTopicScoreParams, "createTopicScoreParams");
-function validatePeerScoreParams(p) {
-  for (const [topic, params] of Object.entries(p.topics)) {
-    try {
-      validateTopicScoreParams(params);
-    } catch (e) {
-      throw new CodeError(`invalid score parameters for topic ${topic}: ${e.message}`, ERR_INVALID_PEER_SCORE_PARAMS);
-    }
-  }
-  if (p.topicScoreCap < 0) {
-    throw new CodeError("invalid topic score cap; must be positive (or 0 for no cap)", ERR_INVALID_PEER_SCORE_PARAMS);
-  }
-  if (p.appSpecificScore === null || p.appSpecificScore === void 0) {
-    throw new CodeError("missing application specific score function", ERR_INVALID_PEER_SCORE_PARAMS);
-  }
-  if (p.IPColocationFactorWeight > 0) {
-    throw new CodeError("invalid IPColocationFactorWeight; must be negative (or 0 to disable)", ERR_INVALID_PEER_SCORE_PARAMS);
-  }
-  if (p.IPColocationFactorWeight !== 0 && p.IPColocationFactorThreshold < 1) {
-    throw new CodeError("invalid IPColocationFactorThreshold; must be at least 1", ERR_INVALID_PEER_SCORE_PARAMS);
-  }
-  if (p.behaviourPenaltyWeight > 0) {
-    throw new CodeError("invalid BehaviourPenaltyWeight; must be negative (or 0 to disable)", ERR_INVALID_PEER_SCORE_PARAMS);
-  }
-  if (p.behaviourPenaltyWeight !== 0 && (p.behaviourPenaltyDecay <= 0 || p.behaviourPenaltyDecay >= 1)) {
-    throw new CodeError("invalid BehaviourPenaltyDecay; must be between 0 and 1", ERR_INVALID_PEER_SCORE_PARAMS);
-  }
-  if (p.decayInterval < 1e3) {
-    throw new CodeError("invalid DecayInterval; must be at least 1s", ERR_INVALID_PEER_SCORE_PARAMS);
-  }
-  if (p.decayToZero <= 0 || p.decayToZero >= 1) {
-    throw new CodeError("invalid DecayToZero; must be between 0 and 1", ERR_INVALID_PEER_SCORE_PARAMS);
-  }
-}
-__name(validatePeerScoreParams, "validatePeerScoreParams");
-function validateTopicScoreParams(p) {
-  if (p.topicWeight < 0) {
-    throw new CodeError("invalid topic weight; must be >= 0", ERR_INVALID_PEER_SCORE_PARAMS);
-  }
-  if (p.timeInMeshQuantum === 0) {
-    throw new CodeError("invalid TimeInMeshQuantum; must be non zero", ERR_INVALID_PEER_SCORE_PARAMS);
-  }
-  if (p.timeInMeshWeight < 0) {
-    throw new CodeError("invalid TimeInMeshWeight; must be positive (or 0 to disable)", ERR_INVALID_PEER_SCORE_PARAMS);
-  }
-  if (p.timeInMeshWeight !== 0 && p.timeInMeshQuantum <= 0) {
-    throw new CodeError("invalid TimeInMeshQuantum; must be positive", ERR_INVALID_PEER_SCORE_PARAMS);
-  }
-  if (p.timeInMeshWeight !== 0 && p.timeInMeshCap <= 0) {
-    throw new CodeError("invalid TimeInMeshCap; must be positive", ERR_INVALID_PEER_SCORE_PARAMS);
-  }
-  if (p.firstMessageDeliveriesWeight < 0) {
-    throw new CodeError("invallid FirstMessageDeliveriesWeight; must be positive (or 0 to disable)", ERR_INVALID_PEER_SCORE_PARAMS);
-  }
-  if (p.firstMessageDeliveriesWeight !== 0 && (p.firstMessageDeliveriesDecay <= 0 || p.firstMessageDeliveriesDecay >= 1)) {
-    throw new CodeError("invalid FirstMessageDeliveriesDecay; must be between 0 and 1", ERR_INVALID_PEER_SCORE_PARAMS);
-  }
-  if (p.firstMessageDeliveriesWeight !== 0 && p.firstMessageDeliveriesCap <= 0) {
-    throw new CodeError("invalid FirstMessageDeliveriesCap; must be positive", ERR_INVALID_PEER_SCORE_PARAMS);
-  }
-  if (p.meshMessageDeliveriesWeight > 0) {
-    throw new CodeError("invalid MeshMessageDeliveriesWeight; must be negative (or 0 to disable)", ERR_INVALID_PEER_SCORE_PARAMS);
-  }
-  if (p.meshMessageDeliveriesWeight !== 0 && (p.meshMessageDeliveriesDecay <= 0 || p.meshMessageDeliveriesDecay >= 1)) {
-    throw new CodeError("invalid MeshMessageDeliveriesDecay; must be between 0 and 1", ERR_INVALID_PEER_SCORE_PARAMS);
-  }
-  if (p.meshMessageDeliveriesWeight !== 0 && p.meshMessageDeliveriesCap <= 0) {
-    throw new CodeError("invalid MeshMessageDeliveriesCap; must be positive", ERR_INVALID_PEER_SCORE_PARAMS);
-  }
-  if (p.meshMessageDeliveriesWeight !== 0 && p.meshMessageDeliveriesThreshold <= 0) {
-    throw new CodeError("invalid MeshMessageDeliveriesThreshold; must be positive", ERR_INVALID_PEER_SCORE_PARAMS);
-  }
-  if (p.meshMessageDeliveriesWindow < 0) {
-    throw new CodeError("invalid MeshMessageDeliveriesWindow; must be non-negative", ERR_INVALID_PEER_SCORE_PARAMS);
-  }
-  if (p.meshMessageDeliveriesWeight !== 0 && p.meshMessageDeliveriesActivation < 1e3) {
-    throw new CodeError("invalid MeshMessageDeliveriesActivation; must be at least 1s", ERR_INVALID_PEER_SCORE_PARAMS);
-  }
-  if (p.meshFailurePenaltyWeight > 0) {
-    throw new CodeError("invalid MeshFailurePenaltyWeight; must be negative (or 0 to disable)", ERR_INVALID_PEER_SCORE_PARAMS);
-  }
-  if (p.meshFailurePenaltyWeight !== 0 && (p.meshFailurePenaltyDecay <= 0 || p.meshFailurePenaltyDecay >= 1)) {
-    throw new CodeError("invalid MeshFailurePenaltyDecay; must be between 0 and 1", ERR_INVALID_PEER_SCORE_PARAMS);
-  }
-  if (p.invalidMessageDeliveriesWeight > 0) {
-    throw new CodeError("invalid InvalidMessageDeliveriesWeight; must be negative (or 0 to disable)", ERR_INVALID_PEER_SCORE_PARAMS);
-  }
-  if (p.invalidMessageDeliveriesDecay <= 0 || p.invalidMessageDeliveriesDecay >= 1) {
-    throw new CodeError("invalid InvalidMessageDeliveriesDecay; must be between 0 and 1", ERR_INVALID_PEER_SCORE_PARAMS);
-  }
-}
-__name(validateTopicScoreParams, "validateTopicScoreParams");
-
-// node_modules/@chainsafe/libp2p-gossipsub/dist/src/score/peer-score-thresholds.js
-var defaultPeerScoreThresholds = {
-  gossipThreshold: -10,
-  publishThreshold: -50,
-  graylistThreshold: -80,
-  acceptPXThreshold: 10,
-  opportunisticGraftThreshold: 20
-};
-function createPeerScoreThresholds(p = {}) {
-  return {
-    ...defaultPeerScoreThresholds,
-    ...p
-  };
-}
-__name(createPeerScoreThresholds, "createPeerScoreThresholds");
-
-// node_modules/@chainsafe/libp2p-gossipsub/dist/src/utils/set.js
-function removeItemsFromSet(superSet, ineed, cond = () => true) {
-  const subset = /* @__PURE__ */ new Set();
-  if (ineed <= 0)
-    return subset;
-  for (const id of superSet) {
-    if (subset.size >= ineed)
-      break;
-    if (cond(id)) {
-      subset.add(id);
-      superSet.delete(id);
-    }
-  }
-  return subset;
-}
-__name(removeItemsFromSet, "removeItemsFromSet");
-function removeFirstNItemsFromSet(superSet, ineed) {
-  return removeItemsFromSet(superSet, ineed, () => true);
-}
-__name(removeFirstNItemsFromSet, "removeFirstNItemsFromSet");
-var MapDef = class extends Map {
-  static {
-    __name(this, "MapDef");
-  }
-  getDefault;
-  constructor(getDefault) {
-    super();
-    this.getDefault = getDefault;
-  }
-  getOrDefault(key) {
-    let value = super.get(key);
-    if (value === void 0) {
-      value = this.getDefault();
-      this.set(key, value);
-    }
-    return value;
-  }
-};
-
-// node_modules/@chainsafe/libp2p-gossipsub/dist/src/score/compute-score.js
-function computeScore(peer, pstats, params, peerIPs) {
-  let score = 0;
-  Object.entries(pstats.topics).forEach(([topic, tstats]) => {
-    const topicParams = params.topics[topic];
-    if (topicParams === void 0) {
-      return;
-    }
-    let topicScore = 0;
-    if (tstats.inMesh) {
-      let p1 = tstats.meshTime / topicParams.timeInMeshQuantum;
-      if (p1 > topicParams.timeInMeshCap) {
-        p1 = topicParams.timeInMeshCap;
-      }
-      topicScore += p1 * topicParams.timeInMeshWeight;
-    }
-    let p2 = tstats.firstMessageDeliveries;
-    if (p2 > topicParams.firstMessageDeliveriesCap) {
-      p2 = topicParams.firstMessageDeliveriesCap;
-    }
-    topicScore += p2 * topicParams.firstMessageDeliveriesWeight;
-    if (tstats.meshMessageDeliveriesActive && tstats.meshMessageDeliveries < topicParams.meshMessageDeliveriesThreshold) {
-      const deficit = topicParams.meshMessageDeliveriesThreshold - tstats.meshMessageDeliveries;
-      const p3 = deficit * deficit;
-      topicScore += p3 * topicParams.meshMessageDeliveriesWeight;
-    }
-    const p3b = tstats.meshFailurePenalty;
-    topicScore += p3b * topicParams.meshFailurePenaltyWeight;
-    const p4 = tstats.invalidMessageDeliveries * tstats.invalidMessageDeliveries;
-    topicScore += p4 * topicParams.invalidMessageDeliveriesWeight;
-    score += topicScore * topicParams.topicWeight;
-  });
-  if (params.topicScoreCap > 0 && score > params.topicScoreCap) {
-    score = params.topicScoreCap;
-  }
-  const p5 = params.appSpecificScore(peer);
-  score += p5 * params.appSpecificWeight;
-  pstats.knownIPs.forEach((ip) => {
-    if (params.IPColocationFactorWhitelist.has(ip)) {
-      return;
-    }
-    const peersInIP = peerIPs.get(ip);
-    const numPeersInIP = peersInIP != null ? peersInIP.size : 0;
-    if (numPeersInIP > params.IPColocationFactorThreshold) {
-      const surplus = numPeersInIP - params.IPColocationFactorThreshold;
-      const p6 = surplus * surplus;
-      score += p6 * params.IPColocationFactorWeight;
-    }
-  });
-  if (pstats.behaviourPenalty > params.behaviourPenaltyThreshold) {
-    const excess = pstats.behaviourPenalty - params.behaviourPenaltyThreshold;
-    const p7 = excess * excess;
-    score += p7 * params.behaviourPenaltyWeight;
-  }
-  return score;
-}
-__name(computeScore, "computeScore");
-
-// node_modules/@chainsafe/libp2p-gossipsub/dist/src/score/message-deliveries.js
-var import_denque = __toESM(require_denque(), 1);
-var DeliveryRecordStatus;
-(function(DeliveryRecordStatus2) {
-  DeliveryRecordStatus2[DeliveryRecordStatus2["unknown"] = 0] = "unknown";
-  DeliveryRecordStatus2[DeliveryRecordStatus2["valid"] = 1] = "valid";
-  DeliveryRecordStatus2[DeliveryRecordStatus2["invalid"] = 2] = "invalid";
-  DeliveryRecordStatus2[DeliveryRecordStatus2["ignored"] = 3] = "ignored";
-})(DeliveryRecordStatus || (DeliveryRecordStatus = {}));
-var MessageDeliveries = class {
-  static {
-    __name(this, "MessageDeliveries");
-  }
-  records;
-  queue;
-  constructor() {
-    this.records = /* @__PURE__ */ new Map();
-    this.queue = new import_denque.default();
-  }
-  getRecord(msgIdStr) {
-    return this.records.get(msgIdStr);
-  }
-  ensureRecord(msgIdStr) {
-    let drec = this.records.get(msgIdStr);
-    if (drec != null) {
-      return drec;
-    }
-    drec = {
-      status: DeliveryRecordStatus.unknown,
-      firstSeenTsMs: Date.now(),
-      validated: 0,
-      peers: /* @__PURE__ */ new Set()
-    };
-    this.records.set(msgIdStr, drec);
-    const entry = {
-      msgId: msgIdStr,
-      expire: Date.now() + TimeCacheDuration
-    };
-    this.queue.push(entry);
-    return drec;
-  }
-  gc() {
-    const now = Date.now();
-    let head = this.queue.peekFront();
-    while (head != null && head.expire < now) {
-      this.records.delete(head.msgId);
-      this.queue.shift();
-      head = this.queue.peekFront();
-    }
-  }
-  clear() {
-    this.records.clear();
-    this.queue.clear();
-  }
-};
-
-// node_modules/@chainsafe/libp2p-gossipsub/dist/src/score/peer-score.js
-var PeerScore = class {
-  static {
-    __name(this, "PeerScore");
-  }
-  params;
-  metrics;
-  /**
-   * Per-peer stats for score calculation
-   */
-  peerStats = /* @__PURE__ */ new Map();
-  /**
-   * IP colocation tracking; maps IP => set of peers.
-   */
-  peerIPs = new MapDef(() => /* @__PURE__ */ new Set());
-  /**
-   * Cache score up to decayInterval if topic stats are unchanged.
-   */
-  scoreCache = /* @__PURE__ */ new Map();
-  /**
-   * Recent message delivery timing/participants
-   */
-  deliveryRecords = new MessageDeliveries();
-  _backgroundInterval;
-  scoreCacheValidityMs;
-  computeScore;
-  log;
-  constructor(params, metrics, componentLogger, opts) {
-    this.params = params;
-    this.metrics = metrics;
-    validatePeerScoreParams(params);
-    this.scoreCacheValidityMs = opts.scoreCacheValidityMs;
-    this.computeScore = opts.computeScore ?? computeScore;
-    this.log = componentLogger.forComponent("libp2p:gossipsub:score");
-  }
-  get size() {
-    return this.peerStats.size;
-  }
-  /**
-   * Start PeerScore instance
-   */
-  start() {
-    if (this._backgroundInterval != null) {
-      this.log("Peer score already running");
-      return;
-    }
-    this._backgroundInterval = setInterval(() => {
-      this.background();
-    }, this.params.decayInterval);
-    this.log("started");
-  }
-  /**
-   * Stop PeerScore instance
-   */
-  stop() {
-    if (this._backgroundInterval == null) {
-      this.log("Peer score already stopped");
-      return;
-    }
-    clearInterval(this._backgroundInterval);
-    delete this._backgroundInterval;
-    this.peerIPs.clear();
-    this.peerStats.clear();
-    this.deliveryRecords.clear();
-    this.log("stopped");
-  }
-  /**
-   * Periodic maintenance
-   */
-  background() {
-    this.refreshScores();
-    this.deliveryRecords.gc();
-  }
-  dumpPeerScoreStats() {
-    return Object.fromEntries(Array.from(this.peerStats.entries()).map(([peer, stats]) => [peer, stats]));
-  }
-  messageFirstSeenTimestampMs(msgIdStr) {
-    const drec = this.deliveryRecords.getRecord(msgIdStr);
-    return drec != null ? drec.firstSeenTsMs : null;
-  }
-  /**
-   * Decays scores, and purges score records for disconnected peers once their expiry has elapsed.
-   */
-  refreshScores() {
-    const now = Date.now();
-    const decayToZero = this.params.decayToZero;
-    this.peerStats.forEach((pstats, id) => {
-      if (!pstats.connected) {
-        if (now > pstats.expire) {
-          this.removeIPsForPeer(id, pstats.knownIPs);
-          this.peerStats.delete(id);
-          this.scoreCache.delete(id);
-        }
-        return;
-      }
-      Object.entries(pstats.topics).forEach(([topic, tstats]) => {
-        const tparams = this.params.topics[topic];
-        if (tparams === void 0) {
-          return;
-        }
-        tstats.firstMessageDeliveries *= tparams.firstMessageDeliveriesDecay;
-        if (tstats.firstMessageDeliveries < decayToZero) {
-          tstats.firstMessageDeliveries = 0;
-        }
-        tstats.meshMessageDeliveries *= tparams.meshMessageDeliveriesDecay;
-        if (tstats.meshMessageDeliveries < decayToZero) {
-          tstats.meshMessageDeliveries = 0;
-        }
-        tstats.meshFailurePenalty *= tparams.meshFailurePenaltyDecay;
-        if (tstats.meshFailurePenalty < decayToZero) {
-          tstats.meshFailurePenalty = 0;
-        }
-        tstats.invalidMessageDeliveries *= tparams.invalidMessageDeliveriesDecay;
-        if (tstats.invalidMessageDeliveries < decayToZero) {
-          tstats.invalidMessageDeliveries = 0;
-        }
-        if (tstats.inMesh) {
-          tstats.meshTime = now - tstats.graftTime;
-          if (tstats.meshTime > tparams.meshMessageDeliveriesActivation) {
-            tstats.meshMessageDeliveriesActive = true;
-          }
-        }
-      });
-      pstats.behaviourPenalty *= this.params.behaviourPenaltyDecay;
-      if (pstats.behaviourPenalty < decayToZero) {
-        pstats.behaviourPenalty = 0;
-      }
-    });
-  }
-  /**
-   * Return the score for a peer
-   */
-  score(id) {
-    this.metrics?.scoreFnCalls.inc();
-    const pstats = this.peerStats.get(id);
-    if (pstats == null) {
-      return 0;
-    }
-    const now = Date.now();
-    const cacheEntry = this.scoreCache.get(id);
-    if (cacheEntry != null && cacheEntry.cacheUntil > now) {
-      return cacheEntry.score;
-    }
-    this.metrics?.scoreFnRuns.inc();
-    const score = this.computeScore(id, pstats, this.params, this.peerIPs);
-    const cacheUntil = now + this.scoreCacheValidityMs;
-    if (cacheEntry != null) {
-      this.metrics?.scoreCachedDelta.observe(Math.abs(score - cacheEntry.score));
-      cacheEntry.score = score;
-      cacheEntry.cacheUntil = cacheUntil;
-    } else {
-      this.scoreCache.set(id, { score, cacheUntil });
-    }
-    return score;
-  }
-  /**
-   * Apply a behavioural penalty to a peer
-   */
-  addPenalty(id, penalty, penaltyLabel) {
-    const pstats = this.peerStats.get(id);
-    if (pstats != null) {
-      pstats.behaviourPenalty += penalty;
-      this.metrics?.onScorePenalty(penaltyLabel);
-    }
-  }
-  addPeer(id) {
-    const pstats = {
-      connected: true,
-      expire: 0,
-      topics: {},
-      knownIPs: /* @__PURE__ */ new Set(),
-      behaviourPenalty: 0
-    };
-    this.peerStats.set(id, pstats);
-  }
-  /** Adds a new IP to a peer, if the peer is not known the update is ignored */
-  addIP(id, ip) {
-    const pstats = this.peerStats.get(id);
-    if (pstats != null) {
-      pstats.knownIPs.add(ip);
-    }
-    this.peerIPs.getOrDefault(ip).add(id);
-  }
-  /** Remove peer association with IP */
-  removeIP(id, ip) {
-    const pstats = this.peerStats.get(id);
-    if (pstats != null) {
-      pstats.knownIPs.delete(ip);
-    }
-    const peersWithIP = this.peerIPs.get(ip);
-    if (peersWithIP != null) {
-      peersWithIP.delete(id);
-      if (peersWithIP.size === 0) {
-        this.peerIPs.delete(ip);
-      }
-    }
-  }
-  removePeer(id) {
-    const pstats = this.peerStats.get(id);
-    if (pstats == null) {
-      return;
-    }
-    if (this.score(id) > 0) {
-      this.removeIPsForPeer(id, pstats.knownIPs);
-      this.peerStats.delete(id);
-      return;
-    }
-    Object.entries(pstats.topics).forEach(([topic, tstats]) => {
-      tstats.firstMessageDeliveries = 0;
-      const threshold = this.params.topics[topic].meshMessageDeliveriesThreshold;
-      if (tstats.inMesh && tstats.meshMessageDeliveriesActive && tstats.meshMessageDeliveries < threshold) {
-        const deficit = threshold - tstats.meshMessageDeliveries;
-        tstats.meshFailurePenalty += deficit * deficit;
-      }
-      tstats.inMesh = false;
-      tstats.meshMessageDeliveriesActive = false;
-    });
-    pstats.connected = false;
-    pstats.expire = Date.now() + this.params.retainScore;
-  }
-  /** Handles scoring functionality as a peer GRAFTs to a topic. */
-  graft(id, topic) {
-    const pstats = this.peerStats.get(id);
-    if (pstats != null) {
-      const tstats = this.getPtopicStats(pstats, topic);
-      if (tstats != null) {
-        tstats.inMesh = true;
-        tstats.graftTime = Date.now();
-        tstats.meshTime = 0;
-        tstats.meshMessageDeliveriesActive = false;
-      }
-    }
-  }
-  /** Handles scoring functionality as a peer PRUNEs from a topic. */
-  prune(id, topic) {
-    const pstats = this.peerStats.get(id);
-    if (pstats != null) {
-      const tstats = this.getPtopicStats(pstats, topic);
-      if (tstats != null) {
-        const threshold = this.params.topics[topic].meshMessageDeliveriesThreshold;
-        if (tstats.meshMessageDeliveriesActive && tstats.meshMessageDeliveries < threshold) {
-          const deficit = threshold - tstats.meshMessageDeliveries;
-          tstats.meshFailurePenalty += deficit * deficit;
-        }
-        tstats.meshMessageDeliveriesActive = false;
-        tstats.inMesh = false;
-      }
-    }
-  }
-  validateMessage(msgIdStr) {
-    this.deliveryRecords.ensureRecord(msgIdStr);
-  }
-  deliverMessage(from3, msgIdStr, topic) {
-    this.markFirstMessageDelivery(from3, topic);
-    const drec = this.deliveryRecords.ensureRecord(msgIdStr);
-    const now = Date.now();
-    if (drec.status !== DeliveryRecordStatus.unknown) {
-      this.log("unexpected delivery: message from %s was first seen %s ago and has delivery status %s", from3, now - drec.firstSeenTsMs, DeliveryRecordStatus[drec.status]);
-      return;
-    }
-    drec.status = DeliveryRecordStatus.valid;
-    drec.validated = now;
-    drec.peers.forEach((p) => {
-      if (p !== from3.toString()) {
-        this.markDuplicateMessageDelivery(p, topic);
-      }
-    });
-  }
-  /**
-   * Similar to `rejectMessage` except does not require the message id or reason for an invalid message.
-   */
-  rejectInvalidMessage(from3, topic) {
-    this.markInvalidMessageDelivery(from3, topic);
-  }
-  rejectMessage(from3, msgIdStr, topic, reason) {
-    switch (reason) {
-      // these messages are not tracked, but the peer is penalized as they are invalid
-      case RejectReason.Error:
-        this.markInvalidMessageDelivery(from3, topic);
-        return;
-      // we ignore those messages, so do nothing.
-      case RejectReason.Blacklisted:
-        return;
-    }
-    const drec = this.deliveryRecords.ensureRecord(msgIdStr);
-    if (drec.status !== DeliveryRecordStatus.unknown) {
-      this.log("unexpected rejection: message from %s was first seen %s ago and has delivery status %d", from3, Date.now() - drec.firstSeenTsMs, DeliveryRecordStatus[drec.status]);
-      return;
-    }
-    if (reason === RejectReason.Ignore) {
-      drec.status = DeliveryRecordStatus.ignored;
-      drec.peers.clear();
-      return;
-    }
-    drec.status = DeliveryRecordStatus.invalid;
-    this.markInvalidMessageDelivery(from3, topic);
-    drec.peers.forEach((p) => {
-      this.markInvalidMessageDelivery(p, topic);
-    });
-    drec.peers.clear();
-  }
-  duplicateMessage(from3, msgIdStr, topic) {
-    const drec = this.deliveryRecords.ensureRecord(msgIdStr);
-    if (drec.peers.has(from3)) {
-      return;
-    }
-    switch (drec.status) {
-      case DeliveryRecordStatus.unknown:
-        drec.peers.add(from3);
-        break;
-      case DeliveryRecordStatus.valid:
-        drec.peers.add(from3);
-        this.markDuplicateMessageDelivery(from3, topic, drec.validated);
-        break;
-      case DeliveryRecordStatus.invalid:
-        this.markInvalidMessageDelivery(from3, topic);
-        break;
-      case DeliveryRecordStatus.ignored:
-        break;
-    }
-  }
-  /**
-   * Increments the "invalid message deliveries" counter for all scored topics the message is published in.
-   */
-  markInvalidMessageDelivery(from3, topic) {
-    const pstats = this.peerStats.get(from3);
-    if (pstats != null) {
-      const tstats = this.getPtopicStats(pstats, topic);
-      if (tstats != null) {
-        tstats.invalidMessageDeliveries += 1;
-      }
-    }
-  }
-  /**
-   * Increments the "first message deliveries" counter for all scored topics the message is published in,
-   * as well as the "mesh message deliveries" counter, if the peer is in the mesh for the topic.
-   * Messages already known (with the seenCache) are counted with markDuplicateMessageDelivery()
-   */
-  markFirstMessageDelivery(from3, topic) {
-    const pstats = this.peerStats.get(from3);
-    if (pstats != null) {
-      const tstats = this.getPtopicStats(pstats, topic);
-      if (tstats != null) {
-        let cap = this.params.topics[topic].firstMessageDeliveriesCap;
-        tstats.firstMessageDeliveries = Math.min(cap, tstats.firstMessageDeliveries + 1);
-        if (tstats.inMesh) {
-          cap = this.params.topics[topic].meshMessageDeliveriesCap;
-          tstats.meshMessageDeliveries = Math.min(cap, tstats.meshMessageDeliveries + 1);
-        }
-      }
-    }
-  }
-  /**
-   * Increments the "mesh message deliveries" counter for messages we've seen before,
-   * as long the message was received within the P3 window.
-   */
-  markDuplicateMessageDelivery(from3, topic, validatedTime) {
-    const pstats = this.peerStats.get(from3);
-    if (pstats != null) {
-      const now = validatedTime !== void 0 ? Date.now() : 0;
-      const tstats = this.getPtopicStats(pstats, topic);
-      if (tstats != null && tstats.inMesh) {
-        const tparams = this.params.topics[topic];
-        if (validatedTime !== void 0) {
-          const deliveryDelayMs = now - validatedTime;
-          const isLateDelivery = deliveryDelayMs > tparams.meshMessageDeliveriesWindow;
-          this.metrics?.onDuplicateMsgDelivery(topic, deliveryDelayMs, isLateDelivery);
-          if (isLateDelivery) {
-            return;
-          }
-        }
-        const cap = tparams.meshMessageDeliveriesCap;
-        tstats.meshMessageDeliveries = Math.min(cap, tstats.meshMessageDeliveries + 1);
-      }
-    }
-  }
-  /**
-   * Removes an IP list from the tracking list for a peer.
-   */
-  removeIPsForPeer(id, ipsToRemove) {
-    for (const ipToRemove of ipsToRemove) {
-      const peerSet = this.peerIPs.get(ipToRemove);
-      if (peerSet != null) {
-        peerSet.delete(id);
-        if (peerSet.size === 0) {
-          this.peerIPs.delete(ipToRemove);
-        }
-      }
-    }
-  }
-  /**
-   * Returns topic stats if they exist, otherwise if the supplied parameters score the
-   * topic, inserts the default stats and returns a reference to those. If neither apply, returns None.
-   */
-  getPtopicStats(pstats, topic) {
-    let topicStats = pstats.topics[topic];
-    if (topicStats !== void 0) {
-      return topicStats;
-    }
-    if (this.params.topics[topic] !== void 0) {
-      topicStats = {
-        inMesh: false,
-        graftTime: 0,
-        meshTime: 0,
-        firstMessageDeliveries: 0,
-        meshMessageDeliveries: 0,
-        meshMessageDeliveriesActive: false,
-        meshFailurePenalty: 0,
-        invalidMessageDeliveries: 0
-      };
-      pstats.topics[topic] = topicStats;
-      return topicStats;
-    }
-    return null;
-  }
-};
-
-// node_modules/@chainsafe/libp2p-gossipsub/dist/src/score/scoreMetrics.js
-function computeScoreWeights(peer, pstats, params, peerIPs, topicStrToLabel) {
-  let score = 0;
-  const byTopic = /* @__PURE__ */ new Map();
-  Object.entries(pstats.topics).forEach(([topic, tstats]) => {
-    const topicLabel = topicStrToLabel.get(topic) ?? "unknown";
-    const topicParams = params.topics[topic];
-    if (topicParams === void 0) {
-      return;
-    }
-    let topicScores = byTopic.get(topicLabel);
-    if (topicScores == null) {
-      topicScores = {
-        p1w: 0,
-        p2w: 0,
-        p3w: 0,
-        p3bw: 0,
-        p4w: 0
-      };
-      byTopic.set(topicLabel, topicScores);
-    }
-    let p1w = 0;
-    let p2w = 0;
-    let p3w = 0;
-    let p3bw = 0;
-    let p4w = 0;
-    if (tstats.inMesh) {
-      const p1 = Math.max(tstats.meshTime / topicParams.timeInMeshQuantum, topicParams.timeInMeshCap);
-      p1w += p1 * topicParams.timeInMeshWeight;
-    }
-    let p2 = tstats.firstMessageDeliveries;
-    if (p2 > topicParams.firstMessageDeliveriesCap) {
-      p2 = topicParams.firstMessageDeliveriesCap;
-    }
-    p2w += p2 * topicParams.firstMessageDeliveriesWeight;
-    if (tstats.meshMessageDeliveriesActive && tstats.meshMessageDeliveries < topicParams.meshMessageDeliveriesThreshold) {
-      const deficit = topicParams.meshMessageDeliveriesThreshold - tstats.meshMessageDeliveries;
-      const p3 = deficit * deficit;
-      p3w += p3 * topicParams.meshMessageDeliveriesWeight;
-    }
-    const p3b = tstats.meshFailurePenalty;
-    p3bw += p3b * topicParams.meshFailurePenaltyWeight;
-    const p4 = tstats.invalidMessageDeliveries * tstats.invalidMessageDeliveries;
-    p4w += p4 * topicParams.invalidMessageDeliveriesWeight;
-    score += (p1w + p2w + p3w + p3bw + p4w) * topicParams.topicWeight;
-    topicScores.p1w += p1w;
-    topicScores.p2w += p2w;
-    topicScores.p3w += p3w;
-    topicScores.p3bw += p3bw;
-    topicScores.p4w += p4w;
-  });
-  if (params.topicScoreCap > 0 && score > params.topicScoreCap) {
-    score = params.topicScoreCap;
-    const capF = params.topicScoreCap / score;
-    for (const ws of byTopic.values()) {
-      ws.p1w *= capF;
-      ws.p2w *= capF;
-      ws.p3w *= capF;
-      ws.p3bw *= capF;
-      ws.p4w *= capF;
-    }
-  }
-  let p5w = 0;
-  let p6w = 0;
-  let p7w = 0;
-  const p5 = params.appSpecificScore(peer);
-  p5w += p5 * params.appSpecificWeight;
-  pstats.knownIPs.forEach((ip) => {
-    if (params.IPColocationFactorWhitelist.has(ip)) {
-      return;
-    }
-    const peersInIP = peerIPs.get(ip);
-    const numPeersInIP = peersInIP != null ? peersInIP.size : 0;
-    if (numPeersInIP > params.IPColocationFactorThreshold) {
-      const surplus = numPeersInIP - params.IPColocationFactorThreshold;
-      const p6 = surplus * surplus;
-      p6w += p6 * params.IPColocationFactorWeight;
-    }
-  });
-  const p7 = pstats.behaviourPenalty * pstats.behaviourPenalty;
-  p7w += p7 * params.behaviourPenaltyWeight;
-  score += p5w + p6w + p7w;
-  return {
-    byTopic,
-    p5w,
-    p6w,
-    p7w,
-    score
-  };
-}
-__name(computeScoreWeights, "computeScoreWeights");
-function computeAllPeersScoreWeights(peerIdStrs, peerStats, params, peerIPs, topicStrToLabel) {
-  const sw = {
-    byTopic: /* @__PURE__ */ new Map(),
-    p5w: [],
-    p6w: [],
-    p7w: [],
-    score: []
-  };
-  for (const peerIdStr of peerIdStrs) {
-    const pstats = peerStats.get(peerIdStr);
-    if (pstats != null) {
-      const swPeer = computeScoreWeights(peerIdStr, pstats, params, peerIPs, topicStrToLabel);
-      for (const [topic, swPeerTopic] of swPeer.byTopic) {
-        let swTopic = sw.byTopic.get(topic);
-        if (swTopic == null) {
-          swTopic = {
-            p1w: [],
-            p2w: [],
-            p3w: [],
-            p3bw: [],
-            p4w: []
-          };
-          sw.byTopic.set(topic, swTopic);
-        }
-        swTopic.p1w.push(swPeerTopic.p1w);
-        swTopic.p2w.push(swPeerTopic.p2w);
-        swTopic.p3w.push(swPeerTopic.p3w);
-        swTopic.p3bw.push(swPeerTopic.p3bw);
-        swTopic.p4w.push(swPeerTopic.p4w);
-      }
-      sw.p5w.push(swPeer.p5w);
-      sw.p6w.push(swPeer.p6w);
-      sw.p7w.push(swPeer.p7w);
-      sw.score.push(swPeer.score);
-    } else {
-      sw.p5w.push(0);
-      sw.p6w.push(0);
-      sw.p7w.push(0);
-      sw.score.push(0);
-    }
-  }
-  return sw;
-}
-__name(computeAllPeersScoreWeights, "computeAllPeersScoreWeights");
-
-// node_modules/@chainsafe/libp2p-gossipsub/dist/src/stream.js
-var OutboundStream = class {
-  static {
-    __name(this, "OutboundStream");
-  }
-  rawStream;
-  pushable;
-  closeController;
-  maxBufferSize;
-  constructor(rawStream, errCallback, opts) {
-    this.rawStream = rawStream;
-    this.pushable = pushable();
-    this.closeController = new AbortController();
-    this.maxBufferSize = opts.maxBufferSize ?? Infinity;
-    this.closeController.signal.addEventListener("abort", () => {
-      rawStream.close().catch((err) => {
-        rawStream.abort(err);
-      });
-    });
-    pipe(this.pushable, this.rawStream).catch(errCallback);
-  }
-  get protocol() {
-    return this.rawStream.protocol;
-  }
-  push(data) {
-    if (this.pushable.readableLength > this.maxBufferSize) {
-      throw Error(`OutboundStream buffer full, size > ${this.maxBufferSize}`);
-    }
-    this.pushable.push(encode6.single(data));
-  }
-  /**
-   * Same to push() but this is prefixed data so no need to encode length prefixed again
-   */
-  pushPrefixed(data) {
-    if (this.pushable.readableLength > this.maxBufferSize) {
-      throw Error(`OutboundStream buffer full, size > ${this.maxBufferSize}`);
-    }
-    this.pushable.push(data);
-  }
-  async close() {
-    this.closeController.abort();
-    await this.pushable.return();
-  }
-};
-var InboundStream = class {
-  static {
-    __name(this, "InboundStream");
-  }
-  source;
-  rawStream;
-  closeController;
-  constructor(rawStream, opts = {}) {
-    this.rawStream = rawStream;
-    this.closeController = new AbortController();
-    this.closeController.signal.addEventListener("abort", () => {
-      rawStream.close().catch((err) => {
-        rawStream.abort(err);
-      });
-    });
-    this.source = pipe(this.rawStream, (source) => decode7(source, opts));
-  }
-  async close() {
-    this.closeController.abort();
-  }
-};
-
-// node_modules/@chainsafe/libp2p-gossipsub/dist/src/tracer.js
-var IWantTracer = class {
-  static {
-    __name(this, "IWantTracer");
-  }
-  gossipsubIWantFollowupMs;
-  msgIdToStrFn;
-  metrics;
-  /**
-   * Promises to deliver a message
-   * Map per message id, per peer, promise expiration time
-   */
-  promises = /* @__PURE__ */ new Map();
-  /**
-   * First request time by msgId. Used for metrics to track expire times.
-   * Necessary to know if peers are actually breaking promises or simply sending them a bit later
-   */
-  requestMsByMsg = /* @__PURE__ */ new Map();
-  requestMsByMsgExpire;
-  constructor(gossipsubIWantFollowupMs, msgIdToStrFn, metrics) {
-    this.gossipsubIWantFollowupMs = gossipsubIWantFollowupMs;
-    this.msgIdToStrFn = msgIdToStrFn;
-    this.metrics = metrics;
-    this.requestMsByMsgExpire = 10 * gossipsubIWantFollowupMs;
-  }
-  get size() {
-    return this.promises.size;
-  }
-  get requestMsByMsgSize() {
-    return this.requestMsByMsg.size;
-  }
-  /**
-   * Track a promise to deliver a message from a list of msgIds we are requesting
-   */
-  addPromise(from3, msgIds) {
-    const ix = Math.floor(Math.random() * msgIds.length);
-    const msgId2 = msgIds[ix];
-    const msgIdStr = this.msgIdToStrFn(msgId2);
-    let expireByPeer = this.promises.get(msgIdStr);
-    if (expireByPeer == null) {
-      expireByPeer = /* @__PURE__ */ new Map();
-      this.promises.set(msgIdStr, expireByPeer);
-    }
-    const now = Date.now();
-    if (!expireByPeer.has(from3)) {
-      expireByPeer.set(from3, now + this.gossipsubIWantFollowupMs);
-      if (this.metrics != null) {
-        this.metrics.iwantPromiseStarted.inc(1);
-        if (!this.requestMsByMsg.has(msgIdStr)) {
-          this.requestMsByMsg.set(msgIdStr, now);
-        }
-      }
-    }
-  }
-  /**
-   * Returns the number of broken promises for each peer who didn't follow up on an IWANT request.
-   *
-   * This should be called not too often relative to the expire times, since it iterates over the whole data.
-   */
-  getBrokenPromises() {
-    const now = Date.now();
-    const result = /* @__PURE__ */ new Map();
-    let brokenPromises = 0;
-    this.promises.forEach((expireByPeer, msgId2) => {
-      expireByPeer.forEach((expire, p) => {
-        if (expire < now) {
-          result.set(p, (result.get(p) ?? 0) + 1);
-          expireByPeer.delete(p);
-          brokenPromises++;
-        }
-      });
-      if (expireByPeer.size === 0) {
-        this.promises.delete(msgId2);
-      }
-    });
-    this.metrics?.iwantPromiseBroken.inc(brokenPromises);
-    return result;
-  }
-  /**
-   * Someone delivered a message, stop tracking promises for it
-   */
-  deliverMessage(msgIdStr, isDuplicate = false) {
-    this.trackMessage(msgIdStr);
-    const expireByPeer = this.promises.get(msgIdStr);
-    if (expireByPeer != null) {
-      this.promises.delete(msgIdStr);
-      if (this.metrics != null) {
-        this.metrics.iwantPromiseResolved.inc(1);
-        if (isDuplicate)
-          this.metrics.iwantPromiseResolvedFromDuplicate.inc(1);
-        this.metrics.iwantPromiseResolvedPeers.inc(expireByPeer.size);
-      }
-    }
-  }
-  /**
-   * A message got rejected, so we can stop tracking promises and let the score penalty apply from invalid message delivery,
-   * unless its an obviously invalid message.
-   */
-  rejectMessage(msgIdStr, reason) {
-    this.trackMessage(msgIdStr);
-    switch (reason) {
-      case RejectReason.Error:
-        return;
-      default:
-        break;
-    }
-    this.promises.delete(msgIdStr);
-  }
-  clear() {
-    this.promises.clear();
-  }
-  prune() {
-    const maxMs = Date.now() - this.requestMsByMsgExpire;
-    let count = 0;
-    for (const [k, v] of this.requestMsByMsg.entries()) {
-      if (v < maxMs) {
-        this.requestMsByMsg.delete(k);
-        count++;
-      } else {
-        break;
-      }
-    }
-    this.metrics?.iwantMessagePruned.inc(count);
-  }
-  trackMessage(msgIdStr) {
-    if (this.metrics != null) {
-      const requestMs = this.requestMsByMsg.get(msgIdStr);
-      if (requestMs !== void 0) {
-        this.metrics.iwantPromiseDeliveryTime.observe((Date.now() - requestMs) / 1e3);
-        this.requestMsByMsg.delete(msgIdStr);
-      }
-    }
-  }
-};
-
-// node_modules/@chainsafe/libp2p-gossipsub/node_modules/@libp2p/crypto/dist/src/webcrypto-browser.js
-var webcrypto_browser_default = {
-  get(win = globalThis) {
-    const nativeCrypto = win.crypto;
-    if (nativeCrypto?.subtle == null) {
-      throw Object.assign(new Error("Missing Web Crypto API. The most likely cause of this error is that this page is being accessed from an insecure context (i.e. not HTTPS). For more information and possible resolutions see https://github.com/libp2p/js-libp2p/blob/main/packages/crypto/README.md#web-crypto-api"), { code: "ERR_MISSING_WEB_CRYPTO" });
-    }
-    return nativeCrypto;
-  }
-};
-
-// node_modules/@chainsafe/libp2p-gossipsub/node_modules/@libp2p/crypto/dist/src/keys/ed25519-class.js
-var ed25519_class_exports = {};
-__export(ed25519_class_exports, {
-  Ed25519PrivateKey: () => Ed25519PrivateKey,
-  Ed25519PublicKey: () => Ed25519PublicKey,
-  generateKeyPair: () => generateKeyPair,
-  generateKeyPairFromSeed: () => generateKeyPairFromSeed,
-  unmarshalEd25519PrivateKey: () => unmarshalEd25519PrivateKey,
-  unmarshalEd25519PublicKey: () => unmarshalEd25519PublicKey
-});
-
-// node_modules/@chainsafe/libp2p-gossipsub/node_modules/@libp2p/crypto/dist/src/util.js
-function isPromise(thing) {
-  if (thing == null) {
-    return false;
-  }
-  return typeof thing.then === "function" && typeof thing.catch === "function" && typeof thing.finally === "function";
-}
-__name(isPromise, "isPromise");
 
 // node_modules/@noble/hashes/esm/_assert.js
 function number(n) {
@@ -7496,20 +1859,6 @@ var crypto2 = typeof globalThis === "object" && "crypto" in globalThis ? globalT
 var createView = /* @__PURE__ */ __name((arr) => new DataView(arr.buffer, arr.byteOffset, arr.byteLength), "createView");
 var rotr = /* @__PURE__ */ __name((word, shift) => word << 32 - shift | word >>> shift, "rotr");
 var isLE = new Uint8Array(new Uint32Array([287454020]).buffer)[0] === 68;
-var nextTick = /* @__PURE__ */ __name(async () => {
-}, "nextTick");
-async function asyncLoop(iters, tick, cb) {
-  let ts = Date.now();
-  for (let i = 0; i < iters; i++) {
-    cb(i);
-    const diff = Date.now() - ts;
-    if (diff >= 0 && diff < tick)
-      continue;
-    await nextTick();
-    ts += diff;
-  }
-}
-__name(asyncLoop, "asyncLoop");
 function utf8ToBytes(str) {
   if (typeof str !== "string")
     throw new Error(`utf8ToBytes expected string, got ${typeof str}`);
@@ -7549,13 +1898,6 @@ var Hash = class {
   }
 };
 var toStr = {}.toString;
-function checkOpts(defaults, opts) {
-  if (opts !== void 0 && toStr.call(opts) !== "[object Object]")
-    throw new Error("Options should be object or undefined");
-  const merged = Object.assign(defaults, opts);
-  return merged;
-}
-__name(checkOpts, "checkOpts");
 function wrapConstructor(hashCons) {
   const hashC = /* @__PURE__ */ __name((msg) => hashCons().update(toBytes(msg)).digest(), "hashC");
   const tmp = hashCons();
@@ -7951,7 +2293,7 @@ var SHA512 = class extends HashMD {
     this.set(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   }
 };
-var sha5122 = /* @__PURE__ */ wrapConstructor(() => new SHA512());
+var sha512 = /* @__PURE__ */ wrapConstructor(() => new SHA512());
 
 // node_modules/@noble/curves/esm/abstract/utils.js
 var utils_exports = {};
@@ -9171,7 +3513,7 @@ var ed25519Defaults = /* @__PURE__ */ (() => ({
   // Base point (x, y) aka generator point
   Gx: BigInt("15112221349535400772501151409588531511454012693041857206046113283949847762202"),
   Gy: BigInt("46316835694926478169428394003475163141307993866256225615783033603165251855960"),
-  hash: sha5122,
+  hash: sha512,
   randomBytes,
   adjustScalarBytes,
   // dom2
@@ -9181,145 +3523,1700 @@ var ed25519Defaults = /* @__PURE__ */ (() => ({
 }))();
 var ed25519 = /* @__PURE__ */ (() => twistedEdwards(ed25519Defaults))();
 
-// node_modules/@chainsafe/libp2p-gossipsub/node_modules/@libp2p/crypto/dist/src/keys/ed25519-browser.js
+// node_modules/@libp2p/crypto/dist/src/keys/ed25519/index.browser.js
 var PUBLIC_KEY_BYTE_LENGTH = 32;
-var PRIVATE_KEY_BYTE_LENGTH = 64;
-var KEYS_BYTE_LENGTH = 32;
-function generateKey() {
-  const privateKeyRaw = ed25519.utils.randomPrivateKey();
-  const publicKey = ed25519.getPublicKey(privateKeyRaw);
-  const privateKey = concatKeys(privateKeyRaw, publicKey);
-  return {
-    privateKey,
-    publicKey
-  };
-}
-__name(generateKey, "generateKey");
-function generateKeyFromSeed(seed) {
-  if (seed.length !== KEYS_BYTE_LENGTH) {
-    throw new TypeError('"seed" must be 32 bytes in length.');
-  } else if (!(seed instanceof Uint8Array)) {
-    throw new TypeError('"seed" must be a node.js Buffer, or Uint8Array.');
-  }
-  const privateKeyRaw = seed;
-  const publicKey = ed25519.getPublicKey(privateKeyRaw);
-  const privateKey = concatKeys(privateKeyRaw, publicKey);
-  return {
-    privateKey,
-    publicKey
-  };
-}
-__name(generateKeyFromSeed, "generateKeyFromSeed");
-function hashAndSign(privateKey, msg) {
-  const privateKeyRaw = privateKey.subarray(0, KEYS_BYTE_LENGTH);
-  return ed25519.sign(msg instanceof Uint8Array ? msg : msg.subarray(), privateKeyRaw);
-}
-__name(hashAndSign, "hashAndSign");
 function hashAndVerify(publicKey, sig, msg) {
   return ed25519.verify(sig, msg instanceof Uint8Array ? msg : msg.subarray(), publicKey);
 }
 __name(hashAndVerify, "hashAndVerify");
-function concatKeys(privateKeyRaw, publicKey) {
-  const privateKey = new Uint8Array(PRIVATE_KEY_BYTE_LENGTH);
-  for (let i = 0; i < KEYS_BYTE_LENGTH; i++) {
-    privateKey[i] = privateKeyRaw[i];
-    privateKey[KEYS_BYTE_LENGTH + i] = publicKey[i];
-  }
-  return privateKey;
-}
-__name(concatKeys, "concatKeys");
 
-// node_modules/@chainsafe/libp2p-gossipsub/node_modules/@libp2p/crypto/dist/src/ciphers/aes-gcm.browser.js
-var derivedEmptyPasswordKey = { alg: "A128GCM", ext: true, k: "scm9jmO_4BJAgdwWGVulLg", key_ops: ["encrypt", "decrypt"], kty: "oct" };
-function create2(opts) {
-  const algorithm = opts?.algorithm ?? "AES-GCM";
-  let keyLength = opts?.keyLength ?? 16;
-  const nonceLength = opts?.nonceLength ?? 12;
-  const digest2 = opts?.digest ?? "SHA-256";
-  const saltLength = opts?.saltLength ?? 16;
-  const iterations = opts?.iterations ?? 32767;
-  const crypto3 = webcrypto_browser_default.get();
-  keyLength *= 8;
-  async function encrypt(data, password) {
-    const salt = crypto3.getRandomValues(new Uint8Array(saltLength));
-    const nonce = crypto3.getRandomValues(new Uint8Array(nonceLength));
-    const aesGcm = { name: algorithm, iv: nonce };
-    if (typeof password === "string") {
-      password = fromString2(password);
+// node_modules/@libp2p/crypto/dist/src/keys/ed25519/ed25519.js
+var Ed25519PublicKey = class {
+  static {
+    __name(this, "Ed25519PublicKey");
+  }
+  type = "Ed25519";
+  raw;
+  constructor(key) {
+    this.raw = ensureEd25519Key(key, PUBLIC_KEY_BYTE_LENGTH);
+  }
+  toMultihash() {
+    return identity.digest(publicKeyToProtobuf(this));
+  }
+  toCID() {
+    return CID.createV1(114, this.toMultihash());
+  }
+  toString() {
+    return base58btc.encode(this.toMultihash().bytes).substring(1);
+  }
+  equals(key) {
+    if (key == null || !(key.raw instanceof Uint8Array)) {
+      return false;
     }
-    let cryptoKey;
-    if (password.length === 0) {
-      cryptoKey = await crypto3.subtle.importKey("jwk", derivedEmptyPasswordKey, { name: "AES-GCM" }, true, ["encrypt"]);
-      try {
-        const deriveParams = { name: "PBKDF2", salt, iterations, hash: { name: digest2 } };
-        const runtimeDerivedEmptyPassword = await crypto3.subtle.importKey("raw", password, { name: "PBKDF2" }, false, ["deriveKey"]);
-        cryptoKey = await crypto3.subtle.deriveKey(deriveParams, runtimeDerivedEmptyPassword, { name: algorithm, length: keyLength }, true, ["encrypt"]);
-      } catch {
-        cryptoKey = await crypto3.subtle.importKey("jwk", derivedEmptyPasswordKey, { name: "AES-GCM" }, true, ["encrypt"]);
+    return equals3(this.raw, key.raw);
+  }
+  verify(data, sig) {
+    return hashAndVerify(this.raw, sig, data);
+  }
+};
+
+// node_modules/@libp2p/crypto/dist/src/keys/ed25519/utils.js
+function unmarshalEd25519PublicKey(bytes2) {
+  bytes2 = ensureEd25519Key(bytes2, PUBLIC_KEY_BYTE_LENGTH);
+  return new Ed25519PublicKey(bytes2);
+}
+__name(unmarshalEd25519PublicKey, "unmarshalEd25519PublicKey");
+function ensureEd25519Key(key, length3) {
+  key = Uint8Array.from(key ?? []);
+  if (key.length !== length3) {
+    throw new InvalidParametersError(`Key must be a Uint8Array of length ${length3}, got ${key.length}`);
+  }
+  return key;
+}
+__name(ensureEd25519Key, "ensureEd25519Key");
+
+// node_modules/uint8arrays/dist/src/alloc.js
+function alloc(size = 0) {
+  return new Uint8Array(size);
+}
+__name(alloc, "alloc");
+function allocUnsafe(size = 0) {
+  return new Uint8Array(size);
+}
+__name(allocUnsafe, "allocUnsafe");
+
+// node_modules/uint8-varint/dist/src/index.js
+var N12 = Math.pow(2, 7);
+var N22 = Math.pow(2, 14);
+var N32 = Math.pow(2, 21);
+var N42 = Math.pow(2, 28);
+var N52 = Math.pow(2, 35);
+var N62 = Math.pow(2, 42);
+var N72 = Math.pow(2, 49);
+var MSB2 = 128;
+var REST2 = 127;
+function encodingLength2(value) {
+  if (value < N12) {
+    return 1;
+  }
+  if (value < N22) {
+    return 2;
+  }
+  if (value < N32) {
+    return 3;
+  }
+  if (value < N42) {
+    return 4;
+  }
+  if (value < N52) {
+    return 5;
+  }
+  if (value < N62) {
+    return 6;
+  }
+  if (value < N72) {
+    return 7;
+  }
+  if (Number.MAX_SAFE_INTEGER != null && value > Number.MAX_SAFE_INTEGER) {
+    throw new RangeError("Could not encode varint");
+  }
+  return 8;
+}
+__name(encodingLength2, "encodingLength");
+function encodeUint8Array(value, buf, offset = 0) {
+  switch (encodingLength2(value)) {
+    case 8: {
+      buf[offset++] = value & 255 | MSB2;
+      value /= 128;
+    }
+    case 7: {
+      buf[offset++] = value & 255 | MSB2;
+      value /= 128;
+    }
+    case 6: {
+      buf[offset++] = value & 255 | MSB2;
+      value /= 128;
+    }
+    case 5: {
+      buf[offset++] = value & 255 | MSB2;
+      value /= 128;
+    }
+    case 4: {
+      buf[offset++] = value & 255 | MSB2;
+      value >>>= 7;
+    }
+    case 3: {
+      buf[offset++] = value & 255 | MSB2;
+      value >>>= 7;
+    }
+    case 2: {
+      buf[offset++] = value & 255 | MSB2;
+      value >>>= 7;
+    }
+    case 1: {
+      buf[offset++] = value & 255;
+      value >>>= 7;
+      break;
+    }
+    default:
+      throw new Error("unreachable");
+  }
+  return buf;
+}
+__name(encodeUint8Array, "encodeUint8Array");
+function encodeUint8ArrayList(value, buf, offset = 0) {
+  switch (encodingLength2(value)) {
+    case 8: {
+      buf.set(offset++, value & 255 | MSB2);
+      value /= 128;
+    }
+    case 7: {
+      buf.set(offset++, value & 255 | MSB2);
+      value /= 128;
+    }
+    case 6: {
+      buf.set(offset++, value & 255 | MSB2);
+      value /= 128;
+    }
+    case 5: {
+      buf.set(offset++, value & 255 | MSB2);
+      value /= 128;
+    }
+    case 4: {
+      buf.set(offset++, value & 255 | MSB2);
+      value >>>= 7;
+    }
+    case 3: {
+      buf.set(offset++, value & 255 | MSB2);
+      value >>>= 7;
+    }
+    case 2: {
+      buf.set(offset++, value & 255 | MSB2);
+      value >>>= 7;
+    }
+    case 1: {
+      buf.set(offset++, value & 255);
+      value >>>= 7;
+      break;
+    }
+    default:
+      throw new Error("unreachable");
+  }
+  return buf;
+}
+__name(encodeUint8ArrayList, "encodeUint8ArrayList");
+function decodeUint8Array(buf, offset) {
+  let b = buf[offset];
+  let res = 0;
+  res += b & REST2;
+  if (b < MSB2) {
+    return res;
+  }
+  b = buf[offset + 1];
+  res += (b & REST2) << 7;
+  if (b < MSB2) {
+    return res;
+  }
+  b = buf[offset + 2];
+  res += (b & REST2) << 14;
+  if (b < MSB2) {
+    return res;
+  }
+  b = buf[offset + 3];
+  res += (b & REST2) << 21;
+  if (b < MSB2) {
+    return res;
+  }
+  b = buf[offset + 4];
+  res += (b & REST2) * N42;
+  if (b < MSB2) {
+    return res;
+  }
+  b = buf[offset + 5];
+  res += (b & REST2) * N52;
+  if (b < MSB2) {
+    return res;
+  }
+  b = buf[offset + 6];
+  res += (b & REST2) * N62;
+  if (b < MSB2) {
+    return res;
+  }
+  b = buf[offset + 7];
+  res += (b & REST2) * N72;
+  if (b < MSB2) {
+    return res;
+  }
+  throw new RangeError("Could not decode varint");
+}
+__name(decodeUint8Array, "decodeUint8Array");
+function decodeUint8ArrayList(buf, offset) {
+  let b = buf.get(offset);
+  let res = 0;
+  res += b & REST2;
+  if (b < MSB2) {
+    return res;
+  }
+  b = buf.get(offset + 1);
+  res += (b & REST2) << 7;
+  if (b < MSB2) {
+    return res;
+  }
+  b = buf.get(offset + 2);
+  res += (b & REST2) << 14;
+  if (b < MSB2) {
+    return res;
+  }
+  b = buf.get(offset + 3);
+  res += (b & REST2) << 21;
+  if (b < MSB2) {
+    return res;
+  }
+  b = buf.get(offset + 4);
+  res += (b & REST2) * N42;
+  if (b < MSB2) {
+    return res;
+  }
+  b = buf.get(offset + 5);
+  res += (b & REST2) * N52;
+  if (b < MSB2) {
+    return res;
+  }
+  b = buf.get(offset + 6);
+  res += (b & REST2) * N62;
+  if (b < MSB2) {
+    return res;
+  }
+  b = buf.get(offset + 7);
+  res += (b & REST2) * N72;
+  if (b < MSB2) {
+    return res;
+  }
+  throw new RangeError("Could not decode varint");
+}
+__name(decodeUint8ArrayList, "decodeUint8ArrayList");
+function encode4(value, buf, offset = 0) {
+  if (buf == null) {
+    buf = allocUnsafe(encodingLength2(value));
+  }
+  if (buf instanceof Uint8Array) {
+    return encodeUint8Array(value, buf, offset);
+  } else {
+    return encodeUint8ArrayList(value, buf, offset);
+  }
+}
+__name(encode4, "encode");
+function decode5(buf, offset = 0) {
+  if (buf instanceof Uint8Array) {
+    return decodeUint8Array(buf, offset);
+  } else {
+    return decodeUint8ArrayList(buf, offset);
+  }
+}
+__name(decode5, "decode");
+
+// node_modules/protons-runtime/dist/src/utils/float.js
+var f32 = new Float32Array([-0]);
+var f8b = new Uint8Array(f32.buffer);
+function writeFloatLE(val, buf, pos) {
+  f32[0] = val;
+  buf[pos] = f8b[0];
+  buf[pos + 1] = f8b[1];
+  buf[pos + 2] = f8b[2];
+  buf[pos + 3] = f8b[3];
+}
+__name(writeFloatLE, "writeFloatLE");
+function readFloatLE(buf, pos) {
+  f8b[0] = buf[pos];
+  f8b[1] = buf[pos + 1];
+  f8b[2] = buf[pos + 2];
+  f8b[3] = buf[pos + 3];
+  return f32[0];
+}
+__name(readFloatLE, "readFloatLE");
+var f64 = new Float64Array([-0]);
+var d8b = new Uint8Array(f64.buffer);
+function writeDoubleLE(val, buf, pos) {
+  f64[0] = val;
+  buf[pos] = d8b[0];
+  buf[pos + 1] = d8b[1];
+  buf[pos + 2] = d8b[2];
+  buf[pos + 3] = d8b[3];
+  buf[pos + 4] = d8b[4];
+  buf[pos + 5] = d8b[5];
+  buf[pos + 6] = d8b[6];
+  buf[pos + 7] = d8b[7];
+}
+__name(writeDoubleLE, "writeDoubleLE");
+function readDoubleLE(buf, pos) {
+  d8b[0] = buf[pos];
+  d8b[1] = buf[pos + 1];
+  d8b[2] = buf[pos + 2];
+  d8b[3] = buf[pos + 3];
+  d8b[4] = buf[pos + 4];
+  d8b[5] = buf[pos + 5];
+  d8b[6] = buf[pos + 6];
+  d8b[7] = buf[pos + 7];
+  return f64[0];
+}
+__name(readDoubleLE, "readDoubleLE");
+
+// node_modules/protons-runtime/dist/src/utils/longbits.js
+var MAX_SAFE_NUMBER_INTEGER = BigInt(Number.MAX_SAFE_INTEGER);
+var MIN_SAFE_NUMBER_INTEGER = BigInt(Number.MIN_SAFE_INTEGER);
+var LongBits = class _LongBits {
+  static {
+    __name(this, "LongBits");
+  }
+  lo;
+  hi;
+  constructor(lo, hi) {
+    this.lo = lo | 0;
+    this.hi = hi | 0;
+  }
+  /**
+   * Converts this long bits to a possibly unsafe JavaScript number
+   */
+  toNumber(unsigned = false) {
+    if (!unsigned && this.hi >>> 31 > 0) {
+      const lo = ~this.lo + 1 >>> 0;
+      let hi = ~this.hi >>> 0;
+      if (lo === 0) {
+        hi = hi + 1 >>> 0;
+      }
+      return -(lo + hi * 4294967296);
+    }
+    return this.lo + this.hi * 4294967296;
+  }
+  /**
+   * Converts this long bits to a bigint
+   */
+  toBigInt(unsigned = false) {
+    if (unsigned) {
+      return BigInt(this.lo >>> 0) + (BigInt(this.hi >>> 0) << 32n);
+    }
+    if (this.hi >>> 31 !== 0) {
+      const lo = ~this.lo + 1 >>> 0;
+      let hi = ~this.hi >>> 0;
+      if (lo === 0) {
+        hi = hi + 1 >>> 0;
+      }
+      return -(BigInt(lo) + (BigInt(hi) << 32n));
+    }
+    return BigInt(this.lo >>> 0) + (BigInt(this.hi >>> 0) << 32n);
+  }
+  /**
+   * Converts this long bits to a string
+   */
+  toString(unsigned = false) {
+    return this.toBigInt(unsigned).toString();
+  }
+  /**
+   * Zig-zag encodes this long bits
+   */
+  zzEncode() {
+    const mask = this.hi >> 31;
+    this.hi = ((this.hi << 1 | this.lo >>> 31) ^ mask) >>> 0;
+    this.lo = (this.lo << 1 ^ mask) >>> 0;
+    return this;
+  }
+  /**
+   * Zig-zag decodes this long bits
+   */
+  zzDecode() {
+    const mask = -(this.lo & 1);
+    this.lo = ((this.lo >>> 1 | this.hi << 31) ^ mask) >>> 0;
+    this.hi = (this.hi >>> 1 ^ mask) >>> 0;
+    return this;
+  }
+  /**
+   * Calculates the length of this longbits when encoded as a varint.
+   */
+  length() {
+    const part0 = this.lo;
+    const part1 = (this.lo >>> 28 | this.hi << 4) >>> 0;
+    const part2 = this.hi >>> 24;
+    return part2 === 0 ? part1 === 0 ? part0 < 16384 ? part0 < 128 ? 1 : 2 : part0 < 2097152 ? 3 : 4 : part1 < 16384 ? part1 < 128 ? 5 : 6 : part1 < 2097152 ? 7 : 8 : part2 < 128 ? 9 : 10;
+  }
+  /**
+   * Constructs new long bits from the specified number
+   */
+  static fromBigInt(value) {
+    if (value === 0n) {
+      return zero;
+    }
+    if (value < MAX_SAFE_NUMBER_INTEGER && value > MIN_SAFE_NUMBER_INTEGER) {
+      return this.fromNumber(Number(value));
+    }
+    const negative = value < 0n;
+    if (negative) {
+      value = -value;
+    }
+    let hi = value >> 32n;
+    let lo = value - (hi << 32n);
+    if (negative) {
+      hi = ~hi | 0n;
+      lo = ~lo | 0n;
+      if (++lo > TWO_32) {
+        lo = 0n;
+        if (++hi > TWO_32) {
+          hi = 0n;
+        }
+      }
+    }
+    return new _LongBits(Number(lo), Number(hi));
+  }
+  /**
+   * Constructs new long bits from the specified number
+   */
+  static fromNumber(value) {
+    if (value === 0) {
+      return zero;
+    }
+    const sign = value < 0;
+    if (sign) {
+      value = -value;
+    }
+    let lo = value >>> 0;
+    let hi = (value - lo) / 4294967296 >>> 0;
+    if (sign) {
+      hi = ~hi >>> 0;
+      lo = ~lo >>> 0;
+      if (++lo > 4294967295) {
+        lo = 0;
+        if (++hi > 4294967295) {
+          hi = 0;
+        }
+      }
+    }
+    return new _LongBits(lo, hi);
+  }
+  /**
+   * Constructs new long bits from a number, long or string
+   */
+  static from(value) {
+    if (typeof value === "number") {
+      return _LongBits.fromNumber(value);
+    }
+    if (typeof value === "bigint") {
+      return _LongBits.fromBigInt(value);
+    }
+    if (typeof value === "string") {
+      return _LongBits.fromBigInt(BigInt(value));
+    }
+    return value.low != null || value.high != null ? new _LongBits(value.low >>> 0, value.high >>> 0) : zero;
+  }
+};
+var zero = new LongBits(0, 0);
+zero.toBigInt = function() {
+  return 0n;
+};
+zero.zzEncode = zero.zzDecode = function() {
+  return this;
+};
+zero.length = function() {
+  return 1;
+};
+var TWO_32 = 4294967296n;
+
+// node_modules/protons-runtime/dist/src/utils/utf8.js
+function length2(string2) {
+  let len = 0;
+  let c = 0;
+  for (let i = 0; i < string2.length; ++i) {
+    c = string2.charCodeAt(i);
+    if (c < 128) {
+      len += 1;
+    } else if (c < 2048) {
+      len += 2;
+    } else if ((c & 64512) === 55296 && (string2.charCodeAt(i + 1) & 64512) === 56320) {
+      ++i;
+      len += 4;
+    } else {
+      len += 3;
+    }
+  }
+  return len;
+}
+__name(length2, "length");
+function read2(buffer, start, end) {
+  const len = end - start;
+  if (len < 1) {
+    return "";
+  }
+  let parts;
+  const chunk = [];
+  let i = 0;
+  let t;
+  while (start < end) {
+    t = buffer[start++];
+    if (t < 128) {
+      chunk[i++] = t;
+    } else if (t > 191 && t < 224) {
+      chunk[i++] = (t & 31) << 6 | buffer[start++] & 63;
+    } else if (t > 239 && t < 365) {
+      t = ((t & 7) << 18 | (buffer[start++] & 63) << 12 | (buffer[start++] & 63) << 6 | buffer[start++] & 63) - 65536;
+      chunk[i++] = 55296 + (t >> 10);
+      chunk[i++] = 56320 + (t & 1023);
+    } else {
+      chunk[i++] = (t & 15) << 12 | (buffer[start++] & 63) << 6 | buffer[start++] & 63;
+    }
+    if (i > 8191) {
+      (parts ?? (parts = [])).push(String.fromCharCode.apply(String, chunk));
+      i = 0;
+    }
+  }
+  if (parts != null) {
+    if (i > 0) {
+      parts.push(String.fromCharCode.apply(String, chunk.slice(0, i)));
+    }
+    return parts.join("");
+  }
+  return String.fromCharCode.apply(String, chunk.slice(0, i));
+}
+__name(read2, "read");
+function write(string2, buffer, offset) {
+  const start = offset;
+  let c1;
+  let c2;
+  for (let i = 0; i < string2.length; ++i) {
+    c1 = string2.charCodeAt(i);
+    if (c1 < 128) {
+      buffer[offset++] = c1;
+    } else if (c1 < 2048) {
+      buffer[offset++] = c1 >> 6 | 192;
+      buffer[offset++] = c1 & 63 | 128;
+    } else if ((c1 & 64512) === 55296 && ((c2 = string2.charCodeAt(i + 1)) & 64512) === 56320) {
+      c1 = 65536 + ((c1 & 1023) << 10) + (c2 & 1023);
+      ++i;
+      buffer[offset++] = c1 >> 18 | 240;
+      buffer[offset++] = c1 >> 12 & 63 | 128;
+      buffer[offset++] = c1 >> 6 & 63 | 128;
+      buffer[offset++] = c1 & 63 | 128;
+    } else {
+      buffer[offset++] = c1 >> 12 | 224;
+      buffer[offset++] = c1 >> 6 & 63 | 128;
+      buffer[offset++] = c1 & 63 | 128;
+    }
+  }
+  return offset - start;
+}
+__name(write, "write");
+
+// node_modules/protons-runtime/dist/src/utils/reader.js
+function indexOutOfRange(reader, writeLength) {
+  return RangeError(`index out of range: ${reader.pos} + ${writeLength ?? 1} > ${reader.len}`);
+}
+__name(indexOutOfRange, "indexOutOfRange");
+function readFixed32End(buf, end) {
+  return (buf[end - 4] | buf[end - 3] << 8 | buf[end - 2] << 16 | buf[end - 1] << 24) >>> 0;
+}
+__name(readFixed32End, "readFixed32End");
+var Uint8ArrayReader = class {
+  static {
+    __name(this, "Uint8ArrayReader");
+  }
+  buf;
+  pos;
+  len;
+  _slice = Uint8Array.prototype.subarray;
+  constructor(buffer) {
+    this.buf = buffer;
+    this.pos = 0;
+    this.len = buffer.length;
+  }
+  /**
+   * Reads a varint as an unsigned 32 bit value
+   */
+  uint32() {
+    let value = 4294967295;
+    value = (this.buf[this.pos] & 127) >>> 0;
+    if (this.buf[this.pos++] < 128)
+      return value;
+    value = (value | (this.buf[this.pos] & 127) << 7) >>> 0;
+    if (this.buf[this.pos++] < 128)
+      return value;
+    value = (value | (this.buf[this.pos] & 127) << 14) >>> 0;
+    if (this.buf[this.pos++] < 128)
+      return value;
+    value = (value | (this.buf[this.pos] & 127) << 21) >>> 0;
+    if (this.buf[this.pos++] < 128)
+      return value;
+    value = (value | (this.buf[this.pos] & 15) << 28) >>> 0;
+    if (this.buf[this.pos++] < 128)
+      return value;
+    if ((this.pos += 5) > this.len) {
+      this.pos = this.len;
+      throw indexOutOfRange(this, 10);
+    }
+    return value;
+  }
+  /**
+   * Reads a varint as a signed 32 bit value
+   */
+  int32() {
+    return this.uint32() | 0;
+  }
+  /**
+   * Reads a zig-zag encoded varint as a signed 32 bit value
+   */
+  sint32() {
+    const value = this.uint32();
+    return value >>> 1 ^ -(value & 1) | 0;
+  }
+  /**
+   * Reads a varint as a boolean
+   */
+  bool() {
+    return this.uint32() !== 0;
+  }
+  /**
+   * Reads fixed 32 bits as an unsigned 32 bit integer
+   */
+  fixed32() {
+    if (this.pos + 4 > this.len) {
+      throw indexOutOfRange(this, 4);
+    }
+    const res = readFixed32End(this.buf, this.pos += 4);
+    return res;
+  }
+  /**
+   * Reads fixed 32 bits as a signed 32 bit integer
+   */
+  sfixed32() {
+    if (this.pos + 4 > this.len) {
+      throw indexOutOfRange(this, 4);
+    }
+    const res = readFixed32End(this.buf, this.pos += 4) | 0;
+    return res;
+  }
+  /**
+   * Reads a float (32 bit) as a number
+   */
+  float() {
+    if (this.pos + 4 > this.len) {
+      throw indexOutOfRange(this, 4);
+    }
+    const value = readFloatLE(this.buf, this.pos);
+    this.pos += 4;
+    return value;
+  }
+  /**
+   * Reads a double (64 bit float) as a number
+   */
+  double() {
+    if (this.pos + 8 > this.len) {
+      throw indexOutOfRange(this, 4);
+    }
+    const value = readDoubleLE(this.buf, this.pos);
+    this.pos += 8;
+    return value;
+  }
+  /**
+   * Reads a sequence of bytes preceded by its length as a varint
+   */
+  bytes() {
+    const length3 = this.uint32();
+    const start = this.pos;
+    const end = this.pos + length3;
+    if (end > this.len) {
+      throw indexOutOfRange(this, length3);
+    }
+    this.pos += length3;
+    return start === end ? new Uint8Array(0) : this.buf.subarray(start, end);
+  }
+  /**
+   * Reads a string preceded by its byte length as a varint
+   */
+  string() {
+    const bytes2 = this.bytes();
+    return read2(bytes2, 0, bytes2.length);
+  }
+  /**
+   * Skips the specified number of bytes if specified, otherwise skips a varint
+   */
+  skip(length3) {
+    if (typeof length3 === "number") {
+      if (this.pos + length3 > this.len) {
+        throw indexOutOfRange(this, length3);
+      }
+      this.pos += length3;
+    } else {
+      do {
+        if (this.pos >= this.len) {
+          throw indexOutOfRange(this);
+        }
+      } while ((this.buf[this.pos++] & 128) !== 0);
+    }
+    return this;
+  }
+  /**
+   * Skips the next element of the specified wire type
+   */
+  skipType(wireType) {
+    switch (wireType) {
+      case 0:
+        this.skip();
+        break;
+      case 1:
+        this.skip(8);
+        break;
+      case 2:
+        this.skip(this.uint32());
+        break;
+      case 3:
+        while ((wireType = this.uint32() & 7) !== 4) {
+          this.skipType(wireType);
+        }
+        break;
+      case 5:
+        this.skip(4);
+        break;
+      /* istanbul ignore next */
+      default:
+        throw Error(`invalid wire type ${wireType} at offset ${this.pos}`);
+    }
+    return this;
+  }
+  readLongVarint() {
+    const bits = new LongBits(0, 0);
+    let i = 0;
+    if (this.len - this.pos > 4) {
+      for (; i < 4; ++i) {
+        bits.lo = (bits.lo | (this.buf[this.pos] & 127) << i * 7) >>> 0;
+        if (this.buf[this.pos++] < 128) {
+          return bits;
+        }
+      }
+      bits.lo = (bits.lo | (this.buf[this.pos] & 127) << 28) >>> 0;
+      bits.hi = (bits.hi | (this.buf[this.pos] & 127) >> 4) >>> 0;
+      if (this.buf[this.pos++] < 128) {
+        return bits;
+      }
+      i = 0;
+    } else {
+      for (; i < 3; ++i) {
+        if (this.pos >= this.len) {
+          throw indexOutOfRange(this);
+        }
+        bits.lo = (bits.lo | (this.buf[this.pos] & 127) << i * 7) >>> 0;
+        if (this.buf[this.pos++] < 128) {
+          return bits;
+        }
+      }
+      bits.lo = (bits.lo | (this.buf[this.pos++] & 127) << i * 7) >>> 0;
+      return bits;
+    }
+    if (this.len - this.pos > 4) {
+      for (; i < 5; ++i) {
+        bits.hi = (bits.hi | (this.buf[this.pos] & 127) << i * 7 + 3) >>> 0;
+        if (this.buf[this.pos++] < 128) {
+          return bits;
+        }
       }
     } else {
-      const deriveParams = { name: "PBKDF2", salt, iterations, hash: { name: digest2 } };
-      const rawKey = await crypto3.subtle.importKey("raw", password, { name: "PBKDF2" }, false, ["deriveKey"]);
-      cryptoKey = await crypto3.subtle.deriveKey(deriveParams, rawKey, { name: algorithm, length: keyLength }, true, ["encrypt"]);
-    }
-    const ciphertext = await crypto3.subtle.encrypt(aesGcm, cryptoKey, data);
-    return concat([salt, aesGcm.iv, new Uint8Array(ciphertext)]);
-  }
-  __name(encrypt, "encrypt");
-  async function decrypt(data, password) {
-    const salt = data.subarray(0, saltLength);
-    const nonce = data.subarray(saltLength, saltLength + nonceLength);
-    const ciphertext = data.subarray(saltLength + nonceLength);
-    const aesGcm = { name: algorithm, iv: nonce };
-    if (typeof password === "string") {
-      password = fromString2(password);
-    }
-    let cryptoKey;
-    if (password.length === 0) {
-      try {
-        const deriveParams = { name: "PBKDF2", salt, iterations, hash: { name: digest2 } };
-        const runtimeDerivedEmptyPassword = await crypto3.subtle.importKey("raw", password, { name: "PBKDF2" }, false, ["deriveKey"]);
-        cryptoKey = await crypto3.subtle.deriveKey(deriveParams, runtimeDerivedEmptyPassword, { name: algorithm, length: keyLength }, true, ["decrypt"]);
-      } catch {
-        cryptoKey = await crypto3.subtle.importKey("jwk", derivedEmptyPasswordKey, { name: "AES-GCM" }, true, ["decrypt"]);
+      for (; i < 5; ++i) {
+        if (this.pos >= this.len) {
+          throw indexOutOfRange(this);
+        }
+        bits.hi = (bits.hi | (this.buf[this.pos] & 127) << i * 7 + 3) >>> 0;
+        if (this.buf[this.pos++] < 128) {
+          return bits;
+        }
       }
-    } else {
-      const deriveParams = { name: "PBKDF2", salt, iterations, hash: { name: digest2 } };
-      const rawKey = await crypto3.subtle.importKey("raw", password, { name: "PBKDF2" }, false, ["deriveKey"]);
-      cryptoKey = await crypto3.subtle.deriveKey(deriveParams, rawKey, { name: algorithm, length: keyLength }, true, ["decrypt"]);
     }
-    const plaintext = await crypto3.subtle.decrypt(aesGcm, cryptoKey, ciphertext);
-    return new Uint8Array(plaintext);
+    throw Error("invalid varint encoding");
   }
-  __name(decrypt, "decrypt");
-  const cipher = {
-    encrypt,
-    decrypt
+  readFixed64() {
+    if (this.pos + 8 > this.len) {
+      throw indexOutOfRange(this, 8);
+    }
+    const lo = readFixed32End(this.buf, this.pos += 4);
+    const hi = readFixed32End(this.buf, this.pos += 4);
+    return new LongBits(lo, hi);
+  }
+  /**
+   * Reads a varint as a signed 64 bit value
+   */
+  int64() {
+    return this.readLongVarint().toBigInt();
+  }
+  /**
+   * Reads a varint as a signed 64 bit value returned as a possibly unsafe
+   * JavaScript number
+   */
+  int64Number() {
+    return this.readLongVarint().toNumber();
+  }
+  /**
+   * Reads a varint as a signed 64 bit value returned as a string
+   */
+  int64String() {
+    return this.readLongVarint().toString();
+  }
+  /**
+   * Reads a varint as an unsigned 64 bit value
+   */
+  uint64() {
+    return this.readLongVarint().toBigInt(true);
+  }
+  /**
+   * Reads a varint as an unsigned 64 bit value returned as a possibly unsafe
+   * JavaScript number
+   */
+  uint64Number() {
+    const value = decodeUint8Array(this.buf, this.pos);
+    this.pos += encodingLength2(value);
+    return value;
+  }
+  /**
+   * Reads a varint as an unsigned 64 bit value returned as a string
+   */
+  uint64String() {
+    return this.readLongVarint().toString(true);
+  }
+  /**
+   * Reads a zig-zag encoded varint as a signed 64 bit value
+   */
+  sint64() {
+    return this.readLongVarint().zzDecode().toBigInt();
+  }
+  /**
+   * Reads a zig-zag encoded varint as a signed 64 bit value returned as a
+   * possibly unsafe JavaScript number
+   */
+  sint64Number() {
+    return this.readLongVarint().zzDecode().toNumber();
+  }
+  /**
+   * Reads a zig-zag encoded varint as a signed 64 bit value returned as a
+   * string
+   */
+  sint64String() {
+    return this.readLongVarint().zzDecode().toString();
+  }
+  /**
+   * Reads fixed 64 bits
+   */
+  fixed64() {
+    return this.readFixed64().toBigInt();
+  }
+  /**
+   * Reads fixed 64 bits returned as a possibly unsafe JavaScript number
+   */
+  fixed64Number() {
+    return this.readFixed64().toNumber();
+  }
+  /**
+   * Reads fixed 64 bits returned as a string
+   */
+  fixed64String() {
+    return this.readFixed64().toString();
+  }
+  /**
+   * Reads zig-zag encoded fixed 64 bits
+   */
+  sfixed64() {
+    return this.readFixed64().toBigInt();
+  }
+  /**
+   * Reads zig-zag encoded fixed 64 bits returned as a possibly unsafe
+   * JavaScript number
+   */
+  sfixed64Number() {
+    return this.readFixed64().toNumber();
+  }
+  /**
+   * Reads zig-zag encoded fixed 64 bits returned as a string
+   */
+  sfixed64String() {
+    return this.readFixed64().toString();
+  }
+};
+function createReader(buf) {
+  return new Uint8ArrayReader(buf instanceof Uint8Array ? buf : buf.subarray());
+}
+__name(createReader, "createReader");
+
+// node_modules/protons-runtime/dist/src/decode.js
+function decodeMessage(buf, codec, opts) {
+  const reader = createReader(buf);
+  return codec.decode(reader, void 0, opts);
+}
+__name(decodeMessage, "decodeMessage");
+
+// node_modules/multiformats/dist/src/bases/base10.js
+var base10_exports = {};
+__export(base10_exports, {
+  base10: () => base10
+});
+var base10 = baseX({
+  prefix: "9",
+  name: "base10",
+  alphabet: "0123456789"
+});
+
+// node_modules/multiformats/dist/src/bases/base16.js
+var base16_exports = {};
+__export(base16_exports, {
+  base16: () => base16,
+  base16upper: () => base16upper
+});
+var base16 = rfc4648({
+  prefix: "f",
+  name: "base16",
+  alphabet: "0123456789abcdef",
+  bitsPerChar: 4
+});
+var base16upper = rfc4648({
+  prefix: "F",
+  name: "base16upper",
+  alphabet: "0123456789ABCDEF",
+  bitsPerChar: 4
+});
+
+// node_modules/multiformats/dist/src/bases/base2.js
+var base2_exports = {};
+__export(base2_exports, {
+  base2: () => base2
+});
+var base2 = rfc4648({
+  prefix: "0",
+  name: "base2",
+  alphabet: "01",
+  bitsPerChar: 1
+});
+
+// node_modules/multiformats/dist/src/bases/base256emoji.js
+var base256emoji_exports = {};
+__export(base256emoji_exports, {
+  base256emoji: () => base256emoji
+});
+var alphabet = Array.from("\u{1F680}\u{1FA90}\u2604\u{1F6F0}\u{1F30C}\u{1F311}\u{1F312}\u{1F313}\u{1F314}\u{1F315}\u{1F316}\u{1F317}\u{1F318}\u{1F30D}\u{1F30F}\u{1F30E}\u{1F409}\u2600\u{1F4BB}\u{1F5A5}\u{1F4BE}\u{1F4BF}\u{1F602}\u2764\u{1F60D}\u{1F923}\u{1F60A}\u{1F64F}\u{1F495}\u{1F62D}\u{1F618}\u{1F44D}\u{1F605}\u{1F44F}\u{1F601}\u{1F525}\u{1F970}\u{1F494}\u{1F496}\u{1F499}\u{1F622}\u{1F914}\u{1F606}\u{1F644}\u{1F4AA}\u{1F609}\u263A\u{1F44C}\u{1F917}\u{1F49C}\u{1F614}\u{1F60E}\u{1F607}\u{1F339}\u{1F926}\u{1F389}\u{1F49E}\u270C\u2728\u{1F937}\u{1F631}\u{1F60C}\u{1F338}\u{1F64C}\u{1F60B}\u{1F497}\u{1F49A}\u{1F60F}\u{1F49B}\u{1F642}\u{1F493}\u{1F929}\u{1F604}\u{1F600}\u{1F5A4}\u{1F603}\u{1F4AF}\u{1F648}\u{1F447}\u{1F3B6}\u{1F612}\u{1F92D}\u2763\u{1F61C}\u{1F48B}\u{1F440}\u{1F62A}\u{1F611}\u{1F4A5}\u{1F64B}\u{1F61E}\u{1F629}\u{1F621}\u{1F92A}\u{1F44A}\u{1F973}\u{1F625}\u{1F924}\u{1F449}\u{1F483}\u{1F633}\u270B\u{1F61A}\u{1F61D}\u{1F634}\u{1F31F}\u{1F62C}\u{1F643}\u{1F340}\u{1F337}\u{1F63B}\u{1F613}\u2B50\u2705\u{1F97A}\u{1F308}\u{1F608}\u{1F918}\u{1F4A6}\u2714\u{1F623}\u{1F3C3}\u{1F490}\u2639\u{1F38A}\u{1F498}\u{1F620}\u261D\u{1F615}\u{1F33A}\u{1F382}\u{1F33B}\u{1F610}\u{1F595}\u{1F49D}\u{1F64A}\u{1F639}\u{1F5E3}\u{1F4AB}\u{1F480}\u{1F451}\u{1F3B5}\u{1F91E}\u{1F61B}\u{1F534}\u{1F624}\u{1F33C}\u{1F62B}\u26BD\u{1F919}\u2615\u{1F3C6}\u{1F92B}\u{1F448}\u{1F62E}\u{1F646}\u{1F37B}\u{1F343}\u{1F436}\u{1F481}\u{1F632}\u{1F33F}\u{1F9E1}\u{1F381}\u26A1\u{1F31E}\u{1F388}\u274C\u270A\u{1F44B}\u{1F630}\u{1F928}\u{1F636}\u{1F91D}\u{1F6B6}\u{1F4B0}\u{1F353}\u{1F4A2}\u{1F91F}\u{1F641}\u{1F6A8}\u{1F4A8}\u{1F92C}\u2708\u{1F380}\u{1F37A}\u{1F913}\u{1F619}\u{1F49F}\u{1F331}\u{1F616}\u{1F476}\u{1F974}\u25B6\u27A1\u2753\u{1F48E}\u{1F4B8}\u2B07\u{1F628}\u{1F31A}\u{1F98B}\u{1F637}\u{1F57A}\u26A0\u{1F645}\u{1F61F}\u{1F635}\u{1F44E}\u{1F932}\u{1F920}\u{1F927}\u{1F4CC}\u{1F535}\u{1F485}\u{1F9D0}\u{1F43E}\u{1F352}\u{1F617}\u{1F911}\u{1F30A}\u{1F92F}\u{1F437}\u260E\u{1F4A7}\u{1F62F}\u{1F486}\u{1F446}\u{1F3A4}\u{1F647}\u{1F351}\u2744\u{1F334}\u{1F4A3}\u{1F438}\u{1F48C}\u{1F4CD}\u{1F940}\u{1F922}\u{1F445}\u{1F4A1}\u{1F4A9}\u{1F450}\u{1F4F8}\u{1F47B}\u{1F910}\u{1F92E}\u{1F3BC}\u{1F975}\u{1F6A9}\u{1F34E}\u{1F34A}\u{1F47C}\u{1F48D}\u{1F4E3}\u{1F942}");
+var alphabetBytesToChars = alphabet.reduce((p, c, i) => {
+  p[i] = c;
+  return p;
+}, []);
+var alphabetCharsToBytes = alphabet.reduce((p, c, i) => {
+  const codePoint = c.codePointAt(0);
+  if (codePoint == null) {
+    throw new Error(`Invalid character: ${c}`);
+  }
+  p[codePoint] = i;
+  return p;
+}, []);
+function encode5(data) {
+  return data.reduce((p, c) => {
+    p += alphabetBytesToChars[c];
+    return p;
+  }, "");
+}
+__name(encode5, "encode");
+function decode6(str) {
+  const byts = [];
+  for (const char of str) {
+    const codePoint = char.codePointAt(0);
+    if (codePoint == null) {
+      throw new Error(`Invalid character: ${char}`);
+    }
+    const byt = alphabetCharsToBytes[codePoint];
+    if (byt == null) {
+      throw new Error(`Non-base256emoji character: ${char}`);
+    }
+    byts.push(byt);
+  }
+  return new Uint8Array(byts);
+}
+__name(decode6, "decode");
+var base256emoji = from({
+  prefix: "\u{1F680}",
+  name: "base256emoji",
+  encode: encode5,
+  decode: decode6
+});
+
+// node_modules/multiformats/dist/src/bases/base64.js
+var base64_exports = {};
+__export(base64_exports, {
+  base64: () => base64,
+  base64pad: () => base64pad,
+  base64url: () => base64url,
+  base64urlpad: () => base64urlpad
+});
+var base64 = rfc4648({
+  prefix: "m",
+  name: "base64",
+  alphabet: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",
+  bitsPerChar: 6
+});
+var base64pad = rfc4648({
+  prefix: "M",
+  name: "base64pad",
+  alphabet: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
+  bitsPerChar: 6
+});
+var base64url = rfc4648({
+  prefix: "u",
+  name: "base64url",
+  alphabet: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_",
+  bitsPerChar: 6
+});
+var base64urlpad = rfc4648({
+  prefix: "U",
+  name: "base64urlpad",
+  alphabet: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_=",
+  bitsPerChar: 6
+});
+
+// node_modules/multiformats/dist/src/bases/base8.js
+var base8_exports = {};
+__export(base8_exports, {
+  base8: () => base8
+});
+var base8 = rfc4648({
+  prefix: "7",
+  name: "base8",
+  alphabet: "01234567",
+  bitsPerChar: 3
+});
+
+// node_modules/multiformats/dist/src/bases/identity.js
+var identity_exports2 = {};
+__export(identity_exports2, {
+  identity: () => identity2
+});
+var identity2 = from({
+  prefix: "\0",
+  name: "identity",
+  encode: /* @__PURE__ */ __name((buf) => toString(buf), "encode"),
+  decode: /* @__PURE__ */ __name((str) => fromString(str), "decode")
+});
+
+// node_modules/multiformats/dist/src/codecs/json.js
+var textEncoder = new TextEncoder();
+var textDecoder = new TextDecoder();
+
+// node_modules/multiformats/dist/src/hashes/sha2-browser.js
+var sha2_browser_exports = {};
+__export(sha2_browser_exports, {
+  sha256: () => sha256,
+  sha512: () => sha5122
+});
+
+// node_modules/multiformats/dist/src/hashes/hasher.js
+function from2({ name: name2, code: code2, encode: encode7 }) {
+  return new Hasher(name2, code2, encode7);
+}
+__name(from2, "from");
+var Hasher = class {
+  static {
+    __name(this, "Hasher");
+  }
+  name;
+  code;
+  encode;
+  constructor(name2, code2, encode7) {
+    this.name = name2;
+    this.code = code2;
+    this.encode = encode7;
+  }
+  digest(input) {
+    if (input instanceof Uint8Array) {
+      const result = this.encode(input);
+      return result instanceof Uint8Array ? create(this.code, result) : result.then((digest2) => create(this.code, digest2));
+    } else {
+      throw Error("Unknown type, must be binary type");
+    }
+  }
+};
+
+// node_modules/multiformats/dist/src/hashes/sha2-browser.js
+function sha(name2) {
+  return async (data) => new Uint8Array(await crypto.subtle.digest(name2, data));
+}
+__name(sha, "sha");
+var sha256 = from2({
+  name: "sha2-256",
+  code: 18,
+  encode: sha("SHA-256")
+});
+var sha5122 = from2({
+  name: "sha2-512",
+  code: 19,
+  encode: sha("SHA-512")
+});
+
+// node_modules/multiformats/dist/src/basics.js
+var bases = { ...identity_exports2, ...base2_exports, ...base8_exports, ...base10_exports, ...base16_exports, ...base32_exports, ...base36_exports, ...base58_exports, ...base64_exports, ...base256emoji_exports };
+var hashes = { ...sha2_browser_exports, ...identity_exports };
+
+// node_modules/uint8arrays/dist/src/util/bases.js
+function createCodec(name2, prefix, encode7, decode8) {
+  return {
+    name: name2,
+    prefix,
+    encoder: {
+      name: name2,
+      prefix,
+      encode: encode7
+    },
+    decoder: {
+      decode: decode8
+    }
   };
-  return cipher;
 }
-__name(create2, "create");
+__name(createCodec, "createCodec");
+var string = createCodec("utf8", "u", (buf) => {
+  const decoder = new TextDecoder("utf8");
+  return "u" + decoder.decode(buf);
+}, (str) => {
+  const encoder = new TextEncoder();
+  return encoder.encode(str.substring(1));
+});
+var ascii = createCodec("ascii", "a", (buf) => {
+  let string2 = "a";
+  for (let i = 0; i < buf.length; i++) {
+    string2 += String.fromCharCode(buf[i]);
+  }
+  return string2;
+}, (str) => {
+  str = str.substring(1);
+  const buf = allocUnsafe(str.length);
+  for (let i = 0; i < str.length; i++) {
+    buf[i] = str.charCodeAt(i);
+  }
+  return buf;
+});
+var BASES = {
+  utf8: string,
+  "utf-8": string,
+  hex: bases.base16,
+  latin1: ascii,
+  ascii,
+  binary: ascii,
+  ...bases
+};
+var bases_default = BASES;
 
-// node_modules/@chainsafe/libp2p-gossipsub/node_modules/@libp2p/crypto/dist/src/keys/exporter.js
-async function exporter(privateKey, password) {
-  const cipher = create2();
-  const encryptedKey = await cipher.encrypt(privateKey, password);
-  return base64.encode(encryptedKey);
+// node_modules/uint8arrays/dist/src/from-string.js
+function fromString2(string2, encoding = "utf8") {
+  const base3 = bases_default[encoding];
+  if (base3 == null) {
+    throw new Error(`Unsupported encoding "${encoding}"`);
+  }
+  return base3.decoder.decode(`${base3.prefix}${string2}`);
 }
-__name(exporter, "exporter");
+__name(fromString2, "fromString");
 
-// node_modules/@chainsafe/libp2p-gossipsub/node_modules/@libp2p/crypto/dist/src/keys/keys.js
+// node_modules/protons-runtime/dist/src/utils/pool.js
+function pool(size) {
+  const SIZE = size ?? 8192;
+  const MAX = SIZE >>> 1;
+  let slab;
+  let offset = SIZE;
+  return /* @__PURE__ */ __name(function poolAlloc(size2) {
+    if (size2 < 1 || size2 > MAX) {
+      return allocUnsafe(size2);
+    }
+    if (offset + size2 > SIZE) {
+      slab = allocUnsafe(SIZE);
+      offset = 0;
+    }
+    const buf = slab.subarray(offset, offset += size2);
+    if ((offset & 7) !== 0) {
+      offset = (offset | 7) + 1;
+    }
+    return buf;
+  }, "poolAlloc");
+}
+__name(pool, "pool");
+
+// node_modules/protons-runtime/dist/src/utils/writer.js
+var Op = class {
+  static {
+    __name(this, "Op");
+  }
+  /**
+   * Function to call
+   */
+  fn;
+  /**
+   * Value byte length
+   */
+  len;
+  /**
+   * Next operation
+   */
+  next;
+  /**
+   * Value to write
+   */
+  val;
+  constructor(fn, len, val) {
+    this.fn = fn;
+    this.len = len;
+    this.next = void 0;
+    this.val = val;
+  }
+};
+function noop() {
+}
+__name(noop, "noop");
+var State = class {
+  static {
+    __name(this, "State");
+  }
+  /**
+   * Current head
+   */
+  head;
+  /**
+   * Current tail
+   */
+  tail;
+  /**
+   * Current buffer length
+   */
+  len;
+  /**
+   * Next state
+   */
+  next;
+  constructor(writer) {
+    this.head = writer.head;
+    this.tail = writer.tail;
+    this.len = writer.len;
+    this.next = writer.states;
+  }
+};
+var bufferPool = pool();
+function alloc2(size) {
+  if (globalThis.Buffer != null) {
+    return allocUnsafe(size);
+  }
+  return bufferPool(size);
+}
+__name(alloc2, "alloc");
+var Uint8ArrayWriter = class {
+  static {
+    __name(this, "Uint8ArrayWriter");
+  }
+  /**
+   * Current length
+   */
+  len;
+  /**
+   * Operations head
+   */
+  head;
+  /**
+   * Operations tail
+   */
+  tail;
+  /**
+   * Linked forked states
+   */
+  states;
+  constructor() {
+    this.len = 0;
+    this.head = new Op(noop, 0, 0);
+    this.tail = this.head;
+    this.states = null;
+  }
+  /**
+   * Pushes a new operation to the queue
+   */
+  _push(fn, len, val) {
+    this.tail = this.tail.next = new Op(fn, len, val);
+    this.len += len;
+    return this;
+  }
+  /**
+   * Writes an unsigned 32 bit value as a varint
+   */
+  uint32(value) {
+    this.len += (this.tail = this.tail.next = new VarintOp((value = value >>> 0) < 128 ? 1 : value < 16384 ? 2 : value < 2097152 ? 3 : value < 268435456 ? 4 : 5, value)).len;
+    return this;
+  }
+  /**
+   * Writes a signed 32 bit value as a varint`
+   */
+  int32(value) {
+    return value < 0 ? this._push(writeVarint64, 10, LongBits.fromNumber(value)) : this.uint32(value);
+  }
+  /**
+   * Writes a 32 bit value as a varint, zig-zag encoded
+   */
+  sint32(value) {
+    return this.uint32((value << 1 ^ value >> 31) >>> 0);
+  }
+  /**
+   * Writes an unsigned 64 bit value as a varint
+   */
+  uint64(value) {
+    const bits = LongBits.fromBigInt(value);
+    return this._push(writeVarint64, bits.length(), bits);
+  }
+  /**
+   * Writes an unsigned 64 bit value as a varint
+   */
+  uint64Number(value) {
+    return this._push(encodeUint8Array, encodingLength2(value), value);
+  }
+  /**
+   * Writes an unsigned 64 bit value as a varint
+   */
+  uint64String(value) {
+    return this.uint64(BigInt(value));
+  }
+  /**
+   * Writes a signed 64 bit value as a varint
+   */
+  int64(value) {
+    return this.uint64(value);
+  }
+  /**
+   * Writes a signed 64 bit value as a varint
+   */
+  int64Number(value) {
+    return this.uint64Number(value);
+  }
+  /**
+   * Writes a signed 64 bit value as a varint
+   */
+  int64String(value) {
+    return this.uint64String(value);
+  }
+  /**
+   * Writes a signed 64 bit value as a varint, zig-zag encoded
+   */
+  sint64(value) {
+    const bits = LongBits.fromBigInt(value).zzEncode();
+    return this._push(writeVarint64, bits.length(), bits);
+  }
+  /**
+   * Writes a signed 64 bit value as a varint, zig-zag encoded
+   */
+  sint64Number(value) {
+    const bits = LongBits.fromNumber(value).zzEncode();
+    return this._push(writeVarint64, bits.length(), bits);
+  }
+  /**
+   * Writes a signed 64 bit value as a varint, zig-zag encoded
+   */
+  sint64String(value) {
+    return this.sint64(BigInt(value));
+  }
+  /**
+   * Writes a boolish value as a varint
+   */
+  bool(value) {
+    return this._push(writeByte, 1, value ? 1 : 0);
+  }
+  /**
+   * Writes an unsigned 32 bit value as fixed 32 bits
+   */
+  fixed32(value) {
+    return this._push(writeFixed32, 4, value >>> 0);
+  }
+  /**
+   * Writes a signed 32 bit value as fixed 32 bits
+   */
+  sfixed32(value) {
+    return this.fixed32(value);
+  }
+  /**
+   * Writes an unsigned 64 bit value as fixed 64 bits
+   */
+  fixed64(value) {
+    const bits = LongBits.fromBigInt(value);
+    return this._push(writeFixed32, 4, bits.lo)._push(writeFixed32, 4, bits.hi);
+  }
+  /**
+   * Writes an unsigned 64 bit value as fixed 64 bits
+   */
+  fixed64Number(value) {
+    const bits = LongBits.fromNumber(value);
+    return this._push(writeFixed32, 4, bits.lo)._push(writeFixed32, 4, bits.hi);
+  }
+  /**
+   * Writes an unsigned 64 bit value as fixed 64 bits
+   */
+  fixed64String(value) {
+    return this.fixed64(BigInt(value));
+  }
+  /**
+   * Writes a signed 64 bit value as fixed 64 bits
+   */
+  sfixed64(value) {
+    return this.fixed64(value);
+  }
+  /**
+   * Writes a signed 64 bit value as fixed 64 bits
+   */
+  sfixed64Number(value) {
+    return this.fixed64Number(value);
+  }
+  /**
+   * Writes a signed 64 bit value as fixed 64 bits
+   */
+  sfixed64String(value) {
+    return this.fixed64String(value);
+  }
+  /**
+   * Writes a float (32 bit)
+   */
+  float(value) {
+    return this._push(writeFloatLE, 4, value);
+  }
+  /**
+   * Writes a double (64 bit float).
+   *
+   * @function
+   * @param {number} value - Value to write
+   * @returns {Writer} `this`
+   */
+  double(value) {
+    return this._push(writeDoubleLE, 8, value);
+  }
+  /**
+   * Writes a sequence of bytes
+   */
+  bytes(value) {
+    const len = value.length >>> 0;
+    if (len === 0) {
+      return this._push(writeByte, 1, 0);
+    }
+    return this.uint32(len)._push(writeBytes, len, value);
+  }
+  /**
+   * Writes a string
+   */
+  string(value) {
+    const len = length2(value);
+    return len !== 0 ? this.uint32(len)._push(write, len, value) : this._push(writeByte, 1, 0);
+  }
+  /**
+   * Forks this writer's state by pushing it to a stack.
+   * Calling {@link Writer#reset|reset} or {@link Writer#ldelim|ldelim} resets the writer to the previous state.
+   */
+  fork() {
+    this.states = new State(this);
+    this.head = this.tail = new Op(noop, 0, 0);
+    this.len = 0;
+    return this;
+  }
+  /**
+   * Resets this instance to the last state
+   */
+  reset() {
+    if (this.states != null) {
+      this.head = this.states.head;
+      this.tail = this.states.tail;
+      this.len = this.states.len;
+      this.states = this.states.next;
+    } else {
+      this.head = this.tail = new Op(noop, 0, 0);
+      this.len = 0;
+    }
+    return this;
+  }
+  /**
+   * Resets to the last state and appends the fork state's current write length as a varint followed by its operations.
+   */
+  ldelim() {
+    const head = this.head;
+    const tail = this.tail;
+    const len = this.len;
+    this.reset().uint32(len);
+    if (len !== 0) {
+      this.tail.next = head.next;
+      this.tail = tail;
+      this.len += len;
+    }
+    return this;
+  }
+  /**
+   * Finishes the write operation
+   */
+  finish() {
+    let head = this.head.next;
+    const buf = alloc2(this.len);
+    let pos = 0;
+    while (head != null) {
+      head.fn(head.val, buf, pos);
+      pos += head.len;
+      head = head.next;
+    }
+    return buf;
+  }
+};
+function writeByte(val, buf, pos) {
+  buf[pos] = val & 255;
+}
+__name(writeByte, "writeByte");
+function writeVarint32(val, buf, pos) {
+  while (val > 127) {
+    buf[pos++] = val & 127 | 128;
+    val >>>= 7;
+  }
+  buf[pos] = val;
+}
+__name(writeVarint32, "writeVarint32");
+var VarintOp = class extends Op {
+  static {
+    __name(this, "VarintOp");
+  }
+  next;
+  constructor(len, val) {
+    super(writeVarint32, len, val);
+    this.next = void 0;
+  }
+};
+function writeVarint64(val, buf, pos) {
+  while (val.hi !== 0) {
+    buf[pos++] = val.lo & 127 | 128;
+    val.lo = (val.lo >>> 7 | val.hi << 25) >>> 0;
+    val.hi >>>= 7;
+  }
+  while (val.lo > 127) {
+    buf[pos++] = val.lo & 127 | 128;
+    val.lo = val.lo >>> 7;
+  }
+  buf[pos++] = val.lo;
+}
+__name(writeVarint64, "writeVarint64");
+function writeFixed32(val, buf, pos) {
+  buf[pos] = val & 255;
+  buf[pos + 1] = val >>> 8 & 255;
+  buf[pos + 2] = val >>> 16 & 255;
+  buf[pos + 3] = val >>> 24;
+}
+__name(writeFixed32, "writeFixed32");
+function writeBytes(val, buf, pos) {
+  buf.set(val, pos);
+}
+__name(writeBytes, "writeBytes");
+if (globalThis.Buffer != null) {
+  Uint8ArrayWriter.prototype.bytes = function(value) {
+    const len = value.length >>> 0;
+    this.uint32(len);
+    if (len > 0) {
+      this._push(writeBytesBuffer, len, value);
+    }
+    return this;
+  };
+  Uint8ArrayWriter.prototype.string = function(value) {
+    const len = globalThis.Buffer.byteLength(value);
+    this.uint32(len);
+    if (len > 0) {
+      this._push(writeStringBuffer, len, value);
+    }
+    return this;
+  };
+}
+function writeBytesBuffer(val, buf, pos) {
+  buf.set(val, pos);
+}
+__name(writeBytesBuffer, "writeBytesBuffer");
+function writeStringBuffer(val, buf, pos) {
+  if (val.length < 40) {
+    write(val, buf, pos);
+  } else if (buf.utf8Write != null) {
+    buf.utf8Write(val, pos);
+  } else {
+    buf.set(fromString2(val), pos);
+  }
+}
+__name(writeStringBuffer, "writeStringBuffer");
+function createWriter() {
+  return new Uint8ArrayWriter();
+}
+__name(createWriter, "createWriter");
+
+// node_modules/protons-runtime/dist/src/encode.js
+function encodeMessage(message2, codec) {
+  const w = createWriter();
+  codec.encode(message2, w, {
+    lengthDelimited: false
+  });
+  return w.finish();
+}
+__name(encodeMessage, "encodeMessage");
+
+// node_modules/protons-runtime/dist/src/codec.js
+var CODEC_TYPES;
+(function(CODEC_TYPES2) {
+  CODEC_TYPES2[CODEC_TYPES2["VARINT"] = 0] = "VARINT";
+  CODEC_TYPES2[CODEC_TYPES2["BIT64"] = 1] = "BIT64";
+  CODEC_TYPES2[CODEC_TYPES2["LENGTH_DELIMITED"] = 2] = "LENGTH_DELIMITED";
+  CODEC_TYPES2[CODEC_TYPES2["START_GROUP"] = 3] = "START_GROUP";
+  CODEC_TYPES2[CODEC_TYPES2["END_GROUP"] = 4] = "END_GROUP";
+  CODEC_TYPES2[CODEC_TYPES2["BIT32"] = 5] = "BIT32";
+})(CODEC_TYPES || (CODEC_TYPES = {}));
+function createCodec2(name2, type, encode7, decode8) {
+  return {
+    name: name2,
+    type,
+    encode: encode7,
+    decode: decode8
+  };
+}
+__name(createCodec2, "createCodec");
+
+// node_modules/protons-runtime/dist/src/codecs/enum.js
+function enumeration(v) {
+  function findValue(val) {
+    if (v[val.toString()] == null) {
+      throw new Error("Invalid enum value");
+    }
+    return v[val];
+  }
+  __name(findValue, "findValue");
+  const encode7 = /* @__PURE__ */ __name(function enumEncode(val, writer) {
+    const enumValue = findValue(val);
+    writer.int32(enumValue);
+  }, "enumEncode");
+  const decode8 = /* @__PURE__ */ __name(function enumDecode(reader) {
+    const val = reader.int32();
+    return findValue(val);
+  }, "enumDecode");
+  return createCodec2("enum", CODEC_TYPES.VARINT, encode7, decode8);
+}
+__name(enumeration, "enumeration");
+
+// node_modules/protons-runtime/dist/src/codecs/message.js
+function message(encode7, decode8) {
+  return createCodec2("message", CODEC_TYPES.LENGTH_DELIMITED, encode7, decode8);
+}
+__name(message, "message");
+
+// node_modules/protons-runtime/dist/src/index.js
+var MaxLengthError = class extends Error {
+  static {
+    __name(this, "MaxLengthError");
+  }
+  /**
+   * This will be removed in a future release
+   *
+   * @deprecated use the `.name` property instead
+   */
+  code = "ERR_MAX_LENGTH";
+  name = "MaxLengthError";
+};
+
+// node_modules/@libp2p/crypto/dist/src/keys/keys.js
 var KeyType;
 (function(KeyType2) {
   KeyType2["RSA"] = "RSA";
   KeyType2["Ed25519"] = "Ed25519";
-  KeyType2["Secp256k1"] = "Secp256k1";
+  KeyType2["secp256k1"] = "secp256k1";
 })(KeyType || (KeyType = {}));
 var __KeyTypeValues;
 (function(__KeyTypeValues2) {
   __KeyTypeValues2[__KeyTypeValues2["RSA"] = 0] = "RSA";
   __KeyTypeValues2[__KeyTypeValues2["Ed25519"] = 1] = "Ed25519";
-  __KeyTypeValues2[__KeyTypeValues2["Secp256k1"] = 2] = "Secp256k1";
+  __KeyTypeValues2[__KeyTypeValues2["secp256k1"] = 2] = "secp256k1";
 })(__KeyTypeValues || (__KeyTypeValues = {}));
 (function(KeyType2) {
   KeyType2.codec = () => {
@@ -9346,21 +5243,24 @@ var PublicKey;
         if (opts.lengthDelimited !== false) {
           w.ldelim();
         }
-      }, (reader, length3) => {
+      }, (reader, length3, opts = {}) => {
         const obj = {};
         const end = length3 == null ? reader.len : reader.pos + length3;
         while (reader.pos < end) {
           const tag = reader.uint32();
           switch (tag >>> 3) {
-            case 1:
+            case 1: {
               obj.Type = KeyType.codec().decode(reader);
               break;
-            case 2:
+            }
+            case 2: {
               obj.Data = reader.bytes();
               break;
-            default:
+            }
+            default: {
               reader.skipType(tag & 7);
               break;
+            }
           }
         }
         return obj;
@@ -9371,8 +5271,8 @@ var PublicKey;
   PublicKey2.encode = (obj) => {
     return encodeMessage(obj, PublicKey2.codec());
   };
-  PublicKey2.decode = (buf) => {
-    return decodeMessage(buf, PublicKey2.codec());
+  PublicKey2.decode = (buf, opts) => {
+    return decodeMessage(buf, PublicKey2.codec(), opts);
   };
 })(PublicKey || (PublicKey = {}));
 var PrivateKey;
@@ -9395,21 +5295,24 @@ var PrivateKey;
         if (opts.lengthDelimited !== false) {
           w.ldelim();
         }
-      }, (reader, length3) => {
+      }, (reader, length3, opts = {}) => {
         const obj = {};
         const end = length3 == null ? reader.len : reader.pos + length3;
         while (reader.pos < end) {
           const tag = reader.uint32();
           switch (tag >>> 3) {
-            case 1:
+            case 1: {
               obj.Type = KeyType.codec().decode(reader);
               break;
-            case 2:
+            }
+            case 2: {
               obj.Data = reader.bytes();
               break;
-            default:
+            }
+            default: {
               reader.skipType(tag & 7);
               break;
+            }
           }
         }
         return obj;
@@ -9420,291 +5323,178 @@ var PrivateKey;
   PrivateKey2.encode = (obj) => {
     return encodeMessage(obj, PrivateKey2.codec());
   };
-  PrivateKey2.decode = (buf) => {
-    return decodeMessage(buf, PrivateKey2.codec());
+  PrivateKey2.decode = (buf, opts) => {
+    return decodeMessage(buf, PrivateKey2.codec(), opts);
   };
 })(PrivateKey || (PrivateKey = {}));
 
-// node_modules/@chainsafe/libp2p-gossipsub/node_modules/@libp2p/crypto/dist/src/keys/ed25519-class.js
-var Ed25519PublicKey = class {
-  static {
-    __name(this, "Ed25519PublicKey");
-  }
-  _key;
-  constructor(key) {
-    this._key = ensureKey(key, PUBLIC_KEY_BYTE_LENGTH);
-  }
-  verify(data, sig) {
-    return hashAndVerify(this._key, sig, data);
-  }
-  marshal() {
-    return this._key;
-  }
-  get bytes() {
-    return PublicKey.encode({
-      Type: KeyType.Ed25519,
-      Data: this.marshal()
-    }).subarray();
-  }
-  equals(key) {
-    return equals3(this.bytes, key.bytes);
-  }
-  hash() {
-    const p = sha256.digest(this.bytes);
-    if (isPromise(p)) {
-      return p.then(({ bytes: bytes2 }) => bytes2);
-    }
-    return p.bytes;
-  }
-};
-var Ed25519PrivateKey = class {
-  static {
-    __name(this, "Ed25519PrivateKey");
-  }
-  _key;
-  _publicKey;
-  // key       - 64 byte Uint8Array containing private key
-  // publicKey - 32 byte Uint8Array containing public key
-  constructor(key, publicKey) {
-    this._key = ensureKey(key, PRIVATE_KEY_BYTE_LENGTH);
-    this._publicKey = ensureKey(publicKey, PUBLIC_KEY_BYTE_LENGTH);
-  }
-  sign(message2) {
-    return hashAndSign(this._key, message2);
-  }
-  get public() {
-    return new Ed25519PublicKey(this._publicKey);
-  }
-  marshal() {
-    return this._key;
-  }
-  get bytes() {
-    return PrivateKey.encode({
-      Type: KeyType.Ed25519,
-      Data: this.marshal()
-    }).subarray();
-  }
-  equals(key) {
-    return equals3(this.bytes, key.bytes);
-  }
-  async hash() {
-    const p = sha256.digest(this.bytes);
-    let bytes2;
-    if (isPromise(p)) {
-      ({ bytes: bytes2 } = await p);
-    } else {
-      bytes2 = p.bytes;
-    }
-    return bytes2;
-  }
-  /**
-   * Gets the ID of the key.
-   *
-   * The key id is the base58 encoding of the identity multihash containing its public key.
-   * The public key is a protobuf encoding containing a type and the DER encoding
-   * of the PKCS SubjectPublicKeyInfo.
-   *
-   * @returns {Promise<string>}
-   */
-  async id() {
-    const encoding = identity2.digest(this.public.bytes);
-    return base58btc.encode(encoding.bytes).substring(1);
-  }
-  /**
-   * Exports the key into a password protected `format`
-   */
-  async export(password, format2 = "libp2p-key") {
-    if (format2 === "libp2p-key") {
-      return exporter(this.bytes, password);
-    } else {
-      throw new CodeError(`export format '${format2}' is not supported`, "ERR_INVALID_EXPORT_FORMAT");
-    }
-  }
-};
-function unmarshalEd25519PrivateKey(bytes2) {
-  if (bytes2.length > PRIVATE_KEY_BYTE_LENGTH) {
-    bytes2 = ensureKey(bytes2, PRIVATE_KEY_BYTE_LENGTH + PUBLIC_KEY_BYTE_LENGTH);
-    const privateKeyBytes2 = bytes2.subarray(0, PRIVATE_KEY_BYTE_LENGTH);
-    const publicKeyBytes2 = bytes2.subarray(PRIVATE_KEY_BYTE_LENGTH, bytes2.length);
-    return new Ed25519PrivateKey(privateKeyBytes2, publicKeyBytes2);
-  }
-  bytes2 = ensureKey(bytes2, PRIVATE_KEY_BYTE_LENGTH);
-  const privateKeyBytes = bytes2.subarray(0, PRIVATE_KEY_BYTE_LENGTH);
-  const publicKeyBytes = bytes2.subarray(PUBLIC_KEY_BYTE_LENGTH);
-  return new Ed25519PrivateKey(privateKeyBytes, publicKeyBytes);
-}
-__name(unmarshalEd25519PrivateKey, "unmarshalEd25519PrivateKey");
-function unmarshalEd25519PublicKey(bytes2) {
-  bytes2 = ensureKey(bytes2, PUBLIC_KEY_BYTE_LENGTH);
-  return new Ed25519PublicKey(bytes2);
-}
-__name(unmarshalEd25519PublicKey, "unmarshalEd25519PublicKey");
-async function generateKeyPair() {
-  const { privateKey, publicKey } = generateKey();
-  return new Ed25519PrivateKey(privateKey, publicKey);
-}
-__name(generateKeyPair, "generateKeyPair");
-async function generateKeyPairFromSeed(seed) {
-  const { privateKey, publicKey } = generateKeyFromSeed(seed);
-  return new Ed25519PrivateKey(privateKey, publicKey);
-}
-__name(generateKeyPairFromSeed, "generateKeyPairFromSeed");
-function ensureKey(key, length3) {
-  key = Uint8Array.from(key ?? []);
-  if (key.length !== length3) {
-    throw new CodeError(`Key must be a Uint8Array of length ${length3}, got ${key.length}`, "ERR_INVALID_KEY_TYPE");
-  }
-  return key;
-}
-__name(ensureKey, "ensureKey");
-
-// node_modules/@chainsafe/libp2p-gossipsub/node_modules/@libp2p/crypto/dist/src/keys/rsa-class.js
-var rsa_class_exports = {};
-__export(rsa_class_exports, {
+// node_modules/@libp2p/crypto/dist/src/keys/rsa/utils.js
+var utils_exports2 = {};
+__export(utils_exports2, {
   MAX_RSA_KEY_SIZE: () => MAX_RSA_KEY_SIZE,
-  RsaPrivateKey: () => RsaPrivateKey,
-  RsaPublicKey: () => RsaPublicKey,
-  fromJwk: () => fromJwk,
-  generateKeyPair: () => generateKeyPair2,
-  unmarshalRsaPrivateKey: () => unmarshalRsaPrivateKey,
-  unmarshalRsaPublicKey: () => unmarshalRsaPublicKey
-});
-
-// node_modules/@chainsafe/libp2p-gossipsub/node_modules/@libp2p/crypto/dist/src/random-bytes.js
-function randomBytes2(length3) {
-  if (isNaN(length3) || length3 <= 0) {
-    throw new CodeError("random bytes length must be a Number bigger than 0", "ERR_INVALID_LENGTH");
-  }
-  return randomBytes(length3);
-}
-__name(randomBytes2, "randomBytes");
-
-// node_modules/@chainsafe/libp2p-gossipsub/node_modules/@libp2p/crypto/dist/src/keys/rsa-utils.js
-var rsa_utils_exports = {};
-__export(rsa_utils_exports, {
-  exportToPem: () => exportToPem,
-  importFromPem: () => importFromPem,
+  generateRSAKeyPair: () => generateRSAKeyPair,
+  jwkToJWKKeyPair: () => jwkToJWKKeyPair,
   jwkToPkcs1: () => jwkToPkcs1,
   jwkToPkix: () => jwkToPkix,
+  jwkToRSAPrivateKey: () => jwkToRSAPrivateKey,
   pkcs1ToJwk: () => pkcs1ToJwk,
-  pkixToJwk: () => pkixToJwk
+  pkcs1ToRSAPrivateKey: () => pkcs1ToRSAPrivateKey,
+  pkixToJwk: () => pkixToJwk,
+  pkixToRSAPublicKey: () => pkixToRSAPublicKey
 });
 
-// node_modules/@noble/hashes/esm/hmac.js
-var HMAC = class extends Hash {
+// node_modules/@noble/hashes/esm/sha256.js
+var SHA256_K = /* @__PURE__ */ new Uint32Array([
+  1116352408,
+  1899447441,
+  3049323471,
+  3921009573,
+  961987163,
+  1508970993,
+  2453635748,
+  2870763221,
+  3624381080,
+  310598401,
+  607225278,
+  1426881987,
+  1925078388,
+  2162078206,
+  2614888103,
+  3248222580,
+  3835390401,
+  4022224774,
+  264347078,
+  604807628,
+  770255983,
+  1249150122,
+  1555081692,
+  1996064986,
+  2554220882,
+  2821834349,
+  2952996808,
+  3210313671,
+  3336571891,
+  3584528711,
+  113926993,
+  338241895,
+  666307205,
+  773529912,
+  1294757372,
+  1396182291,
+  1695183700,
+  1986661051,
+  2177026350,
+  2456956037,
+  2730485921,
+  2820302411,
+  3259730800,
+  3345764771,
+  3516065817,
+  3600352804,
+  4094571909,
+  275423344,
+  430227734,
+  506948616,
+  659060556,
+  883997877,
+  958139571,
+  1322822218,
+  1537002063,
+  1747873779,
+  1955562222,
+  2024104815,
+  2227730452,
+  2361852424,
+  2428436474,
+  2756734187,
+  3204031479,
+  3329325298
+]);
+var SHA256_IV = /* @__PURE__ */ new Uint32Array([
+  1779033703,
+  3144134277,
+  1013904242,
+  2773480762,
+  1359893119,
+  2600822924,
+  528734635,
+  1541459225
+]);
+var SHA256_W = /* @__PURE__ */ new Uint32Array(64);
+var SHA256 = class extends HashMD {
   static {
-    __name(this, "HMAC");
+    __name(this, "SHA256");
   }
-  constructor(hash2, _key) {
-    super();
-    this.finished = false;
-    this.destroyed = false;
-    hash(hash2);
-    const key = toBytes(_key);
-    this.iHash = hash2.create();
-    if (typeof this.iHash.update !== "function")
-      throw new Error("Expected instance of class which extends utils.Hash");
-    this.blockLen = this.iHash.blockLen;
-    this.outputLen = this.iHash.outputLen;
-    const blockLen = this.blockLen;
-    const pad = new Uint8Array(blockLen);
-    pad.set(key.length > blockLen ? hash2.create().update(key).digest() : key);
-    for (let i = 0; i < pad.length; i++)
-      pad[i] ^= 54;
-    this.iHash.update(pad);
-    this.oHash = hash2.create();
-    for (let i = 0; i < pad.length; i++)
-      pad[i] ^= 54 ^ 92;
-    this.oHash.update(pad);
-    pad.fill(0);
+  constructor() {
+    super(64, 32, 8, false);
+    this.A = SHA256_IV[0] | 0;
+    this.B = SHA256_IV[1] | 0;
+    this.C = SHA256_IV[2] | 0;
+    this.D = SHA256_IV[3] | 0;
+    this.E = SHA256_IV[4] | 0;
+    this.F = SHA256_IV[5] | 0;
+    this.G = SHA256_IV[6] | 0;
+    this.H = SHA256_IV[7] | 0;
   }
-  update(buf) {
-    exists(this);
-    this.iHash.update(buf);
-    return this;
+  get() {
+    const { A, B, C, D, E, F, G, H } = this;
+    return [A, B, C, D, E, F, G, H];
   }
-  digestInto(out) {
-    exists(this);
-    bytes(out, this.outputLen);
-    this.finished = true;
-    this.iHash.digestInto(out);
-    this.oHash.update(out);
-    this.oHash.digestInto(out);
-    this.destroy();
+  // prettier-ignore
+  set(A, B, C, D, E, F, G, H) {
+    this.A = A | 0;
+    this.B = B | 0;
+    this.C = C | 0;
+    this.D = D | 0;
+    this.E = E | 0;
+    this.F = F | 0;
+    this.G = G | 0;
+    this.H = H | 0;
   }
-  digest() {
-    const out = new Uint8Array(this.oHash.outputLen);
-    this.digestInto(out);
-    return out;
+  process(view, offset) {
+    for (let i = 0; i < 16; i++, offset += 4)
+      SHA256_W[i] = view.getUint32(offset, false);
+    for (let i = 16; i < 64; i++) {
+      const W15 = SHA256_W[i - 15];
+      const W2 = SHA256_W[i - 2];
+      const s0 = rotr(W15, 7) ^ rotr(W15, 18) ^ W15 >>> 3;
+      const s1 = rotr(W2, 17) ^ rotr(W2, 19) ^ W2 >>> 10;
+      SHA256_W[i] = s1 + SHA256_W[i - 7] + s0 + SHA256_W[i - 16] | 0;
+    }
+    let { A, B, C, D, E, F, G, H } = this;
+    for (let i = 0; i < 64; i++) {
+      const sigma1 = rotr(E, 6) ^ rotr(E, 11) ^ rotr(E, 25);
+      const T1 = H + sigma1 + Chi(E, F, G) + SHA256_K[i] + SHA256_W[i] | 0;
+      const sigma0 = rotr(A, 2) ^ rotr(A, 13) ^ rotr(A, 22);
+      const T2 = sigma0 + Maj(A, B, C) | 0;
+      H = G;
+      G = F;
+      F = E;
+      E = D + T1 | 0;
+      D = C;
+      C = B;
+      B = A;
+      A = T1 + T2 | 0;
+    }
+    A = A + this.A | 0;
+    B = B + this.B | 0;
+    C = C + this.C | 0;
+    D = D + this.D | 0;
+    E = E + this.E | 0;
+    F = F + this.F | 0;
+    G = G + this.G | 0;
+    H = H + this.H | 0;
+    this.set(A, B, C, D, E, F, G, H);
   }
-  _cloneInto(to) {
-    to || (to = Object.create(Object.getPrototypeOf(this), {}));
-    const { oHash, iHash, finished, destroyed, blockLen, outputLen } = this;
-    to = to;
-    to.finished = finished;
-    to.destroyed = destroyed;
-    to.blockLen = blockLen;
-    to.outputLen = outputLen;
-    to.oHash = oHash._cloneInto(to.oHash);
-    to.iHash = iHash._cloneInto(to.iHash);
-    return to;
+  roundClean() {
+    SHA256_W.fill(0);
   }
   destroy() {
-    this.destroyed = true;
-    this.oHash.destroy();
-    this.iHash.destroy();
+    this.set(0, 0, 0, 0, 0, 0, 0, 0);
+    this.buffer.fill(0);
   }
 };
-var hmac = /* @__PURE__ */ __name((hash2, key, message2) => new HMAC(hash2, key).update(message2).digest(), "hmac");
-hmac.create = (hash2, key) => new HMAC(hash2, key);
-
-// node_modules/@noble/hashes/esm/pbkdf2.js
-function pbkdf2Init(hash2, _password, _salt, _opts) {
-  hash(hash2);
-  const opts = checkOpts({ dkLen: 32, asyncTick: 10 }, _opts);
-  const { c, dkLen, asyncTick } = opts;
-  number(c);
-  number(dkLen);
-  number(asyncTick);
-  if (c < 1)
-    throw new Error("PBKDF2: iterations (c) should be >= 1");
-  const password = toBytes(_password);
-  const salt = toBytes(_salt);
-  const DK = new Uint8Array(dkLen);
-  const PRF = hmac.create(hash2, password);
-  const PRFSalt = PRF._cloneInto().update(salt);
-  return { c, dkLen, asyncTick, DK, PRF, PRFSalt };
-}
-__name(pbkdf2Init, "pbkdf2Init");
-function pbkdf2Output(PRF, PRFSalt, DK, prfW, u) {
-  PRF.destroy();
-  PRFSalt.destroy();
-  if (prfW)
-    prfW.destroy();
-  u.fill(0);
-  return DK;
-}
-__name(pbkdf2Output, "pbkdf2Output");
-async function pbkdf2Async(hash2, password, salt, opts) {
-  const { c, dkLen, asyncTick, DK, PRF, PRFSalt } = pbkdf2Init(hash2, password, salt, opts);
-  let prfW;
-  const arr = new Uint8Array(4);
-  const view = createView(arr);
-  const u = new Uint8Array(PRF.outputLen);
-  for (let ti = 1, pos = 0; pos < dkLen; ti++, pos += PRF.outputLen) {
-    const Ti = DK.subarray(pos, pos + PRF.outputLen);
-    view.setInt32(0, ti, false);
-    (prfW = PRFSalt._cloneInto(prfW)).update(arr).digestInto(u);
-    Ti.set(u.subarray(0, Ti.length));
-    await asyncLoop(c - 1, asyncTick, () => {
-      PRF._cloneInto(prfW).update(u).digestInto(u);
-      for (let i = 0; i < Ti.length; i++)
-        Ti[i] ^= u[i];
-    });
-  }
-  return pbkdf2Output(PRF, PRFSalt, DK, prfW, u);
-}
-__name(pbkdf2Async, "pbkdf2Async");
+var sha2562 = /* @__PURE__ */ wrapConstructor(() => new SHA256());
 
 // node_modules/asn1js/build/index.es.js
 var pvtsutils = __toESM(require_build());
@@ -9861,7 +5651,7 @@ function assertBigInt() {
   }
 }
 __name(assertBigInt, "assertBigInt");
-function concat2(buffers) {
+function concat(buffers) {
   let outputLength = 0;
   let prevLength = 0;
   for (let i = 0; i < buffers.length; i++) {
@@ -9876,7 +5666,7 @@ function concat2(buffers) {
   }
   return retView.buffer;
 }
-__name(concat2, "concat");
+__name(concat, "concat");
 function checkBufferParams(baseBlock, inputBuffer, inputOffset, inputLength) {
   if (!(inputBuffer instanceof Uint8Array)) {
     baseBlock.error = "Wrong parameter: inputBuffer must be 'Uint8Array'";
@@ -9912,7 +5702,7 @@ var ViewWriter = class {
     this.items.push(buf);
   }
   final() {
-    return concat2(this.items);
+    return concat(this.items);
   }
 };
 var powers2 = [new Uint8Array([1])];
@@ -11640,7 +7430,7 @@ var LocalObjectIdentifierValueBlock = class extends ValueBlock {
       }
       retBuffers.push(valueBuf);
     }
-    return concat2(retBuffers);
+    return concat(retBuffers);
   }
   fromString(string2) {
     this.value = [];
@@ -11878,7 +7668,7 @@ var LocalRelativeObjectIdentifierValueBlock = class extends ValueBlock {
       }
       retBuffers.push(valueBuf);
     }
-    return concat2(retBuffers);
+    return concat(retBuffers);
   }
   fromString(string2) {
     this.value = [];
@@ -12651,7 +8441,182 @@ _a = TIME;
 })();
 TIME.NAME = "TIME";
 
-// node_modules/@chainsafe/libp2p-gossipsub/node_modules/@libp2p/crypto/dist/src/keys/rsa-utils.js
+// node_modules/uint8arrays/dist/src/to-string.js
+function toString2(array, encoding = "utf8") {
+  const base3 = bases_default[encoding];
+  if (base3 == null) {
+    throw new Error(`Unsupported encoding "${encoding}"`);
+  }
+  return base3.encoder.encode(array).substring(1);
+}
+__name(toString2, "toString");
+
+// node_modules/@libp2p/crypto/dist/src/random-bytes.js
+function randomBytes2(length3) {
+  if (isNaN(length3) || length3 <= 0) {
+    throw new InvalidParametersError("random bytes length must be a Number bigger than 0");
+  }
+  return randomBytes(length3);
+}
+__name(randomBytes2, "randomBytes");
+
+// node_modules/@libp2p/crypto/dist/src/errors.js
+var VerificationError = class extends Error {
+  static {
+    __name(this, "VerificationError");
+  }
+  constructor(message2 = "An error occurred while verifying a message") {
+    super(message2);
+    this.name = "VerificationError";
+  }
+};
+var WebCryptoMissingError = class extends Error {
+  static {
+    __name(this, "WebCryptoMissingError");
+  }
+  constructor(message2 = "Missing Web Crypto API") {
+    super(message2);
+    this.name = "WebCryptoMissingError";
+  }
+};
+
+// node_modules/@libp2p/crypto/dist/src/webcrypto/webcrypto.browser.js
+var webcrypto_browser_default = {
+  get(win = globalThis) {
+    const nativeCrypto = win.crypto;
+    if (nativeCrypto?.subtle == null) {
+      throw new WebCryptoMissingError("Missing Web Crypto API. The most likely cause of this error is that this page is being accessed from an insecure context (i.e. not HTTPS). For more information and possible resolutions see https://github.com/libp2p/js-libp2p/blob/main/packages/crypto/README.md#web-crypto-api");
+    }
+    return nativeCrypto;
+  }
+};
+
+// node_modules/@libp2p/crypto/dist/src/webcrypto/index.js
+var webcrypto_default = webcrypto_browser_default;
+
+// node_modules/@libp2p/crypto/dist/src/keys/rsa/index.browser.js
+async function generateRSAKey(bits) {
+  const pair = await webcrypto_default.get().subtle.generateKey({
+    name: "RSASSA-PKCS1-v1_5",
+    modulusLength: bits,
+    publicExponent: new Uint8Array([1, 0, 1]),
+    hash: { name: "SHA-256" }
+  }, true, ["sign", "verify"]);
+  const keys = await exportKey(pair);
+  return {
+    privateKey: keys[0],
+    publicKey: keys[1]
+  };
+}
+__name(generateRSAKey, "generateRSAKey");
+async function hashAndSign2(key, msg) {
+  const privateKey = await webcrypto_default.get().subtle.importKey("jwk", key, {
+    name: "RSASSA-PKCS1-v1_5",
+    hash: { name: "SHA-256" }
+  }, false, ["sign"]);
+  const sig = await webcrypto_default.get().subtle.sign({ name: "RSASSA-PKCS1-v1_5" }, privateKey, msg instanceof Uint8Array ? msg : msg.subarray());
+  return new Uint8Array(sig, 0, sig.byteLength);
+}
+__name(hashAndSign2, "hashAndSign");
+async function hashAndVerify2(key, sig, msg) {
+  const publicKey = await webcrypto_default.get().subtle.importKey("jwk", key, {
+    name: "RSASSA-PKCS1-v1_5",
+    hash: { name: "SHA-256" }
+  }, false, ["verify"]);
+  return webcrypto_default.get().subtle.verify({ name: "RSASSA-PKCS1-v1_5" }, publicKey, sig, msg instanceof Uint8Array ? msg : msg.subarray());
+}
+__name(hashAndVerify2, "hashAndVerify");
+async function exportKey(pair) {
+  if (pair.privateKey == null || pair.publicKey == null) {
+    throw new InvalidParametersError("Private and public key are required");
+  }
+  return Promise.all([
+    webcrypto_default.get().subtle.exportKey("jwk", pair.privateKey),
+    webcrypto_default.get().subtle.exportKey("jwk", pair.publicKey)
+  ]);
+}
+__name(exportKey, "exportKey");
+function rsaKeySize(jwk) {
+  if (jwk.kty !== "RSA") {
+    throw new InvalidParametersError("invalid key type");
+  } else if (jwk.n == null) {
+    throw new InvalidParametersError("invalid key modulus");
+  }
+  const bytes2 = fromString2(jwk.n, "base64url");
+  return bytes2.length * 8;
+}
+__name(rsaKeySize, "rsaKeySize");
+
+// node_modules/@libp2p/crypto/dist/src/keys/rsa/rsa.js
+var RSAPublicKey = class {
+  static {
+    __name(this, "RSAPublicKey");
+  }
+  type = "RSA";
+  _key;
+  _raw;
+  _multihash;
+  constructor(key, digest2) {
+    this._key = key;
+    this._multihash = digest2;
+  }
+  get raw() {
+    if (this._raw == null) {
+      this._raw = utils_exports2.jwkToPkix(this._key);
+    }
+    return this._raw;
+  }
+  toMultihash() {
+    return this._multihash;
+  }
+  toCID() {
+    return CID.createV1(114, this._multihash);
+  }
+  toString() {
+    return base58btc.encode(this.toMultihash().bytes).substring(1);
+  }
+  equals(key) {
+    if (key == null || !(key.raw instanceof Uint8Array)) {
+      return false;
+    }
+    return equals3(this.raw, key.raw);
+  }
+  verify(data, sig) {
+    return hashAndVerify2(this._key, sig, data);
+  }
+};
+var RSAPrivateKey = class {
+  static {
+    __name(this, "RSAPrivateKey");
+  }
+  type = "RSA";
+  _key;
+  _raw;
+  publicKey;
+  constructor(key, publicKey) {
+    this._key = key;
+    this.publicKey = publicKey;
+  }
+  get raw() {
+    if (this._raw == null) {
+      this._raw = utils_exports2.jwkToPkcs1(this._key);
+    }
+    return this._raw;
+  }
+  equals(key) {
+    if (key == null || !(key.raw instanceof Uint8Array)) {
+      return false;
+    }
+    return equals3(this.raw, key.raw);
+  }
+  sign(message2) {
+    return hashAndSign2(this._key, message2);
+  }
+};
+
+// node_modules/@libp2p/crypto/dist/src/keys/rsa/utils.js
+var MAX_RSA_KEY_SIZE = 8192;
+var SHA2_256_CODE = 18;
 function pkcs1ToJwk(bytes2) {
   const { result } = fromBER(bytes2);
   const values = result.valueBlock.value;
@@ -12672,7 +8637,7 @@ function pkcs1ToJwk(bytes2) {
 __name(pkcs1ToJwk, "pkcs1ToJwk");
 function jwkToPkcs1(jwk) {
   if (jwk.n == null || jwk.e == null || jwk.d == null || jwk.p == null || jwk.q == null || jwk.dp == null || jwk.dq == null || jwk.qi == null) {
-    throw new CodeError("JWK was missing components", "ERR_INVALID_PARAMETERS");
+    throw new InvalidParametersError("JWK was missing components");
   }
   const root = new Sequence({
     value: [
@@ -12703,7 +8668,7 @@ function pkixToJwk(bytes2) {
 __name(pkixToJwk, "pkixToJwk");
 function jwkToPkix(jwk) {
   if (jwk.n == null || jwk.e == null) {
-    throw new CodeError("JWK was missing components", "ERR_INVALID_PARAMETERS");
+    throw new InvalidParametersError("JWK was missing components");
   }
   const root = new Sequence({
     value: [
@@ -12761,572 +8726,132 @@ function bufToBn(u8) {
   return BigInt("0x" + hex.join(""));
 }
 __name(bufToBn, "bufToBn");
-var SALT_LENGTH = 16;
-var KEY_SIZE = 32;
-var ITERATIONS = 1e4;
-async function exportToPem(privateKey, password) {
-  const crypto3 = webcrypto_browser_default.get();
-  const keyWrapper = new Sequence({
-    value: [
-      // version (0)
-      new Integer({ value: 0 }),
-      // privateKeyAlgorithm
-      new Sequence({
-        value: [
-          // rsaEncryption OID
-          new ObjectIdentifier({
-            value: "1.2.840.113549.1.1.1"
-          }),
-          new Null()
-        ]
-      }),
-      // PrivateKey
-      new OctetString({
-        valueHex: privateKey.marshal()
-      })
-    ]
-  });
-  const keyBuf = keyWrapper.toBER();
-  const keyArr = new Uint8Array(keyBuf, 0, keyBuf.byteLength);
-  const salt = randomBytes2(SALT_LENGTH);
-  const encryptionKey = await pbkdf2Async(sha5122, password, salt, {
-    c: ITERATIONS,
-    dkLen: KEY_SIZE
-  });
-  const iv = randomBytes2(16);
-  const cryptoKey = await crypto3.subtle.importKey("raw", encryptionKey, "AES-CBC", false, ["encrypt"]);
-  const encrypted = await crypto3.subtle.encrypt({
-    name: "AES-CBC",
-    iv
-  }, cryptoKey, keyArr);
-  const pbkdf2Params = new Sequence({
-    value: [
-      // salt
-      new OctetString({ valueHex: salt }),
-      // iteration count
-      new Integer({ value: ITERATIONS }),
-      // key length
-      new Integer({ value: KEY_SIZE }),
-      // AlgorithmIdentifier
-      new Sequence({
-        value: [
-          // hmacWithSHA512
-          new ObjectIdentifier({ value: "1.2.840.113549.2.11" }),
-          new Null()
-        ]
-      })
-    ]
-  });
-  const encryptionAlgorithm = new Sequence({
-    value: [
-      // pkcs5PBES2
-      new ObjectIdentifier({
-        value: "1.2.840.113549.1.5.13"
-      }),
-      new Sequence({
-        value: [
-          // keyDerivationFunc
-          new Sequence({
-            value: [
-              // pkcs5PBKDF2
-              new ObjectIdentifier({
-                value: "1.2.840.113549.1.5.12"
-              }),
-              // PBKDF2-params
-              pbkdf2Params
-            ]
-          }),
-          // encryptionScheme
-          new Sequence({
-            value: [
-              // aes256-CBC
-              new ObjectIdentifier({
-                value: "2.16.840.1.101.3.4.1.42"
-              }),
-              // iv
-              new OctetString({
-                valueHex: iv
-              })
-            ]
-          })
-        ]
-      })
-    ]
-  });
-  const finalWrapper = new Sequence({
-    value: [
-      encryptionAlgorithm,
-      new OctetString({ valueHex: encrypted })
-    ]
-  });
-  const finalWrapperBuf = finalWrapper.toBER();
-  const finalWrapperArr = new Uint8Array(finalWrapperBuf, 0, finalWrapperBuf.byteLength);
-  return [
-    "-----BEGIN ENCRYPTED PRIVATE KEY-----",
-    ...toString2(finalWrapperArr, "base64pad").split(/(.{64})/).filter(Boolean),
-    "-----END ENCRYPTED PRIVATE KEY-----"
-  ].join("\n");
+function pkcs1ToRSAPrivateKey(bytes2) {
+  const jwk = pkcs1ToJwk(bytes2);
+  return jwkToRSAPrivateKey(jwk);
 }
-__name(exportToPem, "exportToPem");
-async function importFromPem(pem, password) {
-  const crypto3 = webcrypto_browser_default.get();
-  let plaintext;
-  if (pem.includes("-----BEGIN ENCRYPTED PRIVATE KEY-----")) {
-    const key = fromString2(pem.replace("-----BEGIN ENCRYPTED PRIVATE KEY-----", "").replace("-----END ENCRYPTED PRIVATE KEY-----", "").replace(/\n/g, "").trim(), "base64pad");
-    const { result } = fromBER(key);
-    const { iv, salt, iterations, keySize: keySize2, cipherText } = findEncryptedPEMData(result);
-    const encryptionKey = await pbkdf2Async(sha5122, password, salt, {
-      c: iterations,
-      dkLen: keySize2
-    });
-    const cryptoKey = await crypto3.subtle.importKey("raw", encryptionKey, "AES-CBC", false, ["decrypt"]);
-    const decrypted = toUint8Array(await crypto3.subtle.decrypt({
-      name: "AES-CBC",
-      iv
-    }, cryptoKey, cipherText));
-    const { result: decryptedResult } = fromBER(decrypted);
-    plaintext = findPEMData(decryptedResult);
-  } else if (pem.includes("-----BEGIN PRIVATE KEY-----")) {
-    const key = fromString2(pem.replace("-----BEGIN PRIVATE KEY-----", "").replace("-----END PRIVATE KEY-----", "").replace(/\n/g, "").trim(), "base64pad");
-    const { result } = fromBER(key);
-    plaintext = findPEMData(result);
-  } else {
-    throw new CodeError("Could not parse private key from PEM data", "ERR_INVALID_PARAMETERS");
+__name(pkcs1ToRSAPrivateKey, "pkcs1ToRSAPrivateKey");
+function pkixToRSAPublicKey(bytes2) {
+  const jwk = pkixToJwk(bytes2);
+  if (rsaKeySize(jwk) > MAX_RSA_KEY_SIZE) {
+    throw new InvalidPublicKeyError("Key size is too large");
   }
-  return unmarshalRsaPrivateKey(plaintext);
+  const hash2 = sha2562(PublicKey.encode({
+    Type: KeyType.RSA,
+    Data: bytes2
+  }));
+  const digest2 = create(SHA2_256_CODE, hash2);
+  return new RSAPublicKey(jwk, digest2);
 }
-__name(importFromPem, "importFromPem");
-function findEncryptedPEMData(root) {
-  const encryptionAlgorithm = root.valueBlock.value[0];
-  const scheme = encryptionAlgorithm.valueBlock.value[0].toString();
-  if (scheme !== "OBJECT IDENTIFIER : 1.2.840.113549.1.5.13") {
-    throw new CodeError("Only pkcs5PBES2 encrypted private keys are supported", "ERR_INVALID_PARAMS");
+__name(pkixToRSAPublicKey, "pkixToRSAPublicKey");
+function jwkToRSAPrivateKey(jwk) {
+  if (rsaKeySize(jwk) > MAX_RSA_KEY_SIZE) {
+    throw new InvalidParametersError("Key size is too large");
   }
-  const keyDerivationFunc = encryptionAlgorithm.valueBlock.value[1].valueBlock.value[0];
-  const keyDerivationFuncName = keyDerivationFunc.valueBlock.value[0].toString();
-  if (keyDerivationFuncName !== "OBJECT IDENTIFIER : 1.2.840.113549.1.5.12") {
-    throw new CodeError("Only pkcs5PBKDF2 key derivation functions are supported", "ERR_INVALID_PARAMS");
-  }
-  const pbkdf2Params = keyDerivationFunc.valueBlock.value[1];
-  const salt = toUint8Array(pbkdf2Params.valueBlock.value[0].getValue());
-  let iterations = ITERATIONS;
-  let keySize2 = KEY_SIZE;
-  if (pbkdf2Params.valueBlock.value.length === 3) {
-    iterations = Number(pbkdf2Params.valueBlock.value[1].toBigInt());
-    keySize2 = Number(pbkdf2Params.valueBlock.value[2].toBigInt());
-  } else if (pbkdf2Params.valueBlock.value.length === 2) {
-    throw new CodeError("Could not derive key size and iterations from PEM file - please use @libp2p/rsa to re-import your key", "ERR_INVALID_PARAMS");
-  }
-  const encryptionScheme = encryptionAlgorithm.valueBlock.value[1].valueBlock.value[1];
-  const encryptionSchemeName = encryptionScheme.valueBlock.value[0].toString();
-  if (encryptionSchemeName === "OBJECT IDENTIFIER : 1.2.840.113549.3.7") {
-  } else if (encryptionSchemeName === "OBJECT IDENTIFIER : 1.3.14.3.2.7") {
-  } else if (encryptionSchemeName === "OBJECT IDENTIFIER : 2.16.840.1.101.3.4.1.2") {
-  } else if (encryptionSchemeName === "OBJECT IDENTIFIER : 2.16.840.1.101.3.4.1.22") {
-  } else if (encryptionSchemeName === "OBJECT IDENTIFIER : 2.16.840.1.101.3.4.1.42") {
-  } else {
-    throw new CodeError("Only AES-CBC encryption schemes are supported", "ERR_INVALID_PARAMS");
-  }
-  const iv = toUint8Array(encryptionScheme.valueBlock.value[1].getValue());
-  return {
-    cipherText: toUint8Array(root.valueBlock.value[1].getValue()),
-    salt,
-    iterations,
-    keySize: keySize2,
-    iv
-  };
+  const keys = jwkToJWKKeyPair(jwk);
+  const hash2 = sha2562(PublicKey.encode({
+    Type: KeyType.RSA,
+    Data: jwkToPkix(keys.publicKey)
+  }));
+  const digest2 = create(SHA2_256_CODE, hash2);
+  return new RSAPrivateKey(keys.privateKey, new RSAPublicKey(keys.publicKey, digest2));
 }
-__name(findEncryptedPEMData, "findEncryptedPEMData");
-function findPEMData(seq) {
-  return toUint8Array(seq.valueBlock.value[2].getValue());
-}
-__name(findPEMData, "findPEMData");
-function toUint8Array(buf) {
-  return new Uint8Array(buf, 0, buf.byteLength);
-}
-__name(toUint8Array, "toUint8Array");
-
-// node_modules/@chainsafe/libp2p-gossipsub/node_modules/@libp2p/crypto/dist/src/keys/rsa-browser.js
-async function generateKey2(bits) {
-  const pair = await webcrypto_browser_default.get().subtle.generateKey({
-    name: "RSASSA-PKCS1-v1_5",
-    modulusLength: bits,
-    publicExponent: new Uint8Array([1, 0, 1]),
-    hash: { name: "SHA-256" }
-  }, true, ["sign", "verify"]);
-  const keys = await exportKey(pair);
-  return {
-    privateKey: keys[0],
-    publicKey: keys[1]
-  };
-}
-__name(generateKey2, "generateKey");
-async function unmarshalPrivateKey(key) {
-  const privateKey = await webcrypto_browser_default.get().subtle.importKey("jwk", key, {
-    name: "RSASSA-PKCS1-v1_5",
-    hash: { name: "SHA-256" }
-  }, true, ["sign"]);
-  const pair = [
-    privateKey,
-    await derivePublicFromPrivate(key)
-  ];
-  const keys = await exportKey({
-    privateKey: pair[0],
-    publicKey: pair[1]
-  });
-  return {
-    privateKey: keys[0],
-    publicKey: keys[1]
-  };
-}
-__name(unmarshalPrivateKey, "unmarshalPrivateKey");
-async function hashAndSign2(key, msg) {
-  const privateKey = await webcrypto_browser_default.get().subtle.importKey("jwk", key, {
-    name: "RSASSA-PKCS1-v1_5",
-    hash: { name: "SHA-256" }
-  }, false, ["sign"]);
-  const sig = await webcrypto_browser_default.get().subtle.sign({ name: "RSASSA-PKCS1-v1_5" }, privateKey, msg instanceof Uint8Array ? msg : msg.subarray());
-  return new Uint8Array(sig, 0, sig.byteLength);
-}
-__name(hashAndSign2, "hashAndSign");
-async function hashAndVerify2(key, sig, msg) {
-  const publicKey = await webcrypto_browser_default.get().subtle.importKey("jwk", key, {
-    name: "RSASSA-PKCS1-v1_5",
-    hash: { name: "SHA-256" }
-  }, false, ["verify"]);
-  return webcrypto_browser_default.get().subtle.verify({ name: "RSASSA-PKCS1-v1_5" }, publicKey, sig, msg instanceof Uint8Array ? msg : msg.subarray());
-}
-__name(hashAndVerify2, "hashAndVerify");
-async function exportKey(pair) {
-  if (pair.privateKey == null || pair.publicKey == null) {
-    throw new CodeError("Private and public key are required", "ERR_INVALID_PARAMETERS");
-  }
-  return Promise.all([
-    webcrypto_browser_default.get().subtle.exportKey("jwk", pair.privateKey),
-    webcrypto_browser_default.get().subtle.exportKey("jwk", pair.publicKey)
-  ]);
-}
-__name(exportKey, "exportKey");
-async function derivePublicFromPrivate(jwKey) {
-  return webcrypto_browser_default.get().subtle.importKey("jwk", {
-    kty: jwKey.kty,
-    n: jwKey.n,
-    e: jwKey.e
-  }, {
-    name: "RSASSA-PKCS1-v1_5",
-    hash: { name: "SHA-256" }
-  }, true, ["verify"]);
-}
-__name(derivePublicFromPrivate, "derivePublicFromPrivate");
-function keySize(jwk) {
-  if (jwk.kty !== "RSA") {
-    throw new CodeError("invalid key type", "ERR_INVALID_KEY_TYPE");
-  } else if (jwk.n == null) {
-    throw new CodeError("invalid key modulus", "ERR_INVALID_KEY_MODULUS");
-  }
-  const bytes2 = fromString2(jwk.n, "base64url");
-  return bytes2.length * 8;
-}
-__name(keySize, "keySize");
-
-// node_modules/@chainsafe/libp2p-gossipsub/node_modules/@libp2p/crypto/dist/src/keys/rsa-class.js
-var MAX_RSA_KEY_SIZE = 8192;
-var RsaPublicKey = class {
-  static {
-    __name(this, "RsaPublicKey");
-  }
-  _key;
-  constructor(key) {
-    this._key = key;
-  }
-  verify(data, sig) {
-    return hashAndVerify2(this._key, sig, data);
-  }
-  marshal() {
-    return rsa_utils_exports.jwkToPkix(this._key);
-  }
-  get bytes() {
-    return PublicKey.encode({
-      Type: KeyType.RSA,
-      Data: this.marshal()
-    }).subarray();
-  }
-  equals(key) {
-    return equals3(this.bytes, key.bytes);
-  }
-  hash() {
-    const p = sha256.digest(this.bytes);
-    if (isPromise(p)) {
-      return p.then(({ bytes: bytes2 }) => bytes2);
-    }
-    return p.bytes;
-  }
-};
-var RsaPrivateKey = class {
-  static {
-    __name(this, "RsaPrivateKey");
-  }
-  _key;
-  _publicKey;
-  constructor(key, publicKey) {
-    this._key = key;
-    this._publicKey = publicKey;
-  }
-  genSecret() {
-    return randomBytes2(16);
-  }
-  sign(message2) {
-    return hashAndSign2(this._key, message2);
-  }
-  get public() {
-    if (this._publicKey == null) {
-      throw new CodeError("public key not provided", "ERR_PUBKEY_NOT_PROVIDED");
-    }
-    return new RsaPublicKey(this._publicKey);
-  }
-  marshal() {
-    return rsa_utils_exports.jwkToPkcs1(this._key);
-  }
-  get bytes() {
-    return PrivateKey.encode({
-      Type: KeyType.RSA,
-      Data: this.marshal()
-    }).subarray();
-  }
-  equals(key) {
-    return equals3(this.bytes, key.bytes);
-  }
-  hash() {
-    const p = sha256.digest(this.bytes);
-    if (isPromise(p)) {
-      return p.then(({ bytes: bytes2 }) => bytes2);
-    }
-    return p.bytes;
-  }
-  /**
-   * Gets the ID of the key.
-   *
-   * The key id is the base58 encoding of the SHA-256 multihash of its public key.
-   * The public key is a protobuf encoding containing a type and the DER encoding
-   * of the PKCS SubjectPublicKeyInfo.
-   */
-  async id() {
-    const hash2 = await this.public.hash();
-    return toString2(hash2, "base58btc");
-  }
-  /**
-   * Exports the key as libp2p-key - a aes-gcm encrypted value with the key
-   * derived from the password.
-   *
-   * To export it as a password protected PEM file, please use the `exportPEM`
-   * function from `@libp2p/rsa`.
-   */
-  async export(password, format2 = "pkcs-8") {
-    if (format2 === "pkcs-8") {
-      return rsa_utils_exports.exportToPem(this, password);
-    } else if (format2 === "libp2p-key") {
-      return exporter(this.bytes, password);
-    } else {
-      throw new CodeError(`export format '${format2}' is not supported`, "ERR_INVALID_EXPORT_FORMAT");
-    }
-  }
-};
-async function unmarshalRsaPrivateKey(bytes2) {
-  const jwk = rsa_utils_exports.pkcs1ToJwk(bytes2);
-  if (keySize(jwk) > MAX_RSA_KEY_SIZE) {
-    throw new CodeError("key size is too large", "ERR_KEY_SIZE_TOO_LARGE");
-  }
-  const keys = await unmarshalPrivateKey(jwk);
-  return new RsaPrivateKey(keys.privateKey, keys.publicKey);
-}
-__name(unmarshalRsaPrivateKey, "unmarshalRsaPrivateKey");
-function unmarshalRsaPublicKey(bytes2) {
-  const jwk = rsa_utils_exports.pkixToJwk(bytes2);
-  if (keySize(jwk) > MAX_RSA_KEY_SIZE) {
-    throw new CodeError("key size is too large", "ERR_KEY_SIZE_TOO_LARGE");
-  }
-  return new RsaPublicKey(jwk);
-}
-__name(unmarshalRsaPublicKey, "unmarshalRsaPublicKey");
-async function fromJwk(jwk) {
-  if (keySize(jwk) > MAX_RSA_KEY_SIZE) {
-    throw new CodeError("key size is too large", "ERR_KEY_SIZE_TOO_LARGE");
-  }
-  const keys = await unmarshalPrivateKey(jwk);
-  return new RsaPrivateKey(keys.privateKey, keys.publicKey);
-}
-__name(fromJwk, "fromJwk");
-async function generateKeyPair2(bits) {
+__name(jwkToRSAPrivateKey, "jwkToRSAPrivateKey");
+async function generateRSAKeyPair(bits) {
   if (bits > MAX_RSA_KEY_SIZE) {
-    throw new CodeError("key size is too large", "ERR_KEY_SIZE_TOO_LARGE");
+    throw new InvalidParametersError("Key size is too large");
   }
-  const keys = await generateKey2(bits);
-  return new RsaPrivateKey(keys.privateKey, keys.publicKey);
+  const keys = await generateRSAKey(bits);
+  const hash2 = sha2562(PublicKey.encode({
+    Type: KeyType.RSA,
+    Data: jwkToPkix(keys.publicKey)
+  }));
+  const digest2 = create(SHA2_256_CODE, hash2);
+  return new RSAPrivateKey(keys.privateKey, new RSAPublicKey(keys.publicKey, digest2));
 }
-__name(generateKeyPair2, "generateKeyPair");
+__name(generateRSAKeyPair, "generateRSAKeyPair");
+function jwkToJWKKeyPair(key) {
+  if (key == null) {
+    throw new InvalidParametersError("Missing key parameter");
+  }
+  return {
+    privateKey: key,
+    publicKey: {
+      kty: key.kty,
+      n: key.n,
+      e: key.e
+    }
+  };
+}
+__name(jwkToJWKKeyPair, "jwkToJWKKeyPair");
 
-// node_modules/@chainsafe/libp2p-gossipsub/node_modules/@libp2p/crypto/dist/src/keys/secp256k1-class.js
-var secp256k1_class_exports = {};
-__export(secp256k1_class_exports, {
-  Secp256k1PrivateKey: () => Secp256k1PrivateKey,
-  Secp256k1PublicKey: () => Secp256k1PublicKey,
-  generateKeyPair: () => generateKeyPair3,
-  unmarshalSecp256k1PrivateKey: () => unmarshalSecp256k1PrivateKey,
-  unmarshalSecp256k1PublicKey: () => unmarshalSecp256k1PublicKey
-});
-
-// node_modules/@noble/hashes/esm/sha256.js
-var SHA256_K = /* @__PURE__ */ new Uint32Array([
-  1116352408,
-  1899447441,
-  3049323471,
-  3921009573,
-  961987163,
-  1508970993,
-  2453635748,
-  2870763221,
-  3624381080,
-  310598401,
-  607225278,
-  1426881987,
-  1925078388,
-  2162078206,
-  2614888103,
-  3248222580,
-  3835390401,
-  4022224774,
-  264347078,
-  604807628,
-  770255983,
-  1249150122,
-  1555081692,
-  1996064986,
-  2554220882,
-  2821834349,
-  2952996808,
-  3210313671,
-  3336571891,
-  3584528711,
-  113926993,
-  338241895,
-  666307205,
-  773529912,
-  1294757372,
-  1396182291,
-  1695183700,
-  1986661051,
-  2177026350,
-  2456956037,
-  2730485921,
-  2820302411,
-  3259730800,
-  3345764771,
-  3516065817,
-  3600352804,
-  4094571909,
-  275423344,
-  430227734,
-  506948616,
-  659060556,
-  883997877,
-  958139571,
-  1322822218,
-  1537002063,
-  1747873779,
-  1955562222,
-  2024104815,
-  2227730452,
-  2361852424,
-  2428436474,
-  2756734187,
-  3204031479,
-  3329325298
-]);
-var SHA256_IV = /* @__PURE__ */ new Uint32Array([
-  1779033703,
-  3144134277,
-  1013904242,
-  2773480762,
-  1359893119,
-  2600822924,
-  528734635,
-  1541459225
-]);
-var SHA256_W = /* @__PURE__ */ new Uint32Array(64);
-var SHA256 = class extends HashMD {
+// node_modules/@noble/hashes/esm/hmac.js
+var HMAC = class extends Hash {
   static {
-    __name(this, "SHA256");
+    __name(this, "HMAC");
   }
-  constructor() {
-    super(64, 32, 8, false);
-    this.A = SHA256_IV[0] | 0;
-    this.B = SHA256_IV[1] | 0;
-    this.C = SHA256_IV[2] | 0;
-    this.D = SHA256_IV[3] | 0;
-    this.E = SHA256_IV[4] | 0;
-    this.F = SHA256_IV[5] | 0;
-    this.G = SHA256_IV[6] | 0;
-    this.H = SHA256_IV[7] | 0;
+  constructor(hash2, _key) {
+    super();
+    this.finished = false;
+    this.destroyed = false;
+    hash(hash2);
+    const key = toBytes(_key);
+    this.iHash = hash2.create();
+    if (typeof this.iHash.update !== "function")
+      throw new Error("Expected instance of class which extends utils.Hash");
+    this.blockLen = this.iHash.blockLen;
+    this.outputLen = this.iHash.outputLen;
+    const blockLen = this.blockLen;
+    const pad = new Uint8Array(blockLen);
+    pad.set(key.length > blockLen ? hash2.create().update(key).digest() : key);
+    for (let i = 0; i < pad.length; i++)
+      pad[i] ^= 54;
+    this.iHash.update(pad);
+    this.oHash = hash2.create();
+    for (let i = 0; i < pad.length; i++)
+      pad[i] ^= 54 ^ 92;
+    this.oHash.update(pad);
+    pad.fill(0);
   }
-  get() {
-    const { A, B, C, D, E, F, G, H } = this;
-    return [A, B, C, D, E, F, G, H];
+  update(buf) {
+    exists(this);
+    this.iHash.update(buf);
+    return this;
   }
-  // prettier-ignore
-  set(A, B, C, D, E, F, G, H) {
-    this.A = A | 0;
-    this.B = B | 0;
-    this.C = C | 0;
-    this.D = D | 0;
-    this.E = E | 0;
-    this.F = F | 0;
-    this.G = G | 0;
-    this.H = H | 0;
+  digestInto(out) {
+    exists(this);
+    bytes(out, this.outputLen);
+    this.finished = true;
+    this.iHash.digestInto(out);
+    this.oHash.update(out);
+    this.oHash.digestInto(out);
+    this.destroy();
   }
-  process(view, offset) {
-    for (let i = 0; i < 16; i++, offset += 4)
-      SHA256_W[i] = view.getUint32(offset, false);
-    for (let i = 16; i < 64; i++) {
-      const W15 = SHA256_W[i - 15];
-      const W2 = SHA256_W[i - 2];
-      const s0 = rotr(W15, 7) ^ rotr(W15, 18) ^ W15 >>> 3;
-      const s1 = rotr(W2, 17) ^ rotr(W2, 19) ^ W2 >>> 10;
-      SHA256_W[i] = s1 + SHA256_W[i - 7] + s0 + SHA256_W[i - 16] | 0;
-    }
-    let { A, B, C, D, E, F, G, H } = this;
-    for (let i = 0; i < 64; i++) {
-      const sigma1 = rotr(E, 6) ^ rotr(E, 11) ^ rotr(E, 25);
-      const T1 = H + sigma1 + Chi(E, F, G) + SHA256_K[i] + SHA256_W[i] | 0;
-      const sigma0 = rotr(A, 2) ^ rotr(A, 13) ^ rotr(A, 22);
-      const T2 = sigma0 + Maj(A, B, C) | 0;
-      H = G;
-      G = F;
-      F = E;
-      E = D + T1 | 0;
-      D = C;
-      C = B;
-      B = A;
-      A = T1 + T2 | 0;
-    }
-    A = A + this.A | 0;
-    B = B + this.B | 0;
-    C = C + this.C | 0;
-    D = D + this.D | 0;
-    E = E + this.E | 0;
-    F = F + this.F | 0;
-    G = G + this.G | 0;
-    H = H + this.H | 0;
-    this.set(A, B, C, D, E, F, G, H);
+  digest() {
+    const out = new Uint8Array(this.oHash.outputLen);
+    this.digestInto(out);
+    return out;
   }
-  roundClean() {
-    SHA256_W.fill(0);
+  _cloneInto(to) {
+    to || (to = Object.create(Object.getPrototypeOf(this), {}));
+    const { oHash, iHash, finished, destroyed, blockLen, outputLen } = this;
+    to = to;
+    to.finished = finished;
+    to.destroyed = destroyed;
+    to.blockLen = blockLen;
+    to.outputLen = outputLen;
+    to.oHash = oHash._cloneInto(to.oHash);
+    to.iHash = iHash._cloneInto(to.iHash);
+    return to;
   }
   destroy() {
-    this.set(0, 0, 0, 0, 0, 0, 0, 0);
-    this.buffer.fill(0);
+    this.destroyed = true;
+    this.oHash.destroy();
+    this.iHash.destroy();
   }
 };
-var sha2562 = /* @__PURE__ */ wrapConstructor(() => new SHA256());
+var hmac = /* @__PURE__ */ __name((hash2, key, message2) => new HMAC(hash2, key).update(message2).digest(), "hmac");
+hmac.create = (hash2, key) => new HMAC(hash2, key);
 
 // node_modules/@noble/curves/esm/abstract/weierstrass.js
 function validateSigVerOpts(opts) {
@@ -14224,8 +9749,8 @@ function getHash(hash2) {
 }
 __name(getHash, "getHash");
 function createCurve(curveDef, defHash) {
-  const create3 = /* @__PURE__ */ __name((hash2) => weierstrass({ ...curveDef, ...getHash(hash2) }), "create");
-  return Object.freeze({ ...create3(defHash), create: create3 });
+  const create2 = /* @__PURE__ */ __name((hash2) => weierstrass({ ...curveDef, ...getHash(hash2) }), "create");
+  return Object.freeze({ ...create2(defHash), create: create2 });
 }
 __name(createCurve, "createCurve");
 
@@ -14310,233 +9835,4192 @@ var secp256k1 = createCurve({
 var _0n7 = BigInt(0);
 var Point = secp256k1.ProjectivePoint;
 
-// node_modules/@chainsafe/libp2p-gossipsub/node_modules/@libp2p/crypto/dist/src/keys/secp256k1-browser.js
-function generateKey3() {
-  return secp256k1.utils.randomPrivateKey();
+// node_modules/uint8arrays/dist/src/util/as-uint8array.js
+function asUint8Array(buf) {
+  return buf;
 }
-__name(generateKey3, "generateKey");
-function hashAndSign3(key, msg) {
-  const p = sha256.digest(msg instanceof Uint8Array ? msg : msg.subarray());
-  if (isPromise(p)) {
-    return p.then(({ digest: digest2 }) => secp256k1.sign(digest2, key).toDERRawBytes()).catch((err) => {
-      throw new CodeError(String(err), "ERR_INVALID_INPUT");
-    });
+__name(asUint8Array, "asUint8Array");
+
+// node_modules/uint8arrays/dist/src/concat.js
+function concat2(arrays, length3) {
+  if (length3 == null) {
+    length3 = arrays.reduce((acc, curr) => acc + curr.length, 0);
   }
-  try {
-    return secp256k1.sign(p.digest, key).toDERRawBytes();
-  } catch (err) {
-    throw new CodeError(String(err), "ERR_INVALID_INPUT");
+  const output2 = allocUnsafe(length3);
+  let offset = 0;
+  for (const arr of arrays) {
+    output2.set(arr, offset);
+    offset += arr.length;
   }
+  return asUint8Array(output2);
 }
-__name(hashAndSign3, "hashAndSign");
+__name(concat2, "concat");
+
+// node_modules/@libp2p/crypto/dist/src/util.js
+function isPromise(thing) {
+  if (thing == null) {
+    return false;
+  }
+  return typeof thing.then === "function" && typeof thing.catch === "function" && typeof thing.finally === "function";
+}
+__name(isPromise, "isPromise");
+
+// node_modules/@libp2p/crypto/dist/src/keys/secp256k1/index.browser.js
 function hashAndVerify3(key, sig, msg) {
   const p = sha256.digest(msg instanceof Uint8Array ? msg : msg.subarray());
   if (isPromise(p)) {
     return p.then(({ digest: digest2 }) => secp256k1.verify(sig, digest2, key)).catch((err) => {
-      throw new CodeError(String(err), "ERR_INVALID_INPUT");
+      throw new VerificationError(String(err));
     });
   }
   try {
     return secp256k1.verify(sig, p.digest, key);
   } catch (err) {
-    throw new CodeError(String(err), "ERR_INVALID_INPUT");
+    throw new VerificationError(String(err));
   }
 }
 __name(hashAndVerify3, "hashAndVerify");
-function compressPublicKey(key) {
-  const point = secp256k1.ProjectivePoint.fromHex(key).toRawBytes(true);
-  return point;
-}
-__name(compressPublicKey, "compressPublicKey");
-function validatePrivateKey(key) {
-  try {
-    secp256k1.getPublicKey(key, true);
-  } catch (err) {
-    throw new CodeError(String(err), "ERR_INVALID_PRIVATE_KEY");
-  }
-}
-__name(validatePrivateKey, "validatePrivateKey");
-function validatePublicKey(key) {
-  try {
-    secp256k1.ProjectivePoint.fromHex(key);
-  } catch (err) {
-    throw new CodeError(String(err), "ERR_INVALID_PUBLIC_KEY");
-  }
-}
-__name(validatePublicKey, "validatePublicKey");
-function computePublicKey(privateKey) {
-  try {
-    return secp256k1.getPublicKey(privateKey, true);
-  } catch (err) {
-    throw new CodeError(String(err), "ERR_INVALID_PRIVATE_KEY");
-  }
-}
-__name(computePublicKey, "computePublicKey");
 
-// node_modules/@chainsafe/libp2p-gossipsub/node_modules/@libp2p/crypto/dist/src/keys/secp256k1-class.js
+// node_modules/@libp2p/crypto/dist/src/keys/secp256k1/secp256k1.js
 var Secp256k1PublicKey = class {
   static {
     __name(this, "Secp256k1PublicKey");
   }
+  type = "secp256k1";
+  raw;
   _key;
   constructor(key) {
-    validatePublicKey(key);
-    this._key = key;
+    this._key = validateSecp256k1PublicKey(key);
+    this.raw = compressSecp256k1PublicKey(this._key);
+  }
+  toMultihash() {
+    return identity.digest(publicKeyToProtobuf(this));
+  }
+  toCID() {
+    return CID.createV1(114, this.toMultihash());
+  }
+  toString() {
+    return base58btc.encode(this.toMultihash().bytes).substring(1);
+  }
+  equals(key) {
+    if (key == null || !(key.raw instanceof Uint8Array)) {
+      return false;
+    }
+    return equals3(this.raw, key.raw);
   }
   verify(data, sig) {
     return hashAndVerify3(this._key, sig, data);
   }
-  marshal() {
-    return compressPublicKey(this._key);
-  }
-  get bytes() {
-    return PublicKey.encode({
-      Type: KeyType.Secp256k1,
-      Data: this.marshal()
-    }).subarray();
-  }
-  equals(key) {
-    return equals3(this.bytes, key.bytes);
-  }
-  async hash() {
-    const p = sha256.digest(this.bytes);
-    let bytes2;
-    if (isPromise(p)) {
-      ({ bytes: bytes2 } = await p);
-    } else {
-      bytes2 = p.bytes;
-    }
-    return bytes2;
-  }
 };
-var Secp256k1PrivateKey = class {
-  static {
-    __name(this, "Secp256k1PrivateKey");
-  }
-  _key;
-  _publicKey;
-  constructor(key, publicKey) {
-    this._key = key;
-    this._publicKey = publicKey ?? computePublicKey(key);
-    validatePrivateKey(this._key);
-    validatePublicKey(this._publicKey);
-  }
-  sign(message2) {
-    return hashAndSign3(this._key, message2);
-  }
-  get public() {
-    return new Secp256k1PublicKey(this._publicKey);
-  }
-  marshal() {
-    return this._key;
-  }
-  get bytes() {
-    return PrivateKey.encode({
-      Type: KeyType.Secp256k1,
-      Data: this.marshal()
-    }).subarray();
-  }
-  equals(key) {
-    return equals3(this.bytes, key.bytes);
-  }
-  hash() {
-    const p = sha256.digest(this.bytes);
-    if (isPromise(p)) {
-      return p.then(({ bytes: bytes2 }) => bytes2);
-    }
-    return p.bytes;
-  }
-  /**
-   * Gets the ID of the key.
-   *
-   * The key id is the base58 encoding of the SHA-256 multihash of its public key.
-   * The public key is a protobuf encoding containing a type and the DER encoding
-   * of the PKCS SubjectPublicKeyInfo.
-   */
-  async id() {
-    const hash2 = await this.public.hash();
-    return toString2(hash2, "base58btc");
-  }
-  /**
-   * Exports the key into a password protected `format`
-   */
-  async export(password, format2 = "libp2p-key") {
-    if (format2 === "libp2p-key") {
-      return exporter(this.bytes, password);
-    } else {
-      throw new CodeError(`export format '${format2}' is not supported`, "ERR_INVALID_EXPORT_FORMAT");
-    }
-  }
-};
-function unmarshalSecp256k1PrivateKey(bytes2) {
-  return new Secp256k1PrivateKey(bytes2);
-}
-__name(unmarshalSecp256k1PrivateKey, "unmarshalSecp256k1PrivateKey");
+
+// node_modules/@libp2p/crypto/dist/src/keys/secp256k1/utils.js
 function unmarshalSecp256k1PublicKey(bytes2) {
   return new Secp256k1PublicKey(bytes2);
 }
 __name(unmarshalSecp256k1PublicKey, "unmarshalSecp256k1PublicKey");
-async function generateKeyPair3() {
-  const privateKeyBytes = generateKey3();
-  return new Secp256k1PrivateKey(privateKeyBytes);
+function compressSecp256k1PublicKey(key) {
+  const point = secp256k1.ProjectivePoint.fromHex(key).toRawBytes(true);
+  return point;
 }
-__name(generateKeyPair3, "generateKeyPair");
+__name(compressSecp256k1PublicKey, "compressSecp256k1PublicKey");
+function validateSecp256k1PublicKey(key) {
+  try {
+    secp256k1.ProjectivePoint.fromHex(key);
+    return key;
+  } catch (err) {
+    throw new InvalidPublicKeyError(String(err));
+  }
+}
+__name(validateSecp256k1PublicKey, "validateSecp256k1PublicKey");
 
-// node_modules/@chainsafe/libp2p-gossipsub/node_modules/@libp2p/crypto/dist/src/keys/index.js
-var supportedKeys = {
-  rsa: rsa_class_exports,
-  ed25519: ed25519_class_exports,
-  secp256k1: secp256k1_class_exports
+// node_modules/@libp2p/crypto/dist/src/keys/index.js
+function publicKeyFromProtobuf(buf) {
+  const { Type, Data } = PublicKey.decode(buf);
+  const data = Data ?? new Uint8Array();
+  switch (Type) {
+    case KeyType.RSA:
+      return pkixToRSAPublicKey(data);
+    case KeyType.Ed25519:
+      return unmarshalEd25519PublicKey(data);
+    case KeyType.secp256k1:
+      return unmarshalSecp256k1PublicKey(data);
+    default:
+      throw new UnsupportedKeyTypeError();
+  }
+}
+__name(publicKeyFromProtobuf, "publicKeyFromProtobuf");
+function publicKeyFromMultihash(digest2) {
+  const { Type, Data } = PublicKey.decode(digest2.digest);
+  const data = Data ?? new Uint8Array();
+  switch (Type) {
+    case KeyType.Ed25519:
+      return unmarshalEd25519PublicKey(data);
+    case KeyType.secp256k1:
+      return unmarshalSecp256k1PublicKey(data);
+    default:
+      throw new UnsupportedKeyTypeError();
+  }
+}
+__name(publicKeyFromMultihash, "publicKeyFromMultihash");
+function publicKeyToProtobuf(key) {
+  return PublicKey.encode({
+    Type: KeyType[key.type],
+    Data: key.raw
+  });
+}
+__name(publicKeyToProtobuf, "publicKeyToProtobuf");
+
+// node_modules/@libp2p/peer-id/dist/src/peer-id.js
+var inspect = Symbol.for("nodejs.util.inspect.custom");
+var LIBP2P_KEY_CODE = 114;
+var PeerIdImpl = class {
+  static {
+    __name(this, "PeerIdImpl");
+  }
+  type;
+  multihash;
+  publicKey;
+  string;
+  constructor(init) {
+    this.type = init.type;
+    this.multihash = init.multihash;
+    Object.defineProperty(this, "string", {
+      enumerable: false,
+      writable: true
+    });
+  }
+  get [Symbol.toStringTag]() {
+    return `PeerId(${this.toString()})`;
+  }
+  [peerIdSymbol] = true;
+  toString() {
+    if (this.string == null) {
+      this.string = base58btc.encode(this.multihash.bytes).slice(1);
+    }
+    return this.string;
+  }
+  toMultihash() {
+    return this.multihash;
+  }
+  // return self-describing String representation
+  // in default format from RFC 0001: https://github.com/libp2p/specs/pull/209
+  toCID() {
+    return CID.createV1(LIBP2P_KEY_CODE, this.multihash);
+  }
+  toJSON() {
+    return this.toString();
+  }
+  /**
+   * Checks the equality of `this` peer against a given PeerId
+   */
+  equals(id) {
+    if (id == null) {
+      return false;
+    }
+    if (id instanceof Uint8Array) {
+      return equals3(this.multihash.bytes, id);
+    } else if (typeof id === "string") {
+      return this.toString() === id;
+    } else if (id?.toMultihash()?.bytes != null) {
+      return equals3(this.multihash.bytes, id.toMultihash().bytes);
+    } else {
+      throw new Error("not valid Id");
+    }
+  }
+  /**
+   * Returns PeerId as a human-readable string
+   * https://nodejs.org/api/util.html#utilinspectcustom
+   *
+   * @example
+   * ```TypeScript
+   * import { peerIdFromString } from '@libp2p/peer-id'
+   *
+   * console.info(peerIdFromString('QmFoo'))
+   * // 'PeerId(QmFoo)'
+   * ```
+   */
+  [inspect]() {
+    return `PeerId(${this.toString()})`;
+  }
 };
-function unsupportedKey(type) {
-  const supported = Object.keys(supportedKeys).join(" / ");
-  return new CodeError(`invalid or unsupported key type ${type}. Must be ${supported}`, "ERR_UNSUPPORTED_KEY_TYPE");
-}
-__name(unsupportedKey, "unsupportedKey");
-function typeToKey(type) {
-  type = type.toLowerCase();
-  if (type === "rsa" || type === "ed25519" || type === "secp256k1") {
-    return supportedKeys[type];
+var RSAPeerId = class extends PeerIdImpl {
+  static {
+    __name(this, "RSAPeerId");
   }
-  throw unsupportedKey(type);
+  type = "RSA";
+  publicKey;
+  constructor(init) {
+    super({ ...init, type: "RSA" });
+    this.publicKey = init.publicKey;
+  }
+};
+var Ed25519PeerId = class extends PeerIdImpl {
+  static {
+    __name(this, "Ed25519PeerId");
+  }
+  type = "Ed25519";
+  publicKey;
+  constructor(init) {
+    super({ ...init, type: "Ed25519" });
+    this.publicKey = init.publicKey;
+  }
+};
+var Secp256k1PeerId = class extends PeerIdImpl {
+  static {
+    __name(this, "Secp256k1PeerId");
+  }
+  type = "secp256k1";
+  publicKey;
+  constructor(init) {
+    super({ ...init, type: "secp256k1" });
+    this.publicKey = init.publicKey;
+  }
+};
+var TRANSPORT_IPFS_GATEWAY_HTTP_CODE = 2336;
+var URLPeerId = class {
+  static {
+    __name(this, "URLPeerId");
+  }
+  type = "url";
+  multihash;
+  publicKey;
+  url;
+  constructor(url) {
+    this.url = url.toString();
+    this.multihash = identity.digest(fromString2(this.url));
+  }
+  [inspect]() {
+    return `PeerId(${this.url})`;
+  }
+  [peerIdSymbol] = true;
+  toString() {
+    return this.toCID().toString();
+  }
+  toMultihash() {
+    return this.multihash;
+  }
+  toCID() {
+    return CID.createV1(TRANSPORT_IPFS_GATEWAY_HTTP_CODE, this.toMultihash());
+  }
+  toJSON() {
+    return this.toString();
+  }
+  equals(other) {
+    if (other == null) {
+      return false;
+    }
+    if (other instanceof Uint8Array) {
+      other = toString2(other);
+    }
+    return other.toString() === this.toString();
+  }
+};
+
+// node_modules/@libp2p/peer-id/dist/src/index.js
+function peerIdFromString(str, decoder) {
+  let multihash;
+  if (str.charAt(0) === "1" || str.charAt(0) === "Q") {
+    multihash = decode4(base58btc.decode(`z${str}`));
+  } else {
+    if (decoder == null) {
+      throw new InvalidParametersError('Please pass a multibase decoder for strings that do not start with "1" or "Q"');
+    }
+    multihash = decode4(decoder.decode(str));
+  }
+  return peerIdFromMultihash(multihash);
 }
-__name(typeToKey, "typeToKey");
-function unmarshalPublicKey(buf) {
-  const decoded = PublicKey.decode(buf);
-  const data = decoded.Data ?? new Uint8Array();
-  switch (decoded.Type) {
-    case KeyType.RSA:
-      return supportedKeys.rsa.unmarshalRsaPublicKey(data);
-    case KeyType.Ed25519:
-      return supportedKeys.ed25519.unmarshalEd25519PublicKey(data);
-    case KeyType.Secp256k1:
-      return supportedKeys.secp256k1.unmarshalSecp256k1PublicKey(data);
+__name(peerIdFromString, "peerIdFromString");
+function peerIdFromMultihash(multihash) {
+  if (isSha256Multihash(multihash)) {
+    return new RSAPeerId({ multihash });
+  } else if (isIdentityMultihash(multihash)) {
+    try {
+      const publicKey = publicKeyFromMultihash(multihash);
+      if (publicKey.type === "Ed25519") {
+        return new Ed25519PeerId({ multihash, publicKey });
+      } else if (publicKey.type === "secp256k1") {
+        return new Secp256k1PeerId({ multihash, publicKey });
+      }
+    } catch (err) {
+      const url = toString2(multihash.digest);
+      return new URLPeerId(new URL(url));
+    }
+  }
+  throw new InvalidMultihashError("Supplied PeerID Multihash is invalid");
+}
+__name(peerIdFromMultihash, "peerIdFromMultihash");
+function isIdentityMultihash(multihash) {
+  return multihash.code === identity.code;
+}
+__name(isIdentityMultihash, "isIdentityMultihash");
+function isSha256Multihash(multihash) {
+  return multihash.code === sha256.code;
+}
+__name(isSha256Multihash, "isSha256Multihash");
+
+// node_modules/uint8arraylist/dist/src/index.js
+var symbol = Symbol.for("@achingbrain/uint8arraylist");
+function findBufAndOffset(bufs, index) {
+  if (index == null || index < 0) {
+    throw new RangeError("index is out of bounds");
+  }
+  let offset = 0;
+  for (const buf of bufs) {
+    const bufEnd = offset + buf.byteLength;
+    if (index < bufEnd) {
+      return {
+        buf,
+        index: index - offset
+      };
+    }
+    offset = bufEnd;
+  }
+  throw new RangeError("index is out of bounds");
+}
+__name(findBufAndOffset, "findBufAndOffset");
+function isUint8ArrayList(value) {
+  return Boolean(value?.[symbol]);
+}
+__name(isUint8ArrayList, "isUint8ArrayList");
+var Uint8ArrayList = class _Uint8ArrayList {
+  static {
+    __name(this, "Uint8ArrayList");
+  }
+  bufs;
+  length;
+  [symbol] = true;
+  constructor(...data) {
+    this.bufs = [];
+    this.length = 0;
+    if (data.length > 0) {
+      this.appendAll(data);
+    }
+  }
+  *[Symbol.iterator]() {
+    yield* this.bufs;
+  }
+  get byteLength() {
+    return this.length;
+  }
+  /**
+   * Add one or more `bufs` to the end of this Uint8ArrayList
+   */
+  append(...bufs) {
+    this.appendAll(bufs);
+  }
+  /**
+   * Add all `bufs` to the end of this Uint8ArrayList
+   */
+  appendAll(bufs) {
+    let length3 = 0;
+    for (const buf of bufs) {
+      if (buf instanceof Uint8Array) {
+        length3 += buf.byteLength;
+        this.bufs.push(buf);
+      } else if (isUint8ArrayList(buf)) {
+        length3 += buf.byteLength;
+        this.bufs.push(...buf.bufs);
+      } else {
+        throw new Error("Could not append value, must be an Uint8Array or a Uint8ArrayList");
+      }
+    }
+    this.length += length3;
+  }
+  /**
+   * Add one or more `bufs` to the start of this Uint8ArrayList
+   */
+  prepend(...bufs) {
+    this.prependAll(bufs);
+  }
+  /**
+   * Add all `bufs` to the start of this Uint8ArrayList
+   */
+  prependAll(bufs) {
+    let length3 = 0;
+    for (const buf of bufs.reverse()) {
+      if (buf instanceof Uint8Array) {
+        length3 += buf.byteLength;
+        this.bufs.unshift(buf);
+      } else if (isUint8ArrayList(buf)) {
+        length3 += buf.byteLength;
+        this.bufs.unshift(...buf.bufs);
+      } else {
+        throw new Error("Could not prepend value, must be an Uint8Array or a Uint8ArrayList");
+      }
+    }
+    this.length += length3;
+  }
+  /**
+   * Read the value at `index`
+   */
+  get(index) {
+    const res = findBufAndOffset(this.bufs, index);
+    return res.buf[res.index];
+  }
+  /**
+   * Set the value at `index` to `value`
+   */
+  set(index, value) {
+    const res = findBufAndOffset(this.bufs, index);
+    res.buf[res.index] = value;
+  }
+  /**
+   * Copy bytes from `buf` to the index specified by `offset`
+   */
+  write(buf, offset = 0) {
+    if (buf instanceof Uint8Array) {
+      for (let i = 0; i < buf.length; i++) {
+        this.set(offset + i, buf[i]);
+      }
+    } else if (isUint8ArrayList(buf)) {
+      for (let i = 0; i < buf.length; i++) {
+        this.set(offset + i, buf.get(i));
+      }
+    } else {
+      throw new Error("Could not write value, must be an Uint8Array or a Uint8ArrayList");
+    }
+  }
+  /**
+   * Remove bytes from the front of the pool
+   */
+  consume(bytes2) {
+    bytes2 = Math.trunc(bytes2);
+    if (Number.isNaN(bytes2) || bytes2 <= 0) {
+      return;
+    }
+    if (bytes2 === this.byteLength) {
+      this.bufs = [];
+      this.length = 0;
+      return;
+    }
+    while (this.bufs.length > 0) {
+      if (bytes2 >= this.bufs[0].byteLength) {
+        bytes2 -= this.bufs[0].byteLength;
+        this.length -= this.bufs[0].byteLength;
+        this.bufs.shift();
+      } else {
+        this.bufs[0] = this.bufs[0].subarray(bytes2);
+        this.length -= bytes2;
+        break;
+      }
+    }
+  }
+  /**
+   * Extracts a section of an array and returns a new array.
+   *
+   * This is a copy operation as it is with Uint8Arrays and Arrays
+   * - note this is different to the behaviour of Node Buffers.
+   */
+  slice(beginInclusive, endExclusive) {
+    const { bufs, length: length3 } = this._subList(beginInclusive, endExclusive);
+    return concat2(bufs, length3);
+  }
+  /**
+   * Returns a alloc from the given start and end element index.
+   *
+   * In the best case where the data extracted comes from a single Uint8Array
+   * internally this is a no-copy operation otherwise it is a copy operation.
+   */
+  subarray(beginInclusive, endExclusive) {
+    const { bufs, length: length3 } = this._subList(beginInclusive, endExclusive);
+    if (bufs.length === 1) {
+      return bufs[0];
+    }
+    return concat2(bufs, length3);
+  }
+  /**
+   * Returns a allocList from the given start and end element index.
+   *
+   * This is a no-copy operation.
+   */
+  sublist(beginInclusive, endExclusive) {
+    const { bufs, length: length3 } = this._subList(beginInclusive, endExclusive);
+    const list = new _Uint8ArrayList();
+    list.length = length3;
+    list.bufs = [...bufs];
+    return list;
+  }
+  _subList(beginInclusive, endExclusive) {
+    beginInclusive = beginInclusive ?? 0;
+    endExclusive = endExclusive ?? this.length;
+    if (beginInclusive < 0) {
+      beginInclusive = this.length + beginInclusive;
+    }
+    if (endExclusive < 0) {
+      endExclusive = this.length + endExclusive;
+    }
+    if (beginInclusive < 0 || endExclusive > this.length) {
+      throw new RangeError("index is out of bounds");
+    }
+    if (beginInclusive === endExclusive) {
+      return { bufs: [], length: 0 };
+    }
+    if (beginInclusive === 0 && endExclusive === this.length) {
+      return { bufs: this.bufs, length: this.length };
+    }
+    const bufs = [];
+    let offset = 0;
+    for (let i = 0; i < this.bufs.length; i++) {
+      const buf = this.bufs[i];
+      const bufStart = offset;
+      const bufEnd = bufStart + buf.byteLength;
+      offset = bufEnd;
+      if (beginInclusive >= bufEnd) {
+        continue;
+      }
+      const sliceStartInBuf = beginInclusive >= bufStart && beginInclusive < bufEnd;
+      const sliceEndsInBuf = endExclusive > bufStart && endExclusive <= bufEnd;
+      if (sliceStartInBuf && sliceEndsInBuf) {
+        if (beginInclusive === bufStart && endExclusive === bufEnd) {
+          bufs.push(buf);
+          break;
+        }
+        const start = beginInclusive - bufStart;
+        bufs.push(buf.subarray(start, start + (endExclusive - beginInclusive)));
+        break;
+      }
+      if (sliceStartInBuf) {
+        if (beginInclusive === 0) {
+          bufs.push(buf);
+          continue;
+        }
+        bufs.push(buf.subarray(beginInclusive - bufStart));
+        continue;
+      }
+      if (sliceEndsInBuf) {
+        if (endExclusive === bufEnd) {
+          bufs.push(buf);
+          break;
+        }
+        bufs.push(buf.subarray(0, endExclusive - bufStart));
+        break;
+      }
+      bufs.push(buf);
+    }
+    return { bufs, length: endExclusive - beginInclusive };
+  }
+  indexOf(search, offset = 0) {
+    if (!isUint8ArrayList(search) && !(search instanceof Uint8Array)) {
+      throw new TypeError('The "value" argument must be a Uint8ArrayList or Uint8Array');
+    }
+    const needle = search instanceof Uint8Array ? search : search.subarray();
+    offset = Number(offset ?? 0);
+    if (isNaN(offset)) {
+      offset = 0;
+    }
+    if (offset < 0) {
+      offset = this.length + offset;
+    }
+    if (offset < 0) {
+      offset = 0;
+    }
+    if (search.length === 0) {
+      return offset > this.length ? this.length : offset;
+    }
+    const M = needle.byteLength;
+    if (M === 0) {
+      throw new TypeError("search must be at least 1 byte long");
+    }
+    const radix = 256;
+    const rightmostPositions = new Int32Array(radix);
+    for (let c = 0; c < radix; c++) {
+      rightmostPositions[c] = -1;
+    }
+    for (let j = 0; j < M; j++) {
+      rightmostPositions[needle[j]] = j;
+    }
+    const right = rightmostPositions;
+    const lastIndex = this.byteLength - needle.byteLength;
+    const lastPatIndex = needle.byteLength - 1;
+    let skip;
+    for (let i = offset; i <= lastIndex; i += skip) {
+      skip = 0;
+      for (let j = lastPatIndex; j >= 0; j--) {
+        const char = this.get(i + j);
+        if (needle[j] !== char) {
+          skip = Math.max(1, j - right[char]);
+          break;
+        }
+      }
+      if (skip === 0) {
+        return i;
+      }
+    }
+    return -1;
+  }
+  getInt8(byteOffset) {
+    const buf = this.subarray(byteOffset, byteOffset + 1);
+    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
+    return view.getInt8(0);
+  }
+  setInt8(byteOffset, value) {
+    const buf = allocUnsafe(1);
+    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
+    view.setInt8(0, value);
+    this.write(buf, byteOffset);
+  }
+  getInt16(byteOffset, littleEndian) {
+    const buf = this.subarray(byteOffset, byteOffset + 2);
+    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
+    return view.getInt16(0, littleEndian);
+  }
+  setInt16(byteOffset, value, littleEndian) {
+    const buf = alloc(2);
+    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
+    view.setInt16(0, value, littleEndian);
+    this.write(buf, byteOffset);
+  }
+  getInt32(byteOffset, littleEndian) {
+    const buf = this.subarray(byteOffset, byteOffset + 4);
+    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
+    return view.getInt32(0, littleEndian);
+  }
+  setInt32(byteOffset, value, littleEndian) {
+    const buf = alloc(4);
+    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
+    view.setInt32(0, value, littleEndian);
+    this.write(buf, byteOffset);
+  }
+  getBigInt64(byteOffset, littleEndian) {
+    const buf = this.subarray(byteOffset, byteOffset + 8);
+    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
+    return view.getBigInt64(0, littleEndian);
+  }
+  setBigInt64(byteOffset, value, littleEndian) {
+    const buf = alloc(8);
+    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
+    view.setBigInt64(0, value, littleEndian);
+    this.write(buf, byteOffset);
+  }
+  getUint8(byteOffset) {
+    const buf = this.subarray(byteOffset, byteOffset + 1);
+    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
+    return view.getUint8(0);
+  }
+  setUint8(byteOffset, value) {
+    const buf = allocUnsafe(1);
+    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
+    view.setUint8(0, value);
+    this.write(buf, byteOffset);
+  }
+  getUint16(byteOffset, littleEndian) {
+    const buf = this.subarray(byteOffset, byteOffset + 2);
+    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
+    return view.getUint16(0, littleEndian);
+  }
+  setUint16(byteOffset, value, littleEndian) {
+    const buf = alloc(2);
+    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
+    view.setUint16(0, value, littleEndian);
+    this.write(buf, byteOffset);
+  }
+  getUint32(byteOffset, littleEndian) {
+    const buf = this.subarray(byteOffset, byteOffset + 4);
+    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
+    return view.getUint32(0, littleEndian);
+  }
+  setUint32(byteOffset, value, littleEndian) {
+    const buf = alloc(4);
+    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
+    view.setUint32(0, value, littleEndian);
+    this.write(buf, byteOffset);
+  }
+  getBigUint64(byteOffset, littleEndian) {
+    const buf = this.subarray(byteOffset, byteOffset + 8);
+    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
+    return view.getBigUint64(0, littleEndian);
+  }
+  setBigUint64(byteOffset, value, littleEndian) {
+    const buf = alloc(8);
+    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
+    view.setBigUint64(0, value, littleEndian);
+    this.write(buf, byteOffset);
+  }
+  getFloat32(byteOffset, littleEndian) {
+    const buf = this.subarray(byteOffset, byteOffset + 4);
+    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
+    return view.getFloat32(0, littleEndian);
+  }
+  setFloat32(byteOffset, value, littleEndian) {
+    const buf = alloc(4);
+    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
+    view.setFloat32(0, value, littleEndian);
+    this.write(buf, byteOffset);
+  }
+  getFloat64(byteOffset, littleEndian) {
+    const buf = this.subarray(byteOffset, byteOffset + 8);
+    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
+    return view.getFloat64(0, littleEndian);
+  }
+  setFloat64(byteOffset, value, littleEndian) {
+    const buf = alloc(8);
+    const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
+    view.setFloat64(0, value, littleEndian);
+    this.write(buf, byteOffset);
+  }
+  equals(other) {
+    if (other == null) {
+      return false;
+    }
+    if (!(other instanceof _Uint8ArrayList)) {
+      return false;
+    }
+    if (other.bufs.length !== this.bufs.length) {
+      return false;
+    }
+    for (let i = 0; i < this.bufs.length; i++) {
+      if (!equals3(this.bufs[i], other.bufs[i])) {
+        return false;
+      }
+    }
+    return true;
+  }
+  /**
+   * Create a Uint8ArrayList from a pre-existing list of Uint8Arrays.  Use this
+   * method if you know the total size of all the Uint8Arrays ahead of time.
+   */
+  static fromUint8Arrays(bufs, length3) {
+    const list = new _Uint8ArrayList();
+    list.bufs = bufs;
+    if (length3 == null) {
+      length3 = bufs.reduce((acc, curr) => acc + curr.byteLength, 0);
+    }
+    list.length = length3;
+    return list;
+  }
+};
+
+// node_modules/it-length-prefixed/dist/src/utils.js
+function isAsyncIterable(thing) {
+  return thing[Symbol.asyncIterator] != null;
+}
+__name(isAsyncIterable, "isAsyncIterable");
+
+// node_modules/it-length-prefixed/dist/src/encode.js
+var defaultEncoder = /* @__PURE__ */ __name((length3) => {
+  const lengthLength = encodingLength2(length3);
+  const lengthBuf = allocUnsafe(lengthLength);
+  encode4(length3, lengthBuf);
+  defaultEncoder.bytes = lengthLength;
+  return lengthBuf;
+}, "defaultEncoder");
+defaultEncoder.bytes = 0;
+function encode6(source, options) {
+  options = options ?? {};
+  const encodeLength = options.lengthEncoder ?? defaultEncoder;
+  function* maybeYield(chunk) {
+    const length3 = encodeLength(chunk.byteLength);
+    if (length3 instanceof Uint8Array) {
+      yield length3;
+    } else {
+      yield* length3;
+    }
+    if (chunk instanceof Uint8Array) {
+      yield chunk;
+    } else {
+      yield* chunk;
+    }
+  }
+  __name(maybeYield, "maybeYield");
+  if (isAsyncIterable(source)) {
+    return async function* () {
+      for await (const chunk of source) {
+        yield* maybeYield(chunk);
+      }
+    }();
+  }
+  return function* () {
+    for (const chunk of source) {
+      yield* maybeYield(chunk);
+    }
+  }();
+}
+__name(encode6, "encode");
+encode6.single = (chunk, options) => {
+  options = options ?? {};
+  const encodeLength = options.lengthEncoder ?? defaultEncoder;
+  return new Uint8ArrayList(encodeLength(chunk.byteLength), chunk);
+};
+
+// node_modules/it-length-prefixed/dist/src/errors.js
+var InvalidMessageLengthError = class extends Error {
+  static {
+    __name(this, "InvalidMessageLengthError");
+  }
+  name = "InvalidMessageLengthError";
+  code = "ERR_INVALID_MSG_LENGTH";
+};
+var InvalidDataLengthError = class extends Error {
+  static {
+    __name(this, "InvalidDataLengthError");
+  }
+  name = "InvalidDataLengthError";
+  code = "ERR_MSG_DATA_TOO_LONG";
+};
+var InvalidDataLengthLengthError = class extends Error {
+  static {
+    __name(this, "InvalidDataLengthLengthError");
+  }
+  name = "InvalidDataLengthLengthError";
+  code = "ERR_MSG_LENGTH_TOO_LONG";
+};
+var UnexpectedEOFError = class extends Error {
+  static {
+    __name(this, "UnexpectedEOFError");
+  }
+  name = "UnexpectedEOFError";
+  code = "ERR_UNEXPECTED_EOF";
+};
+
+// node_modules/it-length-prefixed/dist/src/decode.js
+var MAX_LENGTH_LENGTH = 8;
+var MAX_DATA_LENGTH = 1024 * 1024 * 4;
+var ReadMode;
+(function(ReadMode2) {
+  ReadMode2[ReadMode2["LENGTH"] = 0] = "LENGTH";
+  ReadMode2[ReadMode2["DATA"] = 1] = "DATA";
+})(ReadMode || (ReadMode = {}));
+var defaultDecoder = /* @__PURE__ */ __name((buf) => {
+  const length3 = decode5(buf);
+  defaultDecoder.bytes = encodingLength2(length3);
+  return length3;
+}, "defaultDecoder");
+defaultDecoder.bytes = 0;
+function decode7(source, options) {
+  const buffer = new Uint8ArrayList();
+  let mode = ReadMode.LENGTH;
+  let dataLength = -1;
+  const lengthDecoder = options?.lengthDecoder ?? defaultDecoder;
+  const maxLengthLength = options?.maxLengthLength ?? MAX_LENGTH_LENGTH;
+  const maxDataLength = options?.maxDataLength ?? MAX_DATA_LENGTH;
+  function* maybeYield() {
+    while (buffer.byteLength > 0) {
+      if (mode === ReadMode.LENGTH) {
+        try {
+          dataLength = lengthDecoder(buffer);
+          if (dataLength < 0) {
+            throw new InvalidMessageLengthError("Invalid message length");
+          }
+          if (dataLength > maxDataLength) {
+            throw new InvalidDataLengthError("Message length too long");
+          }
+          const dataLengthLength = lengthDecoder.bytes;
+          buffer.consume(dataLengthLength);
+          if (options?.onLength != null) {
+            options.onLength(dataLength);
+          }
+          mode = ReadMode.DATA;
+        } catch (err) {
+          if (err instanceof RangeError) {
+            if (buffer.byteLength > maxLengthLength) {
+              throw new InvalidDataLengthLengthError("Message length length too long");
+            }
+            break;
+          }
+          throw err;
+        }
+      }
+      if (mode === ReadMode.DATA) {
+        if (buffer.byteLength < dataLength) {
+          break;
+        }
+        const data = buffer.sublist(0, dataLength);
+        buffer.consume(dataLength);
+        if (options?.onData != null) {
+          options.onData(data);
+        }
+        yield data;
+        mode = ReadMode.LENGTH;
+      }
+    }
+  }
+  __name(maybeYield, "maybeYield");
+  if (isAsyncIterable(source)) {
+    return async function* () {
+      for await (const buf of source) {
+        buffer.append(buf);
+        yield* maybeYield();
+      }
+      if (buffer.byteLength > 0) {
+        throw new UnexpectedEOFError("Unexpected end of input");
+      }
+    }();
+  }
+  return function* () {
+    for (const buf of source) {
+      buffer.append(buf);
+      yield* maybeYield();
+    }
+    if (buffer.byteLength > 0) {
+      throw new UnexpectedEOFError("Unexpected end of input");
+    }
+  }();
+}
+__name(decode7, "decode");
+decode7.fromReader = (reader, options) => {
+  let byteLength = 1;
+  const varByteSource = async function* () {
+    while (true) {
+      try {
+        const { done, value } = await reader.next(byteLength);
+        if (done === true) {
+          return;
+        }
+        if (value != null) {
+          yield value;
+        }
+      } catch (err) {
+        if (err.code === "ERR_UNDER_READ") {
+          return { done: true, value: null };
+        }
+        throw err;
+      } finally {
+        byteLength = 1;
+      }
+    }
+  }();
+  const onLength = /* @__PURE__ */ __name((l) => {
+    byteLength = l;
+  }, "onLength");
+  return decode7(varByteSource, {
+    ...options ?? {},
+    onLength
+  });
+};
+
+// node_modules/p-defer/index.js
+function pDefer() {
+  const deferred = {};
+  deferred.promise = new Promise((resolve, reject) => {
+    deferred.resolve = resolve;
+    deferred.reject = reject;
+  });
+  return deferred;
+}
+__name(pDefer, "pDefer");
+
+// node_modules/it-pushable/dist/src/fifo.js
+var FixedFIFO = class {
+  static {
+    __name(this, "FixedFIFO");
+  }
+  buffer;
+  mask;
+  top;
+  btm;
+  next;
+  constructor(hwm) {
+    if (!(hwm > 0) || (hwm - 1 & hwm) !== 0) {
+      throw new Error("Max size for a FixedFIFO should be a power of two");
+    }
+    this.buffer = new Array(hwm);
+    this.mask = hwm - 1;
+    this.top = 0;
+    this.btm = 0;
+    this.next = null;
+  }
+  push(data) {
+    if (this.buffer[this.top] !== void 0) {
+      return false;
+    }
+    this.buffer[this.top] = data;
+    this.top = this.top + 1 & this.mask;
+    return true;
+  }
+  shift() {
+    const last = this.buffer[this.btm];
+    if (last === void 0) {
+      return void 0;
+    }
+    this.buffer[this.btm] = void 0;
+    this.btm = this.btm + 1 & this.mask;
+    return last;
+  }
+  isEmpty() {
+    return this.buffer[this.btm] === void 0;
+  }
+};
+var FIFO = class {
+  static {
+    __name(this, "FIFO");
+  }
+  size;
+  hwm;
+  head;
+  tail;
+  constructor(options = {}) {
+    this.hwm = options.splitLimit ?? 16;
+    this.head = new FixedFIFO(this.hwm);
+    this.tail = this.head;
+    this.size = 0;
+  }
+  calculateSize(obj) {
+    if (obj?.byteLength != null) {
+      return obj.byteLength;
+    }
+    return 1;
+  }
+  push(val) {
+    if (val?.value != null) {
+      this.size += this.calculateSize(val.value);
+    }
+    if (!this.head.push(val)) {
+      const prev = this.head;
+      this.head = prev.next = new FixedFIFO(2 * this.head.buffer.length);
+      this.head.push(val);
+    }
+  }
+  shift() {
+    let val = this.tail.shift();
+    if (val === void 0 && this.tail.next != null) {
+      const next = this.tail.next;
+      this.tail.next = null;
+      this.tail = next;
+      val = this.tail.shift();
+    }
+    if (val?.value != null) {
+      this.size -= this.calculateSize(val.value);
+    }
+    return val;
+  }
+  isEmpty() {
+    return this.head.isEmpty();
+  }
+};
+
+// node_modules/it-pushable/dist/src/index.js
+var AbortError = class extends Error {
+  static {
+    __name(this, "AbortError");
+  }
+  type;
+  code;
+  constructor(message2, code2) {
+    super(message2 ?? "The operation was aborted");
+    this.type = "aborted";
+    this.code = code2 ?? "ABORT_ERR";
+  }
+};
+function pushable(options = {}) {
+  const getNext = /* @__PURE__ */ __name((buffer) => {
+    const next = buffer.shift();
+    if (next == null) {
+      return { done: true };
+    }
+    if (next.error != null) {
+      throw next.error;
+    }
+    return {
+      done: next.done === true,
+      // @ts-expect-error if done is false, value will be present
+      value: next.value
+    };
+  }, "getNext");
+  return _pushable(getNext, options);
+}
+__name(pushable, "pushable");
+function _pushable(getNext, options) {
+  options = options ?? {};
+  let onEnd = options.onEnd;
+  let buffer = new FIFO();
+  let pushable2;
+  let onNext;
+  let ended;
+  let drain = pDefer();
+  const waitNext = /* @__PURE__ */ __name(async () => {
+    try {
+      if (!buffer.isEmpty()) {
+        return getNext(buffer);
+      }
+      if (ended) {
+        return { done: true };
+      }
+      return await new Promise((resolve, reject) => {
+        onNext = /* @__PURE__ */ __name((next) => {
+          onNext = null;
+          buffer.push(next);
+          try {
+            resolve(getNext(buffer));
+          } catch (err) {
+            reject(err);
+          }
+          return pushable2;
+        }, "onNext");
+      });
+    } finally {
+      if (buffer.isEmpty()) {
+        queueMicrotask(() => {
+          drain.resolve();
+          drain = pDefer();
+        });
+      }
+    }
+  }, "waitNext");
+  const bufferNext = /* @__PURE__ */ __name((next) => {
+    if (onNext != null) {
+      return onNext(next);
+    }
+    buffer.push(next);
+    return pushable2;
+  }, "bufferNext");
+  const bufferError = /* @__PURE__ */ __name((err) => {
+    buffer = new FIFO();
+    if (onNext != null) {
+      return onNext({ error: err });
+    }
+    buffer.push({ error: err });
+    return pushable2;
+  }, "bufferError");
+  const push = /* @__PURE__ */ __name((value) => {
+    if (ended) {
+      return pushable2;
+    }
+    if (options?.objectMode !== true && value?.byteLength == null) {
+      throw new Error("objectMode was not true but tried to push non-Uint8Array value");
+    }
+    return bufferNext({ done: false, value });
+  }, "push");
+  const end = /* @__PURE__ */ __name((err) => {
+    if (ended)
+      return pushable2;
+    ended = true;
+    return err != null ? bufferError(err) : bufferNext({ done: true });
+  }, "end");
+  const _return = /* @__PURE__ */ __name(() => {
+    buffer = new FIFO();
+    end();
+    return { done: true };
+  }, "_return");
+  const _throw = /* @__PURE__ */ __name((err) => {
+    end(err);
+    return { done: true };
+  }, "_throw");
+  pushable2 = {
+    [Symbol.asyncIterator]() {
+      return this;
+    },
+    next: waitNext,
+    return: _return,
+    throw: _throw,
+    push,
+    end,
+    get readableLength() {
+      return buffer.size;
+    },
+    onEmpty: /* @__PURE__ */ __name(async (options2) => {
+      const signal = options2?.signal;
+      signal?.throwIfAborted();
+      if (buffer.isEmpty()) {
+        return;
+      }
+      let cancel;
+      let listener;
+      if (signal != null) {
+        cancel = new Promise((resolve, reject) => {
+          listener = /* @__PURE__ */ __name(() => {
+            reject(new AbortError());
+          }, "listener");
+          signal.addEventListener("abort", listener);
+        });
+      }
+      try {
+        await Promise.race([
+          drain.promise,
+          cancel
+        ]);
+      } finally {
+        if (listener != null && signal != null) {
+          signal?.removeEventListener("abort", listener);
+        }
+      }
+    }, "onEmpty")
+  };
+  if (onEnd == null) {
+    return pushable2;
+  }
+  const _pushable2 = pushable2;
+  pushable2 = {
+    [Symbol.asyncIterator]() {
+      return this;
+    },
+    next() {
+      return _pushable2.next();
+    },
+    throw(err) {
+      _pushable2.throw(err);
+      if (onEnd != null) {
+        onEnd(err);
+        onEnd = void 0;
+      }
+      return { done: true };
+    },
+    return() {
+      _pushable2.return();
+      if (onEnd != null) {
+        onEnd();
+        onEnd = void 0;
+      }
+      return { done: true };
+    },
+    push,
+    end(err) {
+      _pushable2.end(err);
+      if (onEnd != null) {
+        onEnd(err);
+        onEnd = void 0;
+      }
+      return pushable2;
+    },
+    get readableLength() {
+      return _pushable2.readableLength;
+    },
+    onEmpty: /* @__PURE__ */ __name((opts) => {
+      return _pushable2.onEmpty(opts);
+    }, "onEmpty")
+  };
+  return pushable2;
+}
+__name(_pushable, "_pushable");
+
+// node_modules/it-merge/dist/src/index.js
+function isAsyncIterable2(thing) {
+  return thing[Symbol.asyncIterator] != null;
+}
+__name(isAsyncIterable2, "isAsyncIterable");
+function merge(...sources) {
+  const syncSources = [];
+  for (const source of sources) {
+    if (!isAsyncIterable2(source)) {
+      syncSources.push(source);
+    }
+  }
+  if (syncSources.length === sources.length) {
+    return function* () {
+      for (const source of syncSources) {
+        yield* source;
+      }
+    }();
+  }
+  return async function* () {
+    const output2 = pushable({
+      objectMode: true
+    });
+    void Promise.resolve().then(async () => {
+      try {
+        await Promise.all(sources.map(async (source) => {
+          for await (const item of source) {
+            output2.push(item);
+          }
+        }));
+        output2.end();
+      } catch (err) {
+        output2.end(err);
+      }
+    });
+    yield* output2;
+  }();
+}
+__name(merge, "merge");
+var src_default = merge;
+
+// node_modules/it-pipe/dist/src/index.js
+function pipe(first, ...rest) {
+  if (first == null) {
+    throw new Error("Empty pipeline");
+  }
+  if (isDuplex(first)) {
+    const duplex = first;
+    first = /* @__PURE__ */ __name(() => duplex.source, "first");
+  } else if (isIterable(first) || isAsyncIterable3(first)) {
+    const source = first;
+    first = /* @__PURE__ */ __name(() => source, "first");
+  }
+  const fns = [first, ...rest];
+  if (fns.length > 1) {
+    if (isDuplex(fns[fns.length - 1])) {
+      fns[fns.length - 1] = fns[fns.length - 1].sink;
+    }
+  }
+  if (fns.length > 2) {
+    for (let i = 1; i < fns.length - 1; i++) {
+      if (isDuplex(fns[i])) {
+        fns[i] = duplexPipelineFn(fns[i]);
+      }
+    }
+  }
+  return rawPipe(...fns);
+}
+__name(pipe, "pipe");
+var rawPipe = /* @__PURE__ */ __name((...fns) => {
+  let res;
+  while (fns.length > 0) {
+    res = fns.shift()(res);
+  }
+  return res;
+}, "rawPipe");
+var isAsyncIterable3 = /* @__PURE__ */ __name((obj) => {
+  return obj?.[Symbol.asyncIterator] != null;
+}, "isAsyncIterable");
+var isIterable = /* @__PURE__ */ __name((obj) => {
+  return obj?.[Symbol.iterator] != null;
+}, "isIterable");
+var isDuplex = /* @__PURE__ */ __name((obj) => {
+  if (obj == null) {
+    return false;
+  }
+  return obj.sink != null && obj.source != null;
+}, "isDuplex");
+var duplexPipelineFn = /* @__PURE__ */ __name((duplex) => {
+  return (source) => {
+    const p = duplex.sink(source);
+    if (p?.then != null) {
+      const stream = pushable({
+        objectMode: true
+      });
+      p.then(() => {
+        stream.end();
+      }, (err) => {
+        stream.end(err);
+      });
+      let sourceWrap;
+      const source2 = duplex.source;
+      if (isAsyncIterable3(source2)) {
+        sourceWrap = /* @__PURE__ */ __name(async function* () {
+          yield* source2;
+          stream.end();
+        }, "sourceWrap");
+      } else if (isIterable(source2)) {
+        sourceWrap = /* @__PURE__ */ __name(function* () {
+          yield* source2;
+          stream.end();
+        }, "sourceWrap");
+      } else {
+        throw new Error("Unknown duplex source type - must be Iterable or AsyncIterable");
+      }
+      return src_default(stream, sourceWrap());
+    }
+    return duplex.source;
+  };
+}, "duplexPipelineFn");
+
+// node_modules/@chainsafe/libp2p-gossipsub/dist/src/constants.js
+var second = 1e3;
+var minute = 60 * second;
+var FloodsubID = "/floodsub/1.0.0";
+var GossipsubIDv10 = "/meshsub/1.0.0";
+var GossipsubIDv11 = "/meshsub/1.1.0";
+var GossipsubIDv12 = "/meshsub/1.2.0";
+var GossipsubD = 6;
+var GossipsubDlo = 4;
+var GossipsubDhi = 12;
+var GossipsubDscore = 4;
+var GossipsubDout = 2;
+var GossipsubHistoryLength = 5;
+var GossipsubHistoryGossip = 3;
+var GossipsubDlazy = 6;
+var GossipsubGossipFactor = 0.25;
+var GossipsubGossipRetransmission = 3;
+var GossipsubHeartbeatInitialDelay = 100;
+var GossipsubHeartbeatInterval = second;
+var GossipsubFanoutTTL = minute;
+var GossipsubPrunePeers = 16;
+var GossipsubPruneBackoff = minute;
+var GossipsubUnsubscribeBackoff = 10 * second;
+var GossipsubPruneBackoffTicks = 15;
+var GossipsubConnectionTimeout = 30 * second;
+var GossipsubDirectConnectTicks = 300;
+var GossipsubDirectConnectInitialDelay = second;
+var GossipsubOpportunisticGraftTicks = 60;
+var GossipsubOpportunisticGraftPeers = 2;
+var GossipsubGraftFloodThreshold = 10 * second;
+var GossipsubMaxIHaveLength = 5e3;
+var GossipsubMaxIHaveMessages = 10;
+var GossipsubIWantFollowupTime = 3 * second;
+var GossipsubSeenTTL = 2 * minute;
+var TimeCacheDuration = 120 * 1e3;
+var ERR_TOPIC_VALIDATOR_REJECT = "ERR_TOPIC_VALIDATOR_REJECT";
+var ERR_TOPIC_VALIDATOR_IGNORE = "ERR_TOPIC_VALIDATOR_IGNORE";
+var ACCEPT_FROM_WHITELIST_THRESHOLD_SCORE = 0;
+var ACCEPT_FROM_WHITELIST_MAX_MESSAGES = 128;
+var ACCEPT_FROM_WHITELIST_DURATION_MS = 1e3;
+var DEFAULT_METRIC_MESH_MESSAGE_DELIVERIES_WINDOWS = 1e3;
+var BACKOFF_SLACK = 1;
+var GossipsubIdontwantMinDataSize = 512;
+var GossipsubIdontwantMaxMessages = 512;
+
+// node_modules/@chainsafe/libp2p-gossipsub/dist/src/message/decodeRpc.js
+var defaultDecodeRpcLimits = {
+  maxSubscriptions: Infinity,
+  maxMessages: Infinity,
+  maxIhaveMessageIDs: Infinity,
+  maxIwantMessageIDs: Infinity,
+  maxIdontwantMessageIDs: Infinity,
+  maxControlMessages: Infinity,
+  maxPeerInfos: Infinity
+};
+
+// node_modules/@chainsafe/libp2p-gossipsub/dist/src/message/rpc.js
+var RPC;
+(function(RPC2) {
+  let SubOpts;
+  (function(SubOpts2) {
+    let _codec2;
+    SubOpts2.codec = () => {
+      if (_codec2 == null) {
+        _codec2 = message((obj, w, opts = {}) => {
+          if (opts.lengthDelimited !== false) {
+            w.fork();
+          }
+          if (obj.subscribe != null) {
+            w.uint32(8);
+            w.bool(obj.subscribe);
+          }
+          if (obj.topic != null) {
+            w.uint32(18);
+            w.string(obj.topic);
+          }
+          if (opts.lengthDelimited !== false) {
+            w.ldelim();
+          }
+        }, (reader, length3, opts = {}) => {
+          const obj = {};
+          const end = length3 == null ? reader.len : reader.pos + length3;
+          while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+              case 1: {
+                obj.subscribe = reader.bool();
+                break;
+              }
+              case 2: {
+                obj.topic = reader.string();
+                break;
+              }
+              default: {
+                reader.skipType(tag & 7);
+                break;
+              }
+            }
+          }
+          return obj;
+        });
+      }
+      return _codec2;
+    };
+    SubOpts2.encode = (obj) => {
+      return encodeMessage(obj, SubOpts2.codec());
+    };
+    SubOpts2.decode = (buf, opts) => {
+      return decodeMessage(buf, SubOpts2.codec(), opts);
+    };
+  })(SubOpts = RPC2.SubOpts || (RPC2.SubOpts = {}));
+  let Message;
+  (function(Message2) {
+    let _codec2;
+    Message2.codec = () => {
+      if (_codec2 == null) {
+        _codec2 = message((obj, w, opts = {}) => {
+          if (opts.lengthDelimited !== false) {
+            w.fork();
+          }
+          if (obj.from != null) {
+            w.uint32(10);
+            w.bytes(obj.from);
+          }
+          if (obj.data != null) {
+            w.uint32(18);
+            w.bytes(obj.data);
+          }
+          if (obj.seqno != null) {
+            w.uint32(26);
+            w.bytes(obj.seqno);
+          }
+          if (obj.topic != null && obj.topic !== "") {
+            w.uint32(34);
+            w.string(obj.topic);
+          }
+          if (obj.signature != null) {
+            w.uint32(42);
+            w.bytes(obj.signature);
+          }
+          if (obj.key != null) {
+            w.uint32(50);
+            w.bytes(obj.key);
+          }
+          if (opts.lengthDelimited !== false) {
+            w.ldelim();
+          }
+        }, (reader, length3, opts = {}) => {
+          const obj = {
+            topic: ""
+          };
+          const end = length3 == null ? reader.len : reader.pos + length3;
+          while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+              case 1: {
+                obj.from = reader.bytes();
+                break;
+              }
+              case 2: {
+                obj.data = reader.bytes();
+                break;
+              }
+              case 3: {
+                obj.seqno = reader.bytes();
+                break;
+              }
+              case 4: {
+                obj.topic = reader.string();
+                break;
+              }
+              case 5: {
+                obj.signature = reader.bytes();
+                break;
+              }
+              case 6: {
+                obj.key = reader.bytes();
+                break;
+              }
+              default: {
+                reader.skipType(tag & 7);
+                break;
+              }
+            }
+          }
+          return obj;
+        });
+      }
+      return _codec2;
+    };
+    Message2.encode = (obj) => {
+      return encodeMessage(obj, Message2.codec());
+    };
+    Message2.decode = (buf, opts) => {
+      return decodeMessage(buf, Message2.codec(), opts);
+    };
+  })(Message = RPC2.Message || (RPC2.Message = {}));
+  let ControlMessage;
+  (function(ControlMessage2) {
+    let _codec2;
+    ControlMessage2.codec = () => {
+      if (_codec2 == null) {
+        _codec2 = message((obj, w, opts = {}) => {
+          if (opts.lengthDelimited !== false) {
+            w.fork();
+          }
+          if (obj.ihave != null) {
+            for (const value of obj.ihave) {
+              w.uint32(10);
+              RPC2.ControlIHave.codec().encode(value, w);
+            }
+          }
+          if (obj.iwant != null) {
+            for (const value of obj.iwant) {
+              w.uint32(18);
+              RPC2.ControlIWant.codec().encode(value, w);
+            }
+          }
+          if (obj.graft != null) {
+            for (const value of obj.graft) {
+              w.uint32(26);
+              RPC2.ControlGraft.codec().encode(value, w);
+            }
+          }
+          if (obj.prune != null) {
+            for (const value of obj.prune) {
+              w.uint32(34);
+              RPC2.ControlPrune.codec().encode(value, w);
+            }
+          }
+          if (obj.idontwant != null) {
+            for (const value of obj.idontwant) {
+              w.uint32(42);
+              RPC2.ControlIDontWant.codec().encode(value, w);
+            }
+          }
+          if (opts.lengthDelimited !== false) {
+            w.ldelim();
+          }
+        }, (reader, length3, opts = {}) => {
+          const obj = {
+            ihave: [],
+            iwant: [],
+            graft: [],
+            prune: [],
+            idontwant: []
+          };
+          const end = length3 == null ? reader.len : reader.pos + length3;
+          while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+              case 1: {
+                if (opts.limits?.ihave != null && obj.ihave.length === opts.limits.ihave) {
+                  throw new MaxLengthError('Decode error - map field "ihave" had too many elements');
+                }
+                obj.ihave.push(RPC2.ControlIHave.codec().decode(reader, reader.uint32(), {
+                  limits: opts.limits?.ihave$
+                }));
+                break;
+              }
+              case 2: {
+                if (opts.limits?.iwant != null && obj.iwant.length === opts.limits.iwant) {
+                  throw new MaxLengthError('Decode error - map field "iwant" had too many elements');
+                }
+                obj.iwant.push(RPC2.ControlIWant.codec().decode(reader, reader.uint32(), {
+                  limits: opts.limits?.iwant$
+                }));
+                break;
+              }
+              case 3: {
+                if (opts.limits?.graft != null && obj.graft.length === opts.limits.graft) {
+                  throw new MaxLengthError('Decode error - map field "graft" had too many elements');
+                }
+                obj.graft.push(RPC2.ControlGraft.codec().decode(reader, reader.uint32(), {
+                  limits: opts.limits?.graft$
+                }));
+                break;
+              }
+              case 4: {
+                if (opts.limits?.prune != null && obj.prune.length === opts.limits.prune) {
+                  throw new MaxLengthError('Decode error - map field "prune" had too many elements');
+                }
+                obj.prune.push(RPC2.ControlPrune.codec().decode(reader, reader.uint32(), {
+                  limits: opts.limits?.prune$
+                }));
+                break;
+              }
+              case 5: {
+                if (opts.limits?.idontwant != null && obj.idontwant.length === opts.limits.idontwant) {
+                  throw new MaxLengthError('Decode error - map field "idontwant" had too many elements');
+                }
+                obj.idontwant.push(RPC2.ControlIDontWant.codec().decode(reader, reader.uint32(), {
+                  limits: opts.limits?.idontwant$
+                }));
+                break;
+              }
+              default: {
+                reader.skipType(tag & 7);
+                break;
+              }
+            }
+          }
+          return obj;
+        });
+      }
+      return _codec2;
+    };
+    ControlMessage2.encode = (obj) => {
+      return encodeMessage(obj, ControlMessage2.codec());
+    };
+    ControlMessage2.decode = (buf, opts) => {
+      return decodeMessage(buf, ControlMessage2.codec(), opts);
+    };
+  })(ControlMessage = RPC2.ControlMessage || (RPC2.ControlMessage = {}));
+  let ControlIHave;
+  (function(ControlIHave2) {
+    let _codec2;
+    ControlIHave2.codec = () => {
+      if (_codec2 == null) {
+        _codec2 = message((obj, w, opts = {}) => {
+          if (opts.lengthDelimited !== false) {
+            w.fork();
+          }
+          if (obj.topicID != null) {
+            w.uint32(10);
+            w.string(obj.topicID);
+          }
+          if (obj.messageIDs != null) {
+            for (const value of obj.messageIDs) {
+              w.uint32(18);
+              w.bytes(value);
+            }
+          }
+          if (opts.lengthDelimited !== false) {
+            w.ldelim();
+          }
+        }, (reader, length3, opts = {}) => {
+          const obj = {
+            messageIDs: []
+          };
+          const end = length3 == null ? reader.len : reader.pos + length3;
+          while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+              case 1: {
+                obj.topicID = reader.string();
+                break;
+              }
+              case 2: {
+                if (opts.limits?.messageIDs != null && obj.messageIDs.length === opts.limits.messageIDs) {
+                  throw new MaxLengthError('Decode error - map field "messageIDs" had too many elements');
+                }
+                obj.messageIDs.push(reader.bytes());
+                break;
+              }
+              default: {
+                reader.skipType(tag & 7);
+                break;
+              }
+            }
+          }
+          return obj;
+        });
+      }
+      return _codec2;
+    };
+    ControlIHave2.encode = (obj) => {
+      return encodeMessage(obj, ControlIHave2.codec());
+    };
+    ControlIHave2.decode = (buf, opts) => {
+      return decodeMessage(buf, ControlIHave2.codec(), opts);
+    };
+  })(ControlIHave = RPC2.ControlIHave || (RPC2.ControlIHave = {}));
+  let ControlIWant;
+  (function(ControlIWant2) {
+    let _codec2;
+    ControlIWant2.codec = () => {
+      if (_codec2 == null) {
+        _codec2 = message((obj, w, opts = {}) => {
+          if (opts.lengthDelimited !== false) {
+            w.fork();
+          }
+          if (obj.messageIDs != null) {
+            for (const value of obj.messageIDs) {
+              w.uint32(10);
+              w.bytes(value);
+            }
+          }
+          if (opts.lengthDelimited !== false) {
+            w.ldelim();
+          }
+        }, (reader, length3, opts = {}) => {
+          const obj = {
+            messageIDs: []
+          };
+          const end = length3 == null ? reader.len : reader.pos + length3;
+          while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+              case 1: {
+                if (opts.limits?.messageIDs != null && obj.messageIDs.length === opts.limits.messageIDs) {
+                  throw new MaxLengthError('Decode error - map field "messageIDs" had too many elements');
+                }
+                obj.messageIDs.push(reader.bytes());
+                break;
+              }
+              default: {
+                reader.skipType(tag & 7);
+                break;
+              }
+            }
+          }
+          return obj;
+        });
+      }
+      return _codec2;
+    };
+    ControlIWant2.encode = (obj) => {
+      return encodeMessage(obj, ControlIWant2.codec());
+    };
+    ControlIWant2.decode = (buf, opts) => {
+      return decodeMessage(buf, ControlIWant2.codec(), opts);
+    };
+  })(ControlIWant = RPC2.ControlIWant || (RPC2.ControlIWant = {}));
+  let ControlGraft;
+  (function(ControlGraft2) {
+    let _codec2;
+    ControlGraft2.codec = () => {
+      if (_codec2 == null) {
+        _codec2 = message((obj, w, opts = {}) => {
+          if (opts.lengthDelimited !== false) {
+            w.fork();
+          }
+          if (obj.topicID != null) {
+            w.uint32(10);
+            w.string(obj.topicID);
+          }
+          if (opts.lengthDelimited !== false) {
+            w.ldelim();
+          }
+        }, (reader, length3, opts = {}) => {
+          const obj = {};
+          const end = length3 == null ? reader.len : reader.pos + length3;
+          while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+              case 1: {
+                obj.topicID = reader.string();
+                break;
+              }
+              default: {
+                reader.skipType(tag & 7);
+                break;
+              }
+            }
+          }
+          return obj;
+        });
+      }
+      return _codec2;
+    };
+    ControlGraft2.encode = (obj) => {
+      return encodeMessage(obj, ControlGraft2.codec());
+    };
+    ControlGraft2.decode = (buf, opts) => {
+      return decodeMessage(buf, ControlGraft2.codec(), opts);
+    };
+  })(ControlGraft = RPC2.ControlGraft || (RPC2.ControlGraft = {}));
+  let ControlPrune;
+  (function(ControlPrune2) {
+    let _codec2;
+    ControlPrune2.codec = () => {
+      if (_codec2 == null) {
+        _codec2 = message((obj, w, opts = {}) => {
+          if (opts.lengthDelimited !== false) {
+            w.fork();
+          }
+          if (obj.topicID != null) {
+            w.uint32(10);
+            w.string(obj.topicID);
+          }
+          if (obj.peers != null) {
+            for (const value of obj.peers) {
+              w.uint32(18);
+              RPC2.PeerInfo.codec().encode(value, w);
+            }
+          }
+          if (obj.backoff != null) {
+            w.uint32(24);
+            w.uint64Number(obj.backoff);
+          }
+          if (opts.lengthDelimited !== false) {
+            w.ldelim();
+          }
+        }, (reader, length3, opts = {}) => {
+          const obj = {
+            peers: []
+          };
+          const end = length3 == null ? reader.len : reader.pos + length3;
+          while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+              case 1: {
+                obj.topicID = reader.string();
+                break;
+              }
+              case 2: {
+                if (opts.limits?.peers != null && obj.peers.length === opts.limits.peers) {
+                  throw new MaxLengthError('Decode error - map field "peers" had too many elements');
+                }
+                obj.peers.push(RPC2.PeerInfo.codec().decode(reader, reader.uint32(), {
+                  limits: opts.limits?.peers$
+                }));
+                break;
+              }
+              case 3: {
+                obj.backoff = reader.uint64Number();
+                break;
+              }
+              default: {
+                reader.skipType(tag & 7);
+                break;
+              }
+            }
+          }
+          return obj;
+        });
+      }
+      return _codec2;
+    };
+    ControlPrune2.encode = (obj) => {
+      return encodeMessage(obj, ControlPrune2.codec());
+    };
+    ControlPrune2.decode = (buf, opts) => {
+      return decodeMessage(buf, ControlPrune2.codec(), opts);
+    };
+  })(ControlPrune = RPC2.ControlPrune || (RPC2.ControlPrune = {}));
+  let PeerInfo;
+  (function(PeerInfo2) {
+    let _codec2;
+    PeerInfo2.codec = () => {
+      if (_codec2 == null) {
+        _codec2 = message((obj, w, opts = {}) => {
+          if (opts.lengthDelimited !== false) {
+            w.fork();
+          }
+          if (obj.peerID != null) {
+            w.uint32(10);
+            w.bytes(obj.peerID);
+          }
+          if (obj.signedPeerRecord != null) {
+            w.uint32(18);
+            w.bytes(obj.signedPeerRecord);
+          }
+          if (opts.lengthDelimited !== false) {
+            w.ldelim();
+          }
+        }, (reader, length3, opts = {}) => {
+          const obj = {};
+          const end = length3 == null ? reader.len : reader.pos + length3;
+          while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+              case 1: {
+                obj.peerID = reader.bytes();
+                break;
+              }
+              case 2: {
+                obj.signedPeerRecord = reader.bytes();
+                break;
+              }
+              default: {
+                reader.skipType(tag & 7);
+                break;
+              }
+            }
+          }
+          return obj;
+        });
+      }
+      return _codec2;
+    };
+    PeerInfo2.encode = (obj) => {
+      return encodeMessage(obj, PeerInfo2.codec());
+    };
+    PeerInfo2.decode = (buf, opts) => {
+      return decodeMessage(buf, PeerInfo2.codec(), opts);
+    };
+  })(PeerInfo = RPC2.PeerInfo || (RPC2.PeerInfo = {}));
+  let ControlIDontWant;
+  (function(ControlIDontWant2) {
+    let _codec2;
+    ControlIDontWant2.codec = () => {
+      if (_codec2 == null) {
+        _codec2 = message((obj, w, opts = {}) => {
+          if (opts.lengthDelimited !== false) {
+            w.fork();
+          }
+          if (obj.messageIDs != null) {
+            for (const value of obj.messageIDs) {
+              w.uint32(10);
+              w.bytes(value);
+            }
+          }
+          if (opts.lengthDelimited !== false) {
+            w.ldelim();
+          }
+        }, (reader, length3, opts = {}) => {
+          const obj = {
+            messageIDs: []
+          };
+          const end = length3 == null ? reader.len : reader.pos + length3;
+          while (reader.pos < end) {
+            const tag = reader.uint32();
+            switch (tag >>> 3) {
+              case 1: {
+                if (opts.limits?.messageIDs != null && obj.messageIDs.length === opts.limits.messageIDs) {
+                  throw new MaxLengthError('Decode error - map field "messageIDs" had too many elements');
+                }
+                obj.messageIDs.push(reader.bytes());
+                break;
+              }
+              default: {
+                reader.skipType(tag & 7);
+                break;
+              }
+            }
+          }
+          return obj;
+        });
+      }
+      return _codec2;
+    };
+    ControlIDontWant2.encode = (obj) => {
+      return encodeMessage(obj, ControlIDontWant2.codec());
+    };
+    ControlIDontWant2.decode = (buf, opts) => {
+      return decodeMessage(buf, ControlIDontWant2.codec(), opts);
+    };
+  })(ControlIDontWant = RPC2.ControlIDontWant || (RPC2.ControlIDontWant = {}));
+  let _codec;
+  RPC2.codec = () => {
+    if (_codec == null) {
+      _codec = message((obj, w, opts = {}) => {
+        if (opts.lengthDelimited !== false) {
+          w.fork();
+        }
+        if (obj.subscriptions != null) {
+          for (const value of obj.subscriptions) {
+            w.uint32(10);
+            RPC2.SubOpts.codec().encode(value, w);
+          }
+        }
+        if (obj.messages != null) {
+          for (const value of obj.messages) {
+            w.uint32(18);
+            RPC2.Message.codec().encode(value, w);
+          }
+        }
+        if (obj.control != null) {
+          w.uint32(26);
+          RPC2.ControlMessage.codec().encode(obj.control, w);
+        }
+        if (opts.lengthDelimited !== false) {
+          w.ldelim();
+        }
+      }, (reader, length3, opts = {}) => {
+        const obj = {
+          subscriptions: [],
+          messages: []
+        };
+        const end = length3 == null ? reader.len : reader.pos + length3;
+        while (reader.pos < end) {
+          const tag = reader.uint32();
+          switch (tag >>> 3) {
+            case 1: {
+              if (opts.limits?.subscriptions != null && obj.subscriptions.length === opts.limits.subscriptions) {
+                throw new MaxLengthError('Decode error - map field "subscriptions" had too many elements');
+              }
+              obj.subscriptions.push(RPC2.SubOpts.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.subscriptions$
+              }));
+              break;
+            }
+            case 2: {
+              if (opts.limits?.messages != null && obj.messages.length === opts.limits.messages) {
+                throw new MaxLengthError('Decode error - map field "messages" had too many elements');
+              }
+              obj.messages.push(RPC2.Message.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.messages$
+              }));
+              break;
+            }
+            case 3: {
+              obj.control = RPC2.ControlMessage.codec().decode(reader, reader.uint32(), {
+                limits: opts.limits?.control
+              });
+              break;
+            }
+            default: {
+              reader.skipType(tag & 7);
+              break;
+            }
+          }
+        }
+        return obj;
+      });
+    }
+    return _codec;
+  };
+  RPC2.encode = (obj) => {
+    return encodeMessage(obj, RPC2.codec());
+  };
+  RPC2.decode = (buf, opts) => {
+    return decodeMessage(buf, RPC2.codec(), opts);
+  };
+})(RPC || (RPC = {}));
+
+// node_modules/@chainsafe/libp2p-gossipsub/dist/src/message-cache.js
+var MessageCache = class {
+  static {
+    __name(this, "MessageCache");
+  }
+  gossip;
+  msgs = /* @__PURE__ */ new Map();
+  msgIdToStrFn;
+  history = [];
+  /** Track with accounting of messages in the mcache that are not yet validated */
+  notValidatedCount = 0;
+  /**
+   * Holds history of messages in timebounded history arrays
+   */
+  constructor(gossip, historyCapacity, msgIdToStrFn) {
+    this.gossip = gossip;
+    this.msgIdToStrFn = msgIdToStrFn;
+    for (let i = 0; i < historyCapacity; i++) {
+      this.history[i] = [];
+    }
+  }
+  get size() {
+    return this.msgs.size;
+  }
+  /**
+   * Adds a message to the current window and the cache
+   * Returns true if the message is not known and is inserted in the cache
+   */
+  put(messageId, msg, validated = false) {
+    const { msgIdStr } = messageId;
+    if (this.msgs.has(msgIdStr)) {
+      return false;
+    }
+    this.msgs.set(msgIdStr, {
+      message: msg,
+      validated,
+      originatingPeers: /* @__PURE__ */ new Set(),
+      iwantCounts: /* @__PURE__ */ new Map()
+    });
+    this.history[0].push({ ...messageId, topic: msg.topic });
+    if (!validated) {
+      this.notValidatedCount++;
+    }
+    return true;
+  }
+  observeDuplicate(msgId2, fromPeerIdStr) {
+    const entry = this.msgs.get(msgId2);
+    if (entry != null && // if the message is already validated, we don't need to store extra peers sending us
+    // duplicates as the message has already been forwarded
+    !entry.validated) {
+      entry.originatingPeers.add(fromPeerIdStr);
+    }
+  }
+  /**
+   * Retrieves a message from the cache by its ID, if it is still present
+   */
+  get(msgId2) {
+    return this.msgs.get(this.msgIdToStrFn(msgId2))?.message;
+  }
+  /**
+   * Increases the iwant count for the given message by one and returns the message together
+   * with the iwant if the message exists.
+   */
+  getWithIWantCount(msgIdStr, p) {
+    const msg = this.msgs.get(msgIdStr);
+    if (msg == null) {
+      return null;
+    }
+    const count = (msg.iwantCounts.get(p) ?? 0) + 1;
+    msg.iwantCounts.set(p, count);
+    return { msg: msg.message, count };
+  }
+  /**
+   * Retrieves a list of message IDs for a set of topics
+   */
+  getGossipIDs(topics) {
+    const msgIdsByTopic = /* @__PURE__ */ new Map();
+    for (let i = 0; i < this.gossip; i++) {
+      this.history[i].forEach((entry) => {
+        const msg = this.msgs.get(entry.msgIdStr);
+        if ((msg?.validated ?? false) && topics.has(entry.topic)) {
+          let msgIds = msgIdsByTopic.get(entry.topic);
+          if (msgIds == null) {
+            msgIds = [];
+            msgIdsByTopic.set(entry.topic, msgIds);
+          }
+          msgIds.push(entry.msgId);
+        }
+      });
+    }
+    return msgIdsByTopic;
+  }
+  /**
+   * Gets a message with msgId and tags it as validated.
+   * This function also returns the known peers that have sent us this message. This is used to
+   * prevent us sending redundant messages to peers who have already propagated it.
+   */
+  validate(msgId2) {
+    const entry = this.msgs.get(msgId2);
+    if (entry == null) {
+      return null;
+    }
+    if (!entry.validated) {
+      this.notValidatedCount--;
+    }
+    const { message: message2, originatingPeers } = entry;
+    entry.validated = true;
+    entry.originatingPeers = /* @__PURE__ */ new Set();
+    return { message: message2, originatingPeers };
+  }
+  /**
+   * Shifts the current window, discarding messages older than this.history.length of the cache
+   */
+  shift() {
+    const lastCacheEntries = this.history[this.history.length - 1];
+    lastCacheEntries.forEach((cacheEntry) => {
+      const entry = this.msgs.get(cacheEntry.msgIdStr);
+      if (entry != null) {
+        this.msgs.delete(cacheEntry.msgIdStr);
+        if (!entry.validated) {
+          this.notValidatedCount--;
+        }
+      }
+    });
+    this.history.pop();
+    this.history.unshift([]);
+  }
+  remove(msgId2) {
+    const entry = this.msgs.get(msgId2);
+    if (entry == null) {
+      return null;
+    }
+    this.msgs.delete(msgId2);
+    return entry;
+  }
+};
+
+// node_modules/@chainsafe/libp2p-gossipsub/dist/src/types.js
+var SignaturePolicy;
+(function(SignaturePolicy2) {
+  SignaturePolicy2["StrictSign"] = "StrictSign";
+  SignaturePolicy2["StrictNoSign"] = "StrictNoSign";
+})(SignaturePolicy || (SignaturePolicy = {}));
+var PublishConfigType;
+(function(PublishConfigType2) {
+  PublishConfigType2[PublishConfigType2["Signing"] = 0] = "Signing";
+  PublishConfigType2[PublishConfigType2["Anonymous"] = 1] = "Anonymous";
+})(PublishConfigType || (PublishConfigType = {}));
+var RejectReason;
+(function(RejectReason2) {
+  RejectReason2["Error"] = "error";
+  RejectReason2["Ignore"] = "ignore";
+  RejectReason2["Reject"] = "reject";
+  RejectReason2["Blacklisted"] = "blacklisted";
+})(RejectReason || (RejectReason = {}));
+var ValidateError;
+(function(ValidateError2) {
+  ValidateError2["InvalidSignature"] = "invalid_signature";
+  ValidateError2["InvalidSeqno"] = "invalid_seqno";
+  ValidateError2["InvalidPeerId"] = "invalid_peerid";
+  ValidateError2["SignaturePresent"] = "signature_present";
+  ValidateError2["SeqnoPresent"] = "seqno_present";
+  ValidateError2["FromPresent"] = "from_present";
+  ValidateError2["TransformFailed"] = "transform_failed";
+})(ValidateError || (ValidateError = {}));
+var MessageStatus;
+(function(MessageStatus2) {
+  MessageStatus2["duplicate"] = "duplicate";
+  MessageStatus2["invalid"] = "invalid";
+  MessageStatus2["valid"] = "valid";
+})(MessageStatus || (MessageStatus = {}));
+function rejectReasonFromAcceptance(acceptance) {
+  switch (acceptance) {
+    case TopicValidatorResult.Ignore:
+      return RejectReason.Ignore;
+    case TopicValidatorResult.Reject:
+      return RejectReason.Reject;
     default:
-      throw unsupportedKey(decoded.Type ?? "unknown");
+      throw new Error("Unreachable");
   }
 }
-__name(unmarshalPublicKey, "unmarshalPublicKey");
-function marshalPublicKey(key, type) {
-  type = (type ?? "rsa").toLowerCase();
-  typeToKey(type);
-  return key.bytes;
+__name(rejectReasonFromAcceptance, "rejectReasonFromAcceptance");
+
+// node_modules/@chainsafe/libp2p-gossipsub/dist/src/metrics.js
+var MessageSource;
+(function(MessageSource2) {
+  MessageSource2["forward"] = "forward";
+  MessageSource2["publish"] = "publish";
+})(MessageSource || (MessageSource = {}));
+var InclusionReason;
+(function(InclusionReason2) {
+  InclusionReason2["Fanout"] = "fanout";
+  InclusionReason2["Random"] = "random";
+  InclusionReason2["Subscribed"] = "subscribed";
+  InclusionReason2["Outbound"] = "outbound";
+  InclusionReason2["NotEnough"] = "not_enough";
+  InclusionReason2["Opportunistic"] = "opportunistic";
+})(InclusionReason || (InclusionReason = {}));
+var ChurnReason;
+(function(ChurnReason2) {
+  ChurnReason2["Dc"] = "disconnected";
+  ChurnReason2["BadScore"] = "bad_score";
+  ChurnReason2["Prune"] = "prune";
+  ChurnReason2["Excess"] = "excess";
+})(ChurnReason || (ChurnReason = {}));
+var ScorePenalty;
+(function(ScorePenalty2) {
+  ScorePenalty2["GraftBackoff"] = "graft_backoff";
+  ScorePenalty2["BrokenPromise"] = "broken_promise";
+  ScorePenalty2["MessageDeficit"] = "message_deficit";
+  ScorePenalty2["IPColocation"] = "IP_colocation";
+})(ScorePenalty || (ScorePenalty = {}));
+var IHaveIgnoreReason;
+(function(IHaveIgnoreReason2) {
+  IHaveIgnoreReason2["LowScore"] = "low_score";
+  IHaveIgnoreReason2["MaxIhave"] = "max_ihave";
+  IHaveIgnoreReason2["MaxIasked"] = "max_iasked";
+})(IHaveIgnoreReason || (IHaveIgnoreReason = {}));
+var ScoreThreshold;
+(function(ScoreThreshold2) {
+  ScoreThreshold2["graylist"] = "graylist";
+  ScoreThreshold2["publish"] = "publish";
+  ScoreThreshold2["gossip"] = "gossip";
+  ScoreThreshold2["mesh"] = "mesh";
+})(ScoreThreshold || (ScoreThreshold = {}));
+function getMetrics(register, topicStrToLabel, opts) {
+  return {
+    /* Metrics for static config */
+    protocolsEnabled: register.gauge({
+      name: "gossipsub_protocol",
+      help: "Status of enabled protocols",
+      labelNames: ["protocol"]
+    }),
+    /* Metrics per known topic */
+    /**
+     * Status of our subscription to this topic. This metric allows analyzing other topic metrics
+     * filtered by our current subscription status.
+     * = rust-libp2p `topic_subscription_status` */
+    topicSubscriptionStatus: register.gauge({
+      name: "gossipsub_topic_subscription_status",
+      help: "Status of our subscription to this topic",
+      labelNames: ["topicStr"]
+    }),
+    /** Number of peers subscribed to each topic. This allows us to analyze a topic's behaviour
+     * regardless of our subscription status. */
+    topicPeersCount: register.gauge({
+      name: "gossipsub_topic_peer_count",
+      help: "Number of peers subscribed to each topic",
+      labelNames: ["topicStr"]
+    }),
+    /* Metrics regarding mesh state */
+    /**
+     * Number of peers in our mesh. This metric should be updated with the count of peers for a
+     * topic in the mesh regardless of inclusion and churn events.
+     * = rust-libp2p `mesh_peer_counts` */
+    meshPeerCounts: register.gauge({
+      name: "gossipsub_mesh_peer_count",
+      help: "Number of peers in our mesh",
+      labelNames: ["topicStr"]
+    }),
+    /**
+     * Number of times we include peers in a topic mesh for different reasons.
+     * = rust-libp2p `mesh_peer_inclusion_events` */
+    meshPeerInclusionEventsFanout: register.gauge({
+      name: "gossipsub_mesh_peer_inclusion_events_fanout_total",
+      help: "Number of times we include peers in a topic mesh for fanout reasons",
+      labelNames: ["topic"]
+    }),
+    meshPeerInclusionEventsRandom: register.gauge({
+      name: "gossipsub_mesh_peer_inclusion_events_random_total",
+      help: "Number of times we include peers in a topic mesh for random reasons",
+      labelNames: ["topic"]
+    }),
+    meshPeerInclusionEventsSubscribed: register.gauge({
+      name: "gossipsub_mesh_peer_inclusion_events_subscribed_total",
+      help: "Number of times we include peers in a topic mesh for subscribed reasons",
+      labelNames: ["topic"]
+    }),
+    meshPeerInclusionEventsOutbound: register.gauge({
+      name: "gossipsub_mesh_peer_inclusion_events_outbound_total",
+      help: "Number of times we include peers in a topic mesh for outbound reasons",
+      labelNames: ["topic"]
+    }),
+    meshPeerInclusionEventsNotEnough: register.gauge({
+      name: "gossipsub_mesh_peer_inclusion_events_not_enough_total",
+      help: "Number of times we include peers in a topic mesh for not_enough reasons",
+      labelNames: ["topic"]
+    }),
+    meshPeerInclusionEventsOpportunistic: register.gauge({
+      name: "gossipsub_mesh_peer_inclusion_events_opportunistic_total",
+      help: "Number of times we include peers in a topic mesh for opportunistic reasons",
+      labelNames: ["topic"]
+    }),
+    meshPeerInclusionEventsUnknown: register.gauge({
+      name: "gossipsub_mesh_peer_inclusion_events_unknown_total",
+      help: "Number of times we include peers in a topic mesh for unknown reasons",
+      labelNames: ["topic"]
+    }),
+    /**
+     * Number of times we remove peers in a topic mesh for different reasons.
+     * = rust-libp2p `mesh_peer_churn_events` */
+    meshPeerChurnEventsDisconnected: register.gauge({
+      name: "gossipsub_peer_churn_events_disconnected_total",
+      help: "Number of times we remove peers in a topic mesh for disconnected reasons",
+      labelNames: ["topic"]
+    }),
+    meshPeerChurnEventsBadScore: register.gauge({
+      name: "gossipsub_peer_churn_events_bad_score_total",
+      help: "Number of times we remove peers in a topic mesh for bad_score reasons",
+      labelNames: ["topic"]
+    }),
+    meshPeerChurnEventsPrune: register.gauge({
+      name: "gossipsub_peer_churn_events_prune_total",
+      help: "Number of times we remove peers in a topic mesh for prune reasons",
+      labelNames: ["topic"]
+    }),
+    meshPeerChurnEventsExcess: register.gauge({
+      name: "gossipsub_peer_churn_events_excess_total",
+      help: "Number of times we remove peers in a topic mesh for excess reasons",
+      labelNames: ["topic"]
+    }),
+    meshPeerChurnEventsUnknown: register.gauge({
+      name: "gossipsub_peer_churn_events_unknown_total",
+      help: "Number of times we remove peers in a topic mesh for unknown reasons",
+      labelNames: ["topic"]
+    }),
+    /* General Metrics */
+    /**
+     * Gossipsub supports floodsub, gossipsub v1.0, v1.1, and v1.2. Peers are classified based
+     * on which protocol they support. This metric keeps track of the number of peers that are
+     * connected of each type. */
+    peersPerProtocol: register.gauge({
+      name: "gossipsub_peers_per_protocol_count",
+      help: "Peers connected for each topic",
+      labelNames: ["protocol"]
+    }),
+    /** The time it takes to complete one iteration of the heartbeat. */
+    heartbeatDuration: register.histogram({
+      name: "gossipsub_heartbeat_duration_seconds",
+      help: "The time it takes to complete one iteration of the heartbeat",
+      // Should take <10ms, over 1s it's a huge issue that needs debugging, since a heartbeat will be cancelled
+      buckets: [0.01, 0.1, 1]
+    }),
+    /** Heartbeat run took longer than heartbeat interval so next is skipped */
+    heartbeatSkipped: register.gauge({
+      name: "gossipsub_heartbeat_skipped",
+      help: "Heartbeat run took longer than heartbeat interval so next is skipped"
+    }),
+    /**
+     * Message validation results for each topic.
+     * Invalid == Reject?
+     * = rust-libp2p `invalid_messages`, `accepted_messages`, `ignored_messages`, `rejected_messages` */
+    acceptedMessagesTotal: register.gauge({
+      name: "gossipsub_accepted_messages_total",
+      help: "Total accepted messages for each topic",
+      labelNames: ["topic"]
+    }),
+    ignoredMessagesTotal: register.gauge({
+      name: "gossipsub_ignored_messages_total",
+      help: "Total ignored messages for each topic",
+      labelNames: ["topic"]
+    }),
+    rejectedMessagesTotal: register.gauge({
+      name: "gossipsub_rejected_messages_total",
+      help: "Total rejected messages for each topic",
+      labelNames: ["topic"]
+    }),
+    unknownValidationResultsTotal: register.gauge({
+      name: "gossipsub_unknown_validation_results_total",
+      help: "Total unknown validation results for each topic",
+      labelNames: ["topic"]
+    }),
+    /**
+     * When the user validates a message, it tries to re propagate it to its mesh peers. If the
+     * message expires from the memcache before it can be validated, we count this a cache miss
+     * and it is an indicator that the memcache size should be increased.
+     * = rust-libp2p `mcache_misses` */
+    asyncValidationMcacheHit: register.gauge({
+      name: "gossipsub_async_validation_mcache_hit_total",
+      help: "Async validation result reported by the user layer",
+      labelNames: ["hit"]
+    }),
+    asyncValidationDelayFromFirstSeenSec: register.histogram({
+      name: "gossipsub_async_validation_delay_from_first_seen",
+      help: "Async validation report delay from first seen in second",
+      buckets: [0.01, 0.03, 0.1, 0.3, 1, 3, 10]
+    }),
+    asyncValidationUnknownFirstSeen: register.gauge({
+      name: "gossipsub_async_validation_unknown_first_seen_count_total",
+      help: "Async validation report unknown first seen value for message"
+    }),
+    // peer stream
+    peerReadStreamError: register.gauge({
+      name: "gossipsub_peer_read_stream_err_count_total",
+      help: "Peer read stream error"
+    }),
+    // RPC outgoing. Track byte length + data structure sizes
+    rpcRecvBytes: register.gauge({ name: "gossipsub_rpc_recv_bytes_total", help: "RPC recv" }),
+    rpcRecvCount: register.gauge({ name: "gossipsub_rpc_recv_count_total", help: "RPC recv" }),
+    rpcRecvSubscription: register.gauge({ name: "gossipsub_rpc_recv_subscription_total", help: "RPC recv" }),
+    rpcRecvMessage: register.gauge({ name: "gossipsub_rpc_recv_message_total", help: "RPC recv" }),
+    rpcRecvControl: register.gauge({ name: "gossipsub_rpc_recv_control_total", help: "RPC recv" }),
+    rpcRecvIHave: register.gauge({ name: "gossipsub_rpc_recv_ihave_total", help: "RPC recv" }),
+    rpcRecvIWant: register.gauge({ name: "gossipsub_rpc_recv_iwant_total", help: "RPC recv" }),
+    rpcRecvGraft: register.gauge({ name: "gossipsub_rpc_recv_graft_total", help: "RPC recv" }),
+    rpcRecvPrune: register.gauge({ name: "gossipsub_rpc_recv_prune_total", help: "RPC recv" }),
+    rpcDataError: register.gauge({ name: "gossipsub_rpc_data_err_count_total", help: "RPC data error" }),
+    rpcRecvError: register.gauge({ name: "gossipsub_rpc_recv_err_count_total", help: "RPC recv error" }),
+    /** Total count of RPC dropped because acceptFrom() == false */
+    rpcRecvNotAccepted: register.gauge({
+      name: "gossipsub_rpc_rcv_not_accepted_total",
+      help: "Total count of RPC dropped because acceptFrom() == false"
+    }),
+    // RPC incoming. Track byte length + data structure sizes
+    rpcSentBytes: register.gauge({ name: "gossipsub_rpc_sent_bytes_total", help: "RPC sent" }),
+    rpcSentCount: register.gauge({ name: "gossipsub_rpc_sent_count_total", help: "RPC sent" }),
+    rpcSentSubscription: register.gauge({ name: "gossipsub_rpc_sent_subscription_total", help: "RPC sent" }),
+    rpcSentMessage: register.gauge({ name: "gossipsub_rpc_sent_message_total", help: "RPC sent" }),
+    rpcSentControl: register.gauge({ name: "gossipsub_rpc_sent_control_total", help: "RPC sent" }),
+    rpcSentIHave: register.gauge({ name: "gossipsub_rpc_sent_ihave_total", help: "RPC sent" }),
+    rpcSentIWant: register.gauge({ name: "gossipsub_rpc_sent_iwant_total", help: "RPC sent" }),
+    rpcSentGraft: register.gauge({ name: "gossipsub_rpc_sent_graft_total", help: "RPC sent" }),
+    rpcSentPrune: register.gauge({ name: "gossipsub_rpc_sent_prune_total", help: "RPC sent" }),
+    rpcSentIDontWant: register.gauge({ name: "gossipsub_rpc_sent_idontwant_total", help: "RPC sent" }),
+    // publish message. Track peers sent to and bytes
+    /** Total count of msg published by topic */
+    msgPublishCount: register.gauge({
+      name: "gossipsub_msg_publish_count_total",
+      help: "Total count of msg published by topic",
+      labelNames: ["topic"]
+    }),
+    /** Total count of peers that we publish a msg to */
+    msgPublishPeersByTopic: register.gauge({
+      name: "gossipsub_msg_publish_peers_total",
+      help: "Total count of peers that we publish a msg to",
+      labelNames: ["topic"]
+    }),
+    /** Total count of peers (by group) that we publish a msg to */
+    directPeersPublishedTotal: register.gauge({
+      name: "gossipsub_direct_peers_published_total",
+      help: "Total direct peers that we publish a msg to",
+      labelNames: ["topic"]
+    }),
+    floodsubPeersPublishedTotal: register.gauge({
+      name: "gossipsub_floodsub_peers_published_total",
+      help: "Total floodsub peers that we publish a msg to",
+      labelNames: ["topic"]
+    }),
+    meshPeersPublishedTotal: register.gauge({
+      name: "gossipsub_mesh_peers_published_total",
+      help: "Total mesh peers that we publish a msg to",
+      labelNames: ["topic"]
+    }),
+    fanoutPeersPublishedTotal: register.gauge({
+      name: "gossipsub_fanout_peers_published_total",
+      help: "Total fanout peers that we publish a msg to",
+      labelNames: ["topic"]
+    }),
+    /** Total count of msg publish data.length bytes */
+    msgPublishBytes: register.gauge({
+      name: "gossipsub_msg_publish_bytes_total",
+      help: "Total count of msg publish data.length bytes",
+      labelNames: ["topic"]
+    }),
+    /** Total time in seconds to publish a message */
+    msgPublishTime: register.histogram({
+      name: "gossipsub_msg_publish_seconds",
+      help: "Total time in seconds to publish a message",
+      buckets: [1e-3, 2e-3, 5e-3, 0.01, 0.1, 0.5, 1],
+      labelNames: ["topic"]
+    }),
+    /** Total count of msg forwarded by topic */
+    msgForwardCount: register.gauge({
+      name: "gossipsub_msg_forward_count_total",
+      help: "Total count of msg forwarded by topic",
+      labelNames: ["topic"]
+    }),
+    /** Total count of peers that we forward a msg to */
+    msgForwardPeers: register.gauge({
+      name: "gossipsub_msg_forward_peers_total",
+      help: "Total count of peers that we forward a msg to",
+      labelNames: ["topic"]
+    }),
+    /** Total count of recv msgs before any validation */
+    msgReceivedPreValidation: register.gauge({
+      name: "gossipsub_msg_received_prevalidation_total",
+      help: "Total count of recv msgs before any validation",
+      labelNames: ["topic"]
+    }),
+    /** Total count of recv msgs error */
+    msgReceivedError: register.gauge({
+      name: "gossipsub_msg_received_error_total",
+      help: "Total count of recv msgs error",
+      labelNames: ["topic"]
+    }),
+    /** Tracks distribution of recv msgs by duplicate, invalid, valid */
+    prevalidationInvalidTotal: register.gauge({
+      name: "gossipsub_pre_validation_invalid_total",
+      help: "Total count of invalid messages received",
+      labelNames: ["topic"]
+    }),
+    prevalidationValidTotal: register.gauge({
+      name: "gossipsub_pre_validation_valid_total",
+      help: "Total count of valid messages received",
+      labelNames: ["topic"]
+    }),
+    prevalidationDuplicateTotal: register.gauge({
+      name: "gossipsub_pre_validation_duplicate_total",
+      help: "Total count of duplicate messages received",
+      labelNames: ["topic"]
+    }),
+    prevalidationUnknownTotal: register.gauge({
+      name: "gossipsub_pre_validation_unknown_status_total",
+      help: "Total count of unknown_status messages received",
+      labelNames: ["topic"]
+    }),
+    /** Tracks specific reason of invalid */
+    msgReceivedInvalid: register.gauge({
+      name: "gossipsub_msg_received_invalid_total",
+      help: "Tracks specific reason of invalid",
+      labelNames: ["error"]
+    }),
+    msgReceivedInvalidByTopic: register.gauge({
+      name: "gossipsub_msg_received_invalid_by_topic_total",
+      help: "Tracks specific invalid message by topic",
+      labelNames: ["topic"]
+    }),
+    /** Track duplicate message delivery time */
+    duplicateMsgDeliveryDelay: register.histogram({
+      name: "gossisub_duplicate_msg_delivery_delay_seconds",
+      help: "Time since the 1st duplicated message validated",
+      labelNames: ["topic"],
+      buckets: [
+        0.25 * opts.maxMeshMessageDeliveriesWindowSec,
+        0.5 * opts.maxMeshMessageDeliveriesWindowSec,
+        Number(opts.maxMeshMessageDeliveriesWindowSec),
+        2 * opts.maxMeshMessageDeliveriesWindowSec,
+        4 * opts.maxMeshMessageDeliveriesWindowSec
+      ]
+    }),
+    /** Total count of late msg delivery total by topic */
+    duplicateMsgLateDelivery: register.gauge({
+      name: "gossisub_duplicate_msg_late_delivery_total",
+      help: "Total count of late duplicate message delivery by topic, which triggers P3 penalty",
+      labelNames: ["topic"]
+    }),
+    duplicateMsgIgnored: register.gauge({
+      name: "gossisub_ignored_published_duplicate_msgs_total",
+      help: "Total count of published duplicate message ignored by topic",
+      labelNames: ["topic"]
+    }),
+    /* Metrics related to scoring */
+    /** Total times score() is called */
+    scoreFnCalls: register.gauge({
+      name: "gossipsub_score_fn_calls_total",
+      help: "Total times score() is called"
+    }),
+    /** Total times score() call actually computed computeScore(), no cache */
+    scoreFnRuns: register.gauge({
+      name: "gossipsub_score_fn_runs_total",
+      help: "Total times score() call actually computed computeScore(), no cache"
+    }),
+    scoreCachedDelta: register.histogram({
+      name: "gossipsub_score_cache_delta",
+      help: "Delta of score between cached values that expired",
+      buckets: [10, 100, 1e3]
+    }),
+    /** Current count of peers by score threshold */
+    peersByScoreThreshold: register.gauge({
+      name: "gossipsub_peers_by_score_threshold_count",
+      help: "Current count of peers by score threshold",
+      labelNames: ["threshold"]
+    }),
+    score: register.avgMinMax({
+      name: "gossipsub_score",
+      help: "Avg min max of gossip scores"
+    }),
+    /**
+     * Separate score weights
+     * Need to use 2-label metrics in this case to debug the score weights
+     **/
+    scoreWeights: register.avgMinMax({
+      name: "gossipsub_score_weights",
+      help: "Separate score weights",
+      labelNames: ["topic", "p"]
+    }),
+    /** Histogram of the scores for each mesh topic. */
+    // TODO: Not implemented
+    scorePerMesh: register.avgMinMax({
+      name: "gossipsub_score_per_mesh",
+      help: "Histogram of the scores for each mesh topic",
+      labelNames: ["topic"]
+    }),
+    /** A counter of the kind of penalties being applied to peers. */
+    // TODO: Not fully implemented
+    scoringPenalties: register.gauge({
+      name: "gossipsub_scoring_penalties_total",
+      help: "A counter of the kind of penalties being applied to peers",
+      labelNames: ["penalty"]
+    }),
+    behaviourPenalty: register.histogram({
+      name: "gossipsub_peer_stat_behaviour_penalty",
+      help: "Current peer stat behaviour_penalty at each scrape",
+      buckets: [
+        0.25 * opts.behaviourPenaltyThreshold,
+        0.5 * opts.behaviourPenaltyThreshold,
+        Number(opts.behaviourPenaltyThreshold),
+        2 * opts.behaviourPenaltyThreshold,
+        4 * opts.behaviourPenaltyThreshold
+      ]
+    }),
+    // TODO:
+    // - iasked per peer (on heartbeat)
+    // - when promise is resolved, track messages from promises
+    /** Total received IHAVE messages that we ignore for some reason */
+    ihaveRcvIgnored: register.gauge({
+      name: "gossipsub_ihave_rcv_ignored_total",
+      help: "Total received IHAVE messages that we ignore for some reason",
+      labelNames: ["reason"]
+    }),
+    /** Total received IHAVE messages by topic */
+    ihaveRcvMsgids: register.gauge({
+      name: "gossipsub_ihave_rcv_msgids_total",
+      help: "Total received IHAVE messages by topic",
+      labelNames: ["topic"]
+    }),
+    /**
+     * Total messages per topic we don't have. Not actual requests.
+     * The number of times we have decided that an IWANT control message is required for this
+     * topic. A very high metric might indicate an underperforming network.
+     * = rust-libp2p `topic_iwant_msgs` */
+    ihaveRcvNotSeenMsgids: register.gauge({
+      name: "gossipsub_ihave_rcv_not_seen_msgids_total",
+      help: "Total messages per topic we do not have, not actual requests",
+      labelNames: ["topic"]
+    }),
+    /** Total received IWANT messages by topic */
+    iwantRcvMsgids: register.gauge({
+      name: "gossipsub_iwant_rcv_msgids_total",
+      help: "Total received IWANT messages by topic",
+      labelNames: ["topic"]
+    }),
+    /** Total requested messageIDs that we don't have */
+    iwantRcvDonthaveMsgids: register.gauge({
+      name: "gossipsub_iwant_rcv_dont_have_msgids_total",
+      help: "Total requested messageIDs that we do not have"
+    }),
+    /** Total received IDONTWANT messages */
+    idontwantRcvMsgids: register.gauge({
+      name: "gossipsub_idontwant_rcv_msgids_total",
+      help: "Total received IDONTWANT messages"
+    }),
+    /** Total received IDONTWANT messageIDs that we don't have */
+    idontwantRcvDonthaveMsgids: register.gauge({
+      name: "gossipsub_idontwant_rcv_dont_have_msgids_total",
+      help: "Total received IDONTWANT messageIDs that we do not have in mcache"
+    }),
+    iwantPromiseStarted: register.gauge({
+      name: "gossipsub_iwant_promise_sent_total",
+      help: "Total count of started IWANT promises"
+    }),
+    /** Total count of resolved IWANT promises */
+    iwantPromiseResolved: register.gauge({
+      name: "gossipsub_iwant_promise_resolved_total",
+      help: "Total count of resolved IWANT promises"
+    }),
+    /** Total count of resolved IWANT promises from duplicate messages */
+    iwantPromiseResolvedFromDuplicate: register.gauge({
+      name: "gossipsub_iwant_promise_resolved_from_duplicate_total",
+      help: "Total count of resolved IWANT promises from duplicate messages"
+    }),
+    /** Total count of peers we have asked IWANT promises that are resolved */
+    iwantPromiseResolvedPeers: register.gauge({
+      name: "gossipsub_iwant_promise_resolved_peers",
+      help: "Total count of peers we have asked IWANT promises that are resolved"
+    }),
+    iwantPromiseBroken: register.gauge({
+      name: "gossipsub_iwant_promise_broken",
+      help: "Total count of broken IWANT promises"
+    }),
+    iwantMessagePruned: register.gauge({
+      name: "gossipsub_iwant_message_pruned",
+      help: "Total count of pruned IWANT messages"
+    }),
+    /** Histogram of delivery time of resolved IWANT promises */
+    iwantPromiseDeliveryTime: register.histogram({
+      name: "gossipsub_iwant_promise_delivery_seconds",
+      help: "Histogram of delivery time of resolved IWANT promises",
+      buckets: [
+        0.5 * opts.gossipPromiseExpireSec,
+        Number(opts.gossipPromiseExpireSec),
+        2 * opts.gossipPromiseExpireSec,
+        4 * opts.gossipPromiseExpireSec
+      ]
+    }),
+    iwantPromiseUntracked: register.gauge({
+      name: "gossip_iwant_promise_untracked",
+      help: "Total count of untracked IWANT promise"
+    }),
+    /** Backoff time */
+    connectedPeersBackoffSec: register.histogram({
+      name: "gossipsub_connected_peers_backoff_seconds",
+      help: "Backoff time in seconds",
+      // Using 1 seconds as minimum as that's close to the heartbeat duration, no need for more resolution.
+      // As per spec, backoff times are 10 seconds for UnsubscribeBackoff and 60 seconds for PruneBackoff.
+      // Higher values of 60 seconds should not occur, but we add 120 seconds just in case
+      // https://github.com/libp2p/specs/blob/master/pubsub/gossipsub/gossipsub-v1.1.md#overview-of-new-parameters
+      buckets: [1, 2, 4, 10, 20, 60, 120]
+    }),
+    /* Data structure sizes */
+    /** Unbounded cache sizes */
+    cacheSize: register.gauge({
+      name: "gossipsub_cache_size",
+      help: "Unbounded cache sizes",
+      labelNames: ["cache"]
+    }),
+    /** Current mcache msg count */
+    mcacheSize: register.gauge({
+      name: "gossipsub_mcache_size",
+      help: "Current mcache msg count"
+    }),
+    mcacheNotValidatedCount: register.gauge({
+      name: "gossipsub_mcache_not_validated_count",
+      help: "Current mcache msg count not validated"
+    }),
+    fastMsgIdCacheCollision: register.gauge({
+      name: "gossipsub_fastmsgid_cache_collision_total",
+      help: "Total count of key collisions on fastmsgid cache put"
+    }),
+    newConnectionCount: register.gauge({
+      name: "gossipsub_new_connection_total",
+      help: "Total new connection by status",
+      labelNames: ["status"]
+    }),
+    topicStrToLabel,
+    toTopic(topicStr) {
+      return this.topicStrToLabel.get(topicStr) ?? topicStr;
+    },
+    /** We joined a topic */
+    onJoin(topicStr) {
+      this.topicSubscriptionStatus.set({ topicStr }, 1);
+      this.meshPeerCounts.set({ topicStr }, 0);
+    },
+    /** We left a topic */
+    onLeave(topicStr) {
+      this.topicSubscriptionStatus.set({ topicStr }, 0);
+      this.meshPeerCounts.set({ topicStr }, 0);
+    },
+    /** Register the inclusion of peers in our mesh due to some reason. */
+    onAddToMesh(topicStr, reason, count) {
+      const topic = this.toTopic(topicStr);
+      switch (reason) {
+        case InclusionReason.Fanout:
+          this.meshPeerInclusionEventsFanout.inc({ topic }, count);
+          break;
+        case InclusionReason.Random:
+          this.meshPeerInclusionEventsRandom.inc({ topic }, count);
+          break;
+        case InclusionReason.Subscribed:
+          this.meshPeerInclusionEventsSubscribed.inc({ topic }, count);
+          break;
+        case InclusionReason.Outbound:
+          this.meshPeerInclusionEventsOutbound.inc({ topic }, count);
+          break;
+        case InclusionReason.NotEnough:
+          this.meshPeerInclusionEventsNotEnough.inc({ topic }, count);
+          break;
+        case InclusionReason.Opportunistic:
+          this.meshPeerInclusionEventsOpportunistic.inc({ topic }, count);
+          break;
+        default:
+          this.meshPeerInclusionEventsUnknown.inc({ topic }, count);
+          break;
+      }
+    },
+    /** Register the removal of peers in our mesh due to some reason */
+    // - remove_peer_from_mesh()
+    // - heartbeat() Churn::BadScore
+    // - heartbeat() Churn::Excess
+    // - on_disconnect() Churn::Ds
+    onRemoveFromMesh(topicStr, reason, count) {
+      const topic = this.toTopic(topicStr);
+      switch (reason) {
+        case ChurnReason.Dc:
+          this.meshPeerChurnEventsDisconnected.inc({ topic }, count);
+          break;
+        case ChurnReason.BadScore:
+          this.meshPeerChurnEventsBadScore.inc({ topic }, count);
+          break;
+        case ChurnReason.Prune:
+          this.meshPeerChurnEventsPrune.inc({ topic }, count);
+          break;
+        case ChurnReason.Excess:
+          this.meshPeerChurnEventsExcess.inc({ topic }, count);
+          break;
+        default:
+          this.meshPeerChurnEventsUnknown.inc({ topic }, count);
+          break;
+      }
+    },
+    /**
+     * Update validation result to metrics
+     *
+     * @param messageRecord - null means the message's mcache record was not known at the time of acceptance report
+     */
+    onReportValidation(messageRecord, acceptance, firstSeenTimestampMs) {
+      this.asyncValidationMcacheHit.inc({ hit: messageRecord != null ? "hit" : "miss" });
+      if (messageRecord != null) {
+        const topic = this.toTopic(messageRecord.message.topic);
+        switch (acceptance) {
+          case TopicValidatorResult.Accept:
+            this.acceptedMessagesTotal.inc({ topic });
+            break;
+          case TopicValidatorResult.Ignore:
+            this.ignoredMessagesTotal.inc({ topic });
+            break;
+          case TopicValidatorResult.Reject:
+            this.rejectedMessagesTotal.inc({ topic });
+            break;
+          default:
+            this.unknownValidationResultsTotal.inc({ topic });
+            break;
+        }
+      }
+      if (firstSeenTimestampMs != null) {
+        this.asyncValidationDelayFromFirstSeenSec.observe((Date.now() - firstSeenTimestampMs) / 1e3);
+      } else {
+        this.asyncValidationUnknownFirstSeen.inc();
+      }
+    },
+    /**
+     * - in handle_graft() Penalty::GraftBackoff
+     * - in apply_iwant_penalties() Penalty::BrokenPromise
+     * - in metric_score() P3 Penalty::MessageDeficit
+     * - in metric_score() P6 Penalty::IPColocation
+     */
+    onScorePenalty(penalty) {
+      this.scoringPenalties.inc({ penalty }, 1);
+    },
+    onIhaveRcv(topicStr, ihave, idonthave) {
+      const topic = this.toTopic(topicStr);
+      this.ihaveRcvMsgids.inc({ topic }, ihave);
+      this.ihaveRcvNotSeenMsgids.inc({ topic }, idonthave);
+    },
+    onIwantRcv(iwantByTopic, iwantDonthave) {
+      for (const [topicStr, iwant] of iwantByTopic) {
+        const topic = this.toTopic(topicStr);
+        this.iwantRcvMsgids.inc({ topic }, iwant);
+      }
+      this.iwantRcvDonthaveMsgids.inc(iwantDonthave);
+    },
+    onIdontwantRcv(idontwant, idontwantDonthave) {
+      this.idontwantRcvMsgids.inc(idontwant);
+      this.idontwantRcvDonthaveMsgids.inc(idontwantDonthave);
+    },
+    onForwardMsg(topicStr, tosendCount) {
+      const topic = this.toTopic(topicStr);
+      this.msgForwardCount.inc({ topic }, 1);
+      this.msgForwardPeers.inc({ topic }, tosendCount);
+    },
+    onPublishMsg(topicStr, tosendGroupCount, tosendCount, dataLen, ms) {
+      const topic = this.toTopic(topicStr);
+      this.msgPublishCount.inc({ topic }, 1);
+      this.msgPublishBytes.inc({ topic }, tosendCount * dataLen);
+      this.msgPublishPeersByTopic.inc({ topic }, tosendCount);
+      this.directPeersPublishedTotal.inc({ topic }, tosendGroupCount.direct);
+      this.floodsubPeersPublishedTotal.inc({ topic }, tosendGroupCount.floodsub);
+      this.meshPeersPublishedTotal.inc({ topic }, tosendGroupCount.mesh);
+      this.fanoutPeersPublishedTotal.inc({ topic }, tosendGroupCount.fanout);
+      this.msgPublishTime.observe({ topic }, ms / 1e3);
+    },
+    onMsgRecvPreValidation(topicStr) {
+      const topic = this.toTopic(topicStr);
+      this.msgReceivedPreValidation.inc({ topic }, 1);
+    },
+    onMsgRecvError(topicStr) {
+      const topic = this.toTopic(topicStr);
+      this.msgReceivedError.inc({ topic }, 1);
+    },
+    onPrevalidationResult(topicStr, status) {
+      const topic = this.toTopic(topicStr);
+      switch (status) {
+        case MessageStatus.duplicate:
+          this.prevalidationDuplicateTotal.inc({ topic });
+          break;
+        case MessageStatus.invalid:
+          this.prevalidationInvalidTotal.inc({ topic });
+          break;
+        case MessageStatus.valid:
+          this.prevalidationValidTotal.inc({ topic });
+          break;
+        default:
+          this.prevalidationUnknownTotal.inc({ topic });
+          break;
+      }
+    },
+    onMsgRecvInvalid(topicStr, reason) {
+      const topic = this.toTopic(topicStr);
+      const error = reason.reason === RejectReason.Error ? reason.error : reason.reason;
+      this.msgReceivedInvalid.inc({ error }, 1);
+      this.msgReceivedInvalidByTopic.inc({ topic }, 1);
+    },
+    onDuplicateMsgDelivery(topicStr, deliveryDelayMs, isLateDelivery) {
+      const topic = this.toTopic(topicStr);
+      this.duplicateMsgDeliveryDelay.observe({ topic }, deliveryDelayMs / 1e3);
+      if (isLateDelivery) {
+        this.duplicateMsgLateDelivery.inc({ topic }, 1);
+      }
+    },
+    onPublishDuplicateMsg(topicStr) {
+      const topic = this.toTopic(topicStr);
+      this.duplicateMsgIgnored.inc({ topic }, 1);
+    },
+    onPeerReadStreamError() {
+      this.peerReadStreamError.inc(1);
+    },
+    onRpcRecvError() {
+      this.rpcRecvError.inc(1);
+    },
+    onRpcDataError() {
+      this.rpcDataError.inc(1);
+    },
+    onRpcRecv(rpc, rpcBytes) {
+      this.rpcRecvBytes.inc(rpcBytes);
+      this.rpcRecvCount.inc(1);
+      if (rpc.subscriptions != null)
+        this.rpcRecvSubscription.inc(rpc.subscriptions.length);
+      if (rpc.messages != null)
+        this.rpcRecvMessage.inc(rpc.messages.length);
+      if (rpc.control != null) {
+        this.rpcRecvControl.inc(1);
+        if (rpc.control.ihave != null)
+          this.rpcRecvIHave.inc(rpc.control.ihave.length);
+        if (rpc.control.iwant != null)
+          this.rpcRecvIWant.inc(rpc.control.iwant.length);
+        if (rpc.control.graft != null)
+          this.rpcRecvGraft.inc(rpc.control.graft.length);
+        if (rpc.control.prune != null)
+          this.rpcRecvPrune.inc(rpc.control.prune.length);
+      }
+    },
+    onRpcSent(rpc, rpcBytes) {
+      this.rpcSentBytes.inc(rpcBytes);
+      this.rpcSentCount.inc(1);
+      if (rpc.subscriptions != null)
+        this.rpcSentSubscription.inc(rpc.subscriptions.length);
+      if (rpc.messages != null)
+        this.rpcSentMessage.inc(rpc.messages.length);
+      if (rpc.control != null) {
+        const ihave = rpc.control.ihave?.length ?? 0;
+        const iwant = rpc.control.iwant?.length ?? 0;
+        const graft = rpc.control.graft?.length ?? 0;
+        const prune = rpc.control.prune?.length ?? 0;
+        const idontwant = rpc.control.idontwant?.length ?? 0;
+        if (ihave > 0)
+          this.rpcSentIHave.inc(ihave);
+        if (iwant > 0)
+          this.rpcSentIWant.inc(iwant);
+        if (graft > 0)
+          this.rpcSentGraft.inc(graft);
+        if (prune > 0)
+          this.rpcSentPrune.inc(prune);
+        if (idontwant > 0)
+          this.rpcSentIDontWant.inc(idontwant);
+        if (ihave > 0 || iwant > 0 || graft > 0 || prune > 0 || idontwant > 0)
+          this.rpcSentControl.inc(1);
+      }
+    },
+    registerScores(scores, scoreThresholds) {
+      let graylist = 0;
+      let publish = 0;
+      let gossip = 0;
+      let mesh = 0;
+      for (const score of scores) {
+        if (score >= scoreThresholds.graylistThreshold)
+          graylist++;
+        if (score >= scoreThresholds.publishThreshold)
+          publish++;
+        if (score >= scoreThresholds.gossipThreshold)
+          gossip++;
+        if (score >= 0)
+          mesh++;
+      }
+      this.peersByScoreThreshold.set({ threshold: ScoreThreshold.graylist }, graylist);
+      this.peersByScoreThreshold.set({ threshold: ScoreThreshold.publish }, publish);
+      this.peersByScoreThreshold.set({ threshold: ScoreThreshold.gossip }, gossip);
+      this.peersByScoreThreshold.set({ threshold: ScoreThreshold.mesh }, mesh);
+      this.score.set(scores);
+    },
+    registerScoreWeights(sw) {
+      for (const [topic, wsTopic] of sw.byTopic) {
+        this.scoreWeights.set({ topic, p: "p1" }, wsTopic.p1w);
+        this.scoreWeights.set({ topic, p: "p2" }, wsTopic.p2w);
+        this.scoreWeights.set({ topic, p: "p3" }, wsTopic.p3w);
+        this.scoreWeights.set({ topic, p: "p3b" }, wsTopic.p3bw);
+        this.scoreWeights.set({ topic, p: "p4" }, wsTopic.p4w);
+      }
+      this.scoreWeights.set({ p: "p5" }, sw.p5w);
+      this.scoreWeights.set({ p: "p6" }, sw.p6w);
+      this.scoreWeights.set({ p: "p7" }, sw.p7w);
+    },
+    registerScorePerMesh(mesh, scoreByPeer) {
+      const peersPerTopicLabel = /* @__PURE__ */ new Map();
+      mesh.forEach((peers, topicStr) => {
+        const topicLabel = this.topicStrToLabel.get(topicStr) ?? "unknown";
+        let peersInMesh = peersPerTopicLabel.get(topicLabel);
+        if (peersInMesh == null) {
+          peersInMesh = /* @__PURE__ */ new Set();
+          peersPerTopicLabel.set(topicLabel, peersInMesh);
+        }
+        peers.forEach((p) => peersInMesh?.add(p));
+      });
+      for (const [topic, peers] of peersPerTopicLabel) {
+        const meshScores = [];
+        peers.forEach((peer) => {
+          meshScores.push(scoreByPeer.get(peer) ?? 0);
+        });
+        this.scorePerMesh.set({ topic }, meshScores);
+      }
+    }
+  };
 }
-__name(marshalPublicKey, "marshalPublicKey");
-async function unmarshalPrivateKey2(buf) {
-  const decoded = PrivateKey.decode(buf);
-  const data = decoded.Data ?? new Uint8Array();
-  switch (decoded.Type) {
-    case KeyType.RSA:
-      return supportedKeys.rsa.unmarshalRsaPrivateKey(data);
-    case KeyType.Ed25519:
-      return supportedKeys.ed25519.unmarshalEd25519PrivateKey(data);
-    case KeyType.Secp256k1:
-      return supportedKeys.secp256k1.unmarshalSecp256k1PrivateKey(data);
-    default:
-      throw unsupportedKey(decoded.Type ?? "RSA");
+__name(getMetrics, "getMetrics");
+
+// node_modules/@chainsafe/libp2p-gossipsub/dist/src/errors.js
+var InvalidPeerScoreParamsError = class extends Error {
+  static name = "InvalidPeerScoreParamsError";
+  constructor(message2 = "Invalid peer score params") {
+    super(message2);
+    this.name = "InvalidPeerScoreParamsError";
+  }
+};
+
+// node_modules/@chainsafe/libp2p-gossipsub/dist/src/score/peer-score-params.js
+var defaultPeerScoreParams = {
+  topics: {},
+  topicScoreCap: 10,
+  appSpecificScore: /* @__PURE__ */ __name(() => 0, "appSpecificScore"),
+  appSpecificWeight: 10,
+  IPColocationFactorWeight: -5,
+  IPColocationFactorThreshold: 10,
+  IPColocationFactorWhitelist: /* @__PURE__ */ new Set(),
+  behaviourPenaltyWeight: -10,
+  behaviourPenaltyThreshold: 0,
+  behaviourPenaltyDecay: 0.2,
+  decayInterval: 1e3,
+  decayToZero: 0.1,
+  retainScore: 3600 * 1e3
+};
+var defaultTopicScoreParams = {
+  topicWeight: 0.5,
+  timeInMeshWeight: 1,
+  timeInMeshQuantum: 1,
+  timeInMeshCap: 3600,
+  firstMessageDeliveriesWeight: 1,
+  firstMessageDeliveriesDecay: 0.5,
+  firstMessageDeliveriesCap: 2e3,
+  meshMessageDeliveriesWeight: -1,
+  meshMessageDeliveriesDecay: 0.5,
+  meshMessageDeliveriesCap: 100,
+  meshMessageDeliveriesThreshold: 20,
+  meshMessageDeliveriesWindow: 10,
+  meshMessageDeliveriesActivation: 5e3,
+  meshFailurePenaltyWeight: -1,
+  meshFailurePenaltyDecay: 0.5,
+  invalidMessageDeliveriesWeight: -1,
+  invalidMessageDeliveriesDecay: 0.3
+};
+function createPeerScoreParams(p = {}) {
+  return {
+    ...defaultPeerScoreParams,
+    ...p,
+    topics: p.topics != null ? Object.entries(p.topics).reduce((topics, [topic, topicScoreParams]) => {
+      topics[topic] = createTopicScoreParams(topicScoreParams);
+      return topics;
+    }, {}) : {}
+  };
+}
+__name(createPeerScoreParams, "createPeerScoreParams");
+function createTopicScoreParams(p = {}) {
+  return {
+    ...defaultTopicScoreParams,
+    ...p
+  };
+}
+__name(createTopicScoreParams, "createTopicScoreParams");
+function validatePeerScoreParams(p) {
+  for (const [topic, params] of Object.entries(p.topics)) {
+    try {
+      validateTopicScoreParams(params);
+    } catch (e) {
+      throw new InvalidPeerScoreParamsError(`invalid score parameters for topic ${topic}: ${e.message}`);
+    }
+  }
+  if (p.topicScoreCap < 0) {
+    throw new InvalidPeerScoreParamsError("invalid topic score cap; must be positive (or 0 for no cap)");
+  }
+  if (p.appSpecificScore === null || p.appSpecificScore === void 0) {
+    throw new InvalidPeerScoreParamsError("missing application specific score function");
+  }
+  if (p.IPColocationFactorWeight > 0) {
+    throw new InvalidPeerScoreParamsError("invalid IPColocationFactorWeight; must be negative (or 0 to disable)");
+  }
+  if (p.IPColocationFactorWeight !== 0 && p.IPColocationFactorThreshold < 1) {
+    throw new InvalidPeerScoreParamsError("invalid IPColocationFactorThreshold; must be at least 1");
+  }
+  if (p.behaviourPenaltyWeight > 0) {
+    throw new InvalidPeerScoreParamsError("invalid BehaviourPenaltyWeight; must be negative (or 0 to disable)");
+  }
+  if (p.behaviourPenaltyWeight !== 0 && (p.behaviourPenaltyDecay <= 0 || p.behaviourPenaltyDecay >= 1)) {
+    throw new InvalidPeerScoreParamsError("invalid BehaviourPenaltyDecay; must be between 0 and 1");
+  }
+  if (p.decayInterval < 1e3) {
+    throw new InvalidPeerScoreParamsError("invalid DecayInterval; must be at least 1s");
+  }
+  if (p.decayToZero <= 0 || p.decayToZero >= 1) {
+    throw new InvalidPeerScoreParamsError("invalid DecayToZero; must be between 0 and 1");
   }
 }
-__name(unmarshalPrivateKey2, "unmarshalPrivateKey");
+__name(validatePeerScoreParams, "validatePeerScoreParams");
+function validateTopicScoreParams(p) {
+  if (p.topicWeight < 0) {
+    throw new InvalidPeerScoreParamsError("invalid topic weight; must be >= 0");
+  }
+  if (p.timeInMeshQuantum === 0) {
+    throw new InvalidPeerScoreParamsError("invalid TimeInMeshQuantum; must be non zero");
+  }
+  if (p.timeInMeshWeight < 0) {
+    throw new InvalidPeerScoreParamsError("invalid TimeInMeshWeight; must be positive (or 0 to disable)");
+  }
+  if (p.timeInMeshWeight !== 0 && p.timeInMeshQuantum <= 0) {
+    throw new InvalidPeerScoreParamsError("invalid TimeInMeshQuantum; must be positive");
+  }
+  if (p.timeInMeshWeight !== 0 && p.timeInMeshCap <= 0) {
+    throw new InvalidPeerScoreParamsError("invalid TimeInMeshCap; must be positive");
+  }
+  if (p.firstMessageDeliveriesWeight < 0) {
+    throw new InvalidPeerScoreParamsError("invallid FirstMessageDeliveriesWeight; must be positive (or 0 to disable)");
+  }
+  if (p.firstMessageDeliveriesWeight !== 0 && (p.firstMessageDeliveriesDecay <= 0 || p.firstMessageDeliveriesDecay >= 1)) {
+    throw new InvalidPeerScoreParamsError("invalid FirstMessageDeliveriesDecay; must be between 0 and 1");
+  }
+  if (p.firstMessageDeliveriesWeight !== 0 && p.firstMessageDeliveriesCap <= 0) {
+    throw new InvalidPeerScoreParamsError("invalid FirstMessageDeliveriesCap; must be positive");
+  }
+  if (p.meshMessageDeliveriesWeight > 0) {
+    throw new InvalidPeerScoreParamsError("invalid MeshMessageDeliveriesWeight; must be negative (or 0 to disable)");
+  }
+  if (p.meshMessageDeliveriesWeight !== 0 && (p.meshMessageDeliveriesDecay <= 0 || p.meshMessageDeliveriesDecay >= 1)) {
+    throw new InvalidPeerScoreParamsError("invalid MeshMessageDeliveriesDecay; must be between 0 and 1");
+  }
+  if (p.meshMessageDeliveriesWeight !== 0 && p.meshMessageDeliveriesCap <= 0) {
+    throw new InvalidPeerScoreParamsError("invalid MeshMessageDeliveriesCap; must be positive");
+  }
+  if (p.meshMessageDeliveriesWeight !== 0 && p.meshMessageDeliveriesThreshold <= 0) {
+    throw new InvalidPeerScoreParamsError("invalid MeshMessageDeliveriesThreshold; must be positive");
+  }
+  if (p.meshMessageDeliveriesWindow < 0) {
+    throw new InvalidPeerScoreParamsError("invalid MeshMessageDeliveriesWindow; must be non-negative");
+  }
+  if (p.meshMessageDeliveriesWeight !== 0 && p.meshMessageDeliveriesActivation < 1e3) {
+    throw new InvalidPeerScoreParamsError("invalid MeshMessageDeliveriesActivation; must be at least 1s");
+  }
+  if (p.meshFailurePenaltyWeight > 0) {
+    throw new InvalidPeerScoreParamsError("invalid MeshFailurePenaltyWeight; must be negative (or 0 to disable)");
+  }
+  if (p.meshFailurePenaltyWeight !== 0 && (p.meshFailurePenaltyDecay <= 0 || p.meshFailurePenaltyDecay >= 1)) {
+    throw new InvalidPeerScoreParamsError("invalid MeshFailurePenaltyDecay; must be between 0 and 1");
+  }
+  if (p.invalidMessageDeliveriesWeight > 0) {
+    throw new InvalidPeerScoreParamsError("invalid InvalidMessageDeliveriesWeight; must be negative (or 0 to disable)");
+  }
+  if (p.invalidMessageDeliveriesDecay <= 0 || p.invalidMessageDeliveriesDecay >= 1) {
+    throw new InvalidPeerScoreParamsError("invalid InvalidMessageDeliveriesDecay; must be between 0 and 1");
+  }
+}
+__name(validateTopicScoreParams, "validateTopicScoreParams");
+
+// node_modules/@chainsafe/libp2p-gossipsub/dist/src/score/peer-score-thresholds.js
+var defaultPeerScoreThresholds = {
+  gossipThreshold: -10,
+  publishThreshold: -50,
+  graylistThreshold: -80,
+  acceptPXThreshold: 10,
+  opportunisticGraftThreshold: 20
+};
+function createPeerScoreThresholds(p = {}) {
+  return {
+    ...defaultPeerScoreThresholds,
+    ...p
+  };
+}
+__name(createPeerScoreThresholds, "createPeerScoreThresholds");
+
+// node_modules/@chainsafe/libp2p-gossipsub/dist/src/utils/set.js
+function removeItemsFromSet(superSet, ineed, cond = () => true) {
+  const subset = /* @__PURE__ */ new Set();
+  if (ineed <= 0)
+    return subset;
+  for (const id of superSet) {
+    if (subset.size >= ineed)
+      break;
+    if (cond(id)) {
+      subset.add(id);
+      superSet.delete(id);
+    }
+  }
+  return subset;
+}
+__name(removeItemsFromSet, "removeItemsFromSet");
+function removeFirstNItemsFromSet(superSet, ineed) {
+  return removeItemsFromSet(superSet, ineed, () => true);
+}
+__name(removeFirstNItemsFromSet, "removeFirstNItemsFromSet");
+var MapDef = class extends Map {
+  static {
+    __name(this, "MapDef");
+  }
+  getDefault;
+  constructor(getDefault) {
+    super();
+    this.getDefault = getDefault;
+  }
+  getOrDefault(key) {
+    let value = super.get(key);
+    if (value === void 0) {
+      value = this.getDefault();
+      this.set(key, value);
+    }
+    return value;
+  }
+};
+
+// node_modules/@chainsafe/libp2p-gossipsub/dist/src/score/compute-score.js
+function computeScore(peer, pstats, params, peerIPs) {
+  let score = 0;
+  Object.entries(pstats.topics).forEach(([topic, tstats]) => {
+    const topicParams = params.topics[topic];
+    if (topicParams === void 0) {
+      return;
+    }
+    let topicScore = 0;
+    if (tstats.inMesh) {
+      let p1 = tstats.meshTime / topicParams.timeInMeshQuantum;
+      if (p1 > topicParams.timeInMeshCap) {
+        p1 = topicParams.timeInMeshCap;
+      }
+      topicScore += p1 * topicParams.timeInMeshWeight;
+    }
+    let p2 = tstats.firstMessageDeliveries;
+    if (p2 > topicParams.firstMessageDeliveriesCap) {
+      p2 = topicParams.firstMessageDeliveriesCap;
+    }
+    topicScore += p2 * topicParams.firstMessageDeliveriesWeight;
+    if (tstats.meshMessageDeliveriesActive && tstats.meshMessageDeliveries < topicParams.meshMessageDeliveriesThreshold) {
+      const deficit = topicParams.meshMessageDeliveriesThreshold - tstats.meshMessageDeliveries;
+      const p3 = deficit * deficit;
+      topicScore += p3 * topicParams.meshMessageDeliveriesWeight;
+    }
+    const p3b = tstats.meshFailurePenalty;
+    topicScore += p3b * topicParams.meshFailurePenaltyWeight;
+    const p4 = tstats.invalidMessageDeliveries * tstats.invalidMessageDeliveries;
+    topicScore += p4 * topicParams.invalidMessageDeliveriesWeight;
+    score += topicScore * topicParams.topicWeight;
+  });
+  if (params.topicScoreCap > 0 && score > params.topicScoreCap) {
+    score = params.topicScoreCap;
+  }
+  const p5 = params.appSpecificScore(peer);
+  score += p5 * params.appSpecificWeight;
+  pstats.knownIPs.forEach((ip) => {
+    if (params.IPColocationFactorWhitelist.has(ip)) {
+      return;
+    }
+    const peersInIP = peerIPs.get(ip);
+    const numPeersInIP = peersInIP != null ? peersInIP.size : 0;
+    if (numPeersInIP > params.IPColocationFactorThreshold) {
+      const surplus = numPeersInIP - params.IPColocationFactorThreshold;
+      const p6 = surplus * surplus;
+      score += p6 * params.IPColocationFactorWeight;
+    }
+  });
+  if (pstats.behaviourPenalty > params.behaviourPenaltyThreshold) {
+    const excess = pstats.behaviourPenalty - params.behaviourPenaltyThreshold;
+    const p7 = excess * excess;
+    score += p7 * params.behaviourPenaltyWeight;
+  }
+  return score;
+}
+__name(computeScore, "computeScore");
+
+// node_modules/@chainsafe/libp2p-gossipsub/dist/src/score/message-deliveries.js
+var import_denque = __toESM(require_denque(), 1);
+var DeliveryRecordStatus;
+(function(DeliveryRecordStatus2) {
+  DeliveryRecordStatus2[DeliveryRecordStatus2["unknown"] = 0] = "unknown";
+  DeliveryRecordStatus2[DeliveryRecordStatus2["valid"] = 1] = "valid";
+  DeliveryRecordStatus2[DeliveryRecordStatus2["invalid"] = 2] = "invalid";
+  DeliveryRecordStatus2[DeliveryRecordStatus2["ignored"] = 3] = "ignored";
+})(DeliveryRecordStatus || (DeliveryRecordStatus = {}));
+var MessageDeliveries = class {
+  static {
+    __name(this, "MessageDeliveries");
+  }
+  records;
+  queue;
+  constructor() {
+    this.records = /* @__PURE__ */ new Map();
+    this.queue = new import_denque.default();
+  }
+  getRecord(msgIdStr) {
+    return this.records.get(msgIdStr);
+  }
+  ensureRecord(msgIdStr) {
+    let drec = this.records.get(msgIdStr);
+    if (drec != null) {
+      return drec;
+    }
+    drec = {
+      status: DeliveryRecordStatus.unknown,
+      firstSeenTsMs: Date.now(),
+      validated: 0,
+      peers: /* @__PURE__ */ new Set()
+    };
+    this.records.set(msgIdStr, drec);
+    const entry = {
+      msgId: msgIdStr,
+      expire: Date.now() + TimeCacheDuration
+    };
+    this.queue.push(entry);
+    return drec;
+  }
+  gc() {
+    const now = Date.now();
+    let head = this.queue.peekFront();
+    while (head != null && head.expire < now) {
+      this.records.delete(head.msgId);
+      this.queue.shift();
+      head = this.queue.peekFront();
+    }
+  }
+  clear() {
+    this.records.clear();
+    this.queue.clear();
+  }
+};
+
+// node_modules/@chainsafe/libp2p-gossipsub/dist/src/score/peer-score.js
+var PeerScore = class {
+  static {
+    __name(this, "PeerScore");
+  }
+  params;
+  metrics;
+  /**
+   * Per-peer stats for score calculation
+   */
+  peerStats = /* @__PURE__ */ new Map();
+  /**
+   * IP colocation tracking; maps IP => set of peers.
+   */
+  peerIPs = new MapDef(() => /* @__PURE__ */ new Set());
+  /**
+   * Cache score up to decayInterval if topic stats are unchanged.
+   */
+  scoreCache = /* @__PURE__ */ new Map();
+  /**
+   * Recent message delivery timing/participants
+   */
+  deliveryRecords = new MessageDeliveries();
+  _backgroundInterval;
+  scoreCacheValidityMs;
+  computeScore;
+  log;
+  constructor(params, metrics, componentLogger, opts) {
+    this.params = params;
+    this.metrics = metrics;
+    validatePeerScoreParams(params);
+    this.scoreCacheValidityMs = opts.scoreCacheValidityMs;
+    this.computeScore = opts.computeScore ?? computeScore;
+    this.log = componentLogger.forComponent("libp2p:gossipsub:score");
+  }
+  get size() {
+    return this.peerStats.size;
+  }
+  /**
+   * Start PeerScore instance
+   */
+  start() {
+    if (this._backgroundInterval != null) {
+      this.log("Peer score already running");
+      return;
+    }
+    this._backgroundInterval = setInterval(() => {
+      this.background();
+    }, this.params.decayInterval);
+    this.log("started");
+  }
+  /**
+   * Stop PeerScore instance
+   */
+  stop() {
+    if (this._backgroundInterval == null) {
+      this.log("Peer score already stopped");
+      return;
+    }
+    clearInterval(this._backgroundInterval);
+    delete this._backgroundInterval;
+    this.peerIPs.clear();
+    this.peerStats.clear();
+    this.deliveryRecords.clear();
+    this.log("stopped");
+  }
+  /**
+   * Periodic maintenance
+   */
+  background() {
+    this.refreshScores();
+    this.deliveryRecords.gc();
+  }
+  dumpPeerScoreStats() {
+    return Object.fromEntries(Array.from(this.peerStats.entries()).map(([peer, stats]) => [peer, stats]));
+  }
+  messageFirstSeenTimestampMs(msgIdStr) {
+    const drec = this.deliveryRecords.getRecord(msgIdStr);
+    return drec != null ? drec.firstSeenTsMs : null;
+  }
+  /**
+   * Decays scores, and purges score records for disconnected peers once their expiry has elapsed.
+   */
+  refreshScores() {
+    const now = Date.now();
+    const decayToZero = this.params.decayToZero;
+    this.peerStats.forEach((pstats, id) => {
+      if (!pstats.connected) {
+        if (now > pstats.expire) {
+          this.removeIPsForPeer(id, pstats.knownIPs);
+          this.peerStats.delete(id);
+          this.scoreCache.delete(id);
+        }
+        return;
+      }
+      Object.entries(pstats.topics).forEach(([topic, tstats]) => {
+        const tparams = this.params.topics[topic];
+        if (tparams === void 0) {
+          return;
+        }
+        tstats.firstMessageDeliveries *= tparams.firstMessageDeliveriesDecay;
+        if (tstats.firstMessageDeliveries < decayToZero) {
+          tstats.firstMessageDeliveries = 0;
+        }
+        tstats.meshMessageDeliveries *= tparams.meshMessageDeliveriesDecay;
+        if (tstats.meshMessageDeliveries < decayToZero) {
+          tstats.meshMessageDeliveries = 0;
+        }
+        tstats.meshFailurePenalty *= tparams.meshFailurePenaltyDecay;
+        if (tstats.meshFailurePenalty < decayToZero) {
+          tstats.meshFailurePenalty = 0;
+        }
+        tstats.invalidMessageDeliveries *= tparams.invalidMessageDeliveriesDecay;
+        if (tstats.invalidMessageDeliveries < decayToZero) {
+          tstats.invalidMessageDeliveries = 0;
+        }
+        if (tstats.inMesh) {
+          tstats.meshTime = now - tstats.graftTime;
+          if (tstats.meshTime > tparams.meshMessageDeliveriesActivation) {
+            tstats.meshMessageDeliveriesActive = true;
+          }
+        }
+      });
+      pstats.behaviourPenalty *= this.params.behaviourPenaltyDecay;
+      if (pstats.behaviourPenalty < decayToZero) {
+        pstats.behaviourPenalty = 0;
+      }
+    });
+  }
+  /**
+   * Return the score for a peer
+   */
+  score(id) {
+    this.metrics?.scoreFnCalls.inc();
+    const pstats = this.peerStats.get(id);
+    if (pstats == null) {
+      return 0;
+    }
+    const now = Date.now();
+    const cacheEntry = this.scoreCache.get(id);
+    if (cacheEntry != null && cacheEntry.cacheUntil > now) {
+      return cacheEntry.score;
+    }
+    this.metrics?.scoreFnRuns.inc();
+    const score = this.computeScore(id, pstats, this.params, this.peerIPs);
+    const cacheUntil = now + this.scoreCacheValidityMs;
+    if (cacheEntry != null) {
+      this.metrics?.scoreCachedDelta.observe(Math.abs(score - cacheEntry.score));
+      cacheEntry.score = score;
+      cacheEntry.cacheUntil = cacheUntil;
+    } else {
+      this.scoreCache.set(id, { score, cacheUntil });
+    }
+    return score;
+  }
+  /**
+   * Apply a behavioural penalty to a peer
+   */
+  addPenalty(id, penalty, penaltyLabel) {
+    const pstats = this.peerStats.get(id);
+    if (pstats != null) {
+      pstats.behaviourPenalty += penalty;
+      this.metrics?.onScorePenalty(penaltyLabel);
+    }
+  }
+  addPeer(id) {
+    const pstats = {
+      connected: true,
+      expire: 0,
+      topics: {},
+      knownIPs: /* @__PURE__ */ new Set(),
+      behaviourPenalty: 0
+    };
+    this.peerStats.set(id, pstats);
+  }
+  /** Adds a new IP to a peer, if the peer is not known the update is ignored */
+  addIP(id, ip) {
+    const pstats = this.peerStats.get(id);
+    if (pstats != null) {
+      pstats.knownIPs.add(ip);
+    }
+    this.peerIPs.getOrDefault(ip).add(id);
+  }
+  /** Remove peer association with IP */
+  removeIP(id, ip) {
+    const pstats = this.peerStats.get(id);
+    if (pstats != null) {
+      pstats.knownIPs.delete(ip);
+    }
+    const peersWithIP = this.peerIPs.get(ip);
+    if (peersWithIP != null) {
+      peersWithIP.delete(id);
+      if (peersWithIP.size === 0) {
+        this.peerIPs.delete(ip);
+      }
+    }
+  }
+  removePeer(id) {
+    const pstats = this.peerStats.get(id);
+    if (pstats == null) {
+      return;
+    }
+    if (this.score(id) > 0) {
+      this.removeIPsForPeer(id, pstats.knownIPs);
+      this.peerStats.delete(id);
+      return;
+    }
+    Object.entries(pstats.topics).forEach(([topic, tstats]) => {
+      tstats.firstMessageDeliveries = 0;
+      const threshold = this.params.topics[topic].meshMessageDeliveriesThreshold;
+      if (tstats.inMesh && tstats.meshMessageDeliveriesActive && tstats.meshMessageDeliveries < threshold) {
+        const deficit = threshold - tstats.meshMessageDeliveries;
+        tstats.meshFailurePenalty += deficit * deficit;
+      }
+      tstats.inMesh = false;
+      tstats.meshMessageDeliveriesActive = false;
+    });
+    pstats.connected = false;
+    pstats.expire = Date.now() + this.params.retainScore;
+  }
+  /** Handles scoring functionality as a peer GRAFTs to a topic. */
+  graft(id, topic) {
+    const pstats = this.peerStats.get(id);
+    if (pstats != null) {
+      const tstats = this.getPtopicStats(pstats, topic);
+      if (tstats != null) {
+        tstats.inMesh = true;
+        tstats.graftTime = Date.now();
+        tstats.meshTime = 0;
+        tstats.meshMessageDeliveriesActive = false;
+      }
+    }
+  }
+  /** Handles scoring functionality as a peer PRUNEs from a topic. */
+  prune(id, topic) {
+    const pstats = this.peerStats.get(id);
+    if (pstats != null) {
+      const tstats = this.getPtopicStats(pstats, topic);
+      if (tstats != null) {
+        const threshold = this.params.topics[topic].meshMessageDeliveriesThreshold;
+        if (tstats.meshMessageDeliveriesActive && tstats.meshMessageDeliveries < threshold) {
+          const deficit = threshold - tstats.meshMessageDeliveries;
+          tstats.meshFailurePenalty += deficit * deficit;
+        }
+        tstats.meshMessageDeliveriesActive = false;
+        tstats.inMesh = false;
+      }
+    }
+  }
+  validateMessage(msgIdStr) {
+    this.deliveryRecords.ensureRecord(msgIdStr);
+  }
+  deliverMessage(from3, msgIdStr, topic) {
+    this.markFirstMessageDelivery(from3, topic);
+    const drec = this.deliveryRecords.ensureRecord(msgIdStr);
+    const now = Date.now();
+    if (drec.status !== DeliveryRecordStatus.unknown) {
+      this.log("unexpected delivery: message from %s was first seen %s ago and has delivery status %s", from3, now - drec.firstSeenTsMs, DeliveryRecordStatus[drec.status]);
+      return;
+    }
+    drec.status = DeliveryRecordStatus.valid;
+    drec.validated = now;
+    drec.peers.forEach((p) => {
+      if (p !== from3.toString()) {
+        this.markDuplicateMessageDelivery(p, topic);
+      }
+    });
+  }
+  /**
+   * Similar to `rejectMessage` except does not require the message id or reason for an invalid message.
+   */
+  rejectInvalidMessage(from3, topic) {
+    this.markInvalidMessageDelivery(from3, topic);
+  }
+  rejectMessage(from3, msgIdStr, topic, reason) {
+    switch (reason) {
+      // these messages are not tracked, but the peer is penalized as they are invalid
+      case RejectReason.Error:
+        this.markInvalidMessageDelivery(from3, topic);
+        return;
+      // we ignore those messages, so do nothing.
+      case RejectReason.Blacklisted:
+        return;
+    }
+    const drec = this.deliveryRecords.ensureRecord(msgIdStr);
+    if (drec.status !== DeliveryRecordStatus.unknown) {
+      this.log("unexpected rejection: message from %s was first seen %s ago and has delivery status %d", from3, Date.now() - drec.firstSeenTsMs, DeliveryRecordStatus[drec.status]);
+      return;
+    }
+    if (reason === RejectReason.Ignore) {
+      drec.status = DeliveryRecordStatus.ignored;
+      drec.peers.clear();
+      return;
+    }
+    drec.status = DeliveryRecordStatus.invalid;
+    this.markInvalidMessageDelivery(from3, topic);
+    drec.peers.forEach((p) => {
+      this.markInvalidMessageDelivery(p, topic);
+    });
+    drec.peers.clear();
+  }
+  duplicateMessage(from3, msgIdStr, topic) {
+    const drec = this.deliveryRecords.ensureRecord(msgIdStr);
+    if (drec.peers.has(from3)) {
+      return;
+    }
+    switch (drec.status) {
+      case DeliveryRecordStatus.unknown:
+        drec.peers.add(from3);
+        break;
+      case DeliveryRecordStatus.valid:
+        drec.peers.add(from3);
+        this.markDuplicateMessageDelivery(from3, topic, drec.validated);
+        break;
+      case DeliveryRecordStatus.invalid:
+        this.markInvalidMessageDelivery(from3, topic);
+        break;
+      case DeliveryRecordStatus.ignored:
+        break;
+    }
+  }
+  /**
+   * Increments the "invalid message deliveries" counter for all scored topics the message is published in.
+   */
+  markInvalidMessageDelivery(from3, topic) {
+    const pstats = this.peerStats.get(from3);
+    if (pstats != null) {
+      const tstats = this.getPtopicStats(pstats, topic);
+      if (tstats != null) {
+        tstats.invalidMessageDeliveries += 1;
+      }
+    }
+  }
+  /**
+   * Increments the "first message deliveries" counter for all scored topics the message is published in,
+   * as well as the "mesh message deliveries" counter, if the peer is in the mesh for the topic.
+   * Messages already known (with the seenCache) are counted with markDuplicateMessageDelivery()
+   */
+  markFirstMessageDelivery(from3, topic) {
+    const pstats = this.peerStats.get(from3);
+    if (pstats != null) {
+      const tstats = this.getPtopicStats(pstats, topic);
+      if (tstats != null) {
+        let cap = this.params.topics[topic].firstMessageDeliveriesCap;
+        tstats.firstMessageDeliveries = Math.min(cap, tstats.firstMessageDeliveries + 1);
+        if (tstats.inMesh) {
+          cap = this.params.topics[topic].meshMessageDeliveriesCap;
+          tstats.meshMessageDeliveries = Math.min(cap, tstats.meshMessageDeliveries + 1);
+        }
+      }
+    }
+  }
+  /**
+   * Increments the "mesh message deliveries" counter for messages we've seen before,
+   * as long the message was received within the P3 window.
+   */
+  markDuplicateMessageDelivery(from3, topic, validatedTime) {
+    const pstats = this.peerStats.get(from3);
+    if (pstats != null) {
+      const now = validatedTime !== void 0 ? Date.now() : 0;
+      const tstats = this.getPtopicStats(pstats, topic);
+      if (tstats != null && tstats.inMesh) {
+        const tparams = this.params.topics[topic];
+        if (validatedTime !== void 0) {
+          const deliveryDelayMs = now - validatedTime;
+          const isLateDelivery = deliveryDelayMs > tparams.meshMessageDeliveriesWindow;
+          this.metrics?.onDuplicateMsgDelivery(topic, deliveryDelayMs, isLateDelivery);
+          if (isLateDelivery) {
+            return;
+          }
+        }
+        const cap = tparams.meshMessageDeliveriesCap;
+        tstats.meshMessageDeliveries = Math.min(cap, tstats.meshMessageDeliveries + 1);
+      }
+    }
+  }
+  /**
+   * Removes an IP list from the tracking list for a peer.
+   */
+  removeIPsForPeer(id, ipsToRemove) {
+    for (const ipToRemove of ipsToRemove) {
+      const peerSet = this.peerIPs.get(ipToRemove);
+      if (peerSet != null) {
+        peerSet.delete(id);
+        if (peerSet.size === 0) {
+          this.peerIPs.delete(ipToRemove);
+        }
+      }
+    }
+  }
+  /**
+   * Returns topic stats if they exist, otherwise if the supplied parameters score the
+   * topic, inserts the default stats and returns a reference to those. If neither apply, returns None.
+   */
+  getPtopicStats(pstats, topic) {
+    let topicStats = pstats.topics[topic];
+    if (topicStats !== void 0) {
+      return topicStats;
+    }
+    if (this.params.topics[topic] !== void 0) {
+      topicStats = {
+        inMesh: false,
+        graftTime: 0,
+        meshTime: 0,
+        firstMessageDeliveries: 0,
+        meshMessageDeliveries: 0,
+        meshMessageDeliveriesActive: false,
+        meshFailurePenalty: 0,
+        invalidMessageDeliveries: 0
+      };
+      pstats.topics[topic] = topicStats;
+      return topicStats;
+    }
+    return null;
+  }
+};
+
+// node_modules/@chainsafe/libp2p-gossipsub/dist/src/score/scoreMetrics.js
+function computeScoreWeights(peer, pstats, params, peerIPs, topicStrToLabel) {
+  let score = 0;
+  const byTopic = /* @__PURE__ */ new Map();
+  Object.entries(pstats.topics).forEach(([topic, tstats]) => {
+    const topicLabel = topicStrToLabel.get(topic) ?? "unknown";
+    const topicParams = params.topics[topic];
+    if (topicParams === void 0) {
+      return;
+    }
+    let topicScores = byTopic.get(topicLabel);
+    if (topicScores == null) {
+      topicScores = {
+        p1w: 0,
+        p2w: 0,
+        p3w: 0,
+        p3bw: 0,
+        p4w: 0
+      };
+      byTopic.set(topicLabel, topicScores);
+    }
+    let p1w = 0;
+    let p2w = 0;
+    let p3w = 0;
+    let p3bw = 0;
+    let p4w = 0;
+    if (tstats.inMesh) {
+      const p1 = Math.max(tstats.meshTime / topicParams.timeInMeshQuantum, topicParams.timeInMeshCap);
+      p1w += p1 * topicParams.timeInMeshWeight;
+    }
+    let p2 = tstats.firstMessageDeliveries;
+    if (p2 > topicParams.firstMessageDeliveriesCap) {
+      p2 = topicParams.firstMessageDeliveriesCap;
+    }
+    p2w += p2 * topicParams.firstMessageDeliveriesWeight;
+    if (tstats.meshMessageDeliveriesActive && tstats.meshMessageDeliveries < topicParams.meshMessageDeliveriesThreshold) {
+      const deficit = topicParams.meshMessageDeliveriesThreshold - tstats.meshMessageDeliveries;
+      const p3 = deficit * deficit;
+      p3w += p3 * topicParams.meshMessageDeliveriesWeight;
+    }
+    const p3b = tstats.meshFailurePenalty;
+    p3bw += p3b * topicParams.meshFailurePenaltyWeight;
+    const p4 = tstats.invalidMessageDeliveries * tstats.invalidMessageDeliveries;
+    p4w += p4 * topicParams.invalidMessageDeliveriesWeight;
+    score += (p1w + p2w + p3w + p3bw + p4w) * topicParams.topicWeight;
+    topicScores.p1w += p1w;
+    topicScores.p2w += p2w;
+    topicScores.p3w += p3w;
+    topicScores.p3bw += p3bw;
+    topicScores.p4w += p4w;
+  });
+  if (params.topicScoreCap > 0 && score > params.topicScoreCap) {
+    score = params.topicScoreCap;
+    const capF = params.topicScoreCap / score;
+    for (const ws of byTopic.values()) {
+      ws.p1w *= capF;
+      ws.p2w *= capF;
+      ws.p3w *= capF;
+      ws.p3bw *= capF;
+      ws.p4w *= capF;
+    }
+  }
+  let p5w = 0;
+  let p6w = 0;
+  let p7w = 0;
+  const p5 = params.appSpecificScore(peer);
+  p5w += p5 * params.appSpecificWeight;
+  pstats.knownIPs.forEach((ip) => {
+    if (params.IPColocationFactorWhitelist.has(ip)) {
+      return;
+    }
+    const peersInIP = peerIPs.get(ip);
+    const numPeersInIP = peersInIP != null ? peersInIP.size : 0;
+    if (numPeersInIP > params.IPColocationFactorThreshold) {
+      const surplus = numPeersInIP - params.IPColocationFactorThreshold;
+      const p6 = surplus * surplus;
+      p6w += p6 * params.IPColocationFactorWeight;
+    }
+  });
+  const p7 = pstats.behaviourPenalty * pstats.behaviourPenalty;
+  p7w += p7 * params.behaviourPenaltyWeight;
+  score += p5w + p6w + p7w;
+  return {
+    byTopic,
+    p5w,
+    p6w,
+    p7w,
+    score
+  };
+}
+__name(computeScoreWeights, "computeScoreWeights");
+function computeAllPeersScoreWeights(peerIdStrs, peerStats, params, peerIPs, topicStrToLabel) {
+  const sw = {
+    byTopic: /* @__PURE__ */ new Map(),
+    p5w: [],
+    p6w: [],
+    p7w: [],
+    score: []
+  };
+  for (const peerIdStr of peerIdStrs) {
+    const pstats = peerStats.get(peerIdStr);
+    if (pstats != null) {
+      const swPeer = computeScoreWeights(peerIdStr, pstats, params, peerIPs, topicStrToLabel);
+      for (const [topic, swPeerTopic] of swPeer.byTopic) {
+        let swTopic = sw.byTopic.get(topic);
+        if (swTopic == null) {
+          swTopic = {
+            p1w: [],
+            p2w: [],
+            p3w: [],
+            p3bw: [],
+            p4w: []
+          };
+          sw.byTopic.set(topic, swTopic);
+        }
+        swTopic.p1w.push(swPeerTopic.p1w);
+        swTopic.p2w.push(swPeerTopic.p2w);
+        swTopic.p3w.push(swPeerTopic.p3w);
+        swTopic.p3bw.push(swPeerTopic.p3bw);
+        swTopic.p4w.push(swPeerTopic.p4w);
+      }
+      sw.p5w.push(swPeer.p5w);
+      sw.p6w.push(swPeer.p6w);
+      sw.p7w.push(swPeer.p7w);
+      sw.score.push(swPeer.score);
+    } else {
+      sw.p5w.push(0);
+      sw.p6w.push(0);
+      sw.p7w.push(0);
+      sw.score.push(0);
+    }
+  }
+  return sw;
+}
+__name(computeAllPeersScoreWeights, "computeAllPeersScoreWeights");
+
+// node_modules/@chainsafe/libp2p-gossipsub/dist/src/stream.js
+var OutboundStream = class {
+  static {
+    __name(this, "OutboundStream");
+  }
+  rawStream;
+  pushable;
+  closeController;
+  maxBufferSize;
+  constructor(rawStream, errCallback, opts) {
+    this.rawStream = rawStream;
+    this.pushable = pushable();
+    this.closeController = new AbortController();
+    this.maxBufferSize = opts.maxBufferSize ?? Infinity;
+    this.closeController.signal.addEventListener("abort", () => {
+      rawStream.close().catch((err) => {
+        rawStream.abort(err);
+      });
+    });
+    pipe(this.pushable, this.rawStream).catch(errCallback);
+  }
+  get protocol() {
+    return this.rawStream.protocol;
+  }
+  push(data) {
+    if (this.pushable.readableLength > this.maxBufferSize) {
+      throw Error(`OutboundStream buffer full, size > ${this.maxBufferSize}`);
+    }
+    this.pushable.push(encode6.single(data));
+  }
+  /**
+   * Same to push() but this is prefixed data so no need to encode length prefixed again
+   */
+  pushPrefixed(data) {
+    if (this.pushable.readableLength > this.maxBufferSize) {
+      throw Error(`OutboundStream buffer full, size > ${this.maxBufferSize}`);
+    }
+    this.pushable.push(data);
+  }
+  async close() {
+    this.closeController.abort();
+    await this.pushable.return();
+  }
+};
+var InboundStream = class {
+  static {
+    __name(this, "InboundStream");
+  }
+  source;
+  rawStream;
+  closeController;
+  constructor(rawStream, opts = {}) {
+    this.rawStream = rawStream;
+    this.closeController = new AbortController();
+    this.closeController.signal.addEventListener("abort", () => {
+      rawStream.close().catch((err) => {
+        rawStream.abort(err);
+      });
+    });
+    this.source = pipe(this.rawStream, (source) => decode7(source, opts));
+  }
+  async close() {
+    this.closeController.abort();
+  }
+};
+
+// node_modules/@chainsafe/libp2p-gossipsub/dist/src/tracer.js
+var IWantTracer = class {
+  static {
+    __name(this, "IWantTracer");
+  }
+  gossipsubIWantFollowupMs;
+  msgIdToStrFn;
+  metrics;
+  /**
+   * Promises to deliver a message
+   * Map per message id, per peer, promise expiration time
+   */
+  promises = /* @__PURE__ */ new Map();
+  /**
+   * First request time by msgId. Used for metrics to track expire times.
+   * Necessary to know if peers are actually breaking promises or simply sending them a bit later
+   */
+  requestMsByMsg = /* @__PURE__ */ new Map();
+  requestMsByMsgExpire;
+  constructor(gossipsubIWantFollowupMs, msgIdToStrFn, metrics) {
+    this.gossipsubIWantFollowupMs = gossipsubIWantFollowupMs;
+    this.msgIdToStrFn = msgIdToStrFn;
+    this.metrics = metrics;
+    this.requestMsByMsgExpire = 10 * gossipsubIWantFollowupMs;
+  }
+  get size() {
+    return this.promises.size;
+  }
+  get requestMsByMsgSize() {
+    return this.requestMsByMsg.size;
+  }
+  /**
+   * Track a promise to deliver a message from a list of msgIds we are requesting
+   */
+  addPromise(from3, msgIds) {
+    const ix = Math.floor(Math.random() * msgIds.length);
+    const msgId2 = msgIds[ix];
+    const msgIdStr = this.msgIdToStrFn(msgId2);
+    let expireByPeer = this.promises.get(msgIdStr);
+    if (expireByPeer == null) {
+      expireByPeer = /* @__PURE__ */ new Map();
+      this.promises.set(msgIdStr, expireByPeer);
+    }
+    const now = Date.now();
+    if (!expireByPeer.has(from3)) {
+      expireByPeer.set(from3, now + this.gossipsubIWantFollowupMs);
+      if (this.metrics != null) {
+        this.metrics.iwantPromiseStarted.inc(1);
+        if (!this.requestMsByMsg.has(msgIdStr)) {
+          this.requestMsByMsg.set(msgIdStr, now);
+        }
+      }
+    }
+  }
+  /**
+   * Returns the number of broken promises for each peer who didn't follow up on an IWANT request.
+   *
+   * This should be called not too often relative to the expire times, since it iterates over the whole data.
+   */
+  getBrokenPromises() {
+    const now = Date.now();
+    const result = /* @__PURE__ */ new Map();
+    let brokenPromises = 0;
+    this.promises.forEach((expireByPeer, msgId2) => {
+      expireByPeer.forEach((expire, p) => {
+        if (expire < now) {
+          result.set(p, (result.get(p) ?? 0) + 1);
+          expireByPeer.delete(p);
+          brokenPromises++;
+        }
+      });
+      if (expireByPeer.size === 0) {
+        this.promises.delete(msgId2);
+      }
+    });
+    this.metrics?.iwantPromiseBroken.inc(brokenPromises);
+    return result;
+  }
+  /**
+   * Someone delivered a message, stop tracking promises for it
+   */
+  deliverMessage(msgIdStr, isDuplicate = false) {
+    this.trackMessage(msgIdStr);
+    const expireByPeer = this.promises.get(msgIdStr);
+    if (expireByPeer != null) {
+      this.promises.delete(msgIdStr);
+      if (this.metrics != null) {
+        this.metrics.iwantPromiseResolved.inc(1);
+        if (isDuplicate)
+          this.metrics.iwantPromiseResolvedFromDuplicate.inc(1);
+        this.metrics.iwantPromiseResolvedPeers.inc(expireByPeer.size);
+      }
+    }
+  }
+  /**
+   * A message got rejected, so we can stop tracking promises and let the score penalty apply from invalid message delivery,
+   * unless its an obviously invalid message.
+   */
+  rejectMessage(msgIdStr, reason) {
+    this.trackMessage(msgIdStr);
+    switch (reason) {
+      case RejectReason.Error:
+        return;
+      default:
+        break;
+    }
+    this.promises.delete(msgIdStr);
+  }
+  clear() {
+    this.promises.clear();
+  }
+  prune() {
+    const maxMs = Date.now() - this.requestMsByMsgExpire;
+    let count = 0;
+    for (const [k, v] of this.requestMsByMsg.entries()) {
+      if (v < maxMs) {
+        this.requestMsByMsg.delete(k);
+        count++;
+      } else {
+        break;
+      }
+    }
+    this.metrics?.iwantMessagePruned.inc(count);
+  }
+  trackMessage(msgIdStr) {
+    if (this.metrics != null) {
+      const requestMs = this.requestMsByMsg.get(msgIdStr);
+      if (requestMs !== void 0) {
+        this.metrics.iwantPromiseDeliveryTime.observe((Date.now() - requestMs) / 1e3);
+        this.requestMsByMsg.delete(msgIdStr);
+      }
+    }
+  }
+};
 
 // node_modules/@chainsafe/libp2p-gossipsub/dist/src/utils/buildRawMessage.js
 var SignPrefix = fromString2("libp2p-pubsub:");
@@ -14544,7 +14028,7 @@ async function buildRawMessage(publishConfig, topic, originalData, transformedDa
   switch (publishConfig.type) {
     case PublishConfigType.Signing: {
       const rpcMsg = {
-        from: publishConfig.author.toBytes(),
+        from: publishConfig.author.toMultihash().bytes,
         data: transformedData,
         seqno: randomBytes2(8),
         topic,
@@ -14553,17 +14037,17 @@ async function buildRawMessage(publishConfig, topic, originalData, transformedDa
         key: void 0
         // Exclude key field for signing
       };
-      const bytes2 = concat([SignPrefix, RPC.Message.encode(rpcMsg)]);
+      const bytes2 = concat2([SignPrefix, RPC.Message.encode(rpcMsg)]);
       rpcMsg.signature = await publishConfig.privateKey.sign(bytes2);
       rpcMsg.key = publishConfig.key;
       const msg = {
         type: "signed",
         from: publishConfig.author,
         data: originalData,
-        sequenceNumber: BigInt(`0x${toString2(rpcMsg.seqno, "base16")}`),
+        sequenceNumber: BigInt(`0x${toString2(rpcMsg.seqno ?? new Uint8Array(0), "base16")}`),
         topic,
         signature: rpcMsg.signature,
-        key: rpcMsg.key
+        key: publicKeyFromProtobuf(rpcMsg.key)
       };
       return {
         raw: rpcMsg,
@@ -14614,21 +14098,21 @@ async function validateToRawMessage(signaturePolicy, msg) {
         return { valid: false, error: ValidateError.InvalidPeerId };
       let fromPeerId;
       try {
-        fromPeerId = peerIdFromBytes(msg.from);
+        fromPeerId = peerIdFromMultihash(decode4(msg.from));
       } catch (e) {
         return { valid: false, error: ValidateError.InvalidPeerId };
       }
       let publicKey;
       if (msg.key != null) {
-        publicKey = unmarshalPublicKey(msg.key);
-        if (fromPeerId.publicKey !== void 0 && !equals3(publicKey.bytes, fromPeerId.publicKey)) {
+        publicKey = publicKeyFromProtobuf(msg.key);
+        if (fromPeerId.publicKey !== void 0 && !publicKey.equals(fromPeerId.publicKey)) {
           return { valid: false, error: ValidateError.InvalidPeerId };
         }
       } else {
         if (fromPeerId.publicKey == null) {
           return { valid: false, error: ValidateError.InvalidPeerId };
         }
-        publicKey = unmarshalPublicKey(fromPeerId.publicKey);
+        publicKey = fromPeerId.publicKey;
       }
       const rpcMsgPreSign = {
         from: msg.from,
@@ -14640,7 +14124,7 @@ async function validateToRawMessage(signaturePolicy, msg) {
         key: void 0
         // Exclude key field for signing
       };
-      const bytes2 = concat([SignPrefix, RPC.Message.encode(rpcMsgPreSign)]);
+      const bytes2 = concat2([SignPrefix, RPC.Message.encode(rpcMsgPreSign)]);
       if (!await publicKey.verify(bytes2, msg.signature)) {
         return { valid: false, error: ValidateError.InvalidSignature };
       }
@@ -14653,7 +14137,7 @@ async function validateToRawMessage(signaturePolicy, msg) {
           sequenceNumber: BigInt(`0x${toString2(msg.seqno, "base16")}`),
           topic: msg.topic,
           signature: msg.signature,
-          key: msg.key ?? marshalPublicKey(publicKey)
+          key: msg.key != null ? publicKeyFromProtobuf(msg.key) : publicKey
         }
       };
     }
@@ -14672,7 +14156,8 @@ function createGossipRpc(messages = [], control) {
       graft: control.graft ?? [],
       prune: control.prune ?? [],
       ihave: control.ihave ?? [],
-      iwant: control.iwant ?? []
+      iwant: control.iwant ?? [],
+      idontwant: control.idontwant ?? []
     } : void 0
   };
 }
@@ -14683,7 +14168,8 @@ function ensureControl(rpc) {
       graft: [],
       prune: [],
       ihave: [],
-      iwant: []
+      iwant: [],
+      idontwant: []
     };
   }
   return rpc;
@@ -14715,23 +14201,13 @@ function messageIdToString(msgId2) {
 __name(messageIdToString, "messageIdToString");
 
 // node_modules/@chainsafe/libp2p-gossipsub/dist/src/utils/publishConfig.js
-async function getPublishConfigFromPeerId(signaturePolicy, peerId) {
+function getPublishConfigFromPeerId(signaturePolicy, peerId, privateKey) {
   switch (signaturePolicy) {
     case StrictSign: {
-      if (peerId == null) {
-        throw Error("Must provide PeerId");
-      }
-      if (peerId.privateKey == null) {
-        throw Error("Cannot sign message, no private key present");
-      }
-      if (peerId.publicKey == null) {
-        throw Error("Cannot sign message, no public key present");
-      }
-      const privateKey = await unmarshalPrivateKey2(peerId.privateKey);
       return {
         type: PublishConfigType.Signing,
         author: peerId,
-        key: peerId.publicKey,
+        key: publicKeyToProtobuf(privateKey.publicKey),
         privateKey
       };
     }
@@ -14748,9 +14224,10 @@ __name(getPublishConfigFromPeerId, "getPublishConfigFromPeerId");
 // node_modules/@libp2p/pubsub/dist/src/utils.js
 var msgId = /* @__PURE__ */ __name((key, seqno) => {
   const seqnoBytes = fromString2(seqno.toString(16).padStart(16, "0"), "base16");
-  const msgId2 = new Uint8Array(key.length + seqnoBytes.length);
-  msgId2.set(key, 0);
-  msgId2.set(seqnoBytes, key.length);
+  const keyBytes = publicKeyToProtobuf(key);
+  const msgId2 = new Uint8Array(keyBytes.byteLength + seqnoBytes.length);
+  msgId2.set(keyBytes, 0);
+  msgId2.set(seqnoBytes, keyBytes.byteLength);
   return msgId2;
 }, "msgId");
 
@@ -14761,7 +14238,7 @@ function msgIdFnStrictSign(msg) {
   }
   if (msg.sequenceNumber == null)
     throw Error("missing seqno field");
-  return msgId(msg.from.toBytes(), msg.sequenceNumber);
+  return msgId(msg.from.publicKey ?? msg.key, msg.sequenceNumber);
 }
 __name(msgIdFnStrictSign, "msgIdFnStrictSign");
 async function msgIdFnStrictNoSign(msg) {
@@ -15167,7 +14644,7 @@ function bytes2port(buf) {
 }
 __name(bytes2port, "bytes2port");
 function bytes2str(buf) {
-  const size = decode6(buf);
+  const size = decode5(buf);
   buf = buf.slice(encodingLength2(size));
   if (buf.length !== size) {
     throw new Error("inconsistent lengths");
@@ -15176,7 +14653,7 @@ function bytes2str(buf) {
 }
 __name(bytes2str, "bytes2str");
 function bytes2mb(buf) {
-  const size = decode6(buf);
+  const size = decode5(buf);
   const hash2 = buf.slice(encodingLength2(size));
   if (hash2.length !== size) {
     throw new Error("inconsistent lengths");
@@ -15185,7 +14662,7 @@ function bytes2mb(buf) {
 }
 __name(bytes2mb, "bytes2mb");
 function bytes2mh(buf) {
-  const size = decode6(buf);
+  const size = decode5(buf);
   const address = buf.slice(encodingLength2(size));
   if (address.length !== size) {
     throw new Error("inconsistent lengths");
@@ -15266,7 +14743,7 @@ var SimpleTimeCache = class {
 };
 
 // node_modules/@chainsafe/libp2p-gossipsub/dist/src/index.js
-var multicodec = GossipsubIDv11;
+var multicodec = GossipsubIDv12;
 var GossipStatusCode;
 (function(GossipStatusCode2) {
   GossipStatusCode2[GossipStatusCode2["started"] = 0] = "started";
@@ -15280,7 +14757,7 @@ var GossipSub = class extends TypedEventEmitter {
    * The signature policy to follow by default
    */
   globalSignaturePolicy;
-  multicodecs = [GossipsubIDv11, GossipsubIDv10];
+  multicodecs = [GossipsubIDv12, GossipsubIDv11, GossipsubIDv10];
   publishConfig;
   dataTransform;
   // State
@@ -15384,9 +14861,20 @@ var GossipSub = class extends TypedEventEmitter {
    * Tracks IHAVE/IWANT promises broken by peers
    */
   gossipTracer;
+  /**
+   * Tracks IDONTWANT messages received by peers in the current heartbeat
+   */
+  idontwantCounts = /* @__PURE__ */ new Map();
+  /**
+   * Tracks IDONTWANT messages received by peers and the heartbeat they were received in
+   *
+   * idontwants are stored for `mcacheLength` heartbeats before being pruned,
+   * so this map is bounded by peerCount * idontwantMaxMessages * mcacheLength
+   */
+  idontwants = /* @__PURE__ */ new Map();
   components;
   directPeerInitial = null;
-  static multicodec = GossipsubIDv11;
+  static multicodec = GossipsubIDv12;
   // Options
   opts;
   decodeRpcLimits;
@@ -15394,7 +14882,7 @@ var GossipSub = class extends TypedEventEmitter {
   status = { code: GossipStatusCode.stopped };
   maxInboundStreams;
   maxOutboundStreams;
-  runOnTransientConnection;
+  runOnLimitedConnection;
   allowedTopics;
   heartbeatTimer = null;
   constructor(components, options = {}) {
@@ -15426,6 +14914,8 @@ var GossipSub = class extends TypedEventEmitter {
       opportunisticGraftTicks: GossipsubOpportunisticGraftTicks,
       directConnectTicks: GossipsubDirectConnectTicks,
       gossipFactor: GossipsubGossipFactor,
+      idontwantMinDataSize: GossipsubIdontwantMinDataSize,
+      idontwantMaxMessages: GossipsubIdontwantMaxMessages,
       ...options,
       scoreParams: createPeerScoreParams(options.scoreParams),
       scoreThresholds: createPeerScoreThresholds(options.scoreThresholds)
@@ -15490,7 +14980,7 @@ var GossipSub = class extends TypedEventEmitter {
     });
     this.maxInboundStreams = options.maxInboundStreams;
     this.maxOutboundStreams = options.maxOutboundStreams;
-    this.runOnTransientConnection = options.runOnTransientConnection;
+    this.runOnLimitedConnection = options.runOnLimitedConnection;
     this.allowedTopics = opts.allowedTopics != null ? new Set(opts.allowedTopics) : null;
   }
   [Symbol.toStringTag] = "@chainsafe/libp2p-gossipsub";
@@ -15516,7 +15006,7 @@ var GossipSub = class extends TypedEventEmitter {
       return;
     }
     this.log("starting");
-    this.publishConfig = await getPublishConfigFromPeerId(this.globalSignaturePolicy, this.components.peerId);
+    this.publishConfig = getPublishConfigFromPeerId(this.globalSignaturePolicy, this.components.peerId, this.components.privateKey);
     this.outboundInflightQueue = pushable({ objectMode: true });
     pipe(this.outboundInflightQueue, async (source) => {
       for await (const { peerId, connection } of source) {
@@ -15534,12 +15024,12 @@ var GossipSub = class extends TypedEventEmitter {
     await Promise.all(this.multicodecs.map(async (multicodec2) => registrar.handle(multicodec2, this.onIncomingStream.bind(this), {
       maxInboundStreams: this.maxInboundStreams,
       maxOutboundStreams: this.maxOutboundStreams,
-      runOnTransientConnection: this.runOnTransientConnection
+      runOnLimitedConnection: this.runOnLimitedConnection
     })));
     const topology = {
       onConnect: this.onPeerConnected.bind(this),
       onDisconnect: this.onPeerDisconnected.bind(this),
-      notifyOnTransient: this.runOnTransientConnection
+      notifyOnLimitedConnection: this.runOnLimitedConnection
     };
     const registrarTopologyIds = await Promise.all(this.multicodecs.map(async (multicodec2) => registrar.register(multicodec2, topology)));
     const heartbeatTimeout = setTimeout(this.runHeartbeat, GossipsubHeartbeatInitialDelay);
@@ -15615,6 +15105,8 @@ var GossipSub = class extends TypedEventEmitter {
       this.fastMsgIdCache.clear();
     if (this.directPeerInitial != null)
       clearTimeout(this.directPeerInitial);
+    this.idontwantCounts.clear();
+    this.idontwants.clear();
     this.log("stopped");
   }
   /** FOR DEBUG ONLY - Dump peer stats for all peers. Data is cloned, safe to mutate */
@@ -15664,7 +15156,7 @@ var GossipSub = class extends TypedEventEmitter {
     }
     try {
       const stream = new OutboundStream(await connection.newStream(this.multicodecs, {
-        runOnTransientConnection: this.runOnTransientConnection
+        runOnLimitedConnection: this.runOnLimitedConnection
       }), (e) => {
         this.log.error("outbound pipe error", e);
       }, { maxBufferSize: this.opts.maxOutboundBufferSize });
@@ -15763,6 +15255,8 @@ var GossipSub = class extends TypedEventEmitter {
     this.gossip.delete(id);
     this.control.delete(id);
     this.outbound.delete(id);
+    this.idontwantCounts.delete(id);
+    this.idontwants.delete(id);
     this.score.removePeer(id);
     this.acceptFromWhitelist.delete(id);
   }
@@ -15812,6 +15306,10 @@ var GossipSub = class extends TypedEventEmitter {
                   prune: this.decodeRpcLimits.maxControlMessages,
                   prune$: {
                     peers: this.decodeRpcLimits.maxPeerInfos
+                  },
+                  idontwant: this.decodeRpcLimits.maxControlMessages,
+                  idontwant$: {
+                    messageIDs: this.decodeRpcLimits.maxIdontwantMessageIDs
                   }
                 }
               }
@@ -16011,6 +15509,9 @@ var GossipSub = class extends TypedEventEmitter {
     } else {
       this.seenCache.put(msgIdStr);
     }
+    if ((rpcMsg.data?.length ?? 0) >= this.opts.idontwantMinDataSize) {
+      this.sendIDontWants(msgId2, rpcMsg.topic, propagationSource.toString());
+    }
     const topicValidator = this.topicValidators.get(rpcMsg.topic);
     if (topicValidator != null) {
       let acceptance;
@@ -16053,10 +15554,11 @@ var GossipSub = class extends TypedEventEmitter {
     if (controlMsg === void 0) {
       return;
     }
-    const iwant = controlMsg.ihave != null ? this.handleIHave(id, controlMsg.ihave) : [];
-    const ihave = controlMsg.iwant != null ? this.handleIWant(id, controlMsg.iwant) : [];
-    const prune = controlMsg.graft != null ? await this.handleGraft(id, controlMsg.graft) : [];
-    controlMsg.prune != null && await this.handlePrune(id, controlMsg.prune);
+    const iwant = controlMsg.ihave?.length > 0 ? this.handleIHave(id, controlMsg.ihave) : [];
+    const ihave = controlMsg.iwant?.length > 0 ? this.handleIWant(id, controlMsg.iwant) : [];
+    const prune = controlMsg.graft?.length > 0 ? await this.handleGraft(id, controlMsg.graft) : [];
+    controlMsg.prune?.length > 0 && await this.handlePrune(id, controlMsg.prune);
+    controlMsg.idontwant?.length > 0 && this.handleIdontwant(id, controlMsg.idontwant);
     if (iwant.length === 0 && ihave.length === 0 && prune.length === 0) {
       return;
     }
@@ -16284,6 +15786,34 @@ var GossipSub = class extends TypedEventEmitter {
       this.safeDispatchEvent("gossipsub:prune", { detail: { peerId: id, topic: topicID, direction: "inbound" } });
     }
   }
+  handleIdontwant(id, idontwant) {
+    let idontwantCount = this.idontwantCounts.get(id) ?? 0;
+    if (idontwantCount >= this.opts.idontwantMaxMessages) {
+      return;
+    }
+    const startIdontwantCount = idontwantCount;
+    let idontwants = this.idontwants.get(id);
+    if (idontwants == null) {
+      idontwants = /* @__PURE__ */ new Map();
+      this.idontwants.set(id, idontwants);
+    }
+    let idonthave = 0;
+    out: for (const { messageIDs } of idontwant) {
+      for (const msgId2 of messageIDs) {
+        if (idontwantCount >= this.opts.idontwantMaxMessages) {
+          break out;
+        }
+        idontwantCount++;
+        const msgIdStr = this.msgIdToStrFn(msgId2);
+        idontwants.set(msgIdStr, this.heartbeatTicks);
+        if (!this.mcache.msgs.has(msgIdStr))
+          idonthave++;
+      }
+    }
+    this.idontwantCounts.set(id, idontwantCount);
+    const total = idontwantCount - startIdontwantCount;
+    this.metrics?.onIdontwantRcv(total, idonthave);
+  }
   /**
    * Add standard backoff log for a peer in a topic
    */
@@ -16362,7 +15892,7 @@ var GossipSub = class extends TypedEventEmitter {
       if (pi.peerID == null) {
         return;
       }
-      const peer = peerIdFromBytes(pi.peerID);
+      const peer = peerIdFromMultihash(decode4(pi.peerID));
       const p = peer.toString();
       if (this.peers.has(p)) {
         return;
@@ -16449,7 +15979,7 @@ var GossipSub = class extends TypedEventEmitter {
       this.fanout.delete(topic);
       this.fanoutLastpub.delete(topic);
       fanoutPeers.forEach((id) => {
-        if (!this.direct.has(id) && this.score.score(id) >= 0 && (backoff == null || !backoff.has(id))) {
+        if (!this.direct.has(id) && this.score.score(id) >= 0 && backoff?.has(id) !== true) {
           toAdd.add(id);
         }
       });
@@ -16459,7 +15989,7 @@ var GossipSub = class extends TypedEventEmitter {
       const fanoutCount = toAdd.size;
       const newPeers = this.getRandomGossipPeers(topic, this.opts.D, (id) => (
         // filter direct peers and peers with negative score
-        !toAdd.has(id) && !this.direct.has(id) && this.score.score(id) >= 0 && (backoff == null || !backoff.has(id))
+        !toAdd.has(id) && !this.direct.has(id) && this.score.score(id) >= 0 && backoff?.has(id) !== true
       ));
       newPeers.forEach((peer) => {
         toAdd.add(peer);
@@ -16755,6 +16285,21 @@ var GossipSub = class extends TypedEventEmitter {
     const out = createGossipRpc([], { prune });
     this.sendRpc(id, out);
   }
+  sendIDontWants(msgId2, topic, source) {
+    const ids = this.mesh.get(topic);
+    if (ids == null) {
+      return;
+    }
+    const tosend = new Set(ids);
+    tosend.delete(source);
+    for (const id of tosend) {
+      if (this.streamsOutbound.get(id)?.protocol !== GossipsubIDv12) {
+        tosend.delete(id);
+      }
+    }
+    const idontwantRpc = createGossipRpc([], { idontwant: [{ messageIDs: [msgId2] }] });
+    this.sendRpcInBatch(tosend, idontwantRpc);
+  }
   /**
    * Send an rpc object to a peer
    */
@@ -16950,12 +16495,12 @@ var GossipSub = class extends TypedEventEmitter {
       try {
         peerInfo = await this.components.peerStore.get(id2);
       } catch (err) {
-        if (err.code !== "ERR_NOT_FOUND") {
+        if (err.name !== "NotFoundError") {
           throw err;
         }
       }
       return {
-        peerID: id2.toBytes(),
+        peerID: id2.toMultihash().bytes,
         signedPeerRecord: peerInfo?.peerRecordEnvelope
       };
     }));
@@ -17007,6 +16552,14 @@ var GossipSub = class extends TypedEventEmitter {
     this.metrics?.cacheSize.set({ cache: "iasked" }, this.iasked.size);
     this.iasked.clear();
     this.applyIwantPenalties();
+    this.idontwantCounts.clear();
+    for (const idontwants of this.idontwants.values()) {
+      for (const [msgId2, heartbeatTick] of idontwants) {
+        if (this.heartbeatTicks - heartbeatTick >= this.opts.mcacheLength) {
+          idontwants.delete(msgId2);
+        }
+      }
+    }
     if (this.heartbeatTicks % this.opts.directConnectTicks === 0) {
       await this.directConnect();
     }
@@ -17027,7 +16580,7 @@ var GossipSub = class extends TypedEventEmitter {
           const peerStreams = this.streamsOutbound.get(id);
           if (peerStreams != null && this.multicodecs.includes(peerStreams.protocol) && !peers.has(id) && !this.direct.has(id)) {
             const score = getScore(id);
-            if ((backoff == null || !backoff.has(id)) && score >= 0)
+            if (backoff?.has(id) !== true && score >= 0)
               candidateMeshPeers.add(id);
             if (score >= this.opts.scoreThresholds.gossipThreshold)
               peersToGossip.add(id);
@@ -17253,6 +16806,11 @@ var GossipSub = class extends TypedEventEmitter {
       }
     }
     metrics.cacheSize.set({ cache: "backoff" }, backoffSize);
+    let idontwantsCount = 0;
+    for (const idontwant of this.idontwants.values()) {
+      idontwantsCount += idontwant.size;
+    }
+    metrics.cacheSize.set({ cache: "idontwants" }, idontwantsCount);
     for (const [topicStr, peers] of this.topics) {
       metrics.topicPeersCount.set({ topicStr }, peers.size);
     }
