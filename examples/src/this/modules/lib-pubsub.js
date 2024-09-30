@@ -1897,6 +1897,13 @@ var InvalidPublicKeyError = class extends Error {
     this.name = "InvalidPublicKeyError";
   }
 };
+var InvalidPrivateKeyError = class extends Error {
+  static name = "InvalidPrivateKeyError";
+  constructor(message2 = "Invalid private key") {
+    super(message2);
+    this.name = "InvalidPrivateKeyError";
+  }
+};
 var ConnectionFailedError = class extends Error {
   static name = "ConnectionFailedError";
   constructor(message2 = "Connection failed") {
@@ -4950,10 +4957,36 @@ var x25519 = /* @__PURE__ */ (() => montgomery({
 
 // node_modules/@libp2p/crypto/dist/src/keys/ed25519/index.browser.js
 var PUBLIC_KEY_BYTE_LENGTH = 32;
+var PRIVATE_KEY_BYTE_LENGTH = 64;
+var KEYS_BYTE_LENGTH = 32;
+function generateKey() {
+  const privateKeyRaw = ed25519.utils.randomPrivateKey();
+  const publicKey = ed25519.getPublicKey(privateKeyRaw);
+  const privateKey = concatKeys(privateKeyRaw, publicKey);
+  return {
+    privateKey,
+    publicKey
+  };
+}
+__name(generateKey, "generateKey");
+function hashAndSign(privateKey, msg) {
+  const privateKeyRaw = privateKey.subarray(0, KEYS_BYTE_LENGTH);
+  return ed25519.sign(msg instanceof Uint8Array ? msg : msg.subarray(), privateKeyRaw);
+}
+__name(hashAndSign, "hashAndSign");
 function hashAndVerify(publicKey, sig, msg) {
   return ed25519.verify(sig, msg instanceof Uint8Array ? msg : msg.subarray(), publicKey);
 }
 __name(hashAndVerify, "hashAndVerify");
+function concatKeys(privateKeyRaw, publicKey) {
+  const privateKey = new Uint8Array(PRIVATE_KEY_BYTE_LENGTH);
+  for (let i = 0; i < KEYS_BYTE_LENGTH; i++) {
+    privateKey[i] = privateKeyRaw[i];
+    privateKey[KEYS_BYTE_LENGTH + i] = publicKey[i];
+  }
+  return privateKey;
+}
+__name(concatKeys, "concatKeys");
 
 // node_modules/@libp2p/crypto/dist/src/keys/ed25519/ed25519.js
 var Ed25519PublicKey = class {
@@ -4984,13 +5017,54 @@ var Ed25519PublicKey = class {
     return hashAndVerify(this.raw, sig, data);
   }
 };
+var Ed25519PrivateKey = class {
+  static {
+    __name(this, "Ed25519PrivateKey");
+  }
+  type = "Ed25519";
+  raw;
+  publicKey;
+  // key       - 64 byte Uint8Array containing private key
+  // publicKey - 32 byte Uint8Array containing public key
+  constructor(key, publicKey) {
+    this.raw = ensureEd25519Key(key, PRIVATE_KEY_BYTE_LENGTH);
+    this.publicKey = new Ed25519PublicKey(publicKey);
+  }
+  equals(key) {
+    if (key == null || !(key.raw instanceof Uint8Array)) {
+      return false;
+    }
+    return equals3(this.raw, key.raw);
+  }
+  sign(message2) {
+    return hashAndSign(this.raw, message2);
+  }
+};
 
 // node_modules/@libp2p/crypto/dist/src/keys/ed25519/utils.js
+function unmarshalEd25519PrivateKey(bytes3) {
+  if (bytes3.length > PRIVATE_KEY_BYTE_LENGTH) {
+    bytes3 = ensureEd25519Key(bytes3, PRIVATE_KEY_BYTE_LENGTH + PUBLIC_KEY_BYTE_LENGTH);
+    const privateKeyBytes2 = bytes3.subarray(0, PRIVATE_KEY_BYTE_LENGTH);
+    const publicKeyBytes2 = bytes3.subarray(PRIVATE_KEY_BYTE_LENGTH, bytes3.length);
+    return new Ed25519PrivateKey(privateKeyBytes2, publicKeyBytes2);
+  }
+  bytes3 = ensureEd25519Key(bytes3, PRIVATE_KEY_BYTE_LENGTH);
+  const privateKeyBytes = bytes3.subarray(0, PRIVATE_KEY_BYTE_LENGTH);
+  const publicKeyBytes = bytes3.subarray(PUBLIC_KEY_BYTE_LENGTH);
+  return new Ed25519PrivateKey(privateKeyBytes, publicKeyBytes);
+}
+__name(unmarshalEd25519PrivateKey, "unmarshalEd25519PrivateKey");
 function unmarshalEd25519PublicKey(bytes3) {
   bytes3 = ensureEd25519Key(bytes3, PUBLIC_KEY_BYTE_LENGTH);
   return new Ed25519PublicKey(bytes3);
 }
 __name(unmarshalEd25519PublicKey, "unmarshalEd25519PublicKey");
+async function generateEd25519KeyPair() {
+  const { privateKey, publicKey } = generateKey();
+  return new Ed25519PrivateKey(privateKey, publicKey);
+}
+__name(generateEd25519KeyPair, "generateEd25519KeyPair");
 function ensureEd25519Key(key, length4) {
   key = Uint8Array.from(key ?? []);
   if (key.length !== length4) {
@@ -9886,6 +9960,15 @@ function randomBytes2(length4) {
 __name(randomBytes2, "randomBytes");
 
 // node_modules/@libp2p/crypto/dist/src/errors.js
+var SigningError = class extends Error {
+  static {
+    __name(this, "SigningError");
+  }
+  constructor(message2 = "An error occurred while signing a message") {
+    super(message2);
+    this.name = "SigningError";
+  }
+};
 var VerificationError = class extends Error {
   static {
     __name(this, "VerificationError");
@@ -11291,6 +11374,20 @@ function isPromise(thing) {
 __name(isPromise, "isPromise");
 
 // node_modules/@libp2p/crypto/dist/src/keys/secp256k1/index.browser.js
+function hashAndSign3(key, msg) {
+  const p = sha256.digest(msg instanceof Uint8Array ? msg : msg.subarray());
+  if (isPromise(p)) {
+    return p.then(({ digest: digest2 }) => secp256k1.sign(digest2, key).toDERRawBytes()).catch((err) => {
+      throw new SigningError(String(err));
+    });
+  }
+  try {
+    return secp256k1.sign(p.digest, key).toDERRawBytes();
+  } catch (err) {
+    throw new SigningError(String(err));
+  }
+}
+__name(hashAndSign3, "hashAndSign");
 function hashAndVerify3(key, sig, msg) {
   const p = sha256.digest(msg instanceof Uint8Array ? msg : msg.subarray());
   if (isPromise(p)) {
@@ -11337,17 +11434,56 @@ var Secp256k1PublicKey = class {
     return hashAndVerify3(this._key, sig, data);
   }
 };
+var Secp256k1PrivateKey = class {
+  static {
+    __name(this, "Secp256k1PrivateKey");
+  }
+  type = "secp256k1";
+  raw;
+  publicKey;
+  constructor(key, publicKey) {
+    this.raw = validateSecp256k1PrivateKey(key);
+    this.publicKey = new Secp256k1PublicKey(publicKey ?? computeSecp256k1PublicKey(key));
+  }
+  equals(key) {
+    if (key == null || !(key.raw instanceof Uint8Array)) {
+      return false;
+    }
+    return equals3(this.raw, key.raw);
+  }
+  sign(message2) {
+    return hashAndSign3(this.raw, message2);
+  }
+};
 
 // node_modules/@libp2p/crypto/dist/src/keys/secp256k1/utils.js
+function unmarshalSecp256k1PrivateKey(bytes3) {
+  return new Secp256k1PrivateKey(bytes3);
+}
+__name(unmarshalSecp256k1PrivateKey, "unmarshalSecp256k1PrivateKey");
 function unmarshalSecp256k1PublicKey(bytes3) {
   return new Secp256k1PublicKey(bytes3);
 }
 __name(unmarshalSecp256k1PublicKey, "unmarshalSecp256k1PublicKey");
+async function generateSecp256k1KeyPair() {
+  const privateKeyBytes = generateSecp256k1PrivateKey();
+  return new Secp256k1PrivateKey(privateKeyBytes);
+}
+__name(generateSecp256k1KeyPair, "generateSecp256k1KeyPair");
 function compressSecp256k1PublicKey(key) {
   const point = secp256k1.ProjectivePoint.fromHex(key).toRawBytes(true);
   return point;
 }
 __name(compressSecp256k1PublicKey, "compressSecp256k1PublicKey");
+function validateSecp256k1PrivateKey(key) {
+  try {
+    secp256k1.getPublicKey(key, true);
+    return key;
+  } catch (err) {
+    throw new InvalidPrivateKeyError(String(err));
+  }
+}
+__name(validateSecp256k1PrivateKey, "validateSecp256k1PrivateKey");
 function validateSecp256k1PublicKey(key) {
   try {
     secp256k1.ProjectivePoint.fromHex(key);
@@ -11357,8 +11493,33 @@ function validateSecp256k1PublicKey(key) {
   }
 }
 __name(validateSecp256k1PublicKey, "validateSecp256k1PublicKey");
+function computeSecp256k1PublicKey(privateKey) {
+  try {
+    return secp256k1.getPublicKey(privateKey, true);
+  } catch (err) {
+    throw new InvalidPrivateKeyError(String(err));
+  }
+}
+__name(computeSecp256k1PublicKey, "computeSecp256k1PublicKey");
+function generateSecp256k1PrivateKey() {
+  return secp256k1.utils.randomPrivateKey();
+}
+__name(generateSecp256k1PrivateKey, "generateSecp256k1PrivateKey");
 
 // node_modules/@libp2p/crypto/dist/src/keys/index.js
+async function generateKeyPair(type, bits) {
+  if (type === "Ed25519") {
+    return generateEd25519KeyPair();
+  }
+  if (type === "secp256k1") {
+    return generateSecp256k1KeyPair();
+  }
+  if (type === "RSA") {
+    return generateRSAKeyPair(bits ?? 2048);
+  }
+  throw new UnsupportedKeyTypeError();
+}
+__name(generateKeyPair, "generateKeyPair");
 function publicKeyFromProtobuf(buf) {
   const { Type, Data } = PublicKey.decode(buf);
   const data = Data ?? new Uint8Array();
@@ -11394,6 +11555,38 @@ function publicKeyToProtobuf(key) {
   });
 }
 __name(publicKeyToProtobuf, "publicKeyToProtobuf");
+function privateKeyFromProtobuf(buf) {
+  const decoded = PrivateKey.decode(buf);
+  const data = decoded.Data ?? new Uint8Array();
+  switch (decoded.Type) {
+    case KeyType.RSA:
+      return pkcs1ToRSAPrivateKey(data);
+    case KeyType.Ed25519:
+      return unmarshalEd25519PrivateKey(data);
+    case KeyType.secp256k1:
+      return unmarshalSecp256k1PrivateKey(data);
+    default:
+      throw new UnsupportedKeyTypeError();
+  }
+}
+__name(privateKeyFromProtobuf, "privateKeyFromProtobuf");
+function privateKeyFromRaw(buf) {
+  if (buf.byteLength === 64) {
+    return unmarshalEd25519PrivateKey(buf);
+  } else if (buf.byteLength === 32) {
+    return unmarshalSecp256k1PrivateKey(buf);
+  } else {
+    return pkcs1ToRSAPrivateKey(buf);
+  }
+}
+__name(privateKeyFromRaw, "privateKeyFromRaw");
+function privateKeyToProtobuf(key) {
+  return PrivateKey.encode({
+    Type: KeyType[key.type],
+    Data: key.raw
+  });
+}
+__name(privateKeyToProtobuf, "privateKeyToProtobuf");
 
 // node_modules/@libp2p/peer-id/dist/src/peer-id.js
 var inspect = Symbol.for("nodejs.util.inspect.custom");
@@ -46124,11 +46317,15 @@ export {
   enabled,
   filters_exports as filters,
   fromString2 as fromString,
+  generateKeyPair,
   kadDHT,
   logger2 as logger,
   multiaddr,
   noise,
   ping,
+  privateKeyFromProtobuf,
+  privateKeyFromRaw,
+  privateKeyToProtobuf,
   removePrivateAddressesMapper,
   removePublicAddressesMapper,
   toString2 as toString,

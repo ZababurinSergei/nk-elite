@@ -18,6 +18,7 @@ import {persistentPeerStore} from '@libp2p/peer-store'
 import {pubsubPeerDiscovery} from '@libp2p/pubsub-peer-discovery'
 import {IDBDatastore} from 'datastore-idb'
 import {ping} from '@libp2p/ping'
+import { generateKeyPair } from '@libp2p/crypto/keys'
 import {PUBSUB_PEER_DISCOVERY, proto, protoAudio} from '@newkind/constants'
 import {FaultTolerance} from '@libp2p/interface-transport'
 import {logger} from '@libp2p/logger'
@@ -216,11 +217,13 @@ Object.defineProperties(component.prototype, {
                 peerObject = await objectId.get.peerid.call(this)
                 if(!peerObject.status) {
                     console.error('Небыл найден id')
-                    peerObject.peerId = undefined
                 }
+            } else {
+                peerObject.peerId = await generateKeyPair('Ed25519')
             }
 
             this.libp2p = await createLibp2p({
+                privateKey: peerObject.peerId,
                 peerStore: persistentPeerStore,
                 // datastore: datastore,
                 addresses: {
