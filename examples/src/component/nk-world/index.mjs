@@ -17,9 +17,13 @@ Object.defineProperties(component.prototype, {
             const queryString = window.location.search;
             const urlParams = new URLSearchParams(queryString);
             const isNkWorld = urlParams.has('nkWorld')
-            if (!isNkWorld) {
+            if (isNkWorld) {
+
+            } else {
                 this.classList.add('inactive')
             }
+
+
 
             log('Инициализация компонента: %b', Uint8Array.from([0, 1, 2, 3]))
             // await loader('./src/app/vendor/three.js/three.min.js')
