@@ -667,16 +667,8 @@ void update_scanner (void)
 		y1 += scanner_cy;
 		y2 += scanner_cy;
 
-		printf( "xx1: %d\n", x1 );
-		printf( "yy1: %d\n", y1 );
-		printf( "yy2: %d\n", y2 );
-
 		y1 =  y1 + GFX_FULLVIEW_B_COORD + SCANNER_HEIGHT;
 		y2 = y2 + GFX_FULLVIEW_B_COORD + SCANNER_HEIGHT;
-
-		printf( "_x1: %d\n", x1 );
-		printf( "_y1: %d\n", y1 );
-		printf( "_y2: %d\n", y2 );
 
 		colour = (universe[i].flags & FLG_HOSTILE) ? GFX_COL_YELLOW_5 : GFX_COL_WHITE;
 		switch (universe[i].type) {
@@ -715,8 +707,13 @@ void update_compass (void)
 	if (witchspace) return;
 	if (ship_count[SHIP_CORIOLIS] || ship_count[SHIP_DODEC]) un = 1;
 	dest = unit_vector (&universe[un].location);
+
 	compass_x = compass_centre_x + (dest.x * 16);
 	compass_y = compass_centre_y + (dest.y * -16);
+
+	compass_x += GFX_FULLVIEW_L_COORD + SCANNER_WIDTH;
+	compass_y += GFX_FULLVIEW_B_COORD + SCANNER_HEIGHT;
+
 	if (dest.z < 0) {
 		gfx_draw_sprite (IMG_RED_DOT, compass_x, compass_y);
 	} else {
@@ -890,6 +887,7 @@ void display_condition(void)
   int c = cc[condition];
   if (condition == COND_ALERT && (mcount & 4))
     c = GFX_COL_BLACK;
+
   gfx_draw_filled_circle(condition_x, condition_y, condition_r, c);
 }
 
