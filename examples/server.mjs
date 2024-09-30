@@ -13,10 +13,11 @@ import {identify, identifyPush} from '@libp2p/identify'
 import { webSockets } from '@libp2p/websockets'
 import { createLibp2p } from 'libp2p'
 import { tcp } from '@libp2p/tcp'
+import { privateKeyFromRaw, generateKeyPair, privateKeyToProtobuf, privateKeyFromProtobuf } from '@libp2p/crypto/keys'
 import * as createEd25519PeerId from '@libp2p/peer-id-factory'
 import { webTransport } from '@libp2p/webtransport'
 import fs from "node:fs";
-import { PersistentPeerStore } from '@libp2p/peer-store'
+import { persistentPeerStore } from '@libp2p/peer-store'
 import { MemoryDatastore } from 'datastore-core'
 import {ping} from "@libp2p/ping";
 import { PUBSUB_PEER_DISCOVERY } from './src/this/constants.js'
@@ -27,7 +28,8 @@ import { tls } from '@libp2p/tls'
 // const datastore = new MemoryDatastore()
 let __dirname = process.cwd();
 const buffer = fs.readFileSync(__dirname + '/peerId.proto')
-const peerId =  await createEd25519PeerId.createFromProtobuf(buffer)
+// const peerId =  await createEd25519PeerId.createFromProtobuf(buffer)
+const peerId = privateKeyFromProtobuf(buffer)
 
 dotenv.config();
 
@@ -286,7 +288,6 @@ async function main () {
                 `/ip4/0.0.0.0/tcp/${port}/wss`
             ],
             announce: [
-                `/dns4/${process.env.RENDER_EXTERNAL_HOSTNAME}`,
                 `/dns4/${process.env.RENDER_EXTERNAL_HOSTNAME}/wss`
             ]
         }
@@ -295,20 +296,21 @@ async function main () {
                 `/ip4/0.0.0.0/tcp/${port}/ws`
             ],
             announce: [
-                `/dns4/localhost/tcp/${port}`,
                 `/dns4/localhost/tcp/${port}/ws`
             ]
         }
 
     const node = await createLibp2p({
-        peerId,
+        peerStore: persistentPeerStore,
+        MemoryDatastore: MemoryDatastore,
+        privateKey: peerId,
         addresses: addresses,
         transports: [
             webTransport(),
             webSockets({ server }),
             tcp(),
         ],
-        connectionEncryption: [
+        connectionEncrypters: [
             noise(),
             tls()
         ],
