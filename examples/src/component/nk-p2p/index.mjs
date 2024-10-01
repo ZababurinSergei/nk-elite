@@ -28,6 +28,10 @@ const log = logger('nk-p2p:')
 const name = 'nk-p2p';
 const component = await Component();
 
+const serverPeerId = '12D3KooWH1NPiQaLyw9njJoyKbFu3ncnQQj3tbSWoajVRXohtjEn'
+const port = 4955
+const RENDER_EXTERNAL_HOSTNAME = 'relay-tuem.onrender.com'
+
 Object.defineProperties(component.prototype, {
     isLoad: {
         value: false,
@@ -60,7 +64,7 @@ Object.defineProperties(component.prototype, {
 
                            if(isOne) {
                                connections.push(connection)
-                           } else {http://localhost:4955/?bootstrap&pubsubPeerDiscovery&radio
+                           } else {
                                if(conn.remoteAddr.toString().startsWith(conn.multiplexer)) {
                                    connections.push(connection)
                                }
@@ -102,6 +106,7 @@ Object.defineProperties(component.prototype, {
             }
 
             this.DOM = {
+                buttonNode: () => this.shadowRoot.querySelector('.button-node'),
                 peerId: () => this.shadowRoot.getElementById('peer-id'),
                 dhtMode: () => this.shadowRoot.getElementById('dht-mode'),
                 clearButton: () => this.shadowRoot.getElementById('clear-button'),
@@ -119,9 +124,6 @@ Object.defineProperties(component.prototype, {
 
             this.get.peers = this.get.peers.bind(this)
 
-            const serverPeerId = '12D3KooWAJKSV1yF6XVZRzMnh6YFd5tbXbQQZxwHAMxZXfWyQpm6'
-            const port = 4955
-            const RENDER_EXTERNAL_HOSTNAME = 'relay-tuem.onrender.com'
 
             // const store = new IDBDatastore('/fs', {
             //     prefix: '/universe',
@@ -221,6 +223,8 @@ Object.defineProperties(component.prototype, {
             } else {
                 peerObject.peerId = await generateKeyPair('Ed25519')
             }
+            // peerObject.peerId = await generateKeyPair('Ed25519')
+            console.log('peerObject.peerId', this.dataset.type,  peerObject.peerId)
 
             this.libp2p = await createLibp2p({
                 privateKey: peerObject.peerId,
@@ -239,7 +243,7 @@ Object.defineProperties(component.prototype, {
                     }),
                     webRTC(),
                     circuitRelayTransport({
-                        discoverRelays: 4
+                        discoverRelays: 10
                     })
                 ],
                 peerDiscovery: boot,
@@ -270,12 +274,12 @@ Object.defineProperties(component.prototype, {
                         logPrefix: "libp2p:kad-dht",
                         pingTimeout: 10000,
                         pingConcurrency: 10,
-                        // maxInboundStreams: 32,
-                        // maxOutboundStreams: 64,
-                        maxInboundStreams: 3,
-                        maxOutboundStreams: 6,
+                        maxInboundStreams: 32,
+                        maxOutboundStreams: 64,
+                        // maxInboundStreams: 3,
+                        // maxOutboundStreams: 6,
                         // peerInfoMapper: removePrivateAddressesMapper,
-                        peerInfoMapper: publicAddressesMapper,
+                        // peerInfoMapper: publicAddressesMapper,
                     })
                 },
                 connectionGater: {
@@ -330,6 +334,7 @@ Object.defineProperties(component.prototype, {
                 ? this.libp2p.services.dht.getMode()
                 : 'Disabled'
 
+            this.DOM.buttonNode().innerText = `Node ${this.dataset.type}: ${this.libp2p.peerId.toString()}`
             this.DOM.peerId().innerText = this.libp2p.peerId.toString()
 
             this.libp2p.addEventListener('peer:discovery', async (evt) => {

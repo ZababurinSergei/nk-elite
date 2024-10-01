@@ -15,43 +15,44 @@ export const objectId = {
 
             switch (obectName) {
                 case 'moon':
-                    namespace.PeerId = './peerId_moon.proto'
+                    namespace.peerId = './peerId_moon.proto'
                     namespace.planet = 'moon'
                     namespace.name = 'Луна'
                     break
                 case 'uranus':
-                    namespace.PeerId = './peerId_uranus.proto'
+                    namespace.peerId = './peerId_uranus.proto'
                     namespace.planet = 'uranus'
                     namespace.name = 'Уран'
                     break
                 case 'venus':
-                    namespace.PeerId = './peerId_venus.proto'
+                    namespace.peerId = './peerId_venus.proto'
                     namespace.planet = 'venus'
                     namespace.name = 'Венера'
                     break
                 case 'jupiter':
-                    namespace.PeerId = './peerId_jupiter.proto'
+                    namespace.peerId = './peerId_jupiter.proto'
                     namespace.planet = 'jupiter'
                     namespace.name = 'Юпитер'
                     break
                 case 'earth':
-                    namespace.PeerId = './peerId_planet_earth.proto'
+                    namespace.peerId = './peerId_planet_earth.proto'
                     namespace.planet = 'earth'
                     namespace.name = 'Земля'
                     break
                 default:
-                    namespace.PeerId = './peerId_solar_system.proto'
+                    namespace.peerId = './peerId_solar_system.proto'
                     namespace.planet = 'sun'
                     namespace.name = 'Солнце'
                     break
             }
 
-            namespace.PeerId  = await fetch(new URL(namespace.PeerId, import.meta.url))
+            namespace.peerId  = await fetch(new URL(namespace.peerId, import.meta.url))
 
-            if (namespace.PeerId.status === 200) {
+            if (namespace.peerId.status === 200) {
                 namespace.status = true
-                namespace.PeerId = await namespace.PeerId.blob()
-                namespace.PeerId = await privateKeyFromProtobuf(new Uint8Array(await namespace.PeerId.arrayBuffer()))
+                namespace.peerId = await namespace.peerId.blob()
+                const byteCode = new Uint8Array(await namespace.peerId.arrayBuffer())
+                namespace.peerId = await privateKeyFromProtobuf(byteCode)
             } else {
                 namespace.status = false
             }
