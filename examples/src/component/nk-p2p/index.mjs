@@ -261,7 +261,7 @@ Object.defineProperties(component.prototype, {
                     identifyPush: identifyPush(),
                     pubsub: gossipsub(),
                     dcutr: dcutr(),
-                    ping: ping(),
+                    // ping: ping(),
                     dht: kadDHT({
                         kBucketSize: 4,
                         kBucketSplitThreshold: `kBucketSize`,
@@ -323,11 +323,10 @@ Object.defineProperties(component.prototype, {
             })
 
             const intervalId = setInterval(() => {
-                const ma = multiaddr(isLocalhost
-                    ? `/dns4/localhost/tcp/${port}/ws/p2p/${serverPeerId}`
-                    : `/dns4/${RENDER_EXTERNAL_HOSTNAME}/wss/p2p/${serverPeerId}`)
-
-                this.libp2p.services.ping.ping(ma)
+                // const ma = multiaddr(isLocalhost
+                //     ? `/dns4/localhost/tcp/${port}/ws/p2p/${serverPeerId}`
+                //     : `/dns4/${RENDER_EXTERNAL_HOSTNAME}/wss/p2p/${serverPeerId}`)
+                // this.libp2p.services.ping.ping(ma)
             }, 1000 * 60 * 13)
 
             this.DOM.dhtMode().textContent = isDht
