@@ -56,7 +56,7 @@ Object.defineProperties(component.prototype, {
 
                     const activeConnections = this.libp2p.getConnections(peerId)
                     const isOne = activeConnections.length === 1
-                    console.log('ddddddddd activeConnections dddddddddddddd', activeConnections)
+
                     for (const conn of activeConnections) {
                         const addr = document.createElement('li')
 
@@ -69,18 +69,14 @@ Object.defineProperties(component.prototype, {
                         addr.textContent = conn.remoteAddr.toString()
 
                         if (peerId.toString() !== serverPeerId && this.dataset.type !== 'public' && !this.peerId.public.includes(peerId.toString())) {
-                                if(isOne) {
+                            if(isOne) {
+                                connections.push(connection)
+                            } else {
+                                if(conn.remoteAddr.toString().startsWith(conn.multiplexer)) {
                                     connections.push(connection)
-                                } else {
-                                    if(conn.remoteAddr.toString().startsWith(conn.multiplexer)) {
-                                        connections.push(connection)
-                                    }
                                 }
+                            }
                         }
-                        // if(this.dataset.type === 'private' && this.peerId !== peerId.toString()) {
-                        //     addrList.appendChild(addr)
-                        // }
-                        // console.log('===========!!!! =======',peerId.toString(),  this.peerId)
                     }
 
                     el.appendChild(addrList)
