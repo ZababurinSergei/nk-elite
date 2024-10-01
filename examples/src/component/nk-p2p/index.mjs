@@ -33,6 +33,13 @@ const port = 4955
 const RENDER_EXTERNAL_HOSTNAME = 'relay-tuem.onrender.com'
 
 Object.defineProperties(component.prototype, {
+    peerId: {
+        value: {
+            private: [],
+            public: []
+        },
+        writable: true
+    },
     isLoad: {
         value: false,
         writable: true
@@ -49,6 +56,7 @@ Object.defineProperties(component.prototype, {
 
                     const activeConnections = this.libp2p.getConnections(peerId)
                     const isOne = activeConnections.length === 1
+                    console.log('ddddddddd activeConnections dddddddddddddd', activeConnections)
                     for (const conn of activeConnections) {
                         const addr = document.createElement('li')
 
@@ -60,17 +68,19 @@ Object.defineProperties(component.prototype, {
 
                         addr.textContent = conn.remoteAddr.toString()
 
-                        if (peerId.toString() !== '12D3KooWMkPhKVUYy5DhBe8Gr1YC7MZ1fT5YdrvzyiRXt28Q4A1E') {
-
-                           if(isOne) {
-                               connections.push(connection)
-                           } else {
-                               if(conn.remoteAddr.toString().startsWith(conn.multiplexer)) {
-                                   connections.push(connection)
-                               }
-                           }
+                        if (peerId.toString() !== serverPeerId && this.dataset.type !== 'public' && !this.peerId.public.includes(peerId.toString())) {
+                                if(isOne) {
+                                    connections.push(connection)
+                                } else {
+                                    if(conn.remoteAddr.toString().startsWith(conn.multiplexer)) {
+                                        connections.push(connection)
+                                    }
+                                }
                         }
-                        addrList.appendChild(addr)
+                        // if(this.dataset.type === 'private' && this.peerId !== peerId.toString()) {
+                        //     addrList.appendChild(addr)
+                        // }
+                        // console.log('===========!!!! =======',peerId.toString(),  this.peerId)
                     }
 
                     el.appendChild(addrList)
@@ -124,6 +134,26 @@ Object.defineProperties(component.prototype, {
 
             this.get.peers = this.get.peers.bind(this)
 
+            let peerObject = {
+                PeerId: undefined
+            }
+
+            if(this.dataset.type === 'public') {
+                peerObject = await objectId.get.peerid.call(this)
+                if(!peerObject.status) {
+                    console.error('Небыл найден id')
+                }
+            } else {
+                peerObject.peerId = await generateKeyPair('Ed25519')
+            }
+
+            if(this.dataset.type === 'public') {
+                this.peerId.public.push(peerObject.peerId.publicKey.toString())
+            }
+
+            if(this.dataset.type === 'private') {
+                this.peerId.private.push(peerObject.peerId.publicKey.toString())
+            }
 
             // const store = new IDBDatastore('/fs', {
             //     prefix: '/universe',
@@ -210,21 +240,6 @@ Object.defineProperties(component.prototype, {
                     })
                 ]
             }
-
-            let peerObject = {
-                PeerId: undefined
-            }
-
-            if(this.dataset.type === 'public') {
-                peerObject = await objectId.get.peerid.call(this)
-                if(!peerObject.status) {
-                    console.error('Небыл найден id')
-                }
-            } else {
-                peerObject.peerId = await generateKeyPair('Ed25519')
-            }
-            // peerObject.peerId = await generateKeyPair('Ed25519')
-            console.log('peerObject.peerId', this.dataset.type,  peerObject.peerId)
 
             this.libp2p = await createLibp2p({
                 privateKey: peerObject.peerId,
@@ -348,6 +363,7 @@ Object.defineProperties(component.prototype, {
                 log('connection:open', event.detail.remoteAddr.toString())
 
                 const listPeer = await this.updatePeerList()
+
                 if(this.dataset.type === 'private') {
                     this.task = {
                         id: 'nk-chat_0',
@@ -411,7 +427,7 @@ Object.defineProperties(component.prototype, {
                         return el
                     })
 
-                if(this.dataset.type === 'public') {
+                // if(this.dataset.type === 'private') {
                     this.task = {
                         id: 'nk-menu_0',
                         component: 'nk-menu',
@@ -439,7 +455,7 @@ Object.defineProperties(component.prototype, {
                             }
                         }
                     }
-                }
+                // }
 
 
                 this.DOM.listeningAddressesList().replaceChildren(...multiaddrs)
