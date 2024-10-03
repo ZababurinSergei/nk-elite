@@ -1144,14 +1144,16 @@ void display_break_pattern (void)
 	uint64_t _dt = get_diffticktime( _ct );
 
 	printf( "display_break_pattern: _ct=%lld _dt=%lld\n", _ct, _dt );
+
 	if ( _dt > 4500 ) {
 		current_screen = SCR_FRONT_VIEW;
 		flip_stars();
 
 		if (docked) {
-			check_mission_brief();
-			display_commander_status();
-	//		update_console();
+			current_screen = SCR_CMDR_STATUS;
+			////////////////////////////////////////////////////
+			// disabled for a time
+			// check_mission_brief();
 		}
 
 		_i = 0;
