@@ -1133,6 +1133,10 @@ void display_break_pattern (void)
 	int _count = 20;
 	int _step = GFX_VIEW_X_CENTER / _count;
 
+	//////////////////////////////////////////////////////////////////
+	// Time delay for one frame
+	double time_dalay = 1000.0 / game_fps;
+
 	if ( _step * _i < GFX_VIEW_X_CENTER ) {
 		for ( int i = 3; i < _i; i++ ) gfx_draw_circle (GFX_VIEW_X_CENTER, GFX_VIEW_Y_CENTER, i * _step, GFX_COL_WHITE);
 		_i++;
@@ -1143,7 +1147,8 @@ void display_break_pattern (void)
 
 	uint64_t _dt = get_diffticktime( _ct );
 
-	printf( "display_break_pattern: _ct=%lld _dt=%lld\n", _ct, _dt );
+	///////////////////////////////////////////////////////////////////////////////////////
+	// printf( "display_break_pattern: _ct=%lld _dt=%lld\n", _ct, _dt );
 
 	if ( _dt > 4500 ) {
 		current_screen = SCR_FRONT_VIEW;

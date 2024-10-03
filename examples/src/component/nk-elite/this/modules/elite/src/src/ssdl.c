@@ -453,32 +453,32 @@ uint64_t get_ticktime()
 }
 
 
-uint64_t get_diffticktime( uint64_t _nt )
+uint64_t get_diffticktime( uint64_t _ct )
 {
 	uint64_t _tm = get_ticktime();
-	return (( _tm - _nt ) / 1000);
+	return (( _tm - _ct ) / 1000);
 }
 
 void gfx_update_screen (void)
 {
-	static uint64_t _nt = 0;
+	static uint64_t _ct = 0;
 	static int _fc = 0;
 
 	struct timeval tv;
     gettimeofday( &tv, NULL) ;
     uint64_t _tm = tv.tv_sec * (uint64_t)1000000 + tv.tv_usec;
 
-	if ( _nt != 0 ) {
-		uint64_t _diff = _tm - _nt;
+	if ( _ct != 0 ) {
+		uint64_t _diff = _tm - _ct;
 		if ( _diff > 1000000 ) { 
 			game_fps = _fc;
-			_nt = _tm;
+			_ct = _tm;
 			_fc = 0;
 		} else {
 			_fc = _fc + 1;
 		}
 	} else {
-		_nt = _tm;
+		_ct = _tm;
 	}
 
 	SDL_SetRenderTarget( sdl_ren, NULL );

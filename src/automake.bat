@@ -39,8 +39,8 @@ if "%~1"=="clean" (
 	exit /b 0
 ) 
 
-@echo %CC%: free_queue.c -Llib -I../include -Iinclude -pthread %EMCCFLAGS% -o %JS_WASM_JS_FILE%
-@call %CC% free_queue.c -Llib -I../include -Iinclude -pthread %EMCCFLAGS% -o %JS_WASM_JS_FILE%
+@echo %CC%: free_queue.c -Llib -I../include -Iinclude -lwasm_workers %EMCCFLAGS% -o %JS_WASM_JS_FILE%
+@call %CC% free_queue.c -Llib -I../include -Iinclude -lwasm_workers %EMCCFLAGS% -o %JS_WASM_JS_FILE%
 
 rem @type %JS_FILE_PART% >> %JS_FILE%
 
