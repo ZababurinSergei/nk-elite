@@ -764,13 +764,13 @@ int handle_flight_keys (void)
 		}
 		else
 		{
-			/*
-			if (current_screen != SCR_FRONT_VIEW)
-			{
-				current_screen = SCR_FRONT_VIEW;
-				flip_stars();
+			if (current_screen != SCR_BREAK_PATTERN) {			
+				if (current_screen != SCR_FRONT_VIEW)
+				{
+					current_screen = SCR_FRONT_VIEW;
+					flip_stars();
+				}
 			}
-			*/
 		}
 	}
 
@@ -780,10 +780,12 @@ int handle_flight_keys (void)
 		
 		if (!docked)
 		{
-			if (current_screen != SCR_REAR_VIEW)
-			{
-				current_screen = SCR_REAR_VIEW;
-				flip_stars();
+			if (current_screen != SCR_BREAK_PATTERN) {			
+				if (current_screen != SCR_REAR_VIEW)
+				{
+					current_screen = SCR_REAR_VIEW;
+					flip_stars();
+				}
 			}
 		}
 	}
@@ -793,10 +795,12 @@ int handle_flight_keys (void)
 		find_input = 0;
 		if (!docked)
 		{
-			if (current_screen != SCR_LEFT_VIEW)
-			{
-				current_screen = SCR_LEFT_VIEW;
-				flip_stars();
+			if (current_screen != SCR_BREAK_PATTERN) {			
+				if (current_screen != SCR_LEFT_VIEW)
+				{
+					current_screen = SCR_LEFT_VIEW;
+					flip_stars();
+				}
 			}
 		}
 	}
@@ -812,10 +816,12 @@ int handle_flight_keys (void)
 		}
 		else
 		{
-			if (current_screen != SCR_RIGHT_VIEW)
-			{
-				current_screen = SCR_RIGHT_VIEW;
-				flip_stars();
+			if (current_screen != SCR_BREAK_PATTERN) {			
+				if (current_screen != SCR_RIGHT_VIEW)
+				{
+					current_screen = SCR_RIGHT_VIEW;
+					flip_stars();
+				}
 			}
 		}
 	}
@@ -1128,10 +1134,10 @@ void display_break_pattern (void)
 	int _step = GFX_VIEW_X_CENTER / _count;
 
 	if ( _step * _i < GFX_VIEW_X_CENTER ) {
-		for ( int i = 1; i < _i; i++ ) gfx_draw_circle (GFX_VIEW_X_CENTER, GFX_VIEW_Y_CENTER, i * _step, GFX_COL_WHITE);
+		for ( int i = 3; i < _i; i++ ) gfx_draw_circle (GFX_VIEW_X_CENTER, GFX_VIEW_Y_CENTER, i * _step, GFX_COL_WHITE);
 		_i++;
 	} else {
-		for ( int i = _j + 1; i < _count; i++ ) gfx_draw_circle (GFX_VIEW_X_CENTER, GFX_VIEW_Y_CENTER, i * _step, GFX_COL_WHITE);
+		for ( int i = _j + 3; i < _count; i++ ) gfx_draw_circle (GFX_VIEW_X_CENTER, GFX_VIEW_Y_CENTER, i * _step, GFX_COL_WHITE);
 		_j++;
 	}
 
@@ -1322,8 +1328,6 @@ void secondary_main()
 
 		rolling = 0;
 		climbing = 0;
-
-		printf("current_screen0 = %d\n", current_screen);
 
 		///////////////////////////////////////////////////////////////
 		// Менюхи
