@@ -764,11 +764,13 @@ int handle_flight_keys (void)
 		}
 		else
 		{
+			/*
 			if (current_screen != SCR_FRONT_VIEW)
 			{
 				current_screen = SCR_FRONT_VIEW;
 				flip_stars();
 			}
+			*/
 		}
 	}
 
@@ -1109,6 +1111,9 @@ void load_commander_screen (void)
 
 void display_break_pattern (void)
 {
+	static uint64_t _ct = -1;
+	
+	if ( _ct == -1 ) _ct = get_ticktime();
 
 	// gfx_clear_display();
 
@@ -1116,15 +1121,40 @@ void display_break_pattern (void)
 	
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// for in cirсle...
-	gfx_draw_circle (GFX_VIEW_X_CENTER, GFX_VIEW_Y_CENTER, GFX_VIEW_X_CENTER - GFX_VIEW_X_CENTER, GFX_COL_WHITE);
+	static int _i = 0;
+	static int _j = 0;
 
-	if (docked) {
-		check_mission_brief();
-//		display_commander_status();
-//		update_console();
+	int _count = 20;
+	int _step = GFX_VIEW_X_CENTER / _count;
+
+	if ( _step * _i < GFX_VIEW_X_CENTER ) {
+		for ( int i = 1; i < _i; i++ ) gfx_draw_circle (GFX_VIEW_X_CENTER, GFX_VIEW_Y_CENTER, i * _step, GFX_COL_WHITE);
+		_i++;
 	} else {
-		current_screen = SCR_FRONT_VIEW;
+		for ( int i = _j + 1; i < _count; i++ ) gfx_draw_circle (GFX_VIEW_X_CENTER, GFX_VIEW_Y_CENTER, i * _step, GFX_COL_WHITE);
+		_j++;
 	}
+
+	uint64_t _dt = get_diffticktime( _ct );
+
+	printf( "display_break_pattern: _ct=%lld _dt=%lld\n", _ct, _dt );
+	if ( _dt > 4500 ) {
+		current_screen = SCR_FRONT_VIEW;
+		flip_stars();
+
+		if (docked) {
+			check_mission_brief();
+			display_commander_status();
+	//		update_console();
+		}
+
+		_i = 0;
+		_j = 0;
+		_ct = -1;
+		return;
+	}
+
+
 }
 
 void gfx_display_fps() {
@@ -1293,14 +1323,13 @@ void secondary_main()
 		rolling = 0;
 		climbing = 0;
 
+		printf("current_screen0 = %d\n", current_screen);
+
 		///////////////////////////////////////////////////////////////
 		// Менюхи
 		///////////////////////////////////////////////////////////////
 
-		int hfk = handle_flight_keys ();
-
-		printf( "handle_flight_keys() = %d\n", hfk );
-		printf( "current_screen = %d\n", current_screen );
+		int hfkeys = handle_flight_keys ();
 
 		gfx_set_clip_region (GFX_FULLVIEW_L_COORD, GFX_FULLVIEW_T_COORD, GFX_FULLVIEW_R_COORD, GFX_FULLVIEW_B_COORD);
 		gfx_draw_simplerect (GFX_FULLVIEW_L_COORD, GFX_FULLVIEW_T_COORD, GFX_FULLVIEW_R_COORD, GFX_FULLVIEW_B_COORD, GFX_COL_WHITE);
@@ -1308,27 +1337,27 @@ void secondary_main()
 		gfx_display_fps();
 
 		if ( current_screen == SCR_EQUIP_SHIP ) {
-			equip_ship ( hfk );
+			equip_ship ( hfkeys );
 		} else if ( current_screen == SCR_SHORT_RANGE ) {
-			display_short_range_chart ( hfk );
+			display_short_range_chart ( hfkeys );
 		} else if ( current_screen == SCR_GALACTIC_CHART ) {
-			display_galactic_chart ( hfk );
+			display_galactic_chart ( hfkeys );
 		} else if ( current_screen == SCR_PLANET_DATA ) {
 			display_data_on_planet();
 		} else if ( current_screen == SCR_MARKET_PRICES ) {
-			display_market_prices( hfk );
+			display_market_prices( hfkeys );
 		} else if ( current_screen == SCR_CMDR_STATUS ) {
 			display_commander_status ();
 		} else if ( current_screen == SCR_INVENTORY ) {
 			display_inventory();
 		} else if ( current_screen == SCR_OPTIONS ) {
-			display_options( hfk );
+			display_options( hfkeys );
 		} else if ( current_screen == SCR_QUIT ) {
 			quit_screen();
 		} else if ( current_screen == SCR_RESTART ) {
 			restart_screen();
 		} else if ( current_screen == SCR_SETTINGS ) {
-			game_settings_screen( hfk );
+			game_settings_screen( hfkeys );
 		} else if ( current_screen == SCR_BREAK_PATTERN ) {
 			display_break_pattern();
 		} else if ( current_screen == SCR_GAME_OVER ) {
@@ -1374,7 +1403,8 @@ void secondary_main()
 			///////////////////////////////////////////////////////////////
 			// Полет, вне базы...
 			///////////////////////////////////////////////////////////////
-								
+			if (current_screen == SCR_BREAK_PATTERN) return;
+
 			if ((current_screen == SCR_FRONT_VIEW) || (current_screen == SCR_REAR_VIEW) ||
 				(current_screen == SCR_LEFT_VIEW) || (current_screen == SCR_RIGHT_VIEW) ||
 				(current_screen == SCR_INTRO_ONE) || (current_screen == SCR_INTRO_TWO) ||

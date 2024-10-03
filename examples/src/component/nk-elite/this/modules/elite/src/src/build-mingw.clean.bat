@@ -1,6 +1,6 @@
 @echo Setting environment for using mingw x64 tools.
 
-@set MINGWINSTALLDIR=D:\Program Files (x86)\mingw64
+@set MINGWINSTALLDIR=C:\tools\mingw64\bin
 
 @if exist %MINGWINSTALLDIR% set PATH=%MINGWINSTALLDIR%;%PATH%
 
