@@ -42,7 +42,9 @@ p {
     padding: 0 5px;
     margin: 0;
     font-size: 28px;
-    background: rgba(255, 255, 255, 0.51);
+    background: #9f9ba7;
+    box-sizing: border-box;
+    border: 1px solid black;
 }
 #play-icon {
     margin: 20px 2.5% 10px 2.5%;
