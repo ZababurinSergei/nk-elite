@@ -26,6 +26,7 @@
     },
     "dependencies": {
         "@libp2p/peer-id-factory": "^4.2.4",
+        "lottie-web": "^5.12.2",
         "path-browserify": "^1.0.1",
         "stats-js": "^1.0.1",
         "three": "^0.169.0",

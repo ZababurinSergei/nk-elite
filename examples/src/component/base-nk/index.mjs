@@ -108,16 +108,12 @@ const BaseClass = class extends HTMLElement {
     }
 
     _isOnload = false;
-    controller = {};
     _isBroadcastChannel = false
-    component = (name = 'undefined', uuid = undefined) => (uuid !== undefined ? store[name][uuid] : store[name]);
-
     _broadcastChannel = [{
         self: new BroadcastChannel('broadcast'),
         value: undefined,
         await: undefined
     }];
-
     dialog = {
         error: async function (url, value) {
             dialogInit.call(this, {
@@ -155,97 +151,42 @@ const BaseClass = class extends HTMLElement {
             dialogInit.call(this, {}, 'terminate')
         }
     }
-
     broadcastPublish = function () {
-        this.external;
+        this.execute();
     }
-
     messageerror = function (event) {
         console.log('ddddddddddddddddddddddddddddd BROADCAST messageerror ddddddddddddddddddddddddddddd', event);
     }
-
     set broadcastChannel(value) {
         if (!this._isBroadcastChannel) {
             this._broadcastChannel[0].value = value;
-            if (value.hasOwnProperty('await')) {
-                this._broadcastChannel[0].await = value.await;
-            }
 
             if ('broadcastChannel' in this._broadcastChannel[0].value && 'messageerror' in this._broadcastChannel[0].value) {
                 this._broadcastChannel[0].self.addEventListener('message', this._broadcastChannel[0].value.broadcastChannel);
                 this._broadcastChannel[0].self.addEventListener('messageerror', this._broadcastChannel[0].value.messageerror);
             } else {
-                this._broadcastChannel[0].self.addEventListener('message', this.broadcastPublish);
-                this._broadcastChannel[0].self.addEventListener('messageerror', this.messageerror);
+                this._broadcastChannel[0].self.addEventListener('message', this.broadcastPublish.bind(this));
+                this._broadcastChannel[0].self.addEventListener('messageerror', this.messageerror.bind(this));
             }
 
             this._isBroadcastChannel = true
         }
     }
-
     get broadcastChannel() {
         return this._broadcastChannel[0].value;
     }
-
-    get external() {
-        if (this._broadcastChannel[0].await) {
-            let componentState = {};
-            let errors = [];
-            for (let component of this._broadcastChannel[0].await) {
-                if (store[component]) {
-                    if (!componentState.hasOwnProperty(component)) {
-                        componentState[component] = [];
-                    }
-                    componentState[component] = store[component];
-                } else {
-                    errors.push({
-                        error: 'компонент не найден',
-                        component: component
-                    });
-                }
-            }
-
-            const isError = errors.length !== 0;
-
-            if (!isError) {
-                for (let i = 0; i < this._broadcastChannel[0].await.length; ++i) {
-                    if (this[this._broadcastChannel[0].await[i]] === null) {
-                        const component = this._broadcastChannel[0].await[i];
-                        this[this._broadcastChannel[0].await[i]] = componentState[component][0].self;
-                    }
-                }
-            }
-
-            return true;
-        } else {
-            return {
-                status: true,
-                value: undefined,
-                description: `для компонента нет подключаемых компонентов. Если это требуется добавьте их в массив await
-                       self.broadcastChannel = {
-                          await: ['nk-opfs'],
-                          broadcastChannel: actions.broadcastChannel,
-                          messageerror: actions.messageerror
-                       }`
-            };
-        }
-    }
-
     get config() {
         return config;
     }
-
     set config(value) {
         for (let key in value) {
             config[key] = value[key];
         }
         return true;
     }
-
     get store() {
         return store;
     }
-
     execute = async function () {
         const call = []
         this._task = this._task.filter(item => {
@@ -275,8 +216,7 @@ const BaseClass = class extends HTMLElement {
                                 self: component.self,
                                 detail: item.detail
                             })
-                            // component.observedAttributes = ["open", "disabled"];
-                            // bindOnMessage(component.self, item.detail);
+
                             return false;
                         }
                         return true;
@@ -305,7 +245,6 @@ const BaseClass = class extends HTMLElement {
                                 return false;
                             }
                         }
-
                         return true;
                         break;
                     default:
@@ -322,33 +261,15 @@ const BaseClass = class extends HTMLElement {
     set task(value) {
         this._task.push(Object.assign(value, {
             tagName: this.tagName.toLowerCase(),
-            uuid: this.dataset.uuid
+            uuid: this.dataset.uuid,
+            type: ('type' in value) ? value.type: 'self'
         }));
 
         this.execute().catch(e => console.error(e));
     }
-
     get task() {
         return {
             task: this._task,
-        };
-    }
-
-    get help() {
-        return {
-            task: {
-                id: this.tagName.toLowerCase(),
-                uuid: this.dataset.uuid,
-                component: this._broadcastChannel[0].await,
-                type: ['self', 'main', 'worker'],
-                action: 'default',
-                value: '',
-                message: {
-                    id: '',
-                    type: '',
-                    phase: ''
-                }
-            }
         };
     }
 
@@ -367,11 +288,13 @@ const BaseClass = class extends HTMLElement {
             onload(this)
                 .then(async (self) => {
                     self.dataset.uuid = uuidv();
+
                     if ('connected' in self) {
                         await self.connected()
                     }
 
                     const name = self.tagName.toLowerCase();
+
                     if (!store.hasOwnProperty(name)) {
                         store[name] = []
                     }
@@ -389,7 +312,7 @@ const BaseClass = class extends HTMLElement {
                     });
 
                     if (this._isBroadcastChannel) {
-                        this.external
+                        this.execute()
                     }
                 })
                 .catch(e => console.error('error', e));
