@@ -59,8 +59,11 @@ extern "C" {
 #endif
 
 EMSCRIPTEN_KEEPALIVE
-struct FreeQueue *CreateFreeQueue(size_t length, size_t channel_count) {
+void *CreateFreeQueue(size_t length, size_t channel_count) {
   struct FreeQueue *queue = (struct FreeQueue *)malloc(sizeof(struct FreeQueue));
+
+  printf( "CreateFreeQueue: %p\n", queue );
+
   queue->buffer_length = length + 1;
   queue->channel_count = channel_count;
   queue->state = (atomic_uint *)malloc(2 * sizeof(atomic_uint));
@@ -73,7 +76,7 @@ struct FreeQueue *CreateFreeQueue(size_t length, size_t channel_count) {
       queue->channel_data[i][j] = 0;
     }
   }
-  return queue;
+  return (void*)queue;
 }
 
 EMSCRIPTEN_KEEPALIVE
@@ -90,11 +93,16 @@ void DestroyFreeQueue(struct FreeQueue *queue) {
 EMSCRIPTEN_KEEPALIVE
 bool FreeQueuePush(struct FreeQueue *queue, double **input, size_t block_length) 
 {
+  printf( "FreeQueuePush: %p\n", queue );
   emscripten_lock_init( &lpush );
   if ( queue ) 
   {
     uint32_t current_read = atomic_load(queue->state + READ);
     uint32_t current_write = atomic_load(queue->state + WRITE);
+  
+    printf( "FreeQueuePush: %d\n", current_read );
+    printf( "FreeQueuePush: %d\n", current_write );
+
     if (_getAvailableWrite(queue, current_read, current_write) < block_length) {
       emscripten_lock_release( &lpush );
       return false;

@@ -16,7 +16,7 @@ export class wDApplication
 {
     constructor(CONFIG) 
     {
-	    this.setConfig(CONFIG);
+        this.setConfig(CONFIG);
         this.setShaderBindGroup( null );
         this.setTextureBindGroup( null );
     }
@@ -585,9 +585,12 @@ fn main( @location(0) inFragUV : vec2<f32>, @location(1) inColor : vec4<f32> ) -
             pluginId = pluginId | 1;
         }
     
-        if ( CONFIG.queue.instance != undefined || CONFIG.queue.instance != null ) {
-            let bufferSize = ( ( CONFIG.application.sampleRate < 44100 ) ? 44100 : CONFIG.application.sampleRate ) / 25;
-
+        if ( CONFIG.queue.instance != undefined && CONFIG.queue.instance != null ) 
+        {
+            let bufferSize = ( ( ( CONFIG.application.sampleRate < 44100 ) ? 44100 : CONFIG.application.sampleRate ) ) / 25;
+            
+//            console.log ( CONFIG.queue.instance.printAvailableReadAndWrite() );
+		
             let _b = [2];
             _b[0] = new Float64Array(bufferSize);
             _b[1] = new Float64Array(bufferSize);
@@ -600,8 +603,8 @@ fn main( @location(0) inFragUV : vec2<f32>, @location(1) inColor : vec4<f32> ) -
                     CONFIG.application.renderBuffer[i * 2 + 0] = _b[0][i];
                     CONFIG.application.renderBuffer[i * 2 + 1] = _b[1][i];
                 }
-            }
-            //console.debug( "draw: queue.pull [ " + ( ( r == true ) ? "true" : "false" ) + " ]" );
+            } 
+            console.log( "draw: queue.pull [ " + ( ( rc == true ) ? "true" : "false" ) + " ]" );            
         }
  
         /////////////////////////////////////////////////////////////////////////////////////////////////

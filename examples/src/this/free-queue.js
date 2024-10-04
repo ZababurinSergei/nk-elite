@@ -121,6 +121,7 @@ class FreeQueue {
   push(input, blockLength) {
     const currentRead = Atomics.load(this.states, this.States.READ);
     const currentWrite = Atomics.load(this.states, this.States.WRITE);
+    
     if (this._getAvailableWrite(currentRead, currentWrite) < blockLength) {
       return false;
     }
@@ -157,6 +158,14 @@ class FreeQueue {
   pull(output, blockLength) {
     const currentRead = Atomics.load(this.states, this.States.READ);
     const currentWrite = Atomics.load(this.states, this.States.WRITE);
+	
+    console.log( "currentRead: " + currentRead );
+    console.log( "currentWrite: " + currentWrite );
+
+    console.log( "getAvailableRead: " + this._getAvailableRead(currentRead, currentWrite) );
+    console.log( "blockLength: " + blockLength );
+
+
     if (this._getAvailableRead(currentRead, currentWrite) < blockLength) {
       return false;
     }

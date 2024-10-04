@@ -1,6 +1,9 @@
-import {initFreeQueue, FreeQueue} from "../../../../../this/queue.mjs"
+import initFreeQueue from "../../../../../this/free-queue/free-queue.asm.js"
+import FreeQueue from "../../../../../this/queue.mjs"
+
 import Application from "./oscilloscope/index.mjs";
 import { logger } from '@libp2p/logger'
+
 const log = logger('LFreeQueue')
 const newAudio = async function (CONFIG) {
     try {
@@ -18,19 +21,20 @@ const newAudio = async function (CONFIG) {
                 }
             }
 
-            CONFIG.stream.song.crossOrigin = 'anonymous';
+            CONFIG.stream.song.crossOrigin = "anonymous";
             CONFIG.stream.song.addEventListener("canplay", async (event) => {
                 await CONFIG.audio.ctx.resume();
                 await CONFIG.stream.song.play();
-                CONFIG.html.button.start.textContent = 'Stop Audio';
+                CONFIG.html.button.start.textContent = "Stop Audio";
                 return true;
             }, { once: true });
+
             await CONFIG.stream.source.connect(CONFIG.audio.ctx.destination);
             await CONFIG.stream.source.connect(CONFIG.audio.node);
             CONFIG.audio.init = false;
         }
     } catch (e) {
-        CONFIG.html.button.start.textContent = 'Stop Audio';
+        CONFIG.html.button.start.textContent = "Stop Audio";
         return true;
     }
 }
@@ -38,15 +42,19 @@ const newAudio = async function (CONFIG) {
 const ctx = async (CONFIG) => {
     if (CONFIG.audio.ctx == undefined || CONFIG.audio.ctx == null) {
         CONFIG.audio.ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const urlProcessor = new URL('./radio-processor.mjs', import.meta.url)
-        console.log('urlProcessor', urlProcessor.pathname)
+        const urlProcessor = new URL("./radio-processor.mjs", import.meta.url)
+        //////////////////////////////////////////////////////////////////////////////////////////////
+        // console.log("urlProcessor", urlProcessor.pathname)
+        //////////////////////////////////////////////////////////////////////////////////////////////
         await CONFIG.audio.ctx.audioWorklet.addModule(urlProcessor.pathname);
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////
     // CONFIG.audio.oscillatorNode = new OscillatorNode(CONFIG.audio.ctx);
     // Create an atomic state for synchronization between Worker and AudioWorklet.
+    //////////////////////////////////////////////////////////////////////////////////////////////
 
-    CONFIG.audio.node = new AudioWorkletNode(CONFIG.audio.ctx, 'radio-processor', {
+    CONFIG.audio.node = new AudioWorkletNode(CONFIG.audio.ctx, "radio-processor", {
         processorOptions: {
             pointer: CONFIG.queue.pointer,
             instance: CONFIG.queue.instance
@@ -88,7 +96,7 @@ const freeQueueInit = (CONFIG) => {
     globalThis["LFreeQueue"] = {
         setStatus: function (e) {
             if (e !== "") {
-                log(e)
+                console.log(e)
             };
         }
     };
@@ -125,6 +133,7 @@ const freeQueueInit = (CONFIG) => {
     initFreeQueue(globalThis["LFreeQueue"]).then( async (module) => {
         globalThis["LFreeQueue"].setStatus("initWasmFreeQueue completed...");
 
+/*
         globalThis["LFreeQueue"].Store = async function( _key, _value ) {
             let _convert = "";
             
@@ -138,6 +147,8 @@ const freeQueueInit = (CONFIG) => {
         globalThis["LFreeQueue"].Load = async function( _key ) {
             return await globalThis["LFreeQueue"].ccall( "Load", "string", [ "string" ], [ _key ], { async: true } );
         }
+*/
+
     });
 
 }
@@ -230,10 +241,10 @@ export default async () => {
                         return
                     }
 
-                    CONFIG.html.button.start.classList.add('disabled')
+                    CONFIG.html.button.start.classList.add("disabled")
 
                     const timeId = setTimeout(() => {
-                        CONFIG.html.button.start.classList.remove('disabled')
+                        CONFIG.html.button.start.classList.remove("disabled")
                         clearTimeout(timeId)
                     }, 3000)
 
