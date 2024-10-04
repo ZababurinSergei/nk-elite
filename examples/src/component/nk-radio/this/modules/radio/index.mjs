@@ -2,7 +2,7 @@ import initFreeQueue from "../../free-queue/free-queue.asm.js";
 import FreeQueue from "../../free-queue/free-queue.js";
 
 import Application from "./oscilloscope/index.mjs";
-import { logger } from '@libp2p/logger';
+import { logger } from "@libp2p/logger";
 
 const log = logger('LFreeQueue');
 
@@ -23,12 +23,12 @@ const newAudio = async function (CONFIG) {
             }
 
             CONFIG.stream.song.crossOrigin = "anonymous";
-            CONFIG.stream.song.addEventListener("canplay", async (event) => {
+            CONFIG.stream.song.addEventListener( "canplay", async (event) => {
                 await CONFIG.audio.ctx.resume();
                 await CONFIG.stream.song.play();
                 CONFIG.html.button.start.textContent = "Stop Audio";
                 return true;
-            }, { once: true });
+            }, { once: true } );
 
             await CONFIG.stream.source.connect(CONFIG.audio.ctx.destination);
             await CONFIG.stream.source.connect(CONFIG.audio.node);
@@ -74,7 +74,6 @@ const ctx = async (CONFIG) => {
     // })
 
     CONFIG.audio.node.connect(CONFIG.audio.ctx.destination);
-
     CONFIG.audio.ctx.suspend();
 
 //    CONFIG.audio.analyser =  CONFIG.audio.ctx.createAnalyser()
@@ -112,10 +111,10 @@ const freeQueueInit = (CONFIG) => {
 
     initFreeQueue(globalThis["LFreeQueue"]).then( async (module) => {
 
-        const GetFreeQueuePointers = globalThis["LFreeQueue"].cwrap('GetFreeQueuePointers', 'number', ['number', 'string']);
-        const PrintQueueInfo = globalThis["LFreeQueue"].cwrap('PrintQueueInfo', '', ['number']);
-        const CreateFreeQueue = globalThis["LFreeQueue"].cwrap('CreateFreeQueue', 'number', ['number', 'number']);
-        const PrintQueueAddresses = globalThis["LFreeQueue"].cwrap('PrintQueueAddresses', '', ['number']);
+        const GetFreeQueuePointers = module.cwrap('GetFreeQueuePointers', 'number', ['number', 'string']);
+        const PrintQueueInfo = module.cwrap('PrintQueueInfo', '', ['number']);
+        const CreateFreeQueue = module.cwrap('CreateFreeQueue', 'number', ['number', 'number']);
+        const PrintQueueAddresses = module.cwrap('PrintQueueAddresses', '', ['number']);
 
         CONFIG.queue.pointer = CreateFreeQueue( 1754 * 50, 2 );
         const bufferLengthPtr = GetFreeQueuePointers(CONFIG.queue.pointer, "buffer_length");
@@ -124,7 +123,7 @@ const freeQueueInit = (CONFIG) => {
         const channelDataPtr = GetFreeQueuePointers(CONFIG.queue.pointer, "channel_data");
 
         const pointers = new Object();
-        pointers.memory = globalThis["LFreeQueue"].HEAPU8;
+        pointers.memory = module.HEAPU8;
         pointers.bufferLengthPointer = bufferLengthPtr;
         pointers.channelCountPointer = channelCountPtr;
         pointers.statePointer = statePtr;
@@ -133,7 +132,8 @@ const freeQueueInit = (CONFIG) => {
         CONFIG.queue.instance = FreeQueue.fromPointers(pointers);
         if (CONFIG.queue.instance != undefined) CONFIG.queue.instance.printAvailableReadAndWrite();
 
-        globalThis["LFreeQueue"].setStatus("initWasmFreeQueue completed...");
+        module.setStatus("initWasmFreeQueue completed...");
+
     });
 
 }
