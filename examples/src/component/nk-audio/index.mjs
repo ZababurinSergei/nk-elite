@@ -89,8 +89,10 @@ Object.defineProperties(component.prototype, {
             }
 
             const displayBufferedAmount = () => {
-                const bufferedAmount = Math.floor(audio.buffered.end(audio.buffered.length - 1));
-                audioPlayerContainer.style.setProperty('--buffered-width', `${(bufferedAmount / seekSlider.max) * 100}%`);
+                if(audio.buffered.length > 0) {
+                    const bufferedAmount = Math.floor(audio.buffered.end(audio.buffered.length - 1));
+                    audioPlayerContainer.style.setProperty('--buffered-width', `${(bufferedAmount / seekSlider.max) * 100}%`);
+                }
             }
 
             if (audio.readyState > 0) {
@@ -161,12 +163,12 @@ Object.defineProperties(component.prototype, {
                     artist: 'Anitek',
                     album: 'MainStay',
                     artwork: [
-                        { src: 'https://assets.codepen.io/4358584/1.300.jpg', sizes: '96x96', type: 'image/png' },
-                        { src: 'https://assets.codepen.io/4358584/1.300.jpg', sizes: '128x128', type: 'image/png' },
-                        { src: 'https://assets.codepen.io/4358584/1.300.jpg', sizes: '192x192', type: 'image/png' },
-                        { src: 'https://assets.codepen.io/4358584/1.300.jpg', sizes: '256x256', type: 'image/png' },
-                        { src: 'https://assets.codepen.io/4358584/1.300.jpg', sizes: '384x384', type: 'image/png' },
-                        { src: 'https://assets.codepen.io/4358584/1.300.jpg', sizes: '512x512', type: 'image/png' }
+                        { src: './component/nk-audio/img.png', sizes: '96x96', type: 'image/png' },
+                        { src: './component/nk-audio/img.png', sizes: '128x128', type: 'image/png' },
+                        { src: './component/nk-audio/img.png', sizes: '192x192', type: 'image/png' },
+                        { src: './component/nk-audio/img.png', sizes: '256x256', type: 'image/png' },
+                        { src: './component/nk-audio/img.png', sizes: '384x384', type: 'image/png' },
+                        { src: './component/nk-audio/img.png', sizes: '512x512', type: 'image/png' }
                     ]
                 });
                 navigator.mediaSession.setActionHandler('play', () => {
