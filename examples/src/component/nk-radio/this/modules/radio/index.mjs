@@ -1,10 +1,11 @@
-import initFreeQueue from "../../../../../this/free-queue/free-queue.asm.js"
-import FreeQueue from "../../../../../this/queue.mjs"
+import initFreeQueue from "../../free-queue/free-queue.asm.js";
+import FreeQueue from "../../free-queue/free-queue.js";
 
 import Application from "./oscilloscope/index.mjs";
-import { logger } from '@libp2p/logger'
+import { logger } from '@libp2p/logger';
 
-const log = logger('LFreeQueue')
+const log = logger('LFreeQueue');
+
 const newAudio = async function (CONFIG) {
     try {
         if (CONFIG.audio.init == false) {
@@ -107,6 +108,9 @@ const freeQueueInit = (CONFIG) => {
         // FreeQueue initialization
         ///////////////////////////////////////////////////////////////////////////////////////
         //globalThis["LFreeQueue"].callMain("");
+    }
+
+    initFreeQueue(globalThis["LFreeQueue"]).then( async (module) => {
 
         const GetFreeQueuePointers = globalThis["LFreeQueue"].cwrap('GetFreeQueuePointers', 'number', ['number', 'string']);
         const PrintQueueInfo = globalThis["LFreeQueue"].cwrap('PrintQueueInfo', '', ['number']);
@@ -128,27 +132,8 @@ const freeQueueInit = (CONFIG) => {
 
         CONFIG.queue.instance = FreeQueue.fromPointers(pointers);
         if (CONFIG.queue.instance != undefined) CONFIG.queue.instance.printAvailableReadAndWrite();
-    }
 
-    initFreeQueue(globalThis["LFreeQueue"]).then( async (module) => {
         globalThis["LFreeQueue"].setStatus("initWasmFreeQueue completed...");
-
-/*
-        globalThis["LFreeQueue"].Store = async function( _key, _value ) {
-            let _convert = "";
-            
-            if ( typeof _value === "string" ) _convert = _value;
-            else if ( typeof _value === "number" ) _convert = _value.toString();
-            else if ( typeof _value === "boolean" ) _convert = (_value == true ) ? "true" : "false";
-
-            await globalThis["LFreeQueue"].ccall( "Store", "", [ "string", "string" ], [ _key, _convert ], { async: true } );
-        }
-
-        globalThis["LFreeQueue"].Load = async function( _key ) {
-            return await globalThis["LFreeQueue"].ccall( "Load", "string", [ "string" ], [ _key ], { async: true } );
-        }
-*/
-
     });
 
 }

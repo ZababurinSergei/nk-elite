@@ -8,6 +8,7 @@ import { wDLabel } from './label.mjs';
 import { wDImage } from './image.mjs';
 import { wDGoniometer } from './goniometer.mjs';
 
+
 // import vertexShaderWgslCode from 'shaders/shader.vert.wgsl'
 // import fragmentShaderWgslCode from 'shaders/shader.frag.wgsl'
 // import computeShaderWgslCode from 'shaders/blur.compute.wgsl'
@@ -589,8 +590,6 @@ fn main( @location(0) inFragUV : vec2<f32>, @location(1) inColor : vec4<f32> ) -
         {
             let bufferSize = ( ( ( CONFIG.application.sampleRate < 44100 ) ? 44100 : CONFIG.application.sampleRate ) ) / 25;
             
-//            console.log ( CONFIG.queue.instance.printAvailableReadAndWrite() );
-		
             let _b = [2];
             _b[0] = new Float64Array(bufferSize);
             _b[1] = new Float64Array(bufferSize);
@@ -604,7 +603,7 @@ fn main( @location(0) inFragUV : vec2<f32>, @location(1) inColor : vec4<f32> ) -
                     CONFIG.application.renderBuffer[i * 2 + 1] = _b[1][i];
                 }
             } 
-            console.log( "draw: queue.pull [ " + ( ( rc == true ) ? "true" : "false" ) + " ]" );            
+//            console.log( "draw: queue.pull [ " + ( ( rc == true ) ? "true" : "false" ) + " ]" );            
         }
  
         /////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,2 +1,2 @@
-import FreeQueue from "./free-queue.js";
-export default FreeQueue;
+import FreeQueue from "./free-queue.js"
+export { FreeQueue }

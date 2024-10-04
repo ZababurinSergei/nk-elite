@@ -1,4 +1,4 @@
-import { FreeQueue } from "../../../../../this/queue.mjs";
+import FreeQueue from "../../free-queue/free-queue.js";
 
 class WorkletBasicProcessor extends AudioWorkletProcessor {
 	constructor(options) {
