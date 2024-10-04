@@ -491,7 +491,7 @@ void gfx_update_screen (void)
 	SDL_RenderClear( sdl_ren );
 	
     #ifdef __EMSCRIPTEN__
-        emscripten_sleep(speed_cap);
+        // emscripten_sleep(speed_cap);
     #else
 	    SDL_Delay(speed_cap);
     #endif

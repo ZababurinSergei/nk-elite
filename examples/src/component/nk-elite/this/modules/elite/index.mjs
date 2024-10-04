@@ -31,7 +31,7 @@ const eliteTGInit = (CONFIG) => {
         }
     };
     globalThis["LEliteTG"].onRuntimeInitialized = function () {
-        globalThis["LEliteTG"].callMain("");
+        globalThis["LEliteTG"].callMain();
         globalThis["LEliteTG"].setStatus("onRuntimeInitialized");
     };
 
