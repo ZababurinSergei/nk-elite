@@ -1,9 +1,11 @@
 import initFreeQueue from "../../free-queue/free-queue.asm.js";
 import FreeQueue from "../../free-queue/free-queue.js";
-
+import { getConstants } from '@newkind/constants'
 import Application from "./oscilloscope/index.mjs";
 import { logger } from "@libp2p/logger";
-
+const constants = getConstants()
+console.log('constants', constants)
+debugger
 const log = logger('LFreeQueue');
 
 const newAudio = async function (CONFIG) {
@@ -50,11 +52,6 @@ const ctx = async (CONFIG) => {
         await CONFIG.audio.ctx.audioWorklet.addModule(urlProcessor.pathname);
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////
-    // CONFIG.audio.oscillatorNode = new OscillatorNode(CONFIG.audio.ctx);
-    // Create an atomic state for synchronization between Worker and AudioWorklet.
-    //////////////////////////////////////////////////////////////////////////////////////////////
-
     CONFIG.audio.node = new AudioWorkletNode(CONFIG.audio.ctx, "radio-processor", {
         processorOptions: {
             pointer: CONFIG.queue.pointer,
@@ -67,11 +64,6 @@ const ctx = async (CONFIG) => {
         channelCountMode: "max",
         channelInterpretation: "speakers"
     });
-
-    // CONFIG.audio.node.connect((...arg)=> {
-    //     console.log('ddddddddddddd', arg)
-    //     debugger
-    // })
 
     CONFIG.audio.node.connect(CONFIG.audio.ctx.destination);
     CONFIG.audio.ctx.suspend();
