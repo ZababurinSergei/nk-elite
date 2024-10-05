@@ -5,6 +5,18 @@ const name = 'nk-radio';
 const component = await Component();
 
 Object.defineProperties(component.prototype, {
+    inputQueue: {
+        value: null,
+        writable: true
+    },
+    outputQueue: {
+        value: null,
+        writable: true
+    },
+    atomicState: {
+      value: null,
+      writable: true
+    },
     connected: {
         value: async function(property) {
             this.broadcastChannel = {
@@ -20,12 +32,6 @@ Object.defineProperties(component.prototype, {
     disconnected: {
         value: async function () {
             return true
-        },
-        writable: false
-    },
-    onMessage: {
-        value: async function(self, detail) {
-
         },
         writable: false
     }

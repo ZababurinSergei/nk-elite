@@ -4,8 +4,7 @@ import { getConstants } from '@newkind/constants'
 import Application from "./oscilloscope/index.mjs";
 import { logger } from "@libp2p/logger";
 const constants = getConstants()
-console.log('constants', constants)
-debugger
+
 const log = logger('LFreeQueue');
 
 const newAudio = async function (CONFIG) {
@@ -83,7 +82,16 @@ const ctx = async (CONFIG) => {
     return CONFIG.audio.ctx
 }
 
-const freeQueueInit = (CONFIG) => {
+const freeQueueInit = function (CONFIG){
+    // Подключаю воркер
+    const urlWorker = (new URL('./worker.sync.js', import.meta.url)).pathname
+    let workerName = 'nk-radio'
+
+    // Поставь сюда подключение
+    this.inputQueue = {}//new FreeQueue(QUEUE_SIZE, 2);
+    this.outputQueue = {}//new FreeQueue(QUEUE_SIZE, 2);
+    this.atomicState = {}//new Int32Array(new SharedArrayBuffer(2 * Int32Array.BYTES_PER_ELEMENT));
+
 
     globalThis["LFreeQueue"] = {
         setStatus: function (e) {
@@ -131,7 +139,7 @@ const freeQueueInit = (CONFIG) => {
 }
 
 const componentInit = (self, CONFIG) => {
-    freeQueueInit(CONFIG);
+    freeQueueInit.call(self, CONFIG);
 
     CONFIG.html.scope.canvas = self.shadowRoot.querySelector("#gfx")
     CONFIG.html.button.start = self.shadowRoot.querySelector("#start");
