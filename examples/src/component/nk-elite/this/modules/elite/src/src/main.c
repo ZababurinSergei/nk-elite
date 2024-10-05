@@ -1136,6 +1136,7 @@ void display_break_pattern (void)
 	//////////////////////////////////////////////////////////////////
 	// Time delay for one frame
 	double time_dalay = 1000.0 / game_fps;
+	
 
 	if ( _step * _i < GFX_VIEW_X_CENTER ) {
 		for ( int i = 3; i < _i; i++ ) gfx_draw_circle (GFX_VIEW_X_CENTER, GFX_VIEW_Y_CENTER, i * _step, GFX_COL_WHITE);

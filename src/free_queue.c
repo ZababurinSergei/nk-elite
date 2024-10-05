@@ -1,5 +1,5 @@
 #include <emscripten.h>
-// #include <emscripten/wasm_worker.h>
+#include <emscripten/wasm_worker.h>
 #include <stdatomic.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -8,8 +8,8 @@
 #include <string.h>
 #include <unistd.h> 
 
-// emscripten_lock_t lpull = EMSCRIPTEN_LOCK_T_STATIC_INITIALIZER;
-// emscripten_lock_t lpush = EMSCRIPTEN_LOCK_T_STATIC_INITIALIZER;
+emscripten_lock_t lpull = EMSCRIPTEN_LOCK_T_STATIC_INITIALIZER;
+emscripten_lock_t lpush = EMSCRIPTEN_LOCK_T_STATIC_INITIALIZER;
 
 struct FreeQueue {
   size_t buffer_length;
@@ -61,9 +61,6 @@ extern "C" {
 EMSCRIPTEN_KEEPALIVE
 void *CreateFreeQueue(size_t length, size_t channel_count) {
   struct FreeQueue *queue = (struct FreeQueue *)malloc(sizeof(struct FreeQueue));
-
-//  printf( "CreateFreeQueue: %p\n", queue );
-
   queue->buffer_length = length + 1;
   queue->channel_count = channel_count;
   queue->state = (atomic_uint *)malloc(2 * sizeof(atomic_uint));
@@ -93,14 +90,14 @@ void DestroyFreeQueue(struct FreeQueue *queue) {
 EMSCRIPTEN_KEEPALIVE
 bool FreeQueuePush(struct FreeQueue *queue, double **input, size_t block_length) 
 {
-//  emscripten_lock_init( &lpush );
+  emscripten_lock_init( &lpush );
   if ( queue ) 
   {
     uint32_t current_read = atomic_load(queue->state + READ);
     uint32_t current_write = atomic_load(queue->state + WRITE);
   
     if (_getAvailableWrite(queue, current_read, current_write) < block_length) {
-//      emscripten_lock_release( &lpush );
+      emscripten_lock_release( &lpush );
       return false;
     }
     for (uint32_t i = 0; i < block_length; i++) {
@@ -111,22 +108,22 @@ bool FreeQueuePush(struct FreeQueue *queue, double **input, size_t block_length)
     }
     uint32_t next_write = (current_write + block_length) % queue->buffer_length;
     atomic_store(queue->state + WRITE, next_write);
-//    emscripten_lock_release( &lpush );
+    emscripten_lock_release( &lpush );
     return true;
   }
-//  emscripten_lock_release( &lpush );
+  emscripten_lock_release( &lpush );
   return false;
 }
 
 EMSCRIPTEN_KEEPALIVE
 bool FreeQueuePull(struct FreeQueue *queue, double **output, size_t block_length) 
 {
-//  emscripten_lock_init( &lpull );
+  emscripten_lock_init( &lpull );
   if ( queue ) {
     uint32_t current_read = atomic_load(queue->state + READ);
     uint32_t current_write = atomic_load(queue->state + WRITE);
     if (_getAvailableRead(queue, current_read, current_write) < block_length) {
-//      emscripten_lock_release( &lpull );
+      emscripten_lock_release( &lpull );
       return false;
     }
     for (uint32_t i = 0; i < block_length; i++) {
@@ -137,10 +134,10 @@ bool FreeQueuePull(struct FreeQueue *queue, double **output, size_t block_length
     }
     uint32_t nextRead = (current_read + block_length) % queue->buffer_length;
     atomic_store(queue->state + READ, nextRead);
-//    emscripten_lock_release( &lpull );
+    emscripten_lock_release( &lpull );
     return true;
   }
-//  emscripten_lock_release( &lpull );
+  emscripten_lock_release( &lpull );
   return false;
 }
 

@@ -29,8 +29,6 @@ void update_screen (void);
 
 void gfx_display_fps(void);
 
-
-
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 EMSCRIPTEN_KEEPALIVE

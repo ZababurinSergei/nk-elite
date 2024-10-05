@@ -447,9 +447,9 @@ void gfx_graphics_shutdown (void)
 
 uint64_t get_ticktime()
 {
-	struct timeval tv;
-    gettimeofday( &tv, NULL) ;
-    return tv.tv_sec * (uint64_t)1000000 + tv.tv_usec;
+        struct timeval tv;
+        gettimeofday( &tv, NULL) ;
+        return tv.tv_sec * (uint64_t)1000000 + tv.tv_usec;
 }
 
 
@@ -461,24 +461,28 @@ uint64_t get_diffticktime( uint64_t _ct )
 
 void gfx_update_screen (void)
 {
-	static uint64_t _ct = 0;
-	static int _fc = 0;
+	static uint64_t _tc = 0;
+	static uint64_t _lc = 0;
+
+	static int _fpscount = 0;
 
 	struct timeval tv;
-    gettimeofday( &tv, NULL) ;
-    uint64_t _tm = tv.tv_sec * (uint64_t)1000000 + tv.tv_usec;
 
-	if ( _ct != 0 ) {
-		uint64_t _diff = _tm - _ct;
+        gettimeofday( &tv, NULL);
+        uint64_t _tm = tv.tv_sec * (uint64_t)1000000 + tv.tv_usec;
+
+	uint64_t _diff = 0;
+	if ( _tc != 0 ) {
+		_diff = _tm - _tc;
 		if ( _diff > 1000000 ) { 
-			game_fps = _fc;
-			_ct = _tm;
-			_fc = 0;
+			game_fps = _fpscount;
+			_tc = _tm;
+			_fpscount = 0;
 		} else {
-			_fc = _fc + 1;
+			_fpscount++;
 		}
 	} else {
-		_ct = _tm;
+		_tc = _tm;
 	}
 
 	SDL_SetRenderTarget( sdl_ren, NULL );
@@ -489,13 +493,27 @@ void gfx_update_screen (void)
 	SDL_SetRenderTarget( sdl_ren, sdl_tex );
 	SDL_SetRenderDrawColor( sdl_ren, 0, 0, 0, 0xFF );
 	SDL_RenderClear( sdl_ren );
-	
-    #ifdef __EMSCRIPTEN__
-        // emscripten_sleep(speed_cap);
-    #else
-	    SDL_Delay(speed_cap);
-    #endif
 
+	if ( _lc != 0 ) _diff = _tm - _lc;
+	else _diff = 0;
+
+	_lc = _tm;
+
+	double time_dalay = (( 1000.0 * 1000.0 / 30.0 ) - _diff ) / 1000.0; 
+
+//////////////////////////////////////////////////////////////////////////////////
+// printf("diff: %lld\n", _diff);
+
+	printf("diff: %f\n", time_dalay);
+
+	if ( time_dalay > 0.0 ) {
+    #ifdef __EMSCRIPTEN__
+		emscripten_sleep(time_dalay);
+    #else
+		SDL_Delay(time_dalay);
+    #endif
+	}
+	
 }
 
 void gfx_acquire_screen (void)
