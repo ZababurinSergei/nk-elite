@@ -88,9 +88,9 @@ const freeQueueInit = function (CONFIG){
     let workerName = 'nk-radio'
 
     // Поставь сюда подключение
-    this.inputQueue = {}//new FreeQueue(QUEUE_SIZE, 2);
-    this.outputQueue = {}//new FreeQueue(QUEUE_SIZE, 2);
-    this.atomicState = {}//new Int32Array(new SharedArrayBuffer(2 * Int32Array.BYTES_PER_ELEMENT));
+    this.inputQueue = {} //new FreeQueue(QUEUE_SIZE, 2);
+    this.outputQueue = {} //new FreeQueue(QUEUE_SIZE, 2);
+    this.atomicState = {} //new Int32Array(new SharedArrayBuffer(2 * Int32Array.BYTES_PER_ELEMENT));
 
 
     globalThis["LFreeQueue"] = {

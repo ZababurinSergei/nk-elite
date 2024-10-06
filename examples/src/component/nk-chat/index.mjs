@@ -12,13 +12,51 @@ const constraints = window.constraints = {
     video: false
 };
 
+function lowPassFilter() {
+    const format = 'f32-planar';
+    let lastValuePerChannel = undefined;
+    return (data, controller) => {
+        const rc = 1.0 / (cutoff * 2 * Math.PI);
+        const dt = 1.0 / data.sampleRate;
+        const alpha = dt / (rc + dt);
+        const nChannels = data.numberOfChannels;
+        if (!lastValuePerChannel) {
+            console.log(`Audio stream has ${nChannels} channels.`);
+            lastValuePerChannel = Array(nChannels).fill(0);
+        }
+        const buffer = new Float32Array(data.numberOfFrames * nChannels);
+        for (let c = 0; c < nChannels; c++) {
+            const offset = data.numberOfFrames * c;
+            const samples = buffer.subarray(offset, offset + data.numberOfFrames);
+            data.copyTo(samples, {planeIndex: c, format});
+            let lastValue = lastValuePerChannel[c];
+
+            // Apply low-pass filter to samples.
+            for (let i = 0; i < samples.length; ++i) {
+                lastValue = lastValue + alpha * (samples[i] - lastValue);
+                samples[i] = lastValue;
+            }
+
+            lastValuePerChannel[c] = lastValue;
+        }
+        controller.enqueue(new AudioData({
+            format,
+            sampleRate: data.sampleRate,
+            numberOfFrames: data.numberOfFrames,
+            numberOfChannels: nChannels,
+            timestamp: data.timestamp,
+            data: buffer
+        }));
+    };
+}
+
 Object.defineProperties(component.prototype, {
     DOM: {
         value: {},
         writable: true
     },
     constraints: {
-        value: function() {
+        value: function () {
             return {
                 audio: true,
                 video: false
@@ -39,7 +77,7 @@ Object.defineProperties(component.prototype, {
             let timeout = Math.round(Math.random() * 100);
             this.DOM.input.textContent = this.DOM.input.textContent + this._message[this._count]
 
-            this._count ++
+            this._count++
             if (this._count < this._message.length) {
                 setTimeout(this.printSmbl, timeout);
             } else {
@@ -51,11 +89,10 @@ Object.defineProperties(component.prototype, {
         writable: true
     },
     handler: {
-        value: async function ({ connection, stream }) {
+        value: async function ({connection, stream}) {
             const protocol = stream.protocol
-            if(protocol === proto) {
+            if (protocol === proto) {
                 const lp = lpStream(stream)
-
                 const res = await lp.read()
 
                 const output = new TextDecoder().decode(res.subarray())
@@ -64,11 +101,28 @@ Object.defineProperties(component.prototype, {
                 this.printSmbl()
             }
 
-            if(protocol === protoAudio) {
-                // const localStream = await getUserMedia({video: true, audio: true})
-                console.log('----------- stream --------------', stream)
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (protocol === protoAudio) {
+                console.log('================================================================', this.id)
+                this.task = {
+                    id: 'nk-audio_1',
+                    component: 'nk-audio',
+                    execute: async (self) => {
+                        const audioTag = self.DOM.audio()
+                        const localStream = await navigator.mediaDevices.getUserMedia({video: false, audio: true})
+                        const audioTracks = localStream.getAudioTracks();
+                        const processor = new MediaStreamTrackProcessor(audioTracks[0]);
+                        const generator = new MediaStreamTrackGenerator('audio');
+                        const sink = generator.writable;
+                        // await stream.sink(localStream)
+                        console.log('-------------- stream ------------------------', localStream)
+                        audioTag.srcObject = localStream
+                        // audioTag.srcObject = stream.streamSource
 
+                        // const source = this.processor.readable;
+
+                        // console.log('-------------- stream 3------------------------', localStream)
+                    }
+                }
 
                 stream.channel.onmessage = (event) => {
                     console.log(`received: ${event.data}`);
@@ -103,7 +157,7 @@ Object.defineProperties(component.prototype, {
                 type: 'self',
                 execute: async (self) => {
                     try {
-                        if(type === 'text') {
+                        if (type === 'text') {
                             const signal = AbortSignal.timeout(5000)
 
                             this.DOM.input.textContent = ''
@@ -113,12 +167,13 @@ Object.defineProperties(component.prototype, {
 
                             const lp = lpStream(stream)
 
+                            console.log('dddddddddddddddddddddddddd',)
                             await lp.write(new TextEncoder().encode(msg))
 
                             return msg
                         }
 
-                        if(type === 'audio') {
+                        if (type === 'audio') {
                             const signal = AbortSignal.timeout(5000)
                             this.DOM.input.textContent = ''
                             const stream = await self.libp2p.dialProtocol(ma, protoAudio, {
@@ -127,11 +182,39 @@ Object.defineProperties(component.prototype, {
 
                             const lp = lpStream(stream)
 
-                            console.log('stream ======================',stream,  this.stream)
+                            console.log('stream ======================', stream)
+
+                            const audioTracks = this.stream.getAudioTracks();
+
+                            this.stream.oninactive = () => {
+                                console.log('Stream ended');
+                            };
+
+                            this.processor = new MediaStreamTrackProcessor(audioTracks[0]);
+                            this.generator = new MediaStreamTrackGenerator('audio');
+                            const source = this.processor.readable;
+                            const sink = this.generator.writable;
+                            const transformer = new TransformStream({transform: lowPassFilter()});
+                            const abortController = new AbortController();
+
+                            // console.log('ddddddddddddddddddddddddddddddddddddddddddd', sink)
+                            // console.log('ddddddddddddddddd sink dddddddddddddddddddddddddd', await stream.sink(stream.source))
+                            // const signal = abortController.signal;
+                            source.pipeTo(await stream.sink(stream.source))
+                            // const promise = source.pipeThrough(transformer, {signal}).pipeTo(stream.sink);
+                            // promise.catch((e) => {
+                            //     if (signal.aborted) {
+                            //         console.log('Shutting down streams after abort.');
+                            //     } else {
+                            //         console.error('Error from stream transform:', e);
+                            //     }
+                            //     source.cancel(e);
+                            //     sink.abort(e);
+                            // })
 
                             // setInterval(async () => {
                             //     await lp.write(new TextEncoder().encode(msg))
-                                // stream.channel.send('asasasasas')
+                            // stream.channel.send('asasasasas')
                             // }, 1000)
                             //
                             // const lp = lpStream(stream)
@@ -151,8 +234,8 @@ Object.defineProperties(component.prototype, {
         writable: true
     },
     _stream: {
-      value: null,
-      writable: true
+        value: null,
+        writable: true
     },
     stream: {
         get: function () {
@@ -163,7 +246,7 @@ Object.defineProperties(component.prototype, {
             const select = this.DOM.select('list-peers')
             let peer = select.options[select.selectedIndex].value;
 
-            if(peer.length === 0) {
+            if (peer.length === 0) {
                 this.DOM.chat.send('audio').classList.add('disabled')
             } else {
                 this.DOM.chat.send('audio').classList.remove('disabled')
@@ -228,11 +311,11 @@ Object.defineProperties(component.prototype, {
 
                 let peer = select.options[select.selectedIndex].value;
 
-                if(peer.length === 0) {
+                if (peer.length === 0) {
                     this.DOM.chat.send('audio').classList.add('disabled')
                     this.DOM.chat.send('text').classList.add('disabled')
                 } else {
-                    if(this.stream) {
+                    if (this.stream) {
                         this.DOM.chat.send('audio').classList.remove('disabled')
                     } else {
                         this.DOM.chat.send('audio').classList.add('disabled')
@@ -242,8 +325,8 @@ Object.defineProperties(component.prototype, {
                 }
             })
 
-            this.DOM.chat.send( 'audio').addEventListener('click', async (event) => {
-                if(this.DOM.chat.send.call(this, 'audio').classList.contains('disabled')) {
+            this.DOM.chat.send('audio').addEventListener('click', async (event) => {
+                if (this.DOM.chat.send.call(this, 'audio').classList.contains('disabled')) {
                     return
                 }
 
@@ -251,7 +334,7 @@ Object.defineProperties(component.prototype, {
                 const outgoing = this.DOM.output
                 let peer = select.options[select.selectedIndex].value.trim();
 
-                if(peer.length !== 0) {
+                if (peer.length !== 0) {
                     this.task = {
                         id: 'nk-p2p_1',
                         component: 'nk-p2p',
@@ -259,11 +342,11 @@ Object.defineProperties(component.prototype, {
                         execute: async (self) => {
                             const connections = self.libp2p.getConnections()
                             //TODO надо получать адресс из значений ноды
-                            const connect =  {
+                            const connect = {
                                 remotePeer: peer
                             }
                             if (connect) {
-                                const res = await this.send('audio',connect.remotePeer, outgoing.value)
+                                const res = await this.send('audio', connect.remotePeer, outgoing.value)
                             } else {
                                 this.dialog.error('соединение не найдено')
                             }
@@ -275,7 +358,7 @@ Object.defineProperties(component.prototype, {
             })
 
             this.DOM.chat.send.call(this, 'text').addEventListener('click', async (event) => {
-                if(this.DOM.chat.send.call(this, 'text').classList.contains('disabled')) {
+                if (this.DOM.chat.send.call(this, 'text').classList.contains('disabled')) {
                     return
                 }
 
@@ -283,15 +366,15 @@ Object.defineProperties(component.prototype, {
                 const outgoing = this.DOM.output
                 let peer = select.options[select.selectedIndex].value;
 
-                if(peer.length !== 0) {
+                if (peer.length !== 0) {
                     this.task = {
                         id: 'nk-p2p_1',
                         component: 'nk-p2p',
                         type: 'self',
                         execute: async (self) => {
                             const connections = self.libp2p.getConnections()
-                           //TODO надо получать адресс из значений ноды
-                            const connect =  {
+                            //TODO надо получать адресс из значений ноды
+                            const connect = {
                                 remotePeer: peer
                             }
                             if (connect) {

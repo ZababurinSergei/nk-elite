@@ -375,3 +375,9 @@ button.refresh {
     flex-direction: column;
     gap: 32px;
 }
+
+.nk-audio {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+}

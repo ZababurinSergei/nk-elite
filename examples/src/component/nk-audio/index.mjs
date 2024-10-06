@@ -9,9 +9,70 @@ import { lottieWeb } from 'lottie-web';
 const name = 'nk-audio';
 const component = await Component();
 
+let cutoff = 100;
+
+// Returns a low-pass transform function for use with TransformStream.
+function lowPassFilter() {
+    const format = 'f32-planar';
+    let lastValuePerChannel = undefined;
+    return (data, controller) => {
+        const rc = 1.0 / (cutoff * 2 * Math.PI);
+        const dt = 1.0 / data.sampleRate;
+        const alpha = dt / (rc + dt);
+        const nChannels = data.numberOfChannels;
+        if (!lastValuePerChannel) {
+            console.log(`Audio stream has ${nChannels} channels.`);
+            lastValuePerChannel = Array(nChannels).fill(0);
+        }
+        const buffer = new Float32Array(data.numberOfFrames * nChannels);
+        for (let c = 0; c < nChannels; c++) {
+            const offset = data.numberOfFrames * c;
+            const samples = buffer.subarray(offset, offset + data.numberOfFrames);
+            data.copyTo(samples, {planeIndex: c, format});
+            let lastValue = lastValuePerChannel[c];
+
+            // Apply low-pass filter to samples.
+            for (let i = 0; i < samples.length; ++i) {
+                lastValue = lastValue + alpha * (samples[i] - lastValue);
+                samples[i] = lastValue;
+            }
+
+            lastValuePerChannel[c] = lastValue;
+        }
+        controller.enqueue(new AudioData({
+            format,
+            sampleRate: data.sampleRate,
+            numberOfFrames: data.numberOfFrames,
+            numberOfChannels: nChannels,
+            timestamp: data.timestamp,
+            data: buffer
+        }));
+    };
+}
+
 Object.defineProperties(component.prototype, {
     DOM: {
         value: {},
+        writable: true
+    },
+    processedStream: {
+        value: null,
+        writable: true
+    },
+    worker: {
+        value: null,
+        writable: true
+    },
+    processor: {
+        value: null,
+        writable: true
+    },
+    generator: {
+        value: null,
+        writable: true
+    },
+    stream: {
+        value: null,
         writable: true
     },
     constraints: {
@@ -25,6 +86,16 @@ Object.defineProperties(component.prototype, {
     },
     connected: {
         value: async function (property) {
+            this.DOM = {
+                audio: function () {
+                    return this.shadowRoot.querySelector('audio');
+                }
+            }
+
+            for(let key in this.DOM) {
+                this.DOM[key] = this.DOM[key].bind(this)
+            }
+
             const shadow = this.shadowRoot;
             const audioPlayerContainer = shadow.getElementById('audio-player-container');
             const playIconContainer = shadow.getElementById('play-icon');
@@ -107,9 +178,48 @@ Object.defineProperties(component.prototype, {
                 });
             }
 
-            playIconContainer.addEventListener('click', () => {
+            playIconContainer.addEventListener('click', async () => {
                 if(playState === 'play') {
-                    audio.play();
+                    let abortController = null
+                    this.stream = audio.captureStream();
+
+                    console.log('this.id: ', this.id)
+                    if(this.id === 'nk-audio_0') {
+                        this.task = {
+                            id: 'nk-chat_0',
+                            component: 'nk-chat',
+                            type: 'self',
+                            execute: (self) => {
+                                self.stream = this.stream
+                            }
+                        }
+                    }
+
+
+                    const audioTracks = this.stream.getAudioTracks();
+
+                    this.stream.oninactive = () => {
+                        console.log('Stream ended');
+                    };
+
+                    // this.processor = new MediaStreamTrackProcessor(audioTracks[0]);
+                    // this.generator = new MediaStreamTrackGenerator('audio');
+                    // const source = this.processor.readable;
+                    // const sink = this.generator.writable;
+                    // const transformer = new TransformStream({transform: lowPassFilter()});
+                    // abortController = new AbortController();
+                    // const signal = abortController.signal;
+                    // const promise = source.pipeThrough(transformer, {signal}).pipeTo(sink);
+                    // promise.catch((e) => {
+                    //     if (signal.aborted) {
+                    //         console.log('Shutting down streams after abort.');
+                    //     } else {
+                    //         console.error('Error from stream transform:', e);
+                    //     }
+                    //     source.cancel(e);
+                    //     sink.abort(e);
+                    // })
+                    await audio.play();
                     playAnimation.playSegments([14, 27], true);
                     requestAnimationFrame(whilePlaying);
                     playState = 'pause';
