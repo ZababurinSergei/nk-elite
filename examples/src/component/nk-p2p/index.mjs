@@ -12,6 +12,7 @@ import * as filters from '@libp2p/websockets/filters'
 import {multiaddr} from '@multiformats/multiaddr'
 import {createLibp2p} from 'libp2p'
 import {fromString, toString} from 'uint8arrays'
+import { WebRTCMatcher } from '@multiformats/multiaddr-matcher'
 import {bootstrap} from '@libp2p/bootstrap'
 import {kadDHT, removePrivateAddressesMapper, removePublicAddressesMapper} from '@libp2p/kad-dht'
 import {persistentPeerStore} from '@libp2p/peer-store'
@@ -54,7 +55,7 @@ Object.defineProperties(component.prototype, {
                     el.textContent = peerId.toString()
                     const addrList = document.createElement('ul')
 
-                    const activeConnections = this.libp2p.getConnections(peerId)
+                    const activeConnections = this.libp2p.getConnections(peerId).filter(conn => WebRTCMatcher.matches(conn.remoteAddr))
                     const isOne = activeConnections.length === 1
 
                     for (const conn of activeConnections) {
@@ -178,7 +179,6 @@ Object.defineProperties(component.prototype, {
             const clean = (line) => line.replaceAll('\n', '')
 
             let boot = []
-
 
             if (isBootstrap) {
                 if (isPubsubPeerDiscovery) {

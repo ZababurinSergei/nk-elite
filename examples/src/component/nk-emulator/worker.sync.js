@@ -1,5 +1,5 @@
-import FreeQueue from './free-queue.js'
-import { getConstants } from './constants.js'
+import { FreeQueueSAB } from '../../this/free-queue/free-queue-sab.js'
+import { getConstants } from '../../this/constants.js'
 const { FRAME_SIZE }  = getConstants('emulator');
 
 // import GPUProcessor from './gpu-processor.js';
@@ -29,8 +29,8 @@ const initialize = (messageDataFromMainThread) => {
     irArray = messageDataFromMainThread.irArray
     sampleRate = messageDataFromMainThread.sampleRate
 
-    Object.setPrototypeOf(inputQueue, FreeQueue.prototype);
-    Object.setPrototypeOf(outputQueue, FreeQueue.prototype);
+    Object.setPrototypeOf(inputQueue, FreeQueueSAB.prototype);
+    Object.setPrototypeOf(outputQueue, FreeQueueSAB.prototype);
 
     // A local buffer to store data pulled out from `inputQueue`.
     inputBuffer = [new Float64Array(FRAME_SIZE), new Float64Array(FRAME_SIZE)]
@@ -56,7 +56,7 @@ const process = () => {
 
 /**
  * Worker message event handler.
- * This will initialize worker with FreeQueue instance and set loop for audio
+ * This will initialize worker with FreeQueueSAB instance and set loop for audio
  * processing. 
  */
 self.onmessage = (msg) => {

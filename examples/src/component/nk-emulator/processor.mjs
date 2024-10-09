@@ -1,5 +1,5 @@
-import FreeQueue from './free-queue.js';
-import { getConstants } from './constants.js';
+import { FreeQueueSAB } from '@newkind/freeQueue'
+import { getConstants } from '@newkind/constants'
 const { RENDER_QUANTUM, FRAME_SIZE } = getConstants('emulator');
 
 const ExpectedPrimingCount = parseInt(FRAME_SIZE / RENDER_QUANTUM, 10);
@@ -21,9 +21,8 @@ export class Processor  {
         this.inputQueue = options.processorOptions.inputQueue;
         this.outputQueue = options.processorOptions.outputQueue;
         this.atomicState = options.processorOptions.atomicState;
-        Object.setPrototypeOf(this.inputQueue, FreeQueue.prototype);
-        Object.setPrototypeOf(this.outputQueue, FreeQueue.prototype);
-
+        Object.setPrototypeOf(this.inputQueue, FreeQueueSAB.prototype);
+        Object.setPrototypeOf(this.outputQueue, FreeQueueSAB.prototype);
         this.primingCounter = 0;
     }
 
@@ -65,7 +64,7 @@ export class Processor  {
         }
         // Notify worker.js if `inputQueue` has enough data to perform the batch
         // processing of FRAME_SIZE.
-        if (this.inputQueue.hasEnoughFramesFor(FRAME_SIZE)) {
+        if (this.inputQueue.isFrameAvailable(FRAME_SIZE)) {
             console.log('🟢 ==== CHANGE STATE ==== 🟢')
             Atomics.store(this.atomicState, 0, 1);
             Atomics.notify(this.atomicState, 0);

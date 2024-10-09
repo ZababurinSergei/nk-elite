@@ -271,3 +271,10 @@ canvas.emscripten { border: 0px none; background-color: black; }
 .sample-10 {
     background: firebrick;
 }
+
+.button-run {
+    width: max-content;
+    padding: 12px 16px;
+    box-sizing: border-box;
+    align-self: center;
+}

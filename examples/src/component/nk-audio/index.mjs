@@ -180,10 +180,12 @@ Object.defineProperties(component.prototype, {
 
             playIconContainer.addEventListener('click', async () => {
                 if(playState === 'play') {
+
                     let abortController = null
                     this.stream = audio.captureStream();
 
                     console.log('this.id: ', this.id)
+
                     if(this.id === 'nk-audio_0') {
                         this.task = {
                             id: 'nk-chat_0',
@@ -195,30 +197,32 @@ Object.defineProperties(component.prototype, {
                         }
                     }
 
-
                     const audioTracks = this.stream.getAudioTracks();
 
                     this.stream.oninactive = () => {
                         console.log('Stream ended');
                     };
 
-                    // this.processor = new MediaStreamTrackProcessor(audioTracks[0]);
-                    // this.generator = new MediaStreamTrackGenerator('audio');
-                    // const source = this.processor.readable;
-                    // const sink = this.generator.writable;
+                    this.processor = new MediaStreamTrackProcessor(audioTracks[0]);
+
+                    console.log('----- this.processor -----', this.processor)
+                    this.generator = new MediaStreamTrackGenerator('audio');
+                    const source = this.processor.readable;
+                    const sink = this.generator.writable;
                     // const transformer = new TransformStream({transform: lowPassFilter()});
-                    // abortController = new AbortController();
-                    // const signal = abortController.signal;
-                    // const promise = source.pipeThrough(transformer, {signal}).pipeTo(sink);
-                    // promise.catch((e) => {
-                    //     if (signal.aborted) {
-                    //         console.log('Shutting down streams after abort.');
-                    //     } else {
-                    //         console.error('Error from stream transform:', e);
-                    //     }
-                    //     source.cancel(e);
-                    //     sink.abort(e);
-                    // })
+                    abortController = new AbortController();
+                    const signal = abortController.signal;
+                    const promise = source.pipeTo(sink);
+                    promise.catch((e) => {
+                        if (signal.aborted) {
+                            console.log('Shutting down streams after abort.');
+                        } else {
+                            console.error('Error from stream transform:', e);
+                        }
+                        source.cancel(e);
+                        sink.abort(e);
+                    })
+
                     await audio.play();
                     playAnimation.playSegments([14, 27], true);
                     requestAnimationFrame(whilePlaying);
@@ -281,6 +285,7 @@ Object.defineProperties(component.prototype, {
                         { src: './component/nk-audio/img.png', sizes: '512x512', type: 'image/png' }
                     ]
                 });
+
                 navigator.mediaSession.setActionHandler('play', () => {
                     if(playState === 'play') {
                         audio.play();
@@ -294,6 +299,7 @@ Object.defineProperties(component.prototype, {
                         playState = 'play';
                     }
                 });
+
                 navigator.mediaSession.setActionHandler('pause', () => {
                     if(playState === 'play') {
                         audio.play();
@@ -307,12 +313,15 @@ Object.defineProperties(component.prototype, {
                         playState = 'play';
                     }
                 });
+
                 navigator.mediaSession.setActionHandler('seekbackward', (details) => {
                     audio.currentTime = audio.currentTime - (details.seekOffset || 10);
                 });
+
                 navigator.mediaSession.setActionHandler('seekforward', (details) => {
                     audio.currentTime = audio.currentTime + (details.seekOffset || 10);
                 });
+
                 navigator.mediaSession.setActionHandler('seekto', (details) => {
                     if (details.fastSeek && 'fastSeek' in audio) {
                         audio.fastSeek(details.seekTime);
@@ -320,6 +329,7 @@ Object.defineProperties(component.prototype, {
                     }
                     audio.currentTime = details.seekTime;
                 });
+
                 navigator.mediaSession.setActionHandler('stop', () => {
                     audio.currentTime = 0;
                     seekSlider.value = 0;

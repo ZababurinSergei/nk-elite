@@ -1,10 +1,11 @@
 import { Component } from '../index.mjs'
-import { FreeQueue } from './free-queue.js'
+import { FreeQueueSAB } from '@newkind/freeQueue'
 import { getConstants } from '@newkind/constants'
 import { Processor } from './processor.mjs'
 import { Actions } from './this/index.mjs'
+
 const { QUEUE_SIZE } = getConstants('emulator')
-let constants = getConstants('emulator')
+const constants = getConstants('emulator')
 const name = 'nk-emulator';
 const component = await Component();
 
@@ -116,15 +117,14 @@ Object.defineProperties(component.prototype, {
             }
 
             constants.ExpectedPrimingCount =  parseInt(constants.FRAME_SIZE / constants.RENDER_QUANTUM, 10);
-            this.DOM.constants('set', constants)
             this.DOM.processor('button-run').addEventListener('click', this.actions.processor.run)
 
             let workerName = 'Emulator'
-            this.inputQueue = new FreeQueue(QUEUE_SIZE, 2);
-            this.outputQueue = new FreeQueue(QUEUE_SIZE, 2);
+            this.inputQueue = new FreeQueueSAB(QUEUE_SIZE, 2);
+            this.outputQueue = new FreeQueueSAB(QUEUE_SIZE, 2);
             this.atomicState = new Int32Array(new SharedArrayBuffer(2 * Int32Array.BYTES_PER_ELEMENT));
-            Object.setPrototypeOf(this.inputQueue, FreeQueue.prototype);
-            Object.setPrototypeOf(this.outputQueue, FreeQueue.prototype);
+            Object.setPrototypeOf(this.inputQueue, FreeQueueSAB.prototype);
+            Object.setPrototypeOf(this.outputQueue, FreeQueueSAB.prototype);
 
             this.processor = new Processor({
                 processorOptions: {

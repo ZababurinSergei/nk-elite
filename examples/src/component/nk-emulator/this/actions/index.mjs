@@ -12,52 +12,57 @@ export const Actions = async (self) => {
 
                 const buttonRun = self.DOM.processor('button-run')
                 buttonRun.disabled = true
+                let timerId = null
 
+                if(buttonRun.dataset.type === 'run') {
+                    buttonRun.dataset.type = 'stop'
+                    buttonRun.textContent = 'stop'
 
-                let count = 0
+                    let count = 0
+                    timerId = setInterval(() => {
+                        try {
+                            if (count > 10) {
+                                count = 1
+                            }
 
-                const timerId = setInterval(() => {
-                    try {
-                        if (count > 10) {
-                            count = 1
-                        }
-
-                        const input = [[new Float64Array(FRAME_SIZE), new Float64Array(FRAME_SIZE)]];
-                        input.forEach((item, i) => {
-                            item.forEach((data, j) => {
-                                data.forEach((value, k) => {
-                                    input[i][j][k] = count
+                            const input = [[new Float64Array(FRAME_SIZE), new Float64Array(FRAME_SIZE)]];
+                            input.forEach((item, i) => {
+                                item.forEach((data, j) => {
+                                    data.forEach((value, k) => {
+                                        input[i][j][k] = count
+                                    })
                                 })
                             })
-                        })
 
-                        const output = [[new Float64Array(FRAME_SIZE), new Float64Array(FRAME_SIZE)]];
+                            const output = [[new Float64Array(FRAME_SIZE), new Float64Array(FRAME_SIZE)]];
 
-                        console.log('00 START PROCESS', {
-                            inputQueue: self.inputQueue.channelData[0],
-                            outputQueue: self.outputQueue.channelData[0]
-                        })
+                            console.log('00 START PROCESS', {
+                                inputQueue: self.inputQueue.channelData[0],
+                                outputQueue: self.outputQueue.channelData[0]
+                            })
 
-                        self.DOM.queue()
+                            self.DOM.queue()
 
-                        self.processor.process(input, output)
-                    } catch (e) {
-                        self.dialog.error(import.meta.url, e.toString())
-                        clearInterval(timerId)
-                    }
+                            self.processor.process(input, output)
+                        } catch (e) {
+                            self.dialog.error(import.meta.url, e.toString())
+                            clearInterval(timerId)
+                        }
 
-                    count++
-                }, 10)
-
-
-                buttonRun.dataset.type = buttonRun.dataset.type === 'run'
-                    ? (buttonRun.dataset.type = 'stop', buttonRun.textContent = 'stop')
-                    : (buttonRun.dataset.type = 'run', buttonRun.textContent = 'run')
+                        if(buttonRun.dataset.type === 'run') {
+                            clearInterval(timerId)
+                        }
+                        count++
+                    }, 10)
+                } else {
+                    buttonRun.dataset.type = 'run'
+                    buttonRun.textContent = 'run'
+                }
 
                 const timerRunId = setTimeout(() => {
-                    clearTimeout(timerRunId)
                     self.DOM.processor('button-run').disabled = false
-                }, 3000)
+                    clearTimeout(timerRunId)
+                }, 2000)
             }
         }
     }

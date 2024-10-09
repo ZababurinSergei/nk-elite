@@ -2586,16 +2586,6 @@ var base36upper = baseX({
   alphabet: "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 });
 
-// node_modules/multiformats/dist/src/hashes/digest.js
-var digest_exports = {};
-__export(digest_exports, {
-  Digest: () => Digest,
-  create: () => create,
-  decode: () => decode4,
-  equals: () => equals2,
-  hasCode: () => hasCode
-});
-
 // node_modules/multiformats/dist/src/vendor/varint.js
 var encode_1 = encode2;
 var MSB = 128;
@@ -2723,10 +2713,6 @@ var Digest = class {
     this.bytes = bytes3;
   }
 };
-function hasCode(digest2, code2) {
-  return digest2.code === code2;
-}
-__name(hasCode, "hasCode");
 
 // node_modules/multiformats/dist/src/cid.js
 function format(link, base5) {
@@ -20575,1940 +20561,6 @@ function dcutr(init = {}) {
 }
 __name(dcutr, "dcutr");
 
-// node_modules/detect-browser/es/index.js
-var __spreadArray = function(to, from4, pack) {
-  if (pack || arguments.length === 2) for (var i = 0, l = from4.length, ar; i < l; i++) {
-    if (ar || !(i in from4)) {
-      if (!ar) ar = Array.prototype.slice.call(from4, 0, i);
-      ar[i] = from4[i];
-    }
-  }
-  return to.concat(ar || Array.prototype.slice.call(from4));
-};
-var BrowserInfo = (
-  /** @class */
-  /* @__PURE__ */ function() {
-    function BrowserInfo2(name2, version, os) {
-      this.name = name2;
-      this.version = version;
-      this.os = os;
-      this.type = "browser";
-    }
-    __name(BrowserInfo2, "BrowserInfo");
-    return BrowserInfo2;
-  }()
-);
-var NodeInfo = (
-  /** @class */
-  /* @__PURE__ */ function() {
-    function NodeInfo2(version) {
-      this.version = version;
-      this.type = "node";
-      this.name = "node";
-      this.os = process.platform;
-    }
-    __name(NodeInfo2, "NodeInfo");
-    return NodeInfo2;
-  }()
-);
-var SearchBotDeviceInfo = (
-  /** @class */
-  /* @__PURE__ */ function() {
-    function SearchBotDeviceInfo2(name2, version, os, bot) {
-      this.name = name2;
-      this.version = version;
-      this.os = os;
-      this.bot = bot;
-      this.type = "bot-device";
-    }
-    __name(SearchBotDeviceInfo2, "SearchBotDeviceInfo");
-    return SearchBotDeviceInfo2;
-  }()
-);
-var BotInfo = (
-  /** @class */
-  /* @__PURE__ */ function() {
-    function BotInfo2() {
-      this.type = "bot";
-      this.bot = true;
-      this.name = "bot";
-      this.version = null;
-      this.os = null;
-    }
-    __name(BotInfo2, "BotInfo");
-    return BotInfo2;
-  }()
-);
-var ReactNativeInfo = (
-  /** @class */
-  /* @__PURE__ */ function() {
-    function ReactNativeInfo2() {
-      this.type = "react-native";
-      this.name = "react-native";
-      this.version = null;
-      this.os = null;
-    }
-    __name(ReactNativeInfo2, "ReactNativeInfo");
-    return ReactNativeInfo2;
-  }()
-);
-var SEARCHBOX_UA_REGEX = /alexa|bot|crawl(er|ing)|facebookexternalhit|feedburner|google web preview|nagios|postrank|pingdom|slurp|spider|yahoo!|yandex/;
-var SEARCHBOT_OS_REGEX = /(nuhk|curl|Googlebot|Yammybot|Openbot|Slurp|MSNBot|Ask\ Jeeves\/Teoma|ia_archiver)/;
-var REQUIRED_VERSION_PARTS = 3;
-var userAgentRules = [
-  ["aol", /AOLShield\/([0-9\._]+)/],
-  ["edge", /Edge\/([0-9\._]+)/],
-  ["edge-ios", /EdgiOS\/([0-9\._]+)/],
-  ["yandexbrowser", /YaBrowser\/([0-9\._]+)/],
-  ["kakaotalk", /KAKAOTALK\s([0-9\.]+)/],
-  ["samsung", /SamsungBrowser\/([0-9\.]+)/],
-  ["silk", /\bSilk\/([0-9._-]+)\b/],
-  ["miui", /MiuiBrowser\/([0-9\.]+)$/],
-  ["beaker", /BeakerBrowser\/([0-9\.]+)/],
-  ["edge-chromium", /EdgA?\/([0-9\.]+)/],
-  [
-    "chromium-webview",
-    /(?!Chrom.*OPR)wv\).*Chrom(?:e|ium)\/([0-9\.]+)(:?\s|$)/
-  ],
-  ["chrome", /(?!Chrom.*OPR)Chrom(?:e|ium)\/([0-9\.]+)(:?\s|$)/],
-  ["phantomjs", /PhantomJS\/([0-9\.]+)(:?\s|$)/],
-  ["crios", /CriOS\/([0-9\.]+)(:?\s|$)/],
-  ["firefox", /Firefox\/([0-9\.]+)(?:\s|$)/],
-  ["fxios", /FxiOS\/([0-9\.]+)/],
-  ["opera-mini", /Opera Mini.*Version\/([0-9\.]+)/],
-  ["opera", /Opera\/([0-9\.]+)(?:\s|$)/],
-  ["opera", /OPR\/([0-9\.]+)(:?\s|$)/],
-  ["pie", /^Microsoft Pocket Internet Explorer\/(\d+\.\d+)$/],
-  ["pie", /^Mozilla\/\d\.\d+\s\(compatible;\s(?:MSP?IE|MSInternet Explorer) (\d+\.\d+);.*Windows CE.*\)$/],
-  ["netfront", /^Mozilla\/\d\.\d+.*NetFront\/(\d.\d)/],
-  ["ie", /Trident\/7\.0.*rv\:([0-9\.]+).*\).*Gecko$/],
-  ["ie", /MSIE\s([0-9\.]+);.*Trident\/[4-7].0/],
-  ["ie", /MSIE\s(7\.0)/],
-  ["bb10", /BB10;\sTouch.*Version\/([0-9\.]+)/],
-  ["android", /Android\s([0-9\.]+)/],
-  ["ios", /Version\/([0-9\._]+).*Mobile.*Safari.*/],
-  ["safari", /Version\/([0-9\._]+).*Safari/],
-  ["facebook", /FB[AS]V\/([0-9\.]+)/],
-  ["instagram", /Instagram\s([0-9\.]+)/],
-  ["ios-webview", /AppleWebKit\/([0-9\.]+).*Mobile/],
-  ["ios-webview", /AppleWebKit\/([0-9\.]+).*Gecko\)$/],
-  ["curl", /^curl\/([0-9\.]+)$/],
-  ["searchbot", SEARCHBOX_UA_REGEX]
-];
-var operatingSystemRules = [
-  ["iOS", /iP(hone|od|ad)/],
-  ["Android OS", /Android/],
-  ["BlackBerry OS", /BlackBerry|BB10/],
-  ["Windows Mobile", /IEMobile/],
-  ["Amazon OS", /Kindle/],
-  ["Windows 3.11", /Win16/],
-  ["Windows 95", /(Windows 95)|(Win95)|(Windows_95)/],
-  ["Windows 98", /(Windows 98)|(Win98)/],
-  ["Windows 2000", /(Windows NT 5.0)|(Windows 2000)/],
-  ["Windows XP", /(Windows NT 5.1)|(Windows XP)/],
-  ["Windows Server 2003", /(Windows NT 5.2)/],
-  ["Windows Vista", /(Windows NT 6.0)/],
-  ["Windows 7", /(Windows NT 6.1)/],
-  ["Windows 8", /(Windows NT 6.2)/],
-  ["Windows 8.1", /(Windows NT 6.3)/],
-  ["Windows 10", /(Windows NT 10.0)/],
-  ["Windows ME", /Windows ME/],
-  ["Windows CE", /Windows CE|WinCE|Microsoft Pocket Internet Explorer/],
-  ["Open BSD", /OpenBSD/],
-  ["Sun OS", /SunOS/],
-  ["Chrome OS", /CrOS/],
-  ["Linux", /(Linux)|(X11)/],
-  ["Mac OS", /(Mac_PowerPC)|(Macintosh)/],
-  ["QNX", /QNX/],
-  ["BeOS", /BeOS/],
-  ["OS/2", /OS\/2/]
-];
-function detect(userAgent) {
-  if (!!userAgent) {
-    return parseUserAgent(userAgent);
-  }
-  if (typeof document === "undefined" && typeof navigator !== "undefined" && navigator.product === "ReactNative") {
-    return new ReactNativeInfo();
-  }
-  if (typeof navigator !== "undefined") {
-    return parseUserAgent(navigator.userAgent);
-  }
-  return getNodeVersion();
-}
-__name(detect, "detect");
-function matchUserAgent(ua) {
-  return ua !== "" && userAgentRules.reduce(function(matched, _a2) {
-    var browser2 = _a2[0], regex = _a2[1];
-    if (matched) {
-      return matched;
-    }
-    var uaMatch = regex.exec(ua);
-    return !!uaMatch && [browser2, uaMatch];
-  }, false);
-}
-__name(matchUserAgent, "matchUserAgent");
-function parseUserAgent(ua) {
-  var matchedRule = matchUserAgent(ua);
-  if (!matchedRule) {
-    return null;
-  }
-  var name2 = matchedRule[0], match = matchedRule[1];
-  if (name2 === "searchbot") {
-    return new BotInfo();
-  }
-  var versionParts = match[1] && match[1].split(".").join("_").split("_").slice(0, 3);
-  if (versionParts) {
-    if (versionParts.length < REQUIRED_VERSION_PARTS) {
-      versionParts = __spreadArray(__spreadArray([], versionParts, true), createVersionParts(REQUIRED_VERSION_PARTS - versionParts.length), true);
-    }
-  } else {
-    versionParts = [];
-  }
-  var version = versionParts.join(".");
-  var os = detectOS(ua);
-  var searchBotMatch = SEARCHBOT_OS_REGEX.exec(ua);
-  if (searchBotMatch && searchBotMatch[1]) {
-    return new SearchBotDeviceInfo(name2, version, os, searchBotMatch[1]);
-  }
-  return new BrowserInfo(name2, version, os);
-}
-__name(parseUserAgent, "parseUserAgent");
-function detectOS(ua) {
-  for (var ii = 0, count = operatingSystemRules.length; ii < count; ii++) {
-    var _a2 = operatingSystemRules[ii], os = _a2[0], regex = _a2[1];
-    var match = regex.exec(ua);
-    if (match) {
-      return os;
-    }
-  }
-  return null;
-}
-__name(detectOS, "detectOS");
-function getNodeVersion() {
-  var isNode2 = typeof process !== "undefined" && process.version;
-  return isNode2 ? new NodeInfo(process.version.slice(1)) : null;
-}
-__name(getNodeVersion, "getNodeVersion");
-function createVersionParts(count) {
-  var output3 = [];
-  for (var ii = 0; ii < count; ii++) {
-    output3.push("0");
-  }
-  return output3;
-}
-__name(createVersionParts, "createVersionParts");
-
-// node_modules/p-timeout/index.js
-var TimeoutError2 = class extends Error {
-  static {
-    __name(this, "TimeoutError");
-  }
-  constructor(message2) {
-    super(message2);
-    this.name = "TimeoutError";
-  }
-};
-var AbortError6 = class extends Error {
-  static {
-    __name(this, "AbortError");
-  }
-  constructor(message2) {
-    super();
-    this.name = "AbortError";
-    this.message = message2;
-  }
-};
-var getDOMException = /* @__PURE__ */ __name((errorMessage) => globalThis.DOMException === void 0 ? new AbortError6(errorMessage) : new DOMException(errorMessage), "getDOMException");
-var getAbortedReason = /* @__PURE__ */ __name((signal) => {
-  const reason = signal.reason === void 0 ? getDOMException("This operation was aborted.") : signal.reason;
-  return reason instanceof Error ? reason : getDOMException(reason);
-}, "getAbortedReason");
-function pTimeout(promise, options) {
-  const {
-    milliseconds,
-    fallback,
-    message: message2,
-    customTimers = { setTimeout, clearTimeout }
-  } = options;
-  let timer;
-  const wrappedPromise = new Promise((resolve, reject) => {
-    if (typeof milliseconds !== "number" || Math.sign(milliseconds) !== 1) {
-      throw new TypeError(`Expected \`milliseconds\` to be a positive number, got \`${milliseconds}\``);
-    }
-    if (options.signal) {
-      const { signal } = options;
-      if (signal.aborted) {
-        reject(getAbortedReason(signal));
-      }
-      signal.addEventListener("abort", () => {
-        reject(getAbortedReason(signal));
-      });
-    }
-    if (milliseconds === Number.POSITIVE_INFINITY) {
-      promise.then(resolve, reject);
-      return;
-    }
-    const timeoutError = new TimeoutError2();
-    timer = customTimers.setTimeout.call(void 0, () => {
-      if (fallback) {
-        try {
-          resolve(fallback());
-        } catch (error) {
-          reject(error);
-        }
-        return;
-      }
-      if (typeof promise.cancel === "function") {
-        promise.cancel();
-      }
-      if (message2 === false) {
-        resolve();
-      } else if (message2 instanceof Error) {
-        reject(message2);
-      } else {
-        timeoutError.message = message2 ?? `Promise timed out after ${milliseconds} milliseconds`;
-        reject(timeoutError);
-      }
-    }, milliseconds);
-    (async () => {
-      try {
-        resolve(await promise);
-      } catch (error) {
-        reject(error);
-      }
-    })();
-  });
-  const cancelablePromise = wrappedPromise.finally(() => {
-    cancelablePromise.clear();
-  });
-  cancelablePromise.clear = () => {
-    customTimers.clearTimeout.call(void 0, timer);
-    timer = void 0;
-  };
-  return cancelablePromise;
-}
-__name(pTimeout, "pTimeout");
-
-// node_modules/@libp2p/webrtc/dist/src/constants.js
-var DEFAULT_ICE_SERVERS = [
-  "stun:stun.l.google.com:19302",
-  "stun:global.stun.twilio.com:3478",
-  "stun:stun.cloudflare.com:3478",
-  "stun:stun.services.mozilla.com:3478"
-];
-
-// node_modules/@libp2p/webrtc/dist/src/util.js
-var browser = detect();
-var isFirefox = browser != null && browser.name === "firefox";
-var nopSource = /* @__PURE__ */ __name(async function* nop() {
-}, "nop");
-var nopSink = /* @__PURE__ */ __name(async (_) => {
-}, "nopSink");
-var DATA_CHANNEL_DRAIN_TIMEOUT = 30 * 1e3;
-function drainAndClose(channel, direction, drainTimeout = DATA_CHANNEL_DRAIN_TIMEOUT, options) {
-  if (channel.readyState !== "open") {
-    return;
-  }
-  void Promise.resolve().then(async () => {
-    if (channel.bufferedAmount > 0) {
-      options.log("%s drain channel with %d buffered bytes", direction, channel.bufferedAmount);
-      const deferred = pDefer();
-      let drained = false;
-      channel.bufferedAmountLowThreshold = 0;
-      const closeListener = /* @__PURE__ */ __name(() => {
-        if (!drained) {
-          options.log("%s drain channel closed before drain", direction);
-          deferred.resolve();
-        }
-      }, "closeListener");
-      channel.addEventListener("close", closeListener, {
-        once: true
-      });
-      channel.addEventListener("bufferedamountlow", () => {
-        drained = true;
-        channel.removeEventListener("close", closeListener);
-        deferred.resolve();
-      });
-      await pTimeout(deferred.promise, {
-        milliseconds: drainTimeout
-      });
-    }
-  }).then(async () => {
-    if (channel.readyState === "open") {
-      channel.close();
-    }
-  }).catch((err) => {
-    options.log.error("error closing outbound stream", err);
-  });
-}
-__name(drainAndClose, "drainAndClose");
-async function getRtcConfiguration(config) {
-  config = config ?? {};
-  if (typeof config === "function") {
-    config = await config();
-  }
-  config.iceServers = config.iceServers ?? DEFAULT_ICE_SERVERS.map((url) => ({
-    urls: [
-      url
-    ]
-  }));
-  return config;
-}
-__name(getRtcConfiguration, "getRtcConfiguration");
-
-// node_modules/@libp2p/webrtc/dist/src/maconn.js
-var WebRTCMultiaddrConnection = class {
-  static {
-    __name(this, "WebRTCMultiaddrConnection");
-  }
-  log;
-  /**
-   * WebRTC Peer Connection
-   */
-  peerConnection;
-  /**
-   * The multiaddr address used to communicate with the remote peer
-   */
-  remoteAddr;
-  /**
-   * Holds the lifecycle times of the connection
-   */
-  timeline;
-  /**
-   * Optional metrics counter group for this connection
-   */
-  metrics;
-  /**
-   * The stream source, a no-op as the transport natively supports multiplexing
-   */
-  source = nopSource();
-  /**
-   * The stream destination, a no-op as the transport natively supports multiplexing
-   */
-  sink = nopSink;
-  constructor(components, init) {
-    this.log = components.logger.forComponent("libp2p:webrtc:maconn");
-    this.remoteAddr = init.remoteAddr;
-    this.timeline = init.timeline;
-    this.peerConnection = init.peerConnection;
-    const initialState = this.peerConnection.connectionState;
-    this.peerConnection.onconnectionstatechange = () => {
-      this.log.trace("peer connection state change", this.peerConnection.connectionState, "initial state", initialState);
-      if (this.peerConnection.connectionState === "disconnected" || this.peerConnection.connectionState === "failed" || this.peerConnection.connectionState === "closed") {
-        this.timeline.close = Date.now();
-      }
-    };
-  }
-  async close(options) {
-    this.log.trace("closing connection");
-    this.peerConnection.close();
-    this.timeline.close = Date.now();
-    this.metrics?.increment({ close: true });
-  }
-  abort(err) {
-    this.log.error("closing connection due to error", err);
-    this.peerConnection.close();
-    this.timeline.close = Date.now();
-    this.metrics?.increment({ abort: true });
-  }
-};
-
-// node_modules/p-event/index.js
-var normalizeEmitter = /* @__PURE__ */ __name((emitter) => {
-  const addListener = emitter.addEventListener || emitter.on || emitter.addListener;
-  const removeListener = emitter.removeEventListener || emitter.off || emitter.removeListener;
-  if (!addListener || !removeListener) {
-    throw new TypeError("Emitter is not compatible");
-  }
-  return {
-    addListener: addListener.bind(emitter),
-    removeListener: removeListener.bind(emitter)
-  };
-}, "normalizeEmitter");
-function pEventMultiple(emitter, event, options) {
-  let cancel;
-  const returnValue = new Promise((resolve, reject) => {
-    options = {
-      rejectionEvents: ["error"],
-      multiArgs: false,
-      resolveImmediately: false,
-      ...options
-    };
-    if (!(options.count >= 0 && (options.count === Number.POSITIVE_INFINITY || Number.isInteger(options.count)))) {
-      throw new TypeError("The `count` option should be at least 0 or more");
-    }
-    options.signal?.throwIfAborted();
-    const events = [event].flat();
-    const items = [];
-    const { addListener, removeListener } = normalizeEmitter(emitter);
-    const onItem = /* @__PURE__ */ __name((...arguments_) => {
-      const value = options.multiArgs ? arguments_ : arguments_[0];
-      if (options.filter && !options.filter(value)) {
-        return;
-      }
-      items.push(value);
-      if (options.count === items.length) {
-        cancel();
-        resolve(items);
-      }
-    }, "onItem");
-    const rejectHandler = /* @__PURE__ */ __name((error) => {
-      cancel();
-      reject(error);
-    }, "rejectHandler");
-    cancel = /* @__PURE__ */ __name(() => {
-      for (const event2 of events) {
-        removeListener(event2, onItem);
-      }
-      for (const rejectionEvent of options.rejectionEvents) {
-        removeListener(rejectionEvent, rejectHandler);
-      }
-    }, "cancel");
-    for (const event2 of events) {
-      addListener(event2, onItem);
-    }
-    for (const rejectionEvent of options.rejectionEvents) {
-      addListener(rejectionEvent, rejectHandler);
-    }
-    if (options.signal) {
-      options.signal.addEventListener("abort", () => {
-        rejectHandler(options.signal.reason);
-      }, { once: true });
-    }
-    if (options.resolveImmediately) {
-      resolve(items);
-    }
-  });
-  returnValue.cancel = cancel;
-  if (typeof options.timeout === "number") {
-    const timeout = pTimeout(returnValue, { milliseconds: options.timeout });
-    timeout.cancel = cancel;
-    return timeout;
-  }
-  return returnValue;
-}
-__name(pEventMultiple, "pEventMultiple");
-function pEvent(emitter, event, options) {
-  if (typeof options === "function") {
-    options = { filter: options };
-  }
-  options = {
-    ...options,
-    count: 1,
-    resolveImmediately: false
-  };
-  const arrayPromise = pEventMultiple(emitter, event, options);
-  const promise = arrayPromise.then((array) => array[0]);
-  promise.cancel = arrayPromise.cancel;
-  return promise;
-}
-__name(pEvent, "pEvent");
-
-// node_modules/@libp2p/webrtc/dist/src/pb/message.js
-var Message;
-(function(Message4) {
-  let Flag2;
-  (function(Flag3) {
-    Flag3["FIN"] = "FIN";
-    Flag3["STOP_SENDING"] = "STOP_SENDING";
-    Flag3["RESET"] = "RESET";
-    Flag3["FIN_ACK"] = "FIN_ACK";
-  })(Flag2 = Message4.Flag || (Message4.Flag = {}));
-  let __FlagValues;
-  (function(__FlagValues2) {
-    __FlagValues2[__FlagValues2["FIN"] = 0] = "FIN";
-    __FlagValues2[__FlagValues2["STOP_SENDING"] = 1] = "STOP_SENDING";
-    __FlagValues2[__FlagValues2["RESET"] = 2] = "RESET";
-    __FlagValues2[__FlagValues2["FIN_ACK"] = 3] = "FIN_ACK";
-  })(__FlagValues || (__FlagValues = {}));
-  (function(Flag3) {
-    Flag3.codec = () => {
-      return enumeration(__FlagValues);
-    };
-  })(Flag2 = Message4.Flag || (Message4.Flag = {}));
-  let _codec;
-  Message4.codec = () => {
-    if (_codec == null) {
-      _codec = message((obj, w2, opts = {}) => {
-        if (opts.lengthDelimited !== false) {
-          w2.fork();
-        }
-        if (obj.flag != null) {
-          w2.uint32(8);
-          Message4.Flag.codec().encode(obj.flag, w2);
-        }
-        if (obj.message != null) {
-          w2.uint32(18);
-          w2.bytes(obj.message);
-        }
-        if (opts.lengthDelimited !== false) {
-          w2.ldelim();
-        }
-      }, (reader, length4, opts = {}) => {
-        const obj = {};
-        const end = length4 == null ? reader.len : reader.pos + length4;
-        while (reader.pos < end) {
-          const tag = reader.uint32();
-          switch (tag >>> 3) {
-            case 1: {
-              obj.flag = Message4.Flag.codec().decode(reader);
-              break;
-            }
-            case 2: {
-              obj.message = reader.bytes();
-              break;
-            }
-            default: {
-              reader.skipType(tag & 7);
-              break;
-            }
-          }
-        }
-        return obj;
-      });
-    }
-    return _codec;
-  };
-  Message4.encode = (obj) => {
-    return encodeMessage(obj, Message4.codec());
-  };
-  Message4.decode = (buf, opts) => {
-    return decodeMessage(buf, Message4.codec(), opts);
-  };
-})(Message || (Message = {}));
-
-// node_modules/@libp2p/webrtc/dist/src/stream.js
-var MAX_BUFFERED_AMOUNT = 2 * 1024 * 1024;
-var BUFFERED_AMOUNT_LOW_TIMEOUT = 30 * 1e3;
-var MAX_MESSAGE_SIZE = 16 * 1024;
-function calculateProtobufOverhead(maxMessageSize = MAX_MESSAGE_SIZE) {
-  const messageLength = encodingLength2(maxMessageSize - encodingLength2(maxMessageSize));
-  const flagField = 1 + encodingLength2(Object.keys(Message.Flag).length - 1);
-  const messageFieldIdType = 1;
-  const available = maxMessageSize - messageLength - flagField - messageFieldIdType;
-  const messageFieldLengthLength = encodingLength2(available);
-  return messageLength + flagField + messageFieldIdType + messageFieldLengthLength;
-}
-__name(calculateProtobufOverhead, "calculateProtobufOverhead");
-var PROTOBUF_OVERHEAD = calculateProtobufOverhead();
-var FIN_ACK_TIMEOUT = 5e3;
-var OPEN_TIMEOUT = 5e3;
-var WebRTCStream = class extends AbstractStream {
-  static {
-    __name(this, "WebRTCStream");
-  }
-  /**
-   * The data channel used to send and receive data
-   */
-  channel;
-  /**
-   * push data from the underlying datachannel to the length prefix decoder
-   * and then the protobuf decoder.
-   */
-  incomingData;
-  maxBufferedAmount;
-  bufferedAmountLowEventTimeout;
-  /**
-   * The maximum size of a message in bytes
-   */
-  maxMessageSize;
-  /**
-   * When this promise is resolved, the remote has sent us a FIN flag
-   */
-  receiveFinAck;
-  finAckTimeout;
-  openTimeout;
-  constructor(init) {
-    const originalOnEnd = init.onEnd;
-    init.onEnd = (err) => {
-      this.log.trace("readable and writeable ends closed", this.status);
-      void Promise.resolve(async () => {
-        if (this.timeline.abort != null || this.timeline.reset !== null) {
-          return;
-        }
-        try {
-          await pTimeout(this.receiveFinAck.promise, {
-            milliseconds: this.finAckTimeout
-          });
-        } catch (err2) {
-          this.log.error("error receiving FIN_ACK", err2);
-        }
-      }).then(() => {
-        this.incomingData.end();
-        originalOnEnd?.(err);
-      }).catch((err2) => {
-        this.log.error("error ending stream", err2);
-      });
-    };
-    super(init);
-    this.channel = init.channel;
-    this.channel.binaryType = "arraybuffer";
-    this.incomingData = pushable();
-    this.bufferedAmountLowEventTimeout = init.bufferedAmountLowEventTimeout ?? BUFFERED_AMOUNT_LOW_TIMEOUT;
-    this.maxBufferedAmount = init.maxBufferedAmount ?? MAX_BUFFERED_AMOUNT;
-    this.maxMessageSize = (init.maxMessageSize ?? MAX_MESSAGE_SIZE) - PROTOBUF_OVERHEAD;
-    this.receiveFinAck = pDefer();
-    this.finAckTimeout = init.closeTimeout ?? FIN_ACK_TIMEOUT;
-    this.openTimeout = init.openTimeout ?? OPEN_TIMEOUT;
-    switch (this.channel.readyState) {
-      case "open":
-        this.timeline.open = (/* @__PURE__ */ new Date()).getTime();
-        break;
-      case "closed":
-      case "closing":
-        if (this.timeline.close === void 0 || this.timeline.close === 0) {
-          this.timeline.close = Date.now();
-        }
-        break;
-      case "connecting":
-        break;
-      default:
-        this.log.error("unknown datachannel state %s", this.channel.readyState);
-        throw new StreamStateError("Unknown datachannel state");
-    }
-    this.channel.onopen = (_evt) => {
-      this.timeline.open = (/* @__PURE__ */ new Date()).getTime();
-    };
-    this.channel.onclose = (_evt) => {
-      this.receiveFinAck.resolve();
-      void this.close().catch((err) => {
-        this.log.error("error closing stream after channel closed", err);
-      });
-    };
-    this.channel.onerror = (evt) => {
-      const err = evt.error;
-      this.abort(err);
-    };
-    this.channel.onmessage = async (event) => {
-      const { data } = event;
-      if (data === null || data.byteLength === 0) {
-        return;
-      }
-      this.incomingData.push(new Uint8Array(data, 0, data.byteLength));
-    };
-    const self2 = this;
-    Promise.resolve().then(async () => {
-      for await (const buf of decode7(this.incomingData)) {
-        const message2 = self2.processIncomingProtobuf(buf);
-        if (message2 != null) {
-          self2.sourcePush(new Uint8ArrayList(message2));
-        }
-      }
-    }).catch((err) => {
-      this.log.error("error processing incoming data channel messages", err);
-    });
-  }
-  sendNewStream() {
-  }
-  async _sendMessage(data, checkBuffer = true) {
-    if (checkBuffer && this.channel.bufferedAmount > this.maxBufferedAmount) {
-      try {
-        this.log('channel buffer is %d, wait for "bufferedamountlow" event', this.channel.bufferedAmount);
-        await pEvent(this.channel, "bufferedamountlow", { timeout: this.bufferedAmountLowEventTimeout });
-      } catch (err) {
-        if (err instanceof TimeoutError) {
-          throw new TimeoutError(`Timed out waiting for DataChannel buffer to clear after ${this.bufferedAmountLowEventTimeout}ms`);
-        }
-        throw err;
-      }
-    }
-    if (this.channel.readyState === "closed" || this.channel.readyState === "closing") {
-      throw new StreamStateError(`Invalid datachannel state - ${this.channel.readyState}`);
-    }
-    if (this.channel.readyState !== "open") {
-      this.log('channel state is "%s" and not "open", waiting for "open" event before sending data', this.channel.readyState);
-      await pEvent(this.channel, "open", { timeout: this.openTimeout });
-      this.log('channel state is now "%s", sending data', this.channel.readyState);
-    }
-    this.channel.send(data.subarray());
-  }
-  async sendData(data) {
-    data = data.sublist();
-    while (data.byteLength > 0) {
-      const toSend = Math.min(data.byteLength, this.maxMessageSize);
-      const buf = data.subarray(0, toSend);
-      const msgbuf = Message.encode({ message: buf });
-      const sendbuf = encode6.single(msgbuf);
-      await this._sendMessage(sendbuf);
-      data.consume(toSend);
-    }
-  }
-  async sendReset() {
-    await this._sendFlag(Message.Flag.RESET);
-  }
-  async sendCloseWrite(options) {
-    const sent = await this._sendFlag(Message.Flag.FIN);
-    if (sent) {
-      this.log.trace("awaiting FIN_ACK");
-      try {
-        await raceSignal(this.receiveFinAck.promise, options?.signal, {
-          errorMessage: "sending close-write was aborted before FIN_ACK was received",
-          errorName: "FinAckNotReceivedError"
-        });
-      } catch (err) {
-        this.log.error("failed to await FIN_ACK", err);
-      }
-    } else {
-      this.log.trace("sending FIN failed, not awaiting FIN_ACK");
-    }
-    this.receiveFinAck.resolve();
-  }
-  async sendCloseRead() {
-    await this._sendFlag(Message.Flag.STOP_SENDING);
-  }
-  /**
-   * Handle incoming
-   */
-  processIncomingProtobuf(buffer) {
-    const message2 = Message.decode(buffer);
-    if (message2.flag !== void 0) {
-      this.log.trace('incoming flag %s, write status "%s", read status "%s"', message2.flag, this.writeStatus, this.readStatus);
-      if (message2.flag === Message.Flag.FIN) {
-        this.remoteCloseWrite();
-        this.log.trace("sending FIN_ACK");
-        void this._sendFlag(Message.Flag.FIN_ACK).catch((err) => {
-          this.log.error("error sending FIN_ACK immediately", err);
-        });
-      }
-      if (message2.flag === Message.Flag.RESET) {
-        this.reset();
-      }
-      if (message2.flag === Message.Flag.STOP_SENDING) {
-        this.remoteCloseRead();
-      }
-      if (message2.flag === Message.Flag.FIN_ACK) {
-        this.log.trace("received FIN_ACK");
-        this.receiveFinAck.resolve();
-      }
-    }
-    if (this.readStatus === "ready") {
-      return message2.message;
-    }
-  }
-  async _sendFlag(flag) {
-    if (this.channel.readyState !== "open") {
-      this.log.trace('not sending flag %s because channel is "%s" and not "open"', this.channel.readyState, flag.toString());
-      return false;
-    }
-    this.log.trace("sending flag %s", flag.toString());
-    const msgbuf = Message.encode({ flag });
-    const prefixedBuf = encode6.single(msgbuf);
-    try {
-      await this._sendMessage(prefixedBuf, false);
-      return true;
-    } catch (err) {
-      this.log.error("could not send flag %s", flag.toString(), err);
-    }
-    return false;
-  }
-};
-function createStream(options) {
-  const { channel, direction } = options;
-  return new WebRTCStream({
-    id: direction === "inbound" ? `i${channel.id}` : `r${channel.id}`,
-    log: options.logger.forComponent(`libp2p:webrtc:stream:${direction}:${channel.id}`),
-    ...options
-  });
-}
-__name(createStream, "createStream");
-
-// node_modules/@libp2p/webrtc/dist/src/muxer.js
-var PROTOCOL = "/webrtc";
-var DataChannelMuxerFactory = class {
-  static {
-    __name(this, "DataChannelMuxerFactory");
-  }
-  protocol;
-  /**
-   * WebRTC Peer Connection
-   */
-  peerConnection;
-  bufferedStreams = [];
-  metrics;
-  dataChannelOptions;
-  components;
-  log;
-  constructor(components, init) {
-    this.components = components;
-    this.peerConnection = init.peerConnection;
-    this.metrics = init.metrics;
-    this.protocol = init.protocol ?? PROTOCOL;
-    this.dataChannelOptions = init.dataChannelOptions ?? {};
-    this.log = components.logger.forComponent("libp2p:webrtc:datachannelmuxerfactory");
-    this.peerConnection.ondatachannel = ({ channel }) => {
-      this.log.trace('incoming early datachannel with channel id %d and label "%s"', channel.id);
-      if (channel.label === "init") {
-        this.log.trace("closing early init channel");
-        channel.close();
-        return;
-      }
-      const bufferedStream = {};
-      const stream = createStream({
-        channel,
-        direction: "inbound",
-        onEnd: /* @__PURE__ */ __name((err) => {
-          bufferedStream.onEnd(err);
-        }, "onEnd"),
-        logger: components.logger,
-        ...this.dataChannelOptions
-      });
-      bufferedStream.stream = stream;
-      bufferedStream.channel = channel;
-      bufferedStream.onEnd = () => {
-        this.bufferedStreams = this.bufferedStreams.filter((s2) => s2.stream.id !== stream.id);
-      };
-      this.bufferedStreams.push(bufferedStream);
-    };
-  }
-  createStreamMuxer(init) {
-    return new DataChannelMuxer(this.components, {
-      ...init,
-      peerConnection: this.peerConnection,
-      dataChannelOptions: this.dataChannelOptions,
-      metrics: this.metrics,
-      streams: this.bufferedStreams,
-      protocol: this.protocol
-    });
-  }
-};
-var DataChannelMuxer = class {
-  static {
-    __name(this, "DataChannelMuxer");
-  }
-  init;
-  /**
-   * Array of streams in the data channel
-   */
-  streams;
-  protocol;
-  log;
-  peerConnection;
-  dataChannelOptions;
-  metrics;
-  logger;
-  constructor(components, init) {
-    this.init = init;
-    this.log = components.logger.forComponent("libp2p:webrtc:muxer");
-    this.logger = components.logger;
-    this.streams = init.streams.map((s2) => s2.stream);
-    this.peerConnection = init.peerConnection;
-    this.protocol = init.protocol ?? PROTOCOL;
-    this.metrics = init.metrics;
-    this.dataChannelOptions = init.dataChannelOptions ?? {};
-    this.peerConnection.ondatachannel = ({ channel }) => {
-      this.log.trace("incoming datachannel with channel id %d", channel.id);
-      if (channel.label === "init") {
-        this.log.trace("closing init channel");
-        channel.close();
-        return;
-      }
-      const stream = createStream({
-        channel,
-        direction: "inbound",
-        onEnd: /* @__PURE__ */ __name(() => {
-          this.log("incoming channel %s ended with state %s", channel.id, channel.readyState);
-          this.#onStreamEnd(stream, channel);
-        }, "onEnd"),
-        logger: this.logger,
-        ...this.dataChannelOptions
-      });
-      this.streams.push(stream);
-      this.metrics?.increment({ incoming_stream: true });
-      init?.onIncomingStream?.(stream);
-    };
-    if (this.init.streams.length > 0) {
-      queueMicrotask(() => {
-        this.init.streams.forEach((bufferedStream) => {
-          bufferedStream.onEnd = () => {
-            this.log("incoming early channel %s ended with state %s", bufferedStream.channel.id, bufferedStream.channel.readyState);
-            this.#onStreamEnd(bufferedStream.stream, bufferedStream.channel);
-          };
-          this.metrics?.increment({ incoming_stream: true });
-          this.init?.onIncomingStream?.(bufferedStream.stream);
-        });
-      });
-    }
-  }
-  #onStreamEnd(stream, channel) {
-    this.log.trace("stream %s %s %s onEnd", stream.direction, stream.id, stream.protocol);
-    drainAndClose(channel, `${stream.direction} ${stream.id} ${stream.protocol}`, this.dataChannelOptions.drainTimeout, {
-      log: this.log
-    });
-    this.streams = this.streams.filter((s2) => s2.id !== stream.id);
-    this.metrics?.increment({ stream_end: true });
-    this.init?.onStreamEnd?.(stream);
-  }
-  /**
-   * Gracefully close all tracked streams and stop the muxer
-   */
-  async close(options) {
-    try {
-      await Promise.all(this.streams.map(async (stream) => stream.close(options)));
-    } catch (err) {
-      this.abort(err);
-    }
-  }
-  /**
-   * Abort all tracked streams and stop the muxer
-   */
-  abort(err) {
-    for (const stream of this.streams) {
-      stream.abort(err);
-    }
-  }
-  /**
-   * The stream source, a no-op as the transport natively supports multiplexing
-   */
-  source = nopSource();
-  /**
-   * The stream destination, a no-op as the transport natively supports multiplexing
-   */
-  sink = nopSink;
-  newStream() {
-    const channel = this.peerConnection.createDataChannel("");
-    this.log.trace("opened outgoing datachannel with channel id %s", channel.id);
-    const stream = createStream({
-      channel,
-      direction: "outbound",
-      onEnd: /* @__PURE__ */ __name(() => {
-        this.log("outgoing channel %s ended with state %s", channel.id, channel.readyState);
-        this.#onStreamEnd(stream, channel);
-      }, "onEnd"),
-      logger: this.logger,
-      ...this.dataChannelOptions
-    });
-    this.streams.push(stream);
-    this.metrics?.increment({ outgoing_stream: true });
-    return stream;
-  }
-};
-
-// node_modules/@libp2p/webrtc/dist/src/webrtc/index.browser.js
-var RTCPeerConnection = globalThis.RTCPeerConnection;
-var RTCSessionDescription = globalThis.RTCSessionDescription;
-var RTCIceCandidate = globalThis.RTCIceCandidate;
-
-// node_modules/@libp2p/webrtc/dist/src/error.js
-var WebRTCTransportError = class extends Error {
-  static {
-    __name(this, "WebRTCTransportError");
-  }
-  constructor(msg) {
-    super(`WebRTC transport error: ${msg}`);
-    this.name = "WebRTCTransportError";
-  }
-};
-var SDPHandshakeFailedError = class extends WebRTCTransportError {
-  static {
-    __name(this, "SDPHandshakeFailedError");
-  }
-  constructor(message2 = "SDP handshake failed") {
-    super(message2);
-    this.name = "SDPHandshakeFailedError";
-  }
-};
-var DataChannelError = class extends WebRTCTransportError {
-  static {
-    __name(this, "DataChannelError");
-  }
-  constructor(streamLabel, msg) {
-    super(`[stream: ${streamLabel}] data channel error: ${msg}`);
-    this.name = "WebRTC/DataChannelError";
-  }
-};
-var InappropriateMultiaddrError = class extends WebRTCTransportError {
-  static {
-    __name(this, "InappropriateMultiaddrError");
-  }
-  constructor(msg) {
-    super(`There was a problem with the Multiaddr which was passed in: ${msg}`);
-    this.name = "WebRTC/InappropriateMultiaddrError";
-  }
-};
-var InvalidFingerprintError = class extends WebRTCTransportError {
-  static {
-    __name(this, "InvalidFingerprintError");
-  }
-  constructor(fingerprint, source) {
-    super(`Invalid fingerprint "${fingerprint}" within ${source}`);
-    this.name = "WebRTC/InvalidFingerprintError";
-  }
-};
-var UnimplementedError = class extends WebRTCTransportError {
-  static {
-    __name(this, "UnimplementedError");
-  }
-  constructor(methodName) {
-    super(`A method (${methodName}) was called though it has been intentionally left unimplemented.`);
-    this.name = "WebRTC/UnimplementedError";
-  }
-};
-var UnsupportedHashAlgorithmError = class extends WebRTCTransportError {
-  static {
-    __name(this, "UnsupportedHashAlgorithmError");
-  }
-  constructor(algo) {
-    super(`unsupported hash algorithm code: ${algo} please see the codes at https://github.com/multiformats/multicodec/blob/master/table.csv `);
-    this.name = "WebRTC/UnsupportedHashAlgorithmError";
-  }
-};
-
-// node_modules/@libp2p/webrtc/dist/src/private-to-private/pb/message.js
-var Message2;
-(function(Message4) {
-  let Type;
-  (function(Type2) {
-    Type2["SDP_OFFER"] = "SDP_OFFER";
-    Type2["SDP_ANSWER"] = "SDP_ANSWER";
-    Type2["ICE_CANDIDATE"] = "ICE_CANDIDATE";
-  })(Type = Message4.Type || (Message4.Type = {}));
-  let __TypeValues;
-  (function(__TypeValues2) {
-    __TypeValues2[__TypeValues2["SDP_OFFER"] = 0] = "SDP_OFFER";
-    __TypeValues2[__TypeValues2["SDP_ANSWER"] = 1] = "SDP_ANSWER";
-    __TypeValues2[__TypeValues2["ICE_CANDIDATE"] = 2] = "ICE_CANDIDATE";
-  })(__TypeValues || (__TypeValues = {}));
-  (function(Type2) {
-    Type2.codec = () => {
-      return enumeration(__TypeValues);
-    };
-  })(Type = Message4.Type || (Message4.Type = {}));
-  let _codec;
-  Message4.codec = () => {
-    if (_codec == null) {
-      _codec = message((obj, w2, opts = {}) => {
-        if (opts.lengthDelimited !== false) {
-          w2.fork();
-        }
-        if (obj.type != null) {
-          w2.uint32(8);
-          Message4.Type.codec().encode(obj.type, w2);
-        }
-        if (obj.data != null) {
-          w2.uint32(18);
-          w2.string(obj.data);
-        }
-        if (opts.lengthDelimited !== false) {
-          w2.ldelim();
-        }
-      }, (reader, length4, opts = {}) => {
-        const obj = {};
-        const end = length4 == null ? reader.len : reader.pos + length4;
-        while (reader.pos < end) {
-          const tag = reader.uint32();
-          switch (tag >>> 3) {
-            case 1: {
-              obj.type = Message4.Type.codec().decode(reader);
-              break;
-            }
-            case 2: {
-              obj.data = reader.string();
-              break;
-            }
-            default: {
-              reader.skipType(tag & 7);
-              break;
-            }
-          }
-        }
-        return obj;
-      });
-    }
-    return _codec;
-  };
-  Message4.encode = (obj) => {
-    return encodeMessage(obj, Message4.codec());
-  };
-  Message4.decode = (buf, opts) => {
-    return decodeMessage(buf, Message4.codec(), opts);
-  };
-})(Message2 || (Message2 = {}));
-
-// node_modules/@libp2p/webrtc/dist/src/private-to-private/util.js
-var readCandidatesUntilConnected = /* @__PURE__ */ __name(async (pc, stream, options) => {
-  try {
-    const connectedPromise = pDefer();
-    resolveOnConnected(pc, connectedPromise);
-    while (true) {
-      const message2 = await Promise.race([
-        connectedPromise.promise,
-        stream.read({
-          signal: options.signal
-        }).catch(() => {
-        })
-      ]);
-      if (message2 == null) {
-        options.signal?.throwIfAborted();
-        break;
-      }
-      if (message2.type !== Message2.Type.ICE_CANDIDATE) {
-        throw new InvalidMessageError("ICE candidate message expected");
-      }
-      const candidateInit = JSON.parse(message2.data ?? "null");
-      if (candidateInit === "" || candidateInit === null) {
-        options.onProgress?.(new CustomProgressEvent("webrtc:end-of-ice-candidates"));
-        options.log.trace("end-of-candidates received");
-        continue;
-      }
-      const candidate = new RTCIceCandidate(candidateInit);
-      options.log.trace("%s received new ICE candidate %o", options.direction, candidateInit);
-      try {
-        options.onProgress?.(new CustomProgressEvent("webrtc:add-ice-candidate", candidate.candidate));
-        await pc.addIceCandidate(candidate);
-      } catch (err) {
-        options.log.error("%s bad candidate received", options.direction, candidateInit, err);
-      }
-    }
-  } catch (err) {
-    options.log.error("%s error parsing ICE candidate", options.direction, err);
-    if (options.signal?.aborted === true && getConnectionState(pc) !== "connected") {
-      throw err;
-    }
-  }
-}, "readCandidatesUntilConnected");
-function getConnectionState(pc) {
-  return isFirefox ? pc.iceConnectionState : pc.connectionState;
-}
-__name(getConnectionState, "getConnectionState");
-function resolveOnConnected(pc, promise) {
-  pc[isFirefox ? "oniceconnectionstatechange" : "onconnectionstatechange"] = (_) => {
-    switch (getConnectionState(pc)) {
-      case "connected":
-        promise.resolve();
-        break;
-      case "failed":
-      case "disconnected":
-      case "closed":
-        promise.reject(new ConnectionFailedError("RTCPeerConnection was closed"));
-        break;
-      default:
-        break;
-    }
-  };
-}
-__name(resolveOnConnected, "resolveOnConnected");
-
-// node_modules/@libp2p/webrtc/dist/src/private-to-private/initiate-connection.js
-async function initiateConnection({ rtcConfiguration, dataChannel, signal, metrics, multiaddr: ma, connectionManager, transportManager, log: log4, logger: logger3, onProgress }) {
-  const { baseAddr } = splitAddr(ma);
-  metrics?.dialerEvents.increment({ open: true });
-  log4.trace("dialing base address: %a", baseAddr);
-  const relayPeer = baseAddr.getPeerId();
-  if (relayPeer == null) {
-    throw new InvalidParametersError("Relay peer was missing");
-  }
-  const connections = connectionManager.getConnections(peerIdFromString(relayPeer));
-  let connection;
-  let shouldCloseConnection = false;
-  if (connections.length === 0) {
-    onProgress?.(new CustomProgressEvent("webrtc:dial-relay"));
-    connection = await transportManager.dial(baseAddr, {
-      signal,
-      onProgress
-    });
-    shouldCloseConnection = true;
-  } else {
-    onProgress?.(new CustomProgressEvent("webrtc:reuse-relay-connection"));
-    connection = connections[0];
-  }
-  try {
-    onProgress?.(new CustomProgressEvent("webrtc:open-signaling-stream"));
-    const stream = await connection.newStream(SIGNALING_PROTO_ID, {
-      signal,
-      runOnLimitedConnection: true
-    });
-    const messageStream = pbStream(stream).pb(Message2);
-    const peerConnection = new RTCPeerConnection(rtcConfiguration);
-    const muxerFactory = new DataChannelMuxerFactory({
-      logger: logger3
-    }, {
-      peerConnection,
-      dataChannelOptions: dataChannel
-    });
-    try {
-      const channel = peerConnection.createDataChannel("init");
-      peerConnection.onicecandidate = ({ candidate }) => {
-        const data = JSON.stringify(candidate?.toJSON() ?? null);
-        log4.trace("initiator sending ICE candidate %o", candidate);
-        void messageStream.write({
-          type: Message2.Type.ICE_CANDIDATE,
-          data
-        }, {
-          signal
-        }).catch((err) => {
-          log4.error("error sending ICE candidate", err);
-        });
-      };
-      peerConnection.onicecandidateerror = (event) => {
-        log4.error("initiator ICE candidate error", event);
-      };
-      const offerSdp = await peerConnection.createOffer().catch((err) => {
-        log4.error("could not execute createOffer", err);
-        throw new SDPHandshakeFailedError("Failed to set createOffer");
-      });
-      log4.trace("initiator send SDP offer %s", offerSdp.sdp);
-      onProgress?.(new CustomProgressEvent("webrtc:send-sdp-offer"));
-      await messageStream.write({ type: Message2.Type.SDP_OFFER, data: offerSdp.sdp }, {
-        signal
-      });
-      await peerConnection.setLocalDescription(offerSdp).catch((err) => {
-        log4.error("could not execute setLocalDescription", err);
-        throw new SDPHandshakeFailedError("Failed to set localDescription");
-      });
-      onProgress?.(new CustomProgressEvent("webrtc:read-sdp-answer"));
-      log4.trace("initiator read SDP answer");
-      const answerMessage = await messageStream.read({
-        signal
-      });
-      if (answerMessage.type !== Message2.Type.SDP_ANSWER) {
-        throw new SDPHandshakeFailedError("Remote should send an SDP answer");
-      }
-      log4.trace("initiator received SDP answer %s", answerMessage.data);
-      const answerSdp = new RTCSessionDescription({ type: "answer", sdp: answerMessage.data });
-      await peerConnection.setRemoteDescription(answerSdp).catch((err) => {
-        log4.error("could not execute setRemoteDescription", err);
-        throw new SDPHandshakeFailedError("Failed to set remoteDescription");
-      });
-      log4.trace("initiator read candidates until connected");
-      onProgress?.(new CustomProgressEvent("webrtc:read-ice-candidates"));
-      await readCandidatesUntilConnected(peerConnection, messageStream, {
-        direction: "initiator",
-        signal,
-        log: log4,
-        onProgress
-      });
-      log4.trace("initiator connected, closing init channel");
-      channel.close();
-      onProgress?.(new CustomProgressEvent("webrtc:close-signaling-stream"));
-      log4.trace("closing signaling channel");
-      await stream.close({
-        signal
-      });
-      log4.trace("initiator connected to remote address %s", ma);
-      return {
-        remoteAddress: ma,
-        peerConnection,
-        muxerFactory
-      };
-    } catch (err) {
-      log4.error("outgoing signaling error", err);
-      peerConnection.close();
-      stream.abort(err);
-      throw err;
-    } finally {
-      peerConnection.onicecandidate = null;
-      peerConnection.onicecandidateerror = null;
-    }
-  } finally {
-    if (shouldCloseConnection) {
-      try {
-        await connection.close({
-          signal
-        });
-      } catch (err) {
-        connection.abort(err);
-      }
-    }
-  }
-}
-__name(initiateConnection, "initiateConnection");
-
-// node_modules/@libp2p/webrtc/dist/src/private-to-private/listener.js
-var WebRTCPeerListener = class extends TypedEventEmitter {
-  static {
-    __name(this, "WebRTCPeerListener");
-  }
-  peerId;
-  transportManager;
-  shutdownController;
-  constructor(components, init) {
-    super();
-    this.peerId = components.peerId;
-    this.transportManager = components.transportManager;
-    this.shutdownController = init.shutdownController;
-  }
-  async listen() {
-    this.safeDispatchEvent("listening", {});
-  }
-  getAddrs() {
-    return this.transportManager.getListeners().filter((l) => l !== this).map((l) => l.getAddrs().filter((ma) => Circuit.matches(ma)).map((ma) => {
-      return ma.encapsulate(`/webrtc/p2p/${this.peerId}`);
-    })).flat();
-  }
-  async close() {
-    this.shutdownController.abort();
-    this.safeDispatchEvent("close", {});
-  }
-};
-
-// node_modules/@libp2p/webrtc/dist/src/private-to-private/signaling-stream-handler.js
-async function handleIncomingStream({ peerConnection, stream, signal, connection, log: log4 }) {
-  log4.trace("new inbound signaling stream");
-  const messageStream = pbStream(stream).pb(Message2);
-  try {
-    peerConnection.onicecandidate = ({ candidate }) => {
-      const data = JSON.stringify(candidate?.toJSON() ?? null);
-      log4.trace("recipient sending ICE candidate %s", data);
-      messageStream.write({
-        type: Message2.Type.ICE_CANDIDATE,
-        data
-      }, {
-        signal
-      }).catch((err) => {
-        log4.error("error sending ICE candidate", err);
-      });
-    };
-    log4.trace("recipient read SDP offer");
-    const pbOffer = await messageStream.read({
-      signal
-    });
-    if (pbOffer.type !== Message2.Type.SDP_OFFER) {
-      throw new SDPHandshakeFailedError(`expected message type SDP_OFFER, received: ${pbOffer.type ?? "undefined"} `);
-    }
-    log4.trace("recipient received SDP offer %s", pbOffer.data);
-    const offer = new RTCSessionDescription({
-      type: "offer",
-      sdp: pbOffer.data
-    });
-    await peerConnection.setRemoteDescription(offer).catch((err) => {
-      log4.error("could not execute setRemoteDescription", err);
-      throw new SDPHandshakeFailedError("Failed to set remoteDescription");
-    });
-    const answer = await peerConnection.createAnswer().catch((err) => {
-      log4.error("could not execute createAnswer", err);
-      throw new SDPHandshakeFailedError("Failed to create answer");
-    });
-    log4.trace("recipient send SDP answer %s", answer.sdp);
-    await messageStream.write({ type: Message2.Type.SDP_ANSWER, data: answer.sdp }, {
-      signal
-    });
-    await peerConnection.setLocalDescription(answer).catch((err) => {
-      log4.error("could not execute setLocalDescription", err);
-      throw new SDPHandshakeFailedError("Failed to set localDescription");
-    });
-    log4.trace("recipient read candidates until connected");
-    await readCandidatesUntilConnected(peerConnection, messageStream, {
-      direction: "recipient",
-      signal,
-      log: log4
-    });
-  } catch (err) {
-    if (getConnectionState(peerConnection) !== "connected") {
-      log4.error("error while handling signaling stream from peer %a", connection.remoteAddr, err);
-      peerConnection.close();
-      throw err;
-    } else {
-      log4("error while handling signaling stream from peer %a, ignoring as the RTCPeerConnection is already connected", connection.remoteAddr, err);
-    }
-  }
-  const remoteAddress = multiaddr(`/webrtc/p2p/${connection.remoteAddr.getPeerId()}`);
-  log4.trace("recipient connected to remote address %s", remoteAddress);
-  return { remoteAddress };
-}
-__name(handleIncomingStream, "handleIncomingStream");
-
-// node_modules/@libp2p/webrtc/dist/src/private-to-private/transport.js
-var WEBRTC_TRANSPORT = "/webrtc";
-var CIRCUIT_RELAY_TRANSPORT = "/p2p-circuit";
-var SIGNALING_PROTO_ID = "/webrtc-signaling/0.0.1";
-var INBOUND_CONNECTION_TIMEOUT = 30 * 1e3;
-var WebRTCTransport = class {
-  static {
-    __name(this, "WebRTCTransport");
-  }
-  components;
-  init;
-  log;
-  _started = false;
-  metrics;
-  shutdownController;
-  constructor(components, init = {}) {
-    this.components = components;
-    this.init = init;
-    this.log = components.logger.forComponent("libp2p:webrtc");
-    this.shutdownController = new AbortController();
-    setMaxListeners2(Infinity, this.shutdownController.signal);
-    if (components.metrics != null) {
-      this.metrics = {
-        dialerEvents: components.metrics.registerCounterGroup("libp2p_webrtc_dialer_events_total", {
-          label: "event",
-          help: "Total count of WebRTC dialer events by type"
-        }),
-        listenerEvents: components.metrics.registerCounterGroup("libp2p_webrtc_listener_events_total", {
-          label: "event",
-          help: "Total count of WebRTC listener events by type"
-        })
-      };
-    }
-  }
-  [transportSymbol] = true;
-  [Symbol.toStringTag] = "@libp2p/webrtc";
-  [serviceCapabilities] = [
-    "@libp2p/transport"
-  ];
-  [serviceDependencies] = [
-    "@libp2p/identify",
-    "@libp2p/circuit-relay-v2-transport"
-  ];
-  isStarted() {
-    return this._started;
-  }
-  async start() {
-    await this.components.registrar.handle(SIGNALING_PROTO_ID, (data) => {
-      this._onProtocol(data).catch((err) => {
-        this.log.error("failed to handle incoming connect from %p", data.connection.remotePeer, err);
-      });
-    }, {
-      runOnLimitedConnection: true
-    });
-    this._started = true;
-  }
-  async stop() {
-    await this.components.registrar.unhandle(SIGNALING_PROTO_ID);
-    this._started = false;
-  }
-  createListener(options) {
-    return new WebRTCPeerListener(this.components, {
-      shutdownController: this.shutdownController
-    });
-  }
-  /**
-   * Filter check for all Multiaddrs that this transport can listen on
-   */
-  listenFilter(multiaddrs) {
-    return multiaddrs.filter(WebRTC2.exactMatch);
-  }
-  /**
-   * Filter check for all Multiaddrs that this transport can dial
-   */
-  dialFilter(multiaddrs) {
-    return this.listenFilter(multiaddrs);
-  }
-  /*
-   * dial connects to a remote via the circuit relay or any other protocol
-   * and proceeds to upgrade to a webrtc connection.
-   * multiaddr of the form: <multiaddr>/webrtc/p2p/<destination-peer>
-   * For a circuit relay, this will be of the form
-   * <relay address>/p2p/<relay-peer>/p2p-circuit/webrtc/p2p/<destination-peer>
-  */
-  async dial(ma, options) {
-    this.log.trace("dialing address: %a", ma);
-    const { remoteAddress, peerConnection, muxerFactory } = await initiateConnection({
-      rtcConfiguration: await getRtcConfiguration(this.init.rtcConfiguration),
-      dataChannel: this.init.dataChannel,
-      multiaddr: ma,
-      dataChannelOptions: this.init.dataChannel,
-      signal: options.signal,
-      connectionManager: this.components.connectionManager,
-      transportManager: this.components.transportManager,
-      log: this.log,
-      logger: this.components.logger,
-      onProgress: options.onProgress
-    });
-    const webRTCConn = new WebRTCMultiaddrConnection(this.components, {
-      peerConnection,
-      timeline: { open: Date.now() },
-      remoteAddr: remoteAddress,
-      metrics: this.metrics?.dialerEvents
-    });
-    const connection = await options.upgrader.upgradeOutbound(webRTCConn, {
-      skipProtection: true,
-      skipEncryption: true,
-      muxerFactory,
-      onProgress: options.onProgress
-    });
-    this._closeOnShutdown(peerConnection, webRTCConn);
-    return connection;
-  }
-  async _onProtocol({ connection, stream }) {
-    const signal = AbortSignal.timeout(this.init.inboundConnectionTimeout ?? INBOUND_CONNECTION_TIMEOUT);
-    const peerConnection = new RTCPeerConnection(await getRtcConfiguration(this.init.rtcConfiguration));
-    const muxerFactory = new DataChannelMuxerFactory(this.components, {
-      peerConnection,
-      dataChannelOptions: this.init.dataChannel
-    });
-    try {
-      const { remoteAddress } = await handleIncomingStream({
-        peerConnection,
-        connection,
-        stream,
-        signal,
-        log: this.log
-      });
-      await stream.close({
-        signal
-      });
-      const webRTCConn = new WebRTCMultiaddrConnection(this.components, {
-        peerConnection,
-        timeline: { open: (/* @__PURE__ */ new Date()).getTime() },
-        remoteAddr: remoteAddress,
-        metrics: this.metrics?.listenerEvents
-      });
-      await this.components.upgrader.upgradeInbound(webRTCConn, {
-        skipEncryption: true,
-        skipProtection: true,
-        muxerFactory
-      });
-      this._closeOnShutdown(peerConnection, webRTCConn);
-    } catch (err) {
-      this.log.error("incoming signaling error", err);
-      peerConnection.close();
-      stream.abort(err);
-      throw err;
-    }
-  }
-  _closeOnShutdown(pc, webRTCConn) {
-    const shutDownListener = /* @__PURE__ */ __name(() => {
-      webRTCConn.close().catch((err) => {
-        this.log.error("could not close WebRTCMultiaddrConnection", err);
-      });
-    }, "shutDownListener");
-    this.shutdownController.signal.addEventListener("abort", shutDownListener);
-    pc.addEventListener("close", () => {
-      this.shutdownController.signal.removeEventListener("abort", shutDownListener);
-    });
-  }
-};
-function splitAddr(ma) {
-  const addrs = ma.toString().split(WEBRTC_TRANSPORT + "/");
-  if (addrs.length !== 2) {
-    throw new InvalidParametersError("webrtc protocol was not present in multiaddr");
-  }
-  if (!addrs[0].includes(CIRCUIT_RELAY_TRANSPORT)) {
-    throw new InvalidParametersError("p2p-circuit protocol was not present in multiaddr");
-  }
-  let remoteAddr = multiaddr(addrs[0]);
-  const destination = multiaddr("/" + addrs[1]);
-  const destinationIdString = destination.getPeerId();
-  if (destinationIdString == null) {
-    throw new InvalidParametersError("destination peer id was missing");
-  }
-  const lastProtoInRemote = remoteAddr.protos().pop();
-  if (lastProtoInRemote === void 0) {
-    throw new InvalidParametersError("invalid multiaddr");
-  }
-  if (lastProtoInRemote.name !== "p2p") {
-    remoteAddr = remoteAddr.encapsulate(`/p2p/${destinationIdString}`);
-  }
-  return { baseAddr: remoteAddr, peerId: peerIdFromString(destinationIdString) };
-}
-__name(splitAddr, "splitAddr");
-
-// node_modules/@libp2p/webrtc/dist/src/private-to-public/sdp.js
-var mbdecoder = Object.values(bases).map((b) => b.decoder).reduce((d2, b) => d2.or(b));
-function getLocalFingerprint(pc, options) {
-  const localCert = pc.getConfiguration().certificates?.at(0);
-  if (localCert?.getFingerprints == null) {
-    options.log.trace("fetching fingerprint from local SDP");
-    const localDescription = pc.localDescription;
-    if (localDescription == null) {
-      return void 0;
-    }
-    return getFingerprintFromSdp(localDescription.sdp);
-  }
-  options.log.trace("fetching fingerprint from local certificate");
-  if (localCert.getFingerprints().length === 0) {
-    return void 0;
-  }
-  const fingerprint = localCert.getFingerprints()[0].value;
-  if (fingerprint == null) {
-    throw new InvalidFingerprintError("", "no fingerprint on local certificate");
-  }
-  return fingerprint;
-}
-__name(getLocalFingerprint, "getLocalFingerprint");
-var fingerprintRegex = /^a=fingerprint:(?:\w+-[0-9]+)\s(?<fingerprint>(:?[0-9a-fA-F]{2})+)$/m;
-function getFingerprintFromSdp(sdp) {
-  const searchResult = sdp.match(fingerprintRegex);
-  return searchResult?.groups?.fingerprint;
-}
-__name(getFingerprintFromSdp, "getFingerprintFromSdp");
-function ipv(ma) {
-  for (const proto of ma.protoNames()) {
-    if (proto.startsWith("ip")) {
-      return proto.toUpperCase();
-    }
-  }
-  return "IP6";
-}
-__name(ipv, "ipv");
-function certhash2(ma) {
-  const tups = ma.stringTuples();
-  const certhash3 = tups.filter((tup) => tup[0] === CERTHASH_CODE).map((tup) => tup[1])[0];
-  if (certhash3 === void 0 || certhash3 === "") {
-    throw new InvalidParametersError(`Couldn't find a certhash component of multiaddr: ${ma.toString()}`);
-  }
-  return certhash3;
-}
-__name(certhash2, "certhash");
-function decodeCerthash(certhash3) {
-  return digest_exports.decode(mbdecoder.decode(certhash3));
-}
-__name(decodeCerthash, "decodeCerthash");
-function ma2Fingerprint(ma) {
-  const mhdecoded = decodeCerthash(certhash2(ma));
-  const prefix = toSupportedHashFunction(mhdecoded.code);
-  const fingerprint = mhdecoded.digest.reduce((str, byte) => str + byte.toString(16).padStart(2, "0"), "");
-  const sdp = fingerprint.match(/.{1,2}/g);
-  if (sdp == null) {
-    throw new InvalidFingerprintError(fingerprint, ma.toString());
-  }
-  return [`${prefix} ${sdp.join(":").toUpperCase()}`, fingerprint];
-}
-__name(ma2Fingerprint, "ma2Fingerprint");
-function toSupportedHashFunction(code2) {
-  switch (code2) {
-    case 17:
-      return "SHA-1";
-    case 18:
-      return "SHA-256";
-    case 19:
-      return "SHA-512";
-    default:
-      throw new UnsupportedHashAlgorithmError(code2);
-  }
-}
-__name(toSupportedHashFunction, "toSupportedHashFunction");
-function ma2sdp(ma, ufrag) {
-  const { host, port } = ma.toOptions();
-  const ipVersion = ipv(ma);
-  const [CERTFP] = ma2Fingerprint(ma);
-  return `v=0
-o=- 0 0 IN ${ipVersion} ${host}
-s=-
-c=IN ${ipVersion} ${host}
-t=0 0
-a=ice-lite
-m=application ${port} UDP/DTLS/SCTP webrtc-datachannel
-a=mid:0
-a=setup:passive
-a=ice-ufrag:${ufrag}
-a=ice-pwd:${ufrag}
-a=fingerprint:${CERTFP}
-a=sctp-port:5000
-a=max-message-size:${MAX_MESSAGE_SIZE}
-a=candidate:1467250027 1 UDP 1467250027 ${host} ${port} typ host\r
-`;
-}
-__name(ma2sdp, "ma2sdp");
-function fromMultiAddr(ma, ufrag) {
-  return {
-    type: "answer",
-    sdp: ma2sdp(ma, ufrag)
-  };
-}
-__name(fromMultiAddr, "fromMultiAddr");
-function munge(desc, ufrag) {
-  if (desc.sdp === void 0) {
-    throw new InvalidParametersError("Can't munge a missing SDP");
-  }
-  desc.sdp = desc.sdp.replace(/\na=ice-ufrag:[^\n]*\n/, "\na=ice-ufrag:" + ufrag + "\n").replace(/\na=ice-pwd:[^\n]*\n/, "\na=ice-pwd:" + ufrag + "\n");
-  return desc;
-}
-__name(munge, "munge");
-
-// node_modules/@libp2p/webrtc/dist/src/private-to-public/util.js
-var charset = Array.from("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/");
-var genUfrag = /* @__PURE__ */ __name((len) => [...Array(len)].map(() => charset.at(Math.floor(Math.random() * charset.length))).join(""), "genUfrag");
-
-// node_modules/@libp2p/webrtc/dist/src/private-to-public/transport.js
-var HANDSHAKE_TIMEOUT_MS = 1e4;
-var WEBRTC_CODE = getProtocol("webrtc-direct").code;
-var CERTHASH_CODE = getProtocol("certhash").code;
-var WebRTCDirectTransport = class {
-  static {
-    __name(this, "WebRTCDirectTransport");
-  }
-  log;
-  metrics;
-  components;
-  init;
-  constructor(components, init = {}) {
-    this.log = components.logger.forComponent("libp2p:webrtc-direct");
-    this.components = components;
-    this.init = init;
-    if (components.metrics != null) {
-      this.metrics = {
-        dialerEvents: components.metrics.registerCounterGroup("libp2p_webrtc-direct_dialer_events_total", {
-          label: "event",
-          help: "Total count of WebRTC-direct dial events by type"
-        })
-      };
-    }
-  }
-  [transportSymbol] = true;
-  [Symbol.toStringTag] = "@libp2p/webrtc-direct";
-  [serviceCapabilities] = [
-    "@libp2p/transport"
-  ];
-  /**
-   * Dial a given multiaddr
-   */
-  async dial(ma, options) {
-    const rawConn = await this._connect(ma, options);
-    this.log("dialing address: %a", ma);
-    return rawConn;
-  }
-  /**
-   * Create transport listeners no supported by browsers
-   */
-  createListener(options) {
-    throw new UnimplementedError("WebRTCTransport.createListener");
-  }
-  /**
-   * Filter check for all Multiaddrs that this transport can listen on
-   */
-  listenFilter(multiaddrs) {
-    return multiaddrs.filter(WebRTCDirect2.exactMatch);
-  }
-  /**
-   * Filter check for all Multiaddrs that this transport can dial
-   */
-  dialFilter(multiaddrs) {
-    return this.listenFilter(multiaddrs);
-  }
-  /**
-   * Connect to a peer using a multiaddr
-   */
-  async _connect(ma, options) {
-    const controller = new AbortController();
-    const signal = controller.signal;
-    const remotePeerString = ma.getPeerId();
-    if (remotePeerString === null) {
-      throw new InappropriateMultiaddrError("we need to have the remote's PeerId");
-    }
-    const theirPeerId = peerIdFromString(remotePeerString);
-    const remoteCerthash = decodeCerthash(certhash2(ma));
-    const certificate = await RTCPeerConnection.generateCertificate({
-      name: "ECDSA",
-      namedCurve: "P-256",
-      hash: toSupportedHashFunction(remoteCerthash.code)
-    });
-    const peerConnection = new RTCPeerConnection({
-      ...await getRtcConfiguration(this.init.rtcConfiguration),
-      certificates: [certificate]
-    });
-    try {
-      const dataChannelOpenPromise = new Promise((resolve, reject) => {
-        const handshakeDataChannel2 = peerConnection.createDataChannel("", { negotiated: true, id: 0 });
-        const handshakeTimeout = setTimeout(() => {
-          const error = `Data channel was never opened: state: ${handshakeDataChannel2.readyState}`;
-          this.log.error(error);
-          this.metrics?.dialerEvents.increment({ open_error: true });
-          reject(new DataChannelError("data", error));
-        }, HANDSHAKE_TIMEOUT_MS);
-        handshakeDataChannel2.onopen = (_) => {
-          clearTimeout(handshakeTimeout);
-          resolve(handshakeDataChannel2);
-        };
-        handshakeDataChannel2.onerror = (event) => {
-          clearTimeout(handshakeTimeout);
-          const errorTarget = event.target?.toString() ?? "not specified";
-          const error = `Error opening a data channel for handshaking: ${errorTarget}`;
-          this.log.error(error);
-          this.metrics?.dialerEvents.increment({ unknown_error: true });
-          reject(new DataChannelError("data", error));
-        };
-      });
-      const ufrag = "libp2p+webrtc+v1/" + genUfrag(32);
-      const offerSdp = await peerConnection.createOffer();
-      const mungedOfferSdp = munge(offerSdp, ufrag);
-      await peerConnection.setLocalDescription(mungedOfferSdp);
-      const answerSdp = fromMultiAddr(ma, ufrag);
-      await peerConnection.setRemoteDescription(answerSdp);
-      const handshakeDataChannel = await dataChannelOpenPromise;
-      const fingerprintsPrologue = this.generateNoisePrologue(peerConnection, remoteCerthash.code, ma);
-      const connectionEncrypter = noise({ prologueBytes: fingerprintsPrologue })(this.components);
-      const wrappedChannel = createStream({
-        channel: handshakeDataChannel,
-        direction: "inbound",
-        logger: this.components.logger,
-        ...this.init.dataChannel ?? {}
-      });
-      const wrappedDuplex = {
-        ...wrappedChannel,
-        sink: wrappedChannel.sink.bind(wrappedChannel),
-        source: async function* () {
-          for await (const list of wrappedChannel.source) {
-            for (const buf of list) {
-              yield buf;
-            }
-          }
-        }()
-      };
-      const maConn = new WebRTCMultiaddrConnection(this.components, {
-        peerConnection,
-        remoteAddr: ma,
-        timeline: {
-          open: Date.now()
-        },
-        metrics: this.metrics?.dialerEvents
-      });
-      const eventListeningName = isFirefox ? "iceconnectionstatechange" : "connectionstatechange";
-      peerConnection.addEventListener(eventListeningName, () => {
-        switch (peerConnection.connectionState) {
-          case "failed":
-          case "disconnected":
-          case "closed":
-            maConn.close().catch((err) => {
-              this.log.error("error closing connection", err);
-            }).finally(() => {
-              controller.abort();
-            });
-            break;
-          default:
-            break;
-        }
-      }, { signal });
-      this.metrics?.dialerEvents.increment({ peer_connection: true });
-      const muxerFactory = new DataChannelMuxerFactory(this.components, {
-        peerConnection,
-        metrics: this.metrics?.dialerEvents,
-        dataChannelOptions: this.init.dataChannel
-      });
-      await connectionEncrypter.secureInbound(wrappedDuplex, {
-        signal,
-        remotePeer: theirPeerId
-      });
-      return await options.upgrader.upgradeOutbound(maConn, { skipProtection: true, skipEncryption: true, muxerFactory });
-    } catch (err) {
-      peerConnection.close();
-      throw err;
-    }
-  }
-  /**
-   * Generate a noise prologue from the peer connection's certificate.
-   * noise prologue = bytes('libp2p-webrtc-noise:') + noise-responder fingerprint + noise-initiator fingerprint
-   */
-  generateNoisePrologue(pc, hashCode, ma) {
-    if (pc.getConfiguration().certificates?.length === 0) {
-      throw new InvalidParametersError("no local certificate");
-    }
-    const localFingerprint = getLocalFingerprint(pc, {
-      log: this.log
-    });
-    if (localFingerprint == null) {
-      throw new InvalidParametersError("no local fingerprint found");
-    }
-    const localFpString = localFingerprint.trim().toLowerCase().replaceAll(":", "");
-    const localFpArray = fromString2(localFpString, "hex");
-    const local = create(hashCode, localFpArray);
-    const remote = mbdecoder.decode(certhash2(ma));
-    const prefix = fromString2("libp2p-webrtc-noise:");
-    return concat2([prefix, local.bytes, remote]);
-  }
-};
-
-// node_modules/@libp2p/webrtc/dist/src/index.js
-function webRTCDirect(init) {
-  return (components) => new WebRTCDirectTransport(components, init);
-}
-__name(webRTCDirect, "webRTCDirect");
-function webRTC(init) {
-  return (components) => new WebRTCTransport(components, init);
-}
-__name(webRTC, "webRTC");
-
 // node_modules/@multiformats/multiaddr-to-uri/dist/src/index.js
 var ASSUME_HTTP_CODES = [
   getProtocol("tcp").code,
@@ -23341,7 +21393,7 @@ var second2 = 1e3;
 var minute2 = 60 * second2;
 var hour = 60 * minute2;
 var MAX_RECORD_AGE = 36 * hour;
-var PROTOCOL2 = "/ipfs/kad/1.0.0";
+var PROTOCOL = "/ipfs/kad/1.0.0";
 var RECORD_KEY_PREFIX = "/dht/record";
 var PROVIDER_KEY_PREFIX = "/dht/provider";
 var PROVIDERS_LRU_CACHE_SIZE = 256;
@@ -23888,10 +21940,10 @@ var PeerInfo;
     return decodeMessage(buf, PeerInfo2.codec(), opts);
   };
 })(PeerInfo || (PeerInfo = {}));
-var Message3;
-(function(Message4) {
+var Message;
+(function(Message2) {
   let _codec;
-  Message4.codec = () => {
+  Message2.codec = () => {
     if (_codec == null) {
       _codec = message((obj, w2, opts = {}) => {
         if (opts.lengthDelimited !== false) {
@@ -23983,13 +22035,13 @@ var Message3;
     }
     return _codec;
   };
-  Message4.encode = (obj) => {
-    return encodeMessage(obj, Message4.codec());
+  Message2.encode = (obj) => {
+    return encodeMessage(obj, Message2.codec());
   };
-  Message4.decode = (buf, opts) => {
-    return decodeMessage(buf, Message4.codec(), opts);
+  Message2.decode = (buf, opts) => {
+    return decodeMessage(buf, Message2.codec(), opts);
   };
-})(Message3 || (Message3 = {}));
+})(Message || (Message = {}));
 
 // node_modules/@libp2p/kad-dht/dist/src/query/events.js
 function sendQueryEvent(fields, options = {}) {
@@ -25193,7 +23245,7 @@ var Network = class extends TypedEventEmitter {
    */
   async _writeMessage(stream, msg, options) {
     const pb = pbStream(stream);
-    await pb.write(msg, Message3, options);
+    await pb.write(msg, Message, options);
     await pb.unwrap().close(options);
   }
   /**
@@ -25203,8 +23255,8 @@ var Network = class extends TypedEventEmitter {
    */
   async _writeReadMessage(stream, msg, options) {
     const pb = pbStream(stream);
-    await pb.write(msg, Message3, options);
-    const message2 = await pb.read(Message3, options);
+    await pb.write(msg, Message, options);
+    const message2 = await pb.read(Message, options);
     await pb.unwrap().close(options);
     message2.closer.forEach((peerData) => {
       this.safeDispatchEvent("peer", {
@@ -25563,6 +23615,97 @@ var import_hashlru = __toESM(require_hashlru(), 1);
 
 // node_modules/p-queue/node_modules/eventemitter3/index.mjs
 var import_index8 = __toESM(require_eventemitter3(), 1);
+
+// node_modules/p-timeout/index.js
+var TimeoutError2 = class extends Error {
+  static {
+    __name(this, "TimeoutError");
+  }
+  constructor(message2) {
+    super(message2);
+    this.name = "TimeoutError";
+  }
+};
+var AbortError6 = class extends Error {
+  static {
+    __name(this, "AbortError");
+  }
+  constructor(message2) {
+    super();
+    this.name = "AbortError";
+    this.message = message2;
+  }
+};
+var getDOMException = /* @__PURE__ */ __name((errorMessage) => globalThis.DOMException === void 0 ? new AbortError6(errorMessage) : new DOMException(errorMessage), "getDOMException");
+var getAbortedReason = /* @__PURE__ */ __name((signal) => {
+  const reason = signal.reason === void 0 ? getDOMException("This operation was aborted.") : signal.reason;
+  return reason instanceof Error ? reason : getDOMException(reason);
+}, "getAbortedReason");
+function pTimeout(promise, options) {
+  const {
+    milliseconds,
+    fallback,
+    message: message2,
+    customTimers = { setTimeout, clearTimeout }
+  } = options;
+  let timer;
+  const wrappedPromise = new Promise((resolve, reject) => {
+    if (typeof milliseconds !== "number" || Math.sign(milliseconds) !== 1) {
+      throw new TypeError(`Expected \`milliseconds\` to be a positive number, got \`${milliseconds}\``);
+    }
+    if (options.signal) {
+      const { signal } = options;
+      if (signal.aborted) {
+        reject(getAbortedReason(signal));
+      }
+      signal.addEventListener("abort", () => {
+        reject(getAbortedReason(signal));
+      });
+    }
+    if (milliseconds === Number.POSITIVE_INFINITY) {
+      promise.then(resolve, reject);
+      return;
+    }
+    const timeoutError = new TimeoutError2();
+    timer = customTimers.setTimeout.call(void 0, () => {
+      if (fallback) {
+        try {
+          resolve(fallback());
+        } catch (error) {
+          reject(error);
+        }
+        return;
+      }
+      if (typeof promise.cancel === "function") {
+        promise.cancel();
+      }
+      if (message2 === false) {
+        resolve();
+      } else if (message2 instanceof Error) {
+        reject(message2);
+      } else {
+        timeoutError.message = message2 ?? `Promise timed out after ${milliseconds} milliseconds`;
+        reject(timeoutError);
+      }
+    }, milliseconds);
+    (async () => {
+      try {
+        resolve(await promise);
+      } catch (error) {
+        reject(error);
+      }
+    })();
+  });
+  const cancelablePromise = wrappedPromise.finally(() => {
+    cancelablePromise.clear();
+  });
+  cancelablePromise.clear = () => {
+    customTimers.clearTimeout.call(void 0, timer);
+    timer = void 0;
+  };
+  return cancelablePromise;
+}
+__name(pTimeout, "pTimeout");
 
 // node_modules/p-queue/dist/lower-bound.js
 function lowerBound(array, value, comparator) {
@@ -26403,6 +24546,97 @@ function take(source, limit) {
 __name(take, "take");
 var src_default7 = take;
 
+// node_modules/p-event/index.js
+var normalizeEmitter = /* @__PURE__ */ __name((emitter) => {
+  const addListener = emitter.addEventListener || emitter.on || emitter.addListener;
+  const removeListener = emitter.removeEventListener || emitter.off || emitter.removeListener;
+  if (!addListener || !removeListener) {
+    throw new TypeError("Emitter is not compatible");
+  }
+  return {
+    addListener: addListener.bind(emitter),
+    removeListener: removeListener.bind(emitter)
+  };
+}, "normalizeEmitter");
+function pEventMultiple(emitter, event, options) {
+  let cancel;
+  const returnValue = new Promise((resolve, reject) => {
+    options = {
+      rejectionEvents: ["error"],
+      multiArgs: false,
+      resolveImmediately: false,
+      ...options
+    };
+    if (!(options.count >= 0 && (options.count === Number.POSITIVE_INFINITY || Number.isInteger(options.count)))) {
+      throw new TypeError("The `count` option should be at least 0 or more");
+    }
+    options.signal?.throwIfAborted();
+    const events = [event].flat();
+    const items = [];
+    const { addListener, removeListener } = normalizeEmitter(emitter);
+    const onItem = /* @__PURE__ */ __name((...arguments_) => {
+      const value = options.multiArgs ? arguments_ : arguments_[0];
+      if (options.filter && !options.filter(value)) {
+        return;
+      }
+      items.push(value);
+      if (options.count === items.length) {
+        cancel();
+        resolve(items);
+      }
+    }, "onItem");
+    const rejectHandler = /* @__PURE__ */ __name((error) => {
+      cancel();
+      reject(error);
+    }, "rejectHandler");
+    cancel = /* @__PURE__ */ __name(() => {
+      for (const event2 of events) {
+        removeListener(event2, onItem);
+      }
+      for (const rejectionEvent of options.rejectionEvents) {
+        removeListener(rejectionEvent, rejectHandler);
+      }
+    }, "cancel");
+    for (const event2 of events) {
+      addListener(event2, onItem);
+    }
+    for (const rejectionEvent of options.rejectionEvents) {
+      addListener(rejectionEvent, rejectHandler);
+    }
+    if (options.signal) {
+      options.signal.addEventListener("abort", () => {
+        rejectHandler(options.signal.reason);
+      }, { once: true });
+    }
+    if (options.resolveImmediately) {
+      resolve(items);
+    }
+  });
+  returnValue.cancel = cancel;
+  if (typeof options.timeout === "number") {
+    const timeout = pTimeout(returnValue, { milliseconds: options.timeout });
+    timeout.cancel = cancel;
+    return timeout;
+  }
+  return returnValue;
+}
+__name(pEventMultiple, "pEventMultiple");
+function pEvent(emitter, event, options) {
+  if (typeof options === "function") {
+    options = { filter: options };
+  }
+  options = {
+    ...options,
+    count: 1,
+    resolveImmediately: false
+  };
+  const arrayPromise = pEventMultiple(emitter, event, options);
+  const promise = arrayPromise.then((array) => array[0]);
+  promise.cancel = arrayPromise.cancel;
+  return promise;
+}
+__name(pEvent, "pEvent");
+
 // node_modules/@libp2p/kad-dht/dist/src/query-self.js
 var QuerySelf = class {
   static {
@@ -26922,8 +25156,8 @@ var RoutingTable = class extends TypedEventEmitter {
           const pb = pbStream(stream);
           await pb.write({
             type: MessageType.PING
-          }, Message3, options);
-          const response = await pb.read(Message3, options);
+          }, Message, options);
+          const response = await pb.read(Message, options);
           await pb.unwrap().close();
           if (response.type !== MessageType.PING) {
             throw new InvalidMessageError(`Incorrect message type received, expected PING got ${response.type}`);
@@ -43972,11 +42206,11 @@ var RPC = class {
       const self2 = this;
       await pipe(stream, (source) => decode7(source), async function* (source) {
         for await (const msg of source) {
-          const desMessage = Message3.decode(msg);
+          const desMessage = Message.decode(msg);
           self2.log("incoming %s from %p", desMessage.type, peerId2);
           const res = await self2.handleMessage(peerId2, desMessage);
           if (res != null) {
-            yield Message3.encode(res);
+            yield Message.encode(res);
           }
         }
       }, (source) => encode6(source), stream);
@@ -44131,7 +42365,7 @@ var KadDHT = class extends TypedEventEmitter {
     this.running = false;
     this.components = components;
     this.log = components.logger.forComponent(loggingPrefix);
-    this.protocol = protocol ?? PROTOCOL2;
+    this.protocol = protocol ?? PROTOCOL;
     this.kBucketSize = kBucketSize ?? 20;
     this.clientMode = clientMode ?? true;
     this.maxInboundStreams = maxInboundStreams ?? DEFAULT_MAX_INBOUND_STREAMS;
@@ -46309,6 +44543,7 @@ export {
   FaultTolerance2 as FaultTolerance,
   IDBDatastore,
   MemoryDatastore,
+  WebRTC2 as WebRTCMatcher,
   bootstrap,
   circuitRelayTransport,
   dcutr,
@@ -46322,6 +44557,7 @@ export {
   logger2 as logger,
   multiaddr,
   noise,
+  peerIdFromString,
   ping,
   privateKeyFromProtobuf,
   privateKeyFromRaw,
@@ -46329,8 +44565,6 @@ export {
   removePrivateAddressesMapper,
   removePublicAddressesMapper,
   toString2 as toString,
-  webRTC,
-  webRTCDirect,
   webSockets,
   yamux
 };

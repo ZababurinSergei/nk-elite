@@ -3,6 +3,7 @@ import {Actions} from "../nk-menu/this/index.mjs";
 import {lpStream} from 'it-length-prefixed-stream'
 import {multiaddr} from "@multiformats/multiaddr";
 import {proto, protoAudio} from '@newkind/constants'
+import { peerIdFromString } from '@libp2p/peer-id'
 
 const name = 'nk-chat';
 const component = await Component();
@@ -102,20 +103,29 @@ Object.defineProperties(component.prototype, {
             }
 
             if (protocol === protoAudio) {
+                //https://github.com/libp2p/js-libp2p/discussions/2706
                 console.log('================================================================', this.id)
                 this.task = {
-                    id: 'nk-audio_1',
-                    component: 'nk-audio',
+                    id: 'nk-p2p_1',
+                    component: 'nk-p2p',
                     execute: async (self) => {
-                        const audioTag = self.DOM.audio()
-                        const localStream = await navigator.mediaDevices.getUserMedia({video: false, audio: true})
-                        const audioTracks = localStream.getAudioTracks();
-                        const processor = new MediaStreamTrackProcessor(audioTracks[0]);
-                        const generator = new MediaStreamTrackGenerator('audio');
-                        const sink = generator.writable;
+
+                        const connections = self.libp2p.getConnections()
+
+                        for(let connection of connections) {
+                            console.log('========== 222 ============', connection )
+                        }
+
+
+                        // const audioTag = self.DOM.audio()
+                        // const localStream = await navigator.mediaDevices.getUserMedia({video: false, audio: true})
+                        // const audioTracks = localStream.getAudioTracks();
+                        // const processor = new MediaStreamTrackProcessor(audioTracks[0]);
+                        // const generator = new MediaStreamTrackGenerator('audio');
+                        // const sink = generator.writable;
                         // await stream.sink(localStream)
-                        console.log('-------------- stream ------------------------', localStream)
-                        audioTag.srcObject = localStream
+                        // console.log('-------------- stream ------------------------', localStream)
+                        // audioTag.srcObject = localStream
                         // audioTag.srcObject = stream.streamSource
 
                         // const source = this.processor.readable;
@@ -176,31 +186,51 @@ Object.defineProperties(component.prototype, {
                         if (type === 'audio') {
                             const signal = AbortSignal.timeout(5000)
                             this.DOM.input.textContent = ''
+
                             const stream = await self.libp2p.dialProtocol(ma, protoAudio, {
                                 signal
                             });
 
-                            const lp = lpStream(stream)
+                            // const connection = dialer.getConnections(peerIdFromString(webRTCMultiaddr.getPeerId()))[0]
+                            // const lp = lpStream(stream)
+                            // const connections = self.libp2p.getConnections(peerIdFromString(ma.getPeerId()))
+                            // const connections_2 = self.libp2p.getConnections()
+                            // for(let connection of connections_2) {
+                                // console.log('======================', connection )
+                            // }
 
-                            console.log('stream ======================', stream)
 
                             const audioTracks = this.stream.getAudioTracks();
 
-                            this.stream.oninactive = () => {
-                                console.log('Stream ended');
-                            };
+                            console.log('======== stream ==============', this.stream)
+                            for(let audioTrack of audioTracks) {
+                                console.log('======================', audioTrack)
+                            }
 
-                            this.processor = new MediaStreamTrackProcessor(audioTracks[0]);
-                            this.generator = new MediaStreamTrackGenerator('audio');
-                            const source = this.processor.readable;
-                            const sink = this.generator.writable;
-                            const transformer = new TransformStream({transform: lowPassFilter()});
-                            const abortController = new AbortController();
+                            // this.stream.oninactive = () => {
+                            //     console.log('Stream ended');
+                            // };
+
+
+                            // const rtcPeerConnection = conn.peerConnection
+                            // console.log(rtcPeerConnection)
+
+                            // for(const connection of conns) {
+                            //     const rtcPeerConnection = conn.peerConnection
+                            //     console.log('dddddddddddddddddddddddddddd',conn)
+                            // }
+
+                            // this.processor = new MediaStreamTrackProcessor(audioTracks[0]);
+                            // this.generator = new MediaStreamTrackGenerator('audio');
+                            // const source = this.processor.readable;
+                            // const sink = this.generator.writable;
+                            // const transformer = new TransformStream({transform: lowPassFilter()});
+                            // const abortController = new AbortController();
 
                             // console.log('ddddddddddddddddddddddddddddddddddddddddddd', sink)
                             // console.log('ddddddddddddddddd sink dddddddddddddddddddddddddd', await stream.sink(stream.source))
                             // const signal = abortController.signal;
-                            source.pipeTo(await stream.sink(stream.source))
+                            // source.pipeTo(await stream.sink(stream.source))
                             // const promise = source.pipeThrough(transformer, {signal}).pipeTo(stream.sink);
                             // promise.catch((e) => {
                             //     if (signal.aborted) {

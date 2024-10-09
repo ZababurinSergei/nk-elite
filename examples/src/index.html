@@ -3,33 +3,16 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Org portal</title>
-    <!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/twig.js/1.15.0/twig.min.js" integrity="sha512-R9w7cGfL8kjpDIAhW2Mgji+lbq06vKWJX/Qztpq0ya5tD8YMGvRS2fco4p2EYTy93V/lDwp7hRnlHVkCyIrnHw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>-->
-    <!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>-->
-    <!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.13.7/underscore-min.js" integrity="sha512-dvWGkLATSdw5qWb2qozZBRKJ80Omy2YN/aF3wTUVC5+D1eqbA+TjWpPpoj8vorK5xGLMa2ZqIeWCpDZP/+pQGQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>-->
-    <!--    <script src="./this/modules/backbone.js"></script>-->
-    <!--    <script type="text/javascript">-->
-    <!--        function isMobile() {-->
-    <!--            return navigator.userAgent.match(/Android/i)-->
-    <!--                || navigator.userAgent.match(/BlackBerry/i)-->
-    <!--                || navigator.userAgent.match(/iPhone|iPad|iPod/i)-->
-    <!--                || navigator.userAgent.match(/Opera Mini/i)-->
-    <!--                || navigator.userAgent.match(/IEMobile/i);-->
-    <!--        }-->
-
-    <!--        if (isMobile()) {-->
-    <!--            var viewButton = document.getElementById('render-scene');-->
-
-    <!--            if (viewButton) {-->
-    <!--                viewButton.innerHTML = '<span>Mobile version coming soon. Please view from laptop or desktop.</span>';-->
-    <!--            }-->
-    <!--        }-->
-    <!--    </script>-->
-
     <script type="importmap">
         {
             "imports": {
-                "@newkind/freeQueue": "./this/free-queue.js",
+                "worker-with-import-map":"./this/modules/worker-with-import-map-master/src/index.js",
+                "@newkind/freeQueueWasm": "./this/free-queue/free-queue.js",
+                "@newkind/freeQueue": "./this/free-queue/free-queue-sab.js",
                 "@newkind/constants": "./this/constants.js",
+                "@libp2p/webrtc": "./this/modules/lib-webrtc.js",
+                "@libp2p/peer-id": "./this/modules/lib-pubsub.js",
+                "@multiformats/multiaddr-matcher": "./this/modules/lib-pubsub.js",
                 "lottie-web": "./this/modules/lib-lottieWeb.js",
                 "@libp2p/crypto/keys": "./this/modules/lib-pubsub.js",
                 "tween-js": "./this/modules/lib-tween.js",
@@ -48,7 +31,6 @@
                 "@libp2p/circuit-relay-v2": "./this/modules/lib-pubsub.js",
                 "@libp2p/identify": "./this/modules/lib-identify.js",
                 "@libp2p/dcutr": "./this/modules/lib-pubsub.js",
-                "@libp2p/webrtc": "./this/modules/lib-pubsub.js",
                 "@libp2p/websockets": "./this/modules/lib-pubsub.js",
                 "@libp2p/websockets/filters": "./this/modules/lib-filters.js",
                 "@libp2p/kad-dht": "./this/modules/lib-pubsub.js",
@@ -171,17 +153,12 @@
         >
             <template>
                 <div class="container">
-                    <h2>Эмулятор</h2>
                     <div class="reader">
                         <div class="processor">
                             <button disabled data-type="run" class="button-run">Run</button>
-                            <div class="constants"></div>
                             <div class="queue">
                                 <div class="inputQueue"></div>
                                 <div class="outputQueue"></div>
-                                <!--                                <div class="atomicState"></div>-->
-                                <!--                                <div class="sampleRate"></div>-->
-                                <!--                                <div class="irArray"></div>-->
                             </div>
                         </div>
                         <h2>Reader</h2>
@@ -1925,12 +1902,18 @@
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const isNkRadio = urlParams.has('radio')
+    const isNkEmulator = urlParams.has('memory')
+    const isGame = !isNkEmulator && !isNkRadio
     let arrayComponent = []
 
     if (isNkRadio) {
         arrayComponent = ['nk-audio', 'nk-p2p', 'nk-universe', 'nk-world', 'nk-radio', 'nk-chat', 'nk-world', 'nk-menu']
     } else {
-        arrayComponent = ['nk-star', 'nk-solar-system', 'nk-filter', 'nk-time-line', 'nk-switch', 'nk-osc', 'nk-emulator', 'nk-memory', 'nk-elite-control', 'nk-world', 'nk-menu', 'nk-elite', 'nk-radio', 'nk-p2p', 'nk-universe', 'nk-chat']
+        arrayComponent = ['nk-star', 'nk-solar-system', 'nk-filter', 'nk-time-line', 'nk-switch', 'nk-osc', 'nk-emulator', 'nk-memory', 'nk-elite-control', 'nk-world', 'nk-menu', 'nk-radio', 'nk-p2p', 'nk-universe', 'nk-chat']
+    }
+
+    if(isGame) {
+        arrayComponent.push('nk-elite')
     }
 
     init({
