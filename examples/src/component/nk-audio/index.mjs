@@ -187,14 +187,14 @@ Object.defineProperties(component.prototype, {
                     console.log('this.id: ', this.id)
 
                     if(this.id === 'nk-audio_0') {
-                        this.task = {
+                        this.task({
                             id: 'nk-chat_0',
                             component: 'nk-chat',
                             type: 'self',
                             execute: (self) => {
                                 self.stream = this.stream
                             }
-                        }
+                        })
                     }
 
                     const audioTracks = this.stream.getAudioTracks();

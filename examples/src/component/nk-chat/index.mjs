@@ -105,7 +105,7 @@ Object.defineProperties(component.prototype, {
             if (protocol === protoAudio) {
                 //https://github.com/libp2p/js-libp2p/discussions/2706
                 console.log('================================================================', this.id)
-                this.task = {
+                this.task({
                     id: 'nk-p2p_1',
                     component: 'nk-p2p',
                     execute: async (self) => {
@@ -132,7 +132,7 @@ Object.defineProperties(component.prototype, {
 
                         // console.log('-------------- stream 3------------------------', localStream)
                     }
-                }
+                })
 
                 stream.channel.onmessage = (event) => {
                     console.log(`received: ${event.data}`);
@@ -161,7 +161,7 @@ Object.defineProperties(component.prototype, {
     send: {
         value: async function (type, ma, msg) {
             if (typeof ma === "string") ma = multiaddr(ma);
-            this.task = {
+            this.task({
                 id: 'nk-p2p_1',
                 component: 'nk-p2p',
                 type: 'self',
@@ -196,7 +196,7 @@ Object.defineProperties(component.prototype, {
                             // const connections = self.libp2p.getConnections(peerIdFromString(ma.getPeerId()))
                             // const connections_2 = self.libp2p.getConnections()
                             // for(let connection of connections_2) {
-                                // console.log('======================', connection )
+                            // console.log('======================', connection )
                             // }
 
 
@@ -259,7 +259,7 @@ Object.defineProperties(component.prototype, {
                     }
 
                 }
-            }
+            })
         },
         writable: true
     },
@@ -365,7 +365,7 @@ Object.defineProperties(component.prototype, {
                 let peer = select.options[select.selectedIndex].value.trim();
 
                 if (peer.length !== 0) {
-                    this.task = {
+                    this.task({
                         id: 'nk-p2p_1',
                         component: 'nk-p2p',
                         type: 'self',
@@ -381,7 +381,7 @@ Object.defineProperties(component.prototype, {
                                 this.dialog.error('соединение не найдено')
                             }
                         }
-                    }
+                    })
                 } else {
                     this.dialog.error('Надо выбрать адрес получателя')
                 }
@@ -397,7 +397,7 @@ Object.defineProperties(component.prototype, {
                 let peer = select.options[select.selectedIndex].value;
 
                 if (peer.length !== 0) {
-                    this.task = {
+                    this.task({
                         id: 'nk-p2p_1',
                         component: 'nk-p2p',
                         type: 'self',
@@ -413,7 +413,7 @@ Object.defineProperties(component.prototype, {
                                 this.dialog.error('соединение не найдено')
                             }
                         }
-                    }
+                    })
                 } else {
                     this.dialog.error('Надо выбрать адрес получателя')
                 }

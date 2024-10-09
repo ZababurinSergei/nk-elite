@@ -126,6 +126,12 @@ Object.defineProperties(component.prototype, {
             Object.setPrototypeOf(this.inputQueue, FreeQueueSAB.prototype);
             Object.setPrototypeOf(this.outputQueue, FreeQueueSAB.prototype);
 
+            const nkP2p = await this.component({
+                id:"nk-p2p_1",
+                component: "nk-p2p",
+            })
+
+            console.log('=================== nkP2p ====================', nkP2p)
             this.processor = new Processor({
                 processorOptions: {
                     inputQueue: this.inputQueue,
@@ -147,7 +153,7 @@ Object.defineProperties(component.prototype, {
                             console.log('######## TERMINATE ##########')
                             break
                         default:
-                            this.task = {
+                            this.task({
                                 id: 'nk-memory_0',
                                 component: 'nk-memory',
                                 type: 'self',
@@ -166,7 +172,7 @@ Object.defineProperties(component.prototype, {
                                     this.DOM.queue()
                                     self.hardwareConcurrency()
                                 }
-                            }
+                            })
                             break
                     }
                 }

@@ -47,6 +47,7 @@ export class Processor  {
         if (this.primingCounter > 1) {
             console.log('🟢🟢 ==== OUTQUEUE PULL ==== 🟢🟢', this.outputQueue)
             const didPull = this.outputQueue.pull(output, RENDER_QUANTUM);
+
             if (!didPull) {
                 console.log('[basic-processor.js] Not enough data in outputQueue');
                 return false;

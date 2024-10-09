@@ -14,14 +14,14 @@ const newAudio = async function (CONFIG) {
             CONFIG.stream.song = new Audio(CONFIG.stream.path);
             CONFIG.stream.source = CONFIG.audio.ctx.createMediaElementSource(CONFIG.stream.song);
 
-            this.task = {
+            this.task({
                 id: 'nk-chat_0',
                 component: 'nk-chat',
                 type: 'self',
                 execute: (self) => {
                     self.stream = CONFIG.stream
                 }
-            }
+            })
 
             CONFIG.stream.song.crossOrigin = "anonymous";
             CONFIG.stream.song.addEventListener( "canplay", async (event) => {

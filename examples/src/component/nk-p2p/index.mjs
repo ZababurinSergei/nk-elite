@@ -361,7 +361,7 @@ Object.defineProperties(component.prototype, {
                 const listPeer = await this.updatePeerList()
 
                 if(this.dataset.type === 'private') {
-                    this.task = {
+                    this.task({
                         id: 'nk-chat_0',
                         type: 'self',
                         component: "nk-chat",
@@ -377,7 +377,7 @@ Object.defineProperties(component.prototype, {
                                 }
                             }
                         }
-                    }
+                    })
                 }
             })
 
@@ -387,7 +387,7 @@ Object.defineProperties(component.prototype, {
                 const listPeer = await this.updatePeerList()
 
                 if(this.dataset.type === 'private') {
-                    this.task = {
+                    this.task({
                         id: 'nk-chat_0',
                         type: 'self',
                         component: "nk-chat",
@@ -403,7 +403,7 @@ Object.defineProperties(component.prototype, {
                                 }
                             }
                         }
-                    }
+                    })
                 }
             })
 
@@ -424,7 +424,7 @@ Object.defineProperties(component.prototype, {
                     })
 
                 // if(this.dataset.type === 'private') {
-                    this.task = {
+                    this.task({
                         id: 'nk-menu_0',
                         component: 'nk-menu',
                         type: 'self',
@@ -450,7 +450,7 @@ Object.defineProperties(component.prototype, {
                                 self.DOM.info('ma_public').replaceChildren(...multiaddrs)
                             }
                         }
-                    }
+                    })
                 // }
 
 
@@ -505,7 +505,7 @@ Object.defineProperties(component.prototype, {
                 // appendOutput(message)
             })
 
-            this.task = {
+            this.task({
                 id: 'nk-menu_0',
                 component: 'nk-menu',
                 type: 'self',
@@ -517,9 +517,9 @@ Object.defineProperties(component.prototype, {
                         self.DOM.info.call(self, 'planet-public-id').textContent = this.libp2p.peerId.toString()
                     }
                 }
-            }
+            })
 
-            this.task = {
+            this.task({
                 id: 'nk-chat_0',
                 component: 'nk-chat',
                 type: 'self',
@@ -527,7 +527,7 @@ Object.defineProperties(component.prototype, {
                     await this.libp2p.handle(proto, self.handler);
                     await this.libp2p.handle(protoAudio, self.handler);
                 }
-            }
+            })
 
             // this.task = {
             //     id: 'nk-radio-client_0',

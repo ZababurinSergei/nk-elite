@@ -38,14 +38,14 @@ Object.defineProperties(component.prototype, {
                 }
             };
 
-            this.task = {
+            this.task({
                 id: 'nk-p2p_1',
                 component: 'nk-p2p',
                 type: 'self',
                 execute: async (self) => {
-                       // self.libp2p
+                    // self.libp2p
                 }
-            }
+            })
             this.DOM.button.play.call(this, 'audio').addEventListener('click', () => {
                 // if (navigator.mediaDevices) {
                 //     navigator.mediaDevices

@@ -97,7 +97,7 @@ Object.defineProperties(component.prototype, {
     send: {
         value: async function (type, ma, msg) {
             if (typeof ma === "string") ma = multiaddr(ma);
-            this.task = {
+            this.task({
                 id: 'nk-p2p_1',
                 component: 'nk-p2p',
                 type: 'self',
@@ -131,7 +131,7 @@ Object.defineProperties(component.prototype, {
 
                             // setInterval(async () => {
                             //     await lp.write(new TextEncoder().encode(msg))
-                                // stream.channel.send('asasasasas')
+                            // stream.channel.send('asasasasas')
                             // }, 1000)
                             //
                             // const lp = lpStream(stream)
@@ -146,7 +146,7 @@ Object.defineProperties(component.prototype, {
                     }
 
                 }
-            }
+            })
         },
         writable: true
     },
@@ -252,7 +252,7 @@ Object.defineProperties(component.prototype, {
                 let peer = select.options[select.selectedIndex].value.trim();
 
                 if(peer.length !== 0) {
-                    this.task = {
+                    this.task({
                         id: 'nk-p2p_1',
                         component: 'nk-p2p',
                         type: 'self',
@@ -268,7 +268,7 @@ Object.defineProperties(component.prototype, {
                                 this.dialog.error('соединение не найдено')
                             }
                         }
-                    }
+                    })
                 } else {
                     this.dialog.error('Надо выбрать адрес получателя')
                 }
@@ -284,13 +284,13 @@ Object.defineProperties(component.prototype, {
                 let peer = select.options[select.selectedIndex].value;
 
                 if(peer.length !== 0) {
-                    this.task = {
+                    this.task({
                         id: 'nk-p2p_1',
                         component: 'nk-p2p',
                         type: 'self',
                         execute: async (self) => {
                             const connections = self.libp2p.getConnections()
-                           //TODO надо получать адресс из значений ноды
+                            //TODO надо получать адресс из значений ноды
                             const connect =  {
                                 remotePeer: peer
                             }
@@ -300,7 +300,7 @@ Object.defineProperties(component.prototype, {
                                 this.dialog.error('соединение не найдено')
                             }
                         }
-                    }
+                    })
                 } else {
                     this.dialog.error('Надо выбрать адрес получателя')
                 }

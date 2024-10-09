@@ -1,12 +1,12 @@
 export const Actions = async function() {
     return  {
         refresh: async (event) => {
-            this.task = {
+            this.task({
                 id: 'nk-p2p_0',
                 component: 'nk-p2p',
                 type: 'self',
                 execute: async (self, detail) => {
-                   const listPeer = await self.get.peers()
+                    const listPeer = await self.get.peers()
 
                     if (listPeer.length !== 0) {
                         let select = this.DOM.select('list-peers')
@@ -25,7 +25,7 @@ export const Actions = async function() {
                     },
                     test: 'test'
                 }
-            }
+            })
         }
     }
 }

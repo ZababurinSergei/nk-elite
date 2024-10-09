@@ -7,9 +7,9 @@ const servicePath = new URL('../', import.meta.url);
 const store = {};
 let eventMessages = {};
 let config = {}
-
+let task = []
 const dialogInit = async function (value, type) {
-    if(type !== 'terminate') {
+    if (type !== 'terminate') {
         if (value) {
             const dialog = document.createElement('dialog')
             const content = document.createElement('div')
@@ -109,11 +109,13 @@ const BaseClass = class extends HTMLElement {
 
     _isOnload = false;
     _isBroadcastChannel = false
+
     _broadcastChannel = [{
         self: new BroadcastChannel('broadcast'),
         value: undefined,
         await: undefined
     }];
+
     dialog = {
         error: async function (url, value) {
             dialogInit.call(this, {
@@ -151,12 +153,13 @@ const BaseClass = class extends HTMLElement {
             dialogInit.call(this, {}, 'terminate')
         }
     }
-    broadcastPublish = function () {
-        this.execute();
+    broadcastPublish = async function () {
+        await this.execute();
     }
     messageerror = function (event) {
         console.log('ddddddddddddddddddddddddddddd BROADCAST messageerror ddddddddddddddddddddddddddddd', event);
     }
+
     set broadcastChannel(value) {
         if (!this._isBroadcastChannel) {
             this._broadcastChannel[0].value = value;
@@ -172,111 +175,102 @@ const BaseClass = class extends HTMLElement {
             this._isBroadcastChannel = true
         }
     }
+
     get broadcastChannel() {
         return this._broadcastChannel[0].value;
     }
+
     get config() {
         return config;
     }
+
     set config(value) {
         for (let key in value) {
             config[key] = value[key];
         }
         return true;
     }
+
     get store() {
         return store;
     }
-    execute = async function () {
-        const call = []
-        this._task = this._task.filter(item => {
-            const isTagName = item.tagName === this.tagName.toLowerCase()
-            const components = this.store[`${item.component}`]
-            const isComponent = !!components
-            let component = null
-            let isId = true
-            if (!item.id) {
-                isId = false
-                alert(`В запросе надо указать id что бы пониматьв каком компоненте делать изменения. Компонент ${item.component} из ${item.tagName} uuid: ${item.uuid}`)
-                return true
-            }
 
-            if (isComponent) {
-                component = (components.filter(data => item.id === data.id))[0]
-            }
+    execute = function () {
+        return new Promise((resolve, reject) => {
+            const call = []
+            let count = 0
 
-            if (isTagName && isId && isComponent) {
-                switch (item.type) {
-                    case 'self':
-                        if (component) {
+            for (let item of task) {
+                const components = this.store[`${item.component}`]
+                if (components) {
+                    for (let component of components) {
+                        if (component.id === item.id) {
                             const bindOnMessage = item.hasOwnProperty('execute') ? item.execute.bind(this) : this.onMessage.bind(this);
-
                             call.push({
                                 execute: bindOnMessage,
                                 self: component.self,
                                 detail: item.detail
                             })
 
-                            return false;
+                            task.splice(count, 1);
                         }
-                        return true;
-                        break;
-                    case 'main':
-                        alert('Не надо использовать main, Используйте self что бы определить обработчик внутри вызываемого компонента')
-                        if (component) {
-                            component.self.onMessage(item);
-                            return false
-                        }
-                        return true;
-                        break;
-                    case 'worker':
-                        if (this[`_${item.component}`]) {
-                            if (item.hasOwnProperty('callback')) {
-                                delete item.callback;
-                            }
-                            //TODO Надо вынести из цикла фильтра
-                            if (this[`_${item.component}`]._worker !== null) {
-                                this[`_${item.component}`]._worker.postMessage(item);
-                                return false;
-                            }
+                    }
 
-                            if (this[`_${item.component}`]._worker === undefined) {
-                                console.error('Не должно быть undefined');
-                                return false;
-                            }
-                        }
-                        return true;
-                        break;
-                    default:
-                        break;
                 }
+                count++
             }
 
-            return true;
-        });
+            call.forEach(item => item.execute(item.self, item.detail))
 
-        call.forEach(item => item.execute(item.self, item.detail))
+            resolve(true)
+        })
     };
-    _task = [];
-    set task(value) {
-        this._task.push(Object.assign(value, {
+    task = async function (value) {
+        task.push(Object.assign(value, {
             tagName: this.tagName.toLowerCase(),
             uuid: this.dataset.uuid,
-            type: ('type' in value) ? value.type: 'self'
+            type: ('type' in value) ? value.type : 'self'
         }));
 
-        this.execute().catch(e => console.error(e));
+        await this.execute();
+    }
+    component = function(value) {
+        return new Promise(async (resolve,reject) => {
+            task.push(Object.assign(value, {
+                tagName: this.tagName.toLowerCase(),
+                uuid: this.dataset.uuid,
+                type: ('type' in value) ? value.type : 'self',
+                execute: function (self) {
+                    resolve(self)
+                }
+            }));
+
+            await this.execute();
+        })
     }
     get task() {
         return {
-            task: this._task,
+            task: task,
         };
     }
 
+    set disabled(val) {
+        if (val) {
+            this.setAttribute('disabled', '');
+        } else {
+            this.removeAttribute('disabled');
+        }
+    }
+
+    get disabled() {
+        return this.hasAttribute('disabled');
+    }
     constructor() {
         super();
         this.dataset.servicesPath = servicePath.pathname;
         this.config = config;
+        this.task = this.task.bind(this)
+        this.component = this.component.bind(this)
 
         init(this).then(() => {
             this._isOnload = true;
@@ -299,12 +293,16 @@ const BaseClass = class extends HTMLElement {
                         store[name] = []
                     }
 
+
                     store[name].push({
                         id: self.id,
                         uuid: self.dataset.uuid,
                         self: self,
                         dataset: self.dataset
                     });
+
+                    // console.log('store[name]', store[name])
+                    this.broadcastChannel = {}
 
                     this._broadcastChannel[0].self.postMessage({
                         isBroadcastChannel: this._isBroadcastChannel,
@@ -329,7 +327,7 @@ const BaseClass = class extends HTMLElement {
             this._broadcastChannel[0].self.removeEventListener('messageerror', this._broadcastChannel[0].value.messageerror);
         }
 
-        this._broadcastChannel.self.close();
+        // this._broadcastChannel.self.close();
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -354,7 +352,7 @@ const BaseClass = class extends HTMLElement {
 export const Component = (() => {
     return async () => {
         const body = `return ${BaseClass}`;
-        const baseComponent = new Function('dialogInit', 'config', 'onMessage', 'eventMessages', 'store', 'uuidv', 'servicePath', 'init', 'onload', body);
-        return baseComponent(dialogInit, config, onMessage, eventMessages, store, uuidv, servicePath, init, onload, body);
+        const baseComponent = new Function('task', 'dialogInit', 'config', 'onMessage', 'eventMessages', 'store', 'uuidv', 'servicePath', 'init', 'onload', body);
+        return baseComponent(task, dialogInit, config, onMessage, eventMessages, store, uuidv, servicePath, init, onload, body);
     };
 })();
