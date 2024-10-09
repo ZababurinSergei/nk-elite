@@ -1,5 +1,6 @@
 import {getConstants} from '@newkind/constants'
-
+import { logger } from '@libp2p/logger'
+const log = logger('nk-emulator')
 const {FRAME_SIZE} = getConstants('emulator')
 export const Actions = async (self) => {
 
@@ -36,7 +37,7 @@ export const Actions = async (self) => {
 
                             const output = [[new Float64Array(FRAME_SIZE), new Float64Array(FRAME_SIZE)]];
 
-                            console.log('00 START PROCESS', {
+                            log('00 START PROCESS', {
                                 inputQueue: self.inputQueue.channelData[0],
                                 outputQueue: self.outputQueue.channelData[0]
                             })

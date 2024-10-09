@@ -104,19 +104,20 @@ Object.defineProperties(component.prototype, {
 
             if (protocol === protoAudio) {
                 //https://github.com/libp2p/js-libp2p/discussions/2706
-                console.log('================================================================', this.id)
+                // console.log('================================================================', this.id)
                 this.task({
                     id: 'nk-p2p_1',
                     component: 'nk-p2p',
                     execute: async (self) => {
-
-                        const connections = self.libp2p.getConnections()
-
-                        for(let connection of connections) {
-                            console.log('========== 222 ============', connection )
-                        }
-
-
+                        const lp = lpStream(stream)
+                        // while (true) {
+                        //     const res = await lp.read()
+                        //     console.log('=================== RESPONSE =========================', res)
+                        // }
+                        // const connections = self.libp2p.getConnections()
+                        // for(let connection of connections) {
+                        //     console.log('========== 222 ============', connection )
+                        // }
                         // const audioTag = self.DOM.audio()
                         // const localStream = await navigator.mediaDevices.getUserMedia({video: false, audio: true})
                         // const audioTracks = localStream.getAudioTracks();
@@ -127,9 +128,7 @@ Object.defineProperties(component.prototype, {
                         // console.log('-------------- stream ------------------------', localStream)
                         // audioTag.srcObject = localStream
                         // audioTag.srcObject = stream.streamSource
-
                         // const source = this.processor.readable;
-
                         // console.log('-------------- stream 3------------------------', localStream)
                     }
                 })
@@ -175,6 +174,7 @@ Object.defineProperties(component.prototype, {
                                 signal
                             });
 
+                            // stream.channel
                             const lp = lpStream(stream)
 
                             console.log('dddddddddddddddddddddddddd',)
@@ -191,8 +191,18 @@ Object.defineProperties(component.prototype, {
                                 signal
                             });
 
+                            const lp = lpStream(stream)
+
+                            this.stream.stream = async (output) => {
+                                stream.channel.send(output)
+                                // const lp = lpStream(stream)
+
+                                // await lp.write(output)
+                            }
+
+                            // console.log('nkEmulator', nkEmulator, this.stream)
                             // const connection = dialer.getConnections(peerIdFromString(webRTCMultiaddr.getPeerId()))[0]
-                            // const lp = lpStream(stream)
+                            //
                             // const connections = self.libp2p.getConnections(peerIdFromString(ma.getPeerId()))
                             // const connections_2 = self.libp2p.getConnections()
                             // for(let connection of connections_2) {
@@ -200,12 +210,12 @@ Object.defineProperties(component.prototype, {
                             // }
 
 
-                            const audioTracks = this.stream.getAudioTracks();
+                            // const audioTracks = this.stream.getAudioTracks();
 
-                            console.log('======== stream ==============', this.stream)
-                            for(let audioTrack of audioTracks) {
-                                console.log('======================', audioTrack)
-                            }
+                            // console.log('======== stream ==============', this.stream)
+                            // for(let audioTrack of audioTracks) {
+                            //     console.log('======================', audioTrack)
+                            // }
 
                             // this.stream.oninactive = () => {
                             //     console.log('Stream ended');

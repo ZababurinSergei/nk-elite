@@ -117,7 +117,7 @@
 
         <button
                 onclick="(function(self) {
-                window.location.href = `${window.location.origin}${window.location.pathname}?bootstrap&pubsubPeerDiscovery&memory`
+                window.location.href = `${window.location.origin}${window.location.pathname}?bootstrap&pubsubPeerDiscovery&radio&nkWorld&memory`
             })(this)"
         >
             Emulator
@@ -1907,13 +1907,23 @@
     let arrayComponent = []
 
     if (isNkRadio) {
-        arrayComponent = ['nk-audio', 'nk-p2p', 'nk-universe', 'nk-world', 'nk-radio', 'nk-chat', 'nk-world', 'nk-menu']
+        arrayComponent = ['nk-audio', 'nk-p2p', 'nk-universe', 'nk-radio', 'nk-chat', 'nk-world', 'nk-menu']
     } else {
         arrayComponent = ['nk-star', 'nk-solar-system', 'nk-filter', 'nk-time-line', 'nk-switch', 'nk-osc', 'nk-emulator', 'nk-memory', 'nk-elite-control', 'nk-world', 'nk-menu', 'nk-radio', 'nk-p2p', 'nk-universe', 'nk-chat']
     }
 
     if(isGame) {
         arrayComponent.push('nk-elite')
+    }
+
+    if(isNkEmulator) {
+        arrayComponent.push('nk-memory')
+        arrayComponent.push('nk-universe')
+        arrayComponent.push('nk-radio')
+        arrayComponent.push('nk-chat')
+        arrayComponent.push('nk-menu')
+        arrayComponent.push('nk-world')
+        arrayComponent.push('nk-emulator')
     }
 
     init({

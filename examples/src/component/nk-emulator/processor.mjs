@@ -1,6 +1,8 @@
 import { FreeQueueSAB } from '@newkind/freeQueue'
 import { getConstants } from '@newkind/constants'
 const { RENDER_QUANTUM, FRAME_SIZE } = getConstants('emulator');
+import {logger} from '@libp2p/logger'
+const log = logger('emulator:processor')
 
 const ExpectedPrimingCount = parseInt(FRAME_SIZE / RENDER_QUANTUM, 10);
 
@@ -18,6 +20,7 @@ export class Processor  {
      *    to initialize inputQueue, outputQueue and atomicState
      */
     constructor(options) {
+        this.stream = null
         this.inputQueue = options.processorOptions.inputQueue;
         this.outputQueue = options.processorOptions.outputQueue;
         this.atomicState = options.processorOptions.atomicState;
@@ -36,18 +39,24 @@ export class Processor  {
         let input = inputs[0];
         let output = outputs[0];
 
-        console.log('🟢 ==== processor ==== 🟢', {
-            input: input,
-            output: output
-        })
+        // console.log('🟢 ==== processor ==== 🟢', {
+        //     input: input,
+        //     output: output
+        // })
         // The first |ExpectedPrimingCount| number of callbacks won't get any
         // data from the queue because the it's empty. This check is not perfect;
         // waking up the worker can be slow and priming N callbacks might not be
         // enough.
         if (this.primingCounter > 1) {
-            console.log('🟢🟢 ==== OUTQUEUE PULL ==== 🟢🟢', this.outputQueue)
+            // console.log('🟢🟢 ==== OUTQUEUE PULL ==== 🟢🟢', this.outputQueue)
             const didPull = this.outputQueue.pull(output, RENDER_QUANTUM);
+            if(this.stream) {
+                this.stream(output)
+            }
 
+            log('🟢🟢 ==== QUEUE PULL ==== 🟢🟢', output)
+
+            console.log()
             if (!didPull) {
                 console.log('[basic-processor.js] Not enough data in outputQueue');
                 return false;
@@ -59,14 +68,13 @@ export class Processor  {
         const didPush = this.inputQueue.push(input, RENDER_QUANTUM);
 
         if (!didPush) {
-            debugger
             console.log('[basic-processor.js] Not enough space in inputQueue');
             return false;
         }
         // Notify worker.js if `inputQueue` has enough data to perform the batch
         // processing of FRAME_SIZE.
         if (this.inputQueue.isFrameAvailable(FRAME_SIZE)) {
-            console.log('🟢 ==== CHANGE STATE ==== 🟢')
+            // console.log('🟢 ==== CHANGE STATE ==== 🟢')
             Atomics.store(this.atomicState, 0, 1);
             Atomics.notify(this.atomicState, 0);
         }

@@ -126,17 +126,20 @@ Object.defineProperties(component.prototype, {
             Object.setPrototypeOf(this.inputQueue, FreeQueueSAB.prototype);
             Object.setPrototypeOf(this.outputQueue, FreeQueueSAB.prototype);
 
-            const nkP2p = await this.component({
-                id:"nk-p2p_1",
-                component: "nk-p2p",
-            })
-
-            console.log('=================== nkP2p ====================', nkP2p)
             this.processor = new Processor({
                 processorOptions: {
                     inputQueue: this.inputQueue,
                     outputQueue: this.outputQueue,
                     atomicState: this.atomicState
+                }
+            })
+
+            this.task({
+                id: 'nk-chat_0',
+                component: 'nk-chat',
+                type: 'self',
+                execute: (self) => {
+                    self.stream = this.processor
                 }
             })
 
