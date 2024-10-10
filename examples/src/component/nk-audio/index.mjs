@@ -1,8 +1,8 @@
-import {Component} from '../index.mjs';
-import {lottieWeb} from 'lottie-web';
-import {FreeQueueSAB} from '@newkind/freeQueue'
-import {getConstants} from '@newkind/constants'
-
+import { Component } from '../index.mjs';
+import { lottieWeb } from 'lottie-web';
+import { FreeQueueSAB } from '@newkind/freeQueue'
+import { getConstants } from '@newkind/constants'
+import { postMessage } from './main-worker.mjs'
 const {QUEUE_SIZE} = getConstants()
 
 const name = 'nk-audio';
@@ -78,17 +78,29 @@ const initializeWorkerIfNecessary = async function (){
     }
 
     // Send FreeQueue instance and atomic state to worker.
-    this.worker.postMessage({
-        type: 'init',
-        data: {
-            inputQueue,
-            outputQueue,
-            atomicState,
-            irArray,
-            sampleRate: this.audioContext.sampleRate,
-        }
-    });
+    // this.worker.postMessage({
+    //     type: 'init',
+    //     data: {
+    //         inputQueue,
+    //         outputQueue,
+    //         atomicState,
+    //         irArray,
+    //         sampleRate: this.audioContext.sampleRate,
+    //     }
+    // });
 
+    postMessage({
+        data: {
+            type: 'init',
+            data: {
+                inputQueue,
+                outputQueue,
+                atomicState,
+                irArray,
+                sampleRate: this.audioContext.sampleRate,
+            }
+        }
+    })
     console.log('[main.js] initializeWorkerIfNecessary(): ' + filePath);
 
     isWorkerInitialized = true;
@@ -189,7 +201,7 @@ Object.defineProperties(component.prototype, {
 
             this.audioContext = await initializeAudio();
 
-            const newUrl = new URL('./worker.js', import.meta.url)
+            const newUrl = new URL('./worker.sync.mjs', import.meta.url)
 
             this.worker = new Worker(newUrl.pathname, {
                 name: "audio-worker",
