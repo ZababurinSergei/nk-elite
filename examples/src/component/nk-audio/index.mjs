@@ -50,7 +50,8 @@ const initializeAudio = async () => {
 
     // Form an audio graph and start the source. When the renderer is resumed,
     // the pipeline will be flowing.
-    oscillatorNode.connect(processorNode).connect(audioContext.destination);
+    // oscillatorNode.connect(processorNode).connect(audioContext.destination);
+    oscillatorNode.connect(processorNode);
     oscillatorNode.start();
 
     console.log('[main.js] initializeAudio()');

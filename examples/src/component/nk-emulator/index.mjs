@@ -134,14 +134,14 @@ Object.defineProperties(component.prototype, {
                 }
             })
 
-            this.task({
-                id: 'nk-chat_0',
-                component: 'nk-chat',
-                type: 'self',
-                execute: (self) => {
-                    self.stream = this.processor
-                }
-            })
+            // this.task({
+            //     id: 'nk-chat_0',
+            //     component: 'nk-chat',
+            //     type: 'self',
+            //     execute: (self) => {
+            //         self.stream = this.processor
+            //     }
+            // })
 
             const worker = new Worker(urlWorker, {
                 name: workerName,
