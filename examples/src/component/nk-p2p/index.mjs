@@ -222,7 +222,7 @@ Object.defineProperties(component.prototype, {
             if (isLanKad) {
                 DhtProtocol = `${urlParams.get('lanKad')}kad/1.0.0`
 
-                // console.log('----------------------------', DhtProtocol)
+                // log('----------------------------', DhtProtocol)
                 boot = [
                     bootstrap({
                         list: [
@@ -295,39 +295,39 @@ Object.defineProperties(component.prototype, {
                 },
                 connectionGater: {
                     denyDialPeer: (currentPeerId) => {
-                        // console.log('-------- denyDialPeer --------', currentPeerId.toString())
+                        // log('-------- denyDialPeer --------', currentPeerId.toString())
                         return false
                     },
                     denyDialMultiaddr: async (currentPeerId) => {
-                        // console.log('-------- denyDialMultiaddr --------', currentPeerId.toString())
+                        // log('-------- denyDialMultiaddr --------', currentPeerId.toString())
                         return false
                     },
                     denyOutboundConnection: (currentPeerId, maConn) => {
-                        // console.log('-------- 1 denyOutboundConnection 1 --------', currentPeerId.toString(), maConn)
+                        // log('-------- 1 denyOutboundConnection 1 --------', currentPeerId.toString(), maConn)
                         return false
                     },
                     denyOutboundEncryptedConnection: (currentPeerId, maConn) => {
-                        // console.log('-------- 2 denyOutboundEncryptedConnection 2 --------', currentPeerId.toString(), maConn)
+                        // log('-------- 2 denyOutboundEncryptedConnection 2 --------', currentPeerId.toString(), maConn)
                         return false
                     },
                     denyOutboundUpgradedConnection: (currentPeerId, maConn) => {
-                        // console.log('-------- 3 denyOutboundUpgradedConnection 3 --------', currentPeerId.toString(), maConn)
+                        // log('-------- 3 denyOutboundUpgradedConnection 3 --------', currentPeerId.toString(), maConn)
                         return false
                     },
                     denyInboundConnection: (maConn) => {
-                        // console.log('-------- 1 denyInboundConnection 1 --------', maConn)
+                        // log('-------- 1 denyInboundConnection 1 --------', maConn)
                         return false
                     },
                     denyInboundEncryptedConnection: (currentPeerId, maConn) => {
-                        // console.log('-------- 2 denyInboundEncryptedConnection 2 --------', currentPeerId.toString(), maConn)
+                        // log('-------- 2 denyInboundEncryptedConnection 2 --------', currentPeerId.toString(), maConn)
                         return false
                     },
                     denyInboundUpgradedConnection: (currentPeerId, maConn) => {
-                        // console.log('-------- 3 denyInboundUpgradedConnection 3 --------', currentPeerId.toString(), maConn)
+                        // log('-------- 3 denyInboundUpgradedConnection 3 --------', currentPeerId.toString(), maConn)
                         return false
                     },
                     filterMultiaddrForPeer: async (currentPeerId, maConn) => {
-                        // console.log('-------- filterMultiaddrForPeer --------', currentPeerId.toString(), maConn)
+                        // log('-------- filterMultiaddrForPeer --------', currentPeerId.toString(), maConn)
                         return true
                     }
                 }
@@ -349,7 +349,7 @@ Object.defineProperties(component.prototype, {
 
             this.libp2p.addEventListener('peer:discovery', async (evt) => {
                 log('peer:discovery', evt.detail.id.toString())
-                console.log(`peer:discovery `, evt.detail.multiaddrs)
+                log(`peer:discovery `, evt.detail.multiaddrs)
                 if(evt.detail.multiaddrs.length !== 0) {
                     await this.libp2p.dial(evt.detail.multiaddrs)
                 }

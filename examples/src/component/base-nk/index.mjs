@@ -1,13 +1,12 @@
 import {init, onload, v4 as uuidv} from './this/index.mjs';
-import {onMessage} from './onMessage.mjs';
 import {dialogThis} from './this/index.mjs'
 
 const servicePath = new URL('../', import.meta.url);
 
 const store = {};
-let eventMessages = {};
 let config = {}
 let task = []
+
 const dialogInit = async function (value, type) {
     if (type !== 'terminate') {
         if (value) {
@@ -24,7 +23,6 @@ const dialogInit = async function (value, type) {
             }
 
             const data = await dialogThis.template.get(value.type)[0].template(pathname, value);
-            // content.innerHTML = '';
             content.insertAdjacentHTML('afterbegin', data);
 
             dialogThis.config.inputs = dialog.querySelectorAll('.input_body');
@@ -108,13 +106,6 @@ const BaseClass = class extends HTMLElement {
     }
 
     _isOnload = false;
-    _isBroadcastChannel = false
-
-    _broadcastChannel = [{
-        self: new BroadcastChannel('broadcast'),
-        value: undefined,
-        await: undefined
-    }];
 
     dialog = {
         error: async function (url, value) {
@@ -153,32 +144,6 @@ const BaseClass = class extends HTMLElement {
             dialogInit.call(this, {}, 'terminate')
         }
     }
-    broadcastPublish = async function () {
-        await this.execute();
-    }
-    messageerror = function (event) {
-        console.log('ddddddddddddddddddddddddddddd BROADCAST messageerror ddddddddddddddddddddddddddddd', event);
-    }
-
-    set broadcastChannel(value) {
-        if (!this._isBroadcastChannel) {
-            this._broadcastChannel[0].value = value;
-
-            if ('broadcastChannel' in this._broadcastChannel[0].value && 'messageerror' in this._broadcastChannel[0].value) {
-                this._broadcastChannel[0].self.addEventListener('message', this._broadcastChannel[0].value.broadcastChannel);
-                this._broadcastChannel[0].self.addEventListener('messageerror', this._broadcastChannel[0].value.messageerror);
-            } else {
-                this._broadcastChannel[0].self.addEventListener('message', this.broadcastPublish.bind(this));
-                this._broadcastChannel[0].self.addEventListener('messageerror', this.messageerror.bind(this));
-            }
-
-            this._isBroadcastChannel = true
-        }
-    }
-
-    get broadcastChannel() {
-        return this._broadcastChannel[0].value;
-    }
 
     get config() {
         return config;
@@ -199,7 +164,6 @@ const BaseClass = class extends HTMLElement {
         return new Promise((resolve, reject) => {
             const call = []
             let count = 0
-
             for (let item of task) {
                 const components = this.store[`${item.component}`]
                 if (components) {
@@ -219,12 +183,11 @@ const BaseClass = class extends HTMLElement {
                 }
                 count++
             }
-
             call.forEach(item => item.execute(item.self, item.detail))
-
             resolve(true)
         })
     };
+
     task = async function (value) {
         task.push(Object.assign(value, {
             tagName: this.tagName.toLowerCase(),
@@ -234,6 +197,11 @@ const BaseClass = class extends HTMLElement {
 
         await this.execute();
     }
+
+    get task() {
+        return task
+    }
+
     component = function(value) {
         return new Promise(async (resolve,reject) => {
             task.push(Object.assign(value, {
@@ -248,11 +216,6 @@ const BaseClass = class extends HTMLElement {
             await this.execute();
         })
     }
-    get task() {
-        return {
-            task: task,
-        };
-    }
 
     set disabled(val) {
         if (val) {
@@ -261,10 +224,22 @@ const BaseClass = class extends HTMLElement {
             this.removeAttribute('disabled');
         }
     }
-
     get disabled() {
         return this.hasAttribute('disabled');
     }
+
+    set open(val) {
+        if (val) {
+            this.setAttribute('open', '');
+        } else {
+            this.removeAttribute('open');
+        }
+    }
+
+    get open() {
+        return this.hasAttribute('open');
+    }
+
     constructor() {
         super();
         this.dataset.servicesPath = servicePath.pathname;
@@ -287,12 +262,19 @@ const BaseClass = class extends HTMLElement {
                         await self.connected()
                     }
 
+                    if(this?.DOM) {
+                        for(let key in this.DOM) {
+                            if(typeof this.DOM[key] === 'function') {
+                                this.DOM[key] = this.DOM[key].bind(this)
+                            }
+                        }
+                    }
+
                     const name = self.tagName.toLowerCase();
 
                     if (!store.hasOwnProperty(name)) {
                         store[name] = []
                     }
-
 
                     store[name].push({
                         id: self.id,
@@ -301,17 +283,7 @@ const BaseClass = class extends HTMLElement {
                         dataset: self.dataset
                     });
 
-                    // console.log('store[name]', store[name])
-                    this.broadcastChannel = {}
-
-                    this._broadcastChannel[0].self.postMessage({
-                        isBroadcastChannel: this._isBroadcastChannel,
-                        name: this.tagName
-                    });
-
-                    if (this._isBroadcastChannel) {
-                        this.execute()
-                    }
+                    this.execute()
                 })
                 .catch(e => console.error('error', e));
         }
@@ -352,7 +324,7 @@ const BaseClass = class extends HTMLElement {
 export const Component = (() => {
     return async () => {
         const body = `return ${BaseClass}`;
-        const baseComponent = new Function('task', 'dialogInit', 'config', 'onMessage', 'eventMessages', 'store', 'uuidv', 'servicePath', 'init', 'onload', body);
-        return baseComponent(task, dialogInit, config, onMessage, eventMessages, store, uuidv, servicePath, init, onload, body);
+        const baseComponent = new Function('task', 'dialogInit', 'config', 'store', 'uuidv', 'servicePath', 'init', 'onload', body);
+        return baseComponent(task, dialogInit, config, store, uuidv, servicePath, init, onload, body);
     };
 })();

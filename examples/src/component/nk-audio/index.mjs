@@ -1,58 +1,149 @@
 import {Component} from '../index.mjs';
-import { lottieWeb } from 'lottie-web';
+import {lottieWeb} from 'lottie-web';
+import {FreeQueueSAB} from '@newkind/freeQueue'
+import {getConstants} from '@newkind/constants'
 
-// import {Actions} from "../nk-menu/this/index.mjs";
-// import {lpStream} from 'it-length-prefixed-stream'
-// import {multiaddr} from "@multiformats/multiaddr";
-// import {proto, protoAudio} from '@newkind/constants'
+const {QUEUE_SIZE} = getConstants()
 
 const name = 'nk-audio';
 const component = await Component();
 
 let cutoff = 100;
 
-// Returns a low-pass transform function for use with TransformStream.
-function lowPassFilter() {
-    const format = 'f32-planar';
-    let lastValuePerChannel = undefined;
-    return (data, controller) => {
-        const rc = 1.0 / (cutoff * 2 * Math.PI);
-        const dt = 1.0 / data.sampleRate;
-        const alpha = dt / (rc + dt);
-        const nChannels = data.numberOfChannels;
-        if (!lastValuePerChannel) {
-            console.log(`Audio stream has ${nChannels} channels.`);
-            lastValuePerChannel = Array(nChannels).fill(0);
-        }
-        const buffer = new Float32Array(data.numberOfFrames * nChannels);
-        for (let c = 0; c < nChannels; c++) {
-            const offset = data.numberOfFrames * c;
-            const samples = buffer.subarray(offset, offset + data.numberOfFrames);
-            data.copyTo(samples, {planeIndex: c, format});
-            let lastValue = lastValuePerChannel[c];
+// Create 2 FreeQueue instances with 4096 buffer length and 1 channel.
+const inputQueue = new FreeQueueSAB(QUEUE_SIZE, 1);
+const outputQueue = new FreeQueueSAB(QUEUE_SIZE, 1);
 
-            // Apply low-pass filter to samples.
-            for (let i = 0; i < samples.length; ++i) {
-                lastValue = lastValue + alpha * (samples[i] - lastValue);
-                samples[i] = lastValue;
-            }
+// Create an atomic state for synchronization between Worker and AudioWorklet.
+const atomicState = new Int32Array(new SharedArrayBuffer(1 * Int32Array.BYTES_PER_ELEMENT));
 
-            lastValuePerChannel[c] = lastValue;
+let audioContext = null;
+let worker = null;
+let isWorkerInitialized = false;
+
+let toggleButton = null;
+let isPlaying = false;
+let messageView = null;
+let impulseResponseSelect = null;
+
+/**
+ * Function to create and initialize AudioContext.
+ * @returns {Promise<AudioContext>}
+ */
+const initializeAudio = async () => {
+    const audioContext = new AudioContext();
+    const urlProcessor = new URL('./audio-processor.mjs', import.meta.url)
+    await audioContext.audioWorklet.addModule(urlProcessor.pathname);
+
+    const oscillatorNode = new OscillatorNode(audioContext);
+    const processorNode = new AudioWorkletNode(audioContext, 'audio-processor', {
+        processorOptions: {
+            inputQueue,
+            outputQueue,
+            atomicState
         }
-        controller.enqueue(new AudioData({
-            format,
-            sampleRate: data.sampleRate,
-            numberOfFrames: data.numberOfFrames,
-            numberOfChannels: nChannels,
-            timestamp: data.timestamp,
-            data: buffer
-        }));
-    };
-}
+    });
+
+    // Initially suspend the context to prevent the renderer from hammering the
+    // Worker.
+    audioContext.suspend();
+
+    // Form an audio graph and start the source. When the renderer is resumed,
+    // the pipeline will be flowing.
+    oscillatorNode.connect(processorNode).connect(audioContext.destination);
+    oscillatorNode.start();
+
+    console.log('[main.js] initializeAudio()');
+    return audioContext;
+};
+
+const initializeWorkerIfNecessary = async function (){
+    if (isWorkerInitialized) {
+        return;
+    }
+
+    console.assert(this.audioContext);
+
+    let filePath = null;
+    let irArray = null;
+    if (impulseResponseSelect) {
+        // When the file path is `TEST` generates a test IR (10 samples). See
+        // `assets.js` for details.
+        filePath = impulseResponseSelect.value;
+        irArray = (filePath === 'TEST')
+            ? createTestIR()
+            : await fetchAudioFileToF32Array(audioContext, filePath);
+
+        impulseResponseSelect.disabled = true;
+    }
+
+    // Send FreeQueue instance and atomic state to worker.
+    this.worker.postMessage({
+        type: 'init',
+        data: {
+            inputQueue,
+            outputQueue,
+            atomicState,
+            irArray,
+            sampleRate: this.audioContext.sampleRate,
+        }
+    });
+
+    console.log('[main.js] initializeWorkerIfNecessary(): ' + filePath);
+
+    isWorkerInitialized = true;
+};
+
+
+// Handles `button` click. It toggles the state between playing and suspended.
+const toggleButtonClickHandler = async function () {
+    if (!isPlaying) {
+        initializeWorkerIfNecessary.call(this);
+        this.audioContext.resume();
+        isPlaying = true;
+        // toggleButton.textContent = 'STOP';
+    } else {
+        this.audioContext.suspend();
+        isPlaying = false;
+        // toggleButton.textContent = 'START';
+    }
+};
+
+// Detect required features.
+const detectFeaturesAndReport = (viewElement) => {
+    let areRequiremensMet = true;
+    let errorMessage = ''
+    if (typeof navigator.gpu !== 'object') {
+        errorMessage +=
+            'ERROR: WebGPU is not available on your browser.\r\n';
+        areRequiremensMet = false;
+    }
+
+    if (typeof SharedArrayBuffer !== 'function') {
+        errorMessage +=
+            'ERROR: SharedArrayBuffer is not available on your browser.\r\n';
+        areRequiremensMet = false;
+    }
+
+    if (areRequiremensMet) {
+        errorMessage +=
+            'All requirements have been met. The experiment is ready to run.\r\n';
+    }
+
+    if (!areRequiremensMet) {
+        viewElement.dialog.error(errorMessage)
+    }
+
+    return areRequiremensMet;
+};
 
 Object.defineProperties(component.prototype, {
     DOM: {
         value: {},
+        writable: true
+    },
+    audioContext: {
+        value: null,
         writable: true
     },
     processedStream: {
@@ -76,7 +167,7 @@ Object.defineProperties(component.prototype, {
         writable: true
     },
     constraints: {
-        value: function() {
+        value: function () {
             return {
                 audio: true,
                 video: false
@@ -92,9 +183,22 @@ Object.defineProperties(component.prototype, {
                 }
             }
 
-            for(let key in this.DOM) {
-                this.DOM[key] = this.DOM[key].bind(this)
+            if (!detectFeaturesAndReport(this)) {
+                return;
             }
+
+            this.audioContext = await initializeAudio();
+
+            const newUrl = new URL('./worker.js', import.meta.url)
+
+            this.worker = new Worker(newUrl.pathname, {
+                name: "audio-worker",
+                type: 'module'
+            });
+
+            this.worker.onerror = (event) => {
+                console.log('[main.js] Error from worker.js: ', event);
+            };
 
             const shadow = this.shadowRoot;
             const audioPlayerContainer = shadow.getElementById('audio-player-container');
@@ -110,8 +214,8 @@ Object.defineProperties(component.prototype, {
             let muteState = 'unmute';
             let raf = null;
 
-            audio.src = this.getAttribute('data-src');
-
+            // audio.src = this.getAttribute('data-src');
+            //
             const playAnimation = lottieWeb.loadAnimation({
                 container: playIconContainer,
                 path: 'https://maxst.icons8.com/vue-static/landings/animated-icons/icons/pause/pause.json',
@@ -131,17 +235,19 @@ Object.defineProperties(component.prototype, {
             });
 
             playAnimation.goToAndStop(14, true);
-
+            //
             const whilePlaying = () => {
                 seekSlider.value = Math.floor(audio.currentTime);
                 currentTimeContainer.textContent = calculateTime(seekSlider.value);
                 audioPlayerContainer.style.setProperty('--seek-before-width', `${seekSlider.value / seekSlider.max * 100}%`);
                 raf = requestAnimationFrame(whilePlaying);
             }
+
             const showRangeProgress = (rangeInput) => {
-                if(rangeInput === seekSlider) audioPlayerContainer.style.setProperty('--seek-before-width', rangeInput.value / rangeInput.max * 100 + '%');
+                if (rangeInput === seekSlider) audioPlayerContainer.style.setProperty('--seek-before-width', rangeInput.value / rangeInput.max * 100 + '%');
                 else audioPlayerContainer.style.setProperty('--volume-before-width', rangeInput.value / rangeInput.max * 100 + '%');
             }
+
             const calculateTime = (secs) => {
                 const minutes = Math.floor(secs / 60);
                 const seconds = Math.floor(secs % 60);
@@ -156,9 +262,9 @@ Object.defineProperties(component.prototype, {
             const setSliderMax = () => {
                 seekSlider.max = Math.floor(audio.duration);
             }
-
+            //
             const displayBufferedAmount = () => {
-                if(audio.buffered.length > 0) {
+                if (audio.buffered.length > 0) {
                     const bufferedAmount = Math.floor(audio.buffered.end(audio.buffered.length - 1));
                     audioPlayerContainer.style.setProperty('--buffered-width', `${(bufferedAmount / seekSlider.max) * 100}%`);
                 }
@@ -177,64 +283,21 @@ Object.defineProperties(component.prototype, {
             }
 
             playIconContainer.addEventListener('click', async () => {
-                if(playState === 'play') {
-
-                    let abortController = null
-                    this.stream = audio.captureStream();
-
-                    console.log('this.id: ', this.id)
-
-                    if(this.id === 'nk-audio_0') {
-                        this.task({
-                            id: 'nk-chat_0',
-                            component: 'nk-chat',
-                            type: 'self',
-                            execute: (self) => {
-                                self.stream = this.stream
-                            }
-                        })
-                    }
-
-                    const audioTracks = this.stream.getAudioTracks();
-
-                    this.stream.oninactive = () => {
-                        console.log('Stream ended');
-                    };
-
-                    this.processor = new MediaStreamTrackProcessor(audioTracks[0]);
-
-                    console.log('----- this.processor -----', this.processor)
-                    this.generator = new MediaStreamTrackGenerator('audio');
-                    const source = this.processor.readable;
-                    const sink = this.generator.writable;
-                    // const transformer = new TransformStream({transform: lowPassFilter()});
-                    abortController = new AbortController();
-                    const signal = abortController.signal;
-                    const promise = source.pipeTo(sink);
-                    promise.catch((e) => {
-                        if (signal.aborted) {
-                            console.log('Shutting down streams after abort.');
-                        } else {
-                            console.error('Error from stream transform:', e);
-                        }
-                        source.cancel(e);
-                        sink.abort(e);
-                    })
-
-                    await audio.play();
+                if (playState === 'play') {
                     playAnimation.playSegments([14, 27], true);
                     requestAnimationFrame(whilePlaying);
+                    toggleButtonClickHandler.call(this)
                     playState = 'pause';
                 } else {
-                    audio.pause();
                     playAnimation.playSegments([0, 14], true);
                     cancelAnimationFrame(raf);
+                    toggleButtonClickHandler.call(this)
                     playState = 'play';
                 }
             });
 
             muteIconContainer.addEventListener('click', () => {
-                if(muteState === 'unmute') {
+                if (muteState === 'unmute') {
                     muteAnimation.playSegments([0, 15], true);
                     audio.muted = true;
                     muteState = 'mute';
@@ -250,14 +313,14 @@ Object.defineProperties(component.prototype, {
             seekSlider.addEventListener('input', (e) => {
                 showRangeProgress(e.target);
                 currentTimeContainer.textContent = calculateTime(seekSlider.value);
-                if(!audio.paused) {
+                if (!audio.paused) {
                     cancelAnimationFrame(raf);
                 }
             });
 
             seekSlider.addEventListener('change', () => {
                 audio.currentTime = seekSlider.value;
-                if(!audio.paused) {
+                if (!audio.paused) {
                     requestAnimationFrame(whilePlaying);
                 }
             });
@@ -269,79 +332,79 @@ Object.defineProperties(component.prototype, {
                 audio.volume = value / 100;
             });
 
-            if('mediaSession' in navigator) {
-                navigator.mediaSession.metadata = new MediaMetadata({
-                    title: 'Komorebi',
-                    artist: 'Anitek',
-                    album: 'MainStay',
-                    artwork: [
-                        { src: './component/nk-audio/img.png', sizes: '96x96', type: 'image/png' },
-                        { src: './component/nk-audio/img.png', sizes: '128x128', type: 'image/png' },
-                        { src: './component/nk-audio/img.png', sizes: '192x192', type: 'image/png' },
-                        { src: './component/nk-audio/img.png', sizes: '256x256', type: 'image/png' },
-                        { src: './component/nk-audio/img.png', sizes: '384x384', type: 'image/png' },
-                        { src: './component/nk-audio/img.png', sizes: '512x512', type: 'image/png' }
-                    ]
-                });
+            // if('mediaSession' in navigator) {
+            //     navigator.mediaSession.metadata = new MediaMetadata({
+            //         title: 'Komorebi',
+            //         artist: 'Anitek',
+            //         album: 'MainStay',
+            //         artwork: [
+            //             { src: './component/nk-audio/img.png', sizes: '96x96', type: 'image/png' },
+            //             { src: './component/nk-audio/img.png', sizes: '128x128', type: 'image/png' },
+            //             { src: './component/nk-audio/img.png', sizes: '192x192', type: 'image/png' },
+            //             { src: './component/nk-audio/img.png', sizes: '256x256', type: 'image/png' },
+            //             { src: './component/nk-audio/img.png', sizes: '384x384', type: 'image/png' },
+            //             { src: './component/nk-audio/img.png', sizes: '512x512', type: 'image/png' }
+            //         ]
+            //     });
 
-                navigator.mediaSession.setActionHandler('play', () => {
-                    if(playState === 'play') {
-                        audio.play();
-                        playAnimation.playSegments([14, 27], true);
-                        requestAnimationFrame(whilePlaying);
-                        playState = 'pause';
-                    } else {
-                        audio.pause();
-                        playAnimation.playSegments([0, 14], true);
-                        cancelAnimationFrame(raf);
-                        playState = 'play';
-                    }
-                });
+            // navigator.mediaSession.setActionHandler('play', () => {
+            //     if(playState === 'play') {
+            //         audio.play();
+            //         playAnimation.playSegments([14, 27], true);
+            //         requestAnimationFrame(whilePlaying);
+            //         playState = 'pause';
+            //     } else {
+            //         audio.pause();
+            //         playAnimation.playSegments([0, 14], true);
+            //         cancelAnimationFrame(raf);
+            //         playState = 'play';
+            //     }
+            // });
 
-                navigator.mediaSession.setActionHandler('pause', () => {
-                    if(playState === 'play') {
-                        audio.play();
-                        playAnimation.playSegments([14, 27], true);
-                        requestAnimationFrame(whilePlaying);
-                        playState = 'pause';
-                    } else {
-                        audio.pause();
-                        playAnimation.playSegments([0, 14], true);
-                        cancelAnimationFrame(raf);
-                        playState = 'play';
-                    }
-                });
+            // navigator.mediaSession.setActionHandler('pause', () => {
+            //     if(playState === 'play') {
+            //         audio.play();
+            //         playAnimation.playSegments([14, 27], true);
+            //         requestAnimationFrame(whilePlaying);
+            //         playState = 'pause';
+            //     } else {
+            //         audio.pause();
+            //         playAnimation.playSegments([0, 14], true);
+            //         cancelAnimationFrame(raf);
+            //         playState = 'play';
+            //     }
+            // });
 
-                navigator.mediaSession.setActionHandler('seekbackward', (details) => {
-                    audio.currentTime = audio.currentTime - (details.seekOffset || 10);
-                });
+            // navigator.mediaSession.setActionHandler('seekbackward', (details) => {
+            //     audio.currentTime = audio.currentTime - (details.seekOffset || 10);
+            // });
 
-                navigator.mediaSession.setActionHandler('seekforward', (details) => {
-                    audio.currentTime = audio.currentTime + (details.seekOffset || 10);
-                });
+            // navigator.mediaSession.setActionHandler('seekforward', (details) => {
+            //     audio.currentTime = audio.currentTime + (details.seekOffset || 10);
+            // });
+            //
+            // navigator.mediaSession.setActionHandler('seekto', (details) => {
+            //     if (details.fastSeek && 'fastSeek' in audio) {
+            //         audio.fastSeek(details.seekTime);
+            //         return;
+            //     }
+            //     audio.currentTime = details.seekTime;
+            // });
 
-                navigator.mediaSession.setActionHandler('seekto', (details) => {
-                    if (details.fastSeek && 'fastSeek' in audio) {
-                        audio.fastSeek(details.seekTime);
-                        return;
-                    }
-                    audio.currentTime = details.seekTime;
-                });
+            // navigator.mediaSession.setActionHandler('stop', () => {
+            //     audio.currentTime = 0;
+            //     seekSlider.value = 0;
+            //     audioPlayerContainer.style.setProperty('--seek-before-width', '0%');
+            //     currentTimeContainer.textContent = '0:00';
+            //     if(playState === 'pause') {
+            //         playAnimation.playSegments([0, 14], true);
+            //         cancelAnimationFrame(raf);
+            //         playState = 'play';
+            //     }
+            // });
+            // }
 
-                navigator.mediaSession.setActionHandler('stop', () => {
-                    audio.currentTime = 0;
-                    seekSlider.value = 0;
-                    audioPlayerContainer.style.setProperty('--seek-before-width', '0%');
-                    currentTimeContainer.textContent = '0:00';
-                    if(playState === 'pause') {
-                        playAnimation.playSegments([0, 14], true);
-                        cancelAnimationFrame(raf);
-                        playState = 'play';
-                    }
-                });
-            }
-
-            return true;
+            // return true;
         },
         writable: true
     },

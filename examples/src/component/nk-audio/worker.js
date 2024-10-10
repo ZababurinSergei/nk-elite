@@ -1,75 +1,104 @@
-/*
- *  Copyright (c) 2023 The WebRTC project authors. All Rights Reserved.
- *
- *  Use of this source code is governed by a BSD-style license
- *  that can be found in the LICENSE file in the root of the source
- *  tree.
- */
+// import FreeQueue from "./lib/free-queue.js";
+// import GPUProcessor from "./gpu-processor.js";
+// import { FRAME_SIZE } from "./constants.js";
+import { FreeQueueSAB  } from '../../this/free-queue/free-queue-sab.js'
+import { getConstants } from '../../this/constants.js'
+const { FRAME_SIZE }  = getConstants();
 
-// Adjust this value to increase/decrease the amount of filtering.
-// eslint-disable-next-line prefer-const
-let cutoff = 100;
+let inputQueue = null;
+let outputQueue = null;
+let atomicState = null;
+let gpuProcessor = null;
+let inputBuffer = null;
+let irArray = null;
+let sampleRate = null;
 
-// Returns a low-pass transform function for use with TransformStream.
-function lowPassFilter() {
-  const format = 'f32-planar';
-  let lastValuePerChannel = undefined;
-  return (data, controller) => {
-    const rc = 1.0 / (cutoff * 2 * Math.PI);
-    const dt = 1.0 / data.sampleRate;
-    const alpha = dt / (rc + dt);
-    const nChannels = data.numberOfChannels;
-    if (!lastValuePerChannel) {
-      console.log(`Audio stream has ${nChannels} channels.`);
-      lastValuePerChannel = Array(nChannels).fill(0);
-    }
-    const buffer = new Float32Array(data.numberOfFrames * nChannels);
-    for (let c = 0; c < nChannels; c++) {
-      const offset = data.numberOfFrames * c;
-      const samples = buffer.subarray(offset, offset + data.numberOfFrames);
-      data.copyTo(samples, {planeIndex: c, format});
-      let lastValue = lastValuePerChannel[c];
+// Performance metrics
+let lastCallback = 0;
+let averageTimeSpent = 0;
+let timeElapsed = 0;
+let runningAverageFactor = 1;
 
-      // Apply low-pass filter to samples.
-      for (let i = 0; i < samples.length; ++i) {
-        lastValue = lastValue + alpha * (samples[i] - lastValue);
-        samples[i] = lastValue;
-      }
+// This will initialize worker with FreeQueue instance and set loop for audio
+// processing.
+const initialize = async (messageDataFromMainThread) => {
+  ({inputQueue, outputQueue, atomicState, irArray, sampleRate} = messageDataFromMainThread);
+  Object.setPrototypeOf(inputQueue, FreeQueueSAB.prototype);
+  Object.setPrototypeOf(outputQueue, FreeQueueSAB.prototype);
 
-      lastValuePerChannel[c] = lastValue;
-    }
-    controller.enqueue(new AudioData({
-      format,
-      sampleRate: data.sampleRate,
-      numberOfFrames: data.numberOfFrames,
-      numberOfChannels: nChannels,
-      timestamp: data.timestamp,
-      data: buffer
-    }));
-  };
-}
+  // A local buffer to store data pulled out from `inputQueue`.
+  inputBuffer = new Float32Array(FRAME_SIZE);
 
-let abortController;
+  // Create an instance of GPUProcessor and provide an IR array.
+  // gpuProcessor = new GPUProcessor();
+  // gpuProcessor.setIRArray(irArray);
+  // await gpuProcessor.initialize();
 
-onmessage = async (event) => {
-  if (event.data.command == 'abort') {
-    abortController.abort();
-    abortController = null;
-  } else {
-    const source = event.data.source;
-    const sink = event.data.sink;
-    const transformer = new TransformStream({transform: lowPassFilter()});
-    abortController = new AbortController();
-    const signal = abortController.signal;
-    const promise = source.pipeThrough(transformer, {signal}).pipeTo(sink);
-    promise.catch((e) => {
-      if (signal.aborted) {
-        console.log('Shutting down streams after abort.');
-      } else {
-        console.error('Error from stream transform:', e);
-      }
-      source.cancel(e);
-      sink.abort(e);
-    });
+  // How many "frames" gets processed over 1 second (1000ms)?
+  runningAverageFactor = sampleRate / FRAME_SIZE;
+
+  console.log('[worker.js] initialize()');
+};
+
+const process = async () => {
+  if (!inputQueue.pull([inputBuffer], FRAME_SIZE)) {
+    console.error('[worker.js] Pulling from inputQueue failed.');
+    return;
+  }
+
+  // 1. Bypassing
+  const outputBuffer = inputBuffer;
+
+  // 2. Bypass via GPU.
+  // const outputBuffer = await gpuProcessor.processBypass(inputBuffer);
+
+  // 3. Convolution via GPU
+  // const outputBuffer = await gpuProcessor.processConvolution(inputBuffer);
+
+  if (!outputQueue.push([outputBuffer], FRAME_SIZE)) {
+    console.error('[worker.js] Pushing to outputQueue failed.');
+    return;
   }
 };
+
+self.onmessage = async (message) => {
+  console.log('[worker.js] onmessage: ' + message.data.type);
+
+  if (message.data.type !== 'init') {
+    console.error(`[worker.js] Invalid message type: ${message.data.type}`);
+    return;
+  }
+
+  await initialize(message.data.data);
+
+  // This loop effectively disables the interaction (postMessage) with the
+  // main thread once it kicks off.
+  while (true) {
+    if (Atomics.wait(atomicState, 0, 1) === 'ok') {
+      const processStart = performance.now();
+      const callbackInterval = processStart - lastCallback;
+      lastCallback = processStart;
+      timeElapsed += callbackInterval;
+      // Processes "frames" from inputQueue and pass the result to outputQueue.
+      await process();
+
+      // Approximate running average of process() time.
+      const timeSpent = performance.now() - processStart;
+      averageTimeSpent -= averageTimeSpent / runningAverageFactor;
+      averageTimeSpent += timeSpent / runningAverageFactor;
+
+      // Throttle the log by 1 second.
+      if (timeElapsed >= 1000) {
+        console.log(
+          `[worker.js] process() = ${timeSpent.toFixed(3)}ms : ` +
+          `avg = ${averageTimeSpent.toFixed(3)}ms : ` +
+          `callback interval = ${(callbackInterval).toFixed(3)}ms`);  
+        timeElapsed -= 1000;
+      }
+
+      Atomics.store(atomicState, 0, 0);
+    }
+  }
+};
+
+console.log('[worker.js] loaded.');

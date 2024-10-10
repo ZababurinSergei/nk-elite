@@ -22,7 +22,6 @@ let runningAverageFactor = 1;
 
 // processing.
 const initialize = (messageDataFromMainThread) => {
-    console.log('---------------- initialize ----------------')
     inputQueue = messageDataFromMainThread.inputQueue
     outputQueue = messageDataFromMainThread.outputQueue
     atomicState = messageDataFromMainThread.atomicState
