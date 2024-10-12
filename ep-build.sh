@@ -14,7 +14,7 @@ fi
 
 cd examples
 
-export SOURCEDIR=src/this/free-queue
+export SOURCEDIR=src/this/free-queue/wasm
 export KEEPFILE=free-queue.js
 
 find $SOURCEDIR -type f -not -name $KEEPFILE -delete
@@ -34,11 +34,11 @@ export DIR=`pwd`
 sh ./build.sh
 cd ..
 
-if [ ! -d ./examples/src/this/free-queue ]; then
-    mkdir ./examples/src/this/free-queue
+if [ ! -d ./examples/src/this/free-queue/wasm ]; then
+    mkdir ./examples/src/this/free-queue/wasm
 fi
 
-cp ./$BUILDDIR/*.* ./examples/src/this/free-queue
+cp ./$BUILDDIR/*.* ./examples/src/this/free-queue/wasm
 
 cd examples
 

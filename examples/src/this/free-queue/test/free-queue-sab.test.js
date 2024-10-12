@@ -1,4 +1,4 @@
-import { expect } from 'https://cdnjs.cloudflare.com/ajax/libs/chai/5.1.1/chai.js';
+import { expect } from './chai.js';
 
 import { FreeQueueSAB } from '../free-queue-sab.js';
 

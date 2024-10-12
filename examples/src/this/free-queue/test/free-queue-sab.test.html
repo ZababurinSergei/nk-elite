@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FreeQueueSAB Tests</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mocha/10.6.0/mocha.css" integrity="sha512-xPbP9qFwQklQFQX6R6+36vNq6mZatPrpfEKUB/zWASwZvfDBy8Y2gEpkRuDlZ0WCiZZGMPyluZif5v2KKxylqg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="./chai.min.js"></script>
     <style>
       .head {
           margin-top: 5vh;
@@ -27,7 +28,7 @@
     <script>
         mocha.setup('bdd');
     </script>
-    <script src="../coi-serviceworker.js"></script>
+    <script src="./coi-serviceworker.js"></script>
     <script type="module" src="./free-queue-sab.test.js"></script>
     <script>
         document.getElementById('run-tests').addEventListener('click', function() {

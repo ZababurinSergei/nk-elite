@@ -1,5 +1,5 @@
 import { Component } from '../index.mjs'
-import { FreeQueueSAB } from '@newkind/freeQueue'
+import { FreeQueueSAB } from '@newkind/FreeQueueSAB'
 import { getConstants } from '@newkind/constants'
 import { Processor } from './processor.mjs'
 import { Actions } from './this/index.mjs'

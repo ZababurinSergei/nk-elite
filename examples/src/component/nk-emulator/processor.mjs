@@ -1,4 +1,4 @@
-import { FreeQueueSAB } from '@newkind/freeQueue'
+import { FreeQueueSAB } from '@newkind/FreeQueueSAB'
 import { getConstants } from '@newkind/constants'
 const { RENDER_QUANTUM, FRAME_SIZE } = getConstants('emulator');
 import {logger} from '@libp2p/logger'

@@ -1,9 +1,13 @@
 import { Component } from '../index.mjs';
 import { lottieWeb } from 'lottie-web';
-import { FreeQueueSAB } from '@newkind/freeQueue'
+import { FreeQueueSAB } from '@newkind/FreeQueueSAB'
+import { FreeQueue, MAX_CHANNEL_COUNT, RENDER_QUANTUM_FRAMES } from '@newkind/freeQueue';
+import initFreeQueue from '@newkind/initFreeQueue'
 import { getConstants } from '@newkind/constants'
 import { postMessage } from './main-worker.mjs'
 const {QUEUE_SIZE} = getConstants()
+import { logger } from "@libp2p/logger";
+const log = logger('nk-audio');
 
 const name = 'nk-audio';
 const component = await Component();
@@ -26,6 +30,7 @@ let isPlaying = false;
 let messageView = null;
 let impulseResponseSelect = null;
 
+log('============== initFreeQueue ==============', initFreeQueue)
 /**
  * Function to create and initialize AudioContext.
  * @returns {Promise<AudioContext>}
@@ -54,7 +59,7 @@ const initializeAudio = async () => {
     oscillatorNode.connect(processorNode);
     oscillatorNode.start();
 
-    console.log('[main.js] initializeAudio()');
+    log('[main.js] initializeAudio()');
     return audioContext;
 };
 
@@ -102,7 +107,7 @@ const initializeWorkerIfNecessary = async function (){
             }
         }
     })
-    console.log('[main.js] initializeWorkerIfNecessary(): ' + filePath);
+    log('[main.js] initializeWorkerIfNecessary(): ' + filePath);
 
     isWorkerInitialized = true;
 };
@@ -150,9 +155,42 @@ const detectFeaturesAndReport = (viewElement) => {
     return areRequiremensMet;
 };
 
+
+globalThis["LFreeQueue"] = {
+    setStatus: function (e) {
+        if (e !== "") {
+            log(e)
+        };
+    }
+};
+
+globalThis["LFreeQueue"].onRuntimeInitialized = async function()
+{
+    ///////////////////////////////////////////////////////////////////////////////////////
+    // FreeQueue initialization
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //globalThis["LFreeQueue"].callMain("");
+}
+
 Object.defineProperties(component.prototype, {
     DOM: {
-        value: {},
+        value: { },
+        writable: true
+    },
+    LFreeQueue: {
+        value: {
+            setStatus: function (e) {
+                if (e !== "") {
+                    log('--------------- FreeQueue initialization ---------------',e)
+                };
+            },
+            onRuntimeInitialized: async function () {
+                ///////////////////////////////////////////////////////////////////////////////////////
+                // FreeQueue initialization
+                ///////////////////////////////////////////////////////////////////////////////////////
+                //globalThis["LFreeQueue"].callMain("");
+            }
+        },
         writable: true
     },
     audioContext: {
@@ -196,6 +234,40 @@ Object.defineProperties(component.prototype, {
                 }
             }
 
+            initFreeQueue(this.LFreeQueue).then( async (module) => {
+                // const GetFreeQueuePointers = module.cwrap('GetFreeQueuePointers', 'number', ['number', 'string']);
+                // const PrintQueueInfo = module.cwrap('PrintQueueInfo', '', ['number']);
+                // const CreateFreeQueue = module.cwrap('CreateFreeQueue', 'number', ['number', 'number']);
+                // const PrintQueueAddresses = module.cwrap('PrintQueueAddresses', '', ['number']);
+
+                const bufferLength = 1024;
+                const channelCount = 2;
+                const maxChannelCount = 4;
+
+                const freeQueue = new FreeQueue(module, bufferLength, channelCount, maxChannelCount);
+
+                // CONFIG.queue.pointer = CreateFreeQueue( 1754 * 50, 2 );
+                log('------------------ module', freeQueue)
+                // CONFIG.queue.pointer = CreateFreeQueue( 1754 * 50, 2 );
+                // const bufferLengthPtr = GetFreeQueuePointers(CONFIG.queue.pointer, "buffer_length");
+                // const channelCountPtr = GetFreeQueuePointers(CONFIG.queue.pointer, "channel_count");
+                // const statePtr = GetFreeQueuePointers(CONFIG.queue.pointer, "state");
+                // const channelDataPtr = GetFreeQueuePointers(CONFIG.queue.pointer, "channel_data");
+
+                // const pointers = new Object();
+                // pointers.memory = module.HEAPU8;
+                // pointers.bufferLengthPointer = bufferLengthPtr;
+                // pointers.channelCountPointer = channelCountPtr;
+                // pointers.statePointer = statePtr;
+                // pointers.channelDataPointer = channelDataPtr;
+
+                // CONFIG.queue.instance = FreeQueue.fromPointers(pointers);
+                // if (CONFIG.queue.instance != undefined) CONFIG.queue.instance.printAvailableReadAndWrite();
+
+                module.setStatus("initWasmFreeQueue completed...");
+
+            });
+
             if (!detectFeaturesAndReport(this)) {
                 return;
             }
@@ -210,7 +282,7 @@ Object.defineProperties(component.prototype, {
             });
 
             this.worker.onerror = (event) => {
-                console.log('[main.js] Error from worker.js: ', event);
+                log('[main.js] Error from worker.js: ', event);
             };
 
             const shadow = this.shadowRoot;
