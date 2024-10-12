@@ -155,23 +155,6 @@ const detectFeaturesAndReport = (viewElement) => {
     return areRequiremensMet;
 };
 
-
-globalThis["LFreeQueue"] = {
-    setStatus: function (e) {
-        if (e !== "") {
-            log(e)
-        };
-    }
-};
-
-globalThis["LFreeQueue"].onRuntimeInitialized = async function()
-{
-    ///////////////////////////////////////////////////////////////////////////////////////
-    // FreeQueue initialization
-    ///////////////////////////////////////////////////////////////////////////////////////
-    //globalThis["LFreeQueue"].callMain("");
-}
-
 Object.defineProperties(component.prototype, {
     DOM: {
         value: { },
