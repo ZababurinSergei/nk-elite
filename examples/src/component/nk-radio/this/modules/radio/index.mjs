@@ -110,7 +110,6 @@ const freeQueueInit = function (CONFIG){
     }
 
     initFreeQueue(globalThis["LFreeQueue"]).then( async (module) => {
-
         const GetFreeQueuePointers = module.cwrap('GetFreeQueuePointers', 'number', ['number', 'string']);
         const PrintQueueInfo = module.cwrap('PrintQueueInfo', '', ['number']);
         const CreateFreeQueue = module.cwrap('CreateFreeQueue', 'number', ['number', 'number']);
@@ -133,9 +132,7 @@ const freeQueueInit = function (CONFIG){
         if (CONFIG.queue.instance != undefined) CONFIG.queue.instance.printAvailableReadAndWrite();
 
         module.setStatus("initWasmFreeQueue completed...");
-
     });
-
 }
 
 const componentInit = (self, CONFIG) => {
