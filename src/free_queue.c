@@ -78,6 +78,8 @@ void *CreateFreeQueue(size_t length, size_t channel_count) {
 
 EMSCRIPTEN_KEEPALIVE
 void DestroyFreeQueue(struct FreeQueue *queue) {
+  emscripten_lock_init( &lpull );
+  emscripten_lock_init( &lpush );
   if ( queue ) {
     for (int i = 0; i < queue->channel_count; i++) {
       free(queue->channel_data[i]);
@@ -85,6 +87,8 @@ void DestroyFreeQueue(struct FreeQueue *queue) {
     free(queue->channel_data);
     free(queue);
   }
+  emscripten_lock_release( &lpush );
+  emscripten_lock_release( &lpull );
 }
 
 EMSCRIPTEN_KEEPALIVE
@@ -113,6 +117,12 @@ bool FreeQueuePush(struct FreeQueue *queue, double **input, size_t block_length)
   }
   emscripten_lock_release( &lpush );
   return false;
+}
+
+EMSCRIPTEN_KEEPALIVE
+double GetDataValue( double** pointer, int a, int b )
+{
+	return pointer[a][b];
 }
 
 EMSCRIPTEN_KEEPALIVE
