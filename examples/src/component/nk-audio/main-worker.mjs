@@ -1,6 +1,7 @@
 // import FreeQueue from "./lib/free-queue.js";
 // import GPUProcessor from "./gpu-processor.js";
 // import { FRAME_SIZE } from "./constants.js";
+import {FreeQueue, MAX_CHANNEL_COUNT, RENDER_QUANTUM_FRAMES} from '@newkind/freeQueue';
 import { FreeQueueSAB } from '@newkind/FreeQueueSAB'
 import { getConstants } from '@newkind/constants'
 const { FRAME_SIZE }  = getConstants();
@@ -37,8 +38,11 @@ function executeLocked(callback, atomicState, index = 0, value = 0) {
 // processing.
 const initialize = (messageDataFromMainThread) => {
   ({inputQueue, outputQueue, atomicState, irArray, sampleRate} = messageDataFromMainThread);
-  Object.setPrototypeOf(inputQueue, FreeQueueSAB.prototype);
-  Object.setPrototypeOf(outputQueue, FreeQueueSAB.prototype);
+  // Object.setPrototypeOf(inputQueue, FreeQueueSAB.prototype);
+  // Object.setPrototypeOf(outputQueue, FreeQueueSAB.prototype);
+
+  Object.setPrototypeOf(inputQueue, FreeQueue.prototype);
+  Object.setPrototypeOf(outputQueue, FreeQueue.prototype);
 
   // A local buffer to store data pulled out from `inputQueue`.
   inputBuffer = [new Float32Array(FRAME_SIZE), new Float32Array(FRAME_SIZE)]

@@ -16,11 +16,8 @@ const component = await Component();
 
 let cutoff = 100;
 
-// Create 2 FreeQueue instances with 4096 buffer length and 1 channel.
 const inputQueue = new FreeQueueSAB(QUEUE_SIZE, 1);
 const outputQueue = new FreeQueueSAB(QUEUE_SIZE, 1);
-
-// Create an atomic state for synchronization between Worker and AudioWorklet.
 const atomicState = new Int32Array(new SharedArrayBuffer(1 * Int32Array.BYTES_PER_ELEMENT));
 
 let audioContext = null;
@@ -37,19 +34,27 @@ log('============== initFreeQueue ==============', initFreeQueue)
  * Function to create and initialize AudioContext.
  * @returns {Promise<AudioContext>}
  */
-const initializeAudio = async () => {
+const initializeAudio = async function () {
     const audioContext = new AudioContext();
     const urlProcessor = new URL('./audio-processor.mjs', import.meta.url)
     await audioContext.audioWorklet.addModule(urlProcessor.pathname);
-
     const oscillatorNode = new OscillatorNode(audioContext);
-    const processorNode = new AudioWorkletNode(audioContext, 'audio-processor', {
-        processorOptions: {
-            inputQueue: this.inputQueue,
-            outputQueue: this.outputQueue,
-            atomicState: this.atomicState,
-        }
-    });
+
+    // const processorNode = new AudioWorkletNode(audioContext, 'audio-processor', {
+    //     processorOptions: {
+    //         inputQueue: this.inputQueue,
+    //         outputQueue: this.outputQueue,
+    //         atomicState: this.atomicState,
+    //     }
+    // });
+
+    // const processorNode = new AudioWorkletNode(audioContext, 'audio-processor', {
+    //     processorOptions: {
+    //         inputQueue,
+    //         outputQueue,
+    //         atomicState,
+    //     }
+    // });
 
     // Initially suspend the context to prevent the renderer from hammering the
     // Worker.
@@ -97,8 +102,8 @@ const initializeWorkerIfNecessary = async function () {
     //     }
     // });
 
-    this.inputQueue = new FreeQueue(module, bufferLength, channelCount, maxChannelCount);
-    this.outputQueue = new FreeQueue(module, bufferLength, channelCount, maxChannelCount);
+    this.inputQueue = new FreeQueue(module, QUEUE_SIZE, channelCount, maxChannelCount);
+    this.outputQueue = new FreeQueue(module, QUEUE_SIZE, channelCount, maxChannelCount);
     this.atomicState = new Int32Array(new SharedArrayBuffer(1 * Int32Array.BYTES_PER_ELEMENT));
 
     postMessage({
@@ -170,7 +175,9 @@ const bufferLengthPtr = Symbol('bufferLengthPtr')
 const channelCountPtr = Symbol('channelCountPtr')
 const statePtr = Symbol('statePtr')
 const channelDataPtr = Symbol('channelDataPtr')
-const instance = Symbol('instance')
+const Instance = Symbol('Instance')
+const InputInstance = Symbol('InputInstance')
+
 Object.defineProperties(component.prototype, {
     DOM: {
         value: {},
@@ -217,10 +224,8 @@ Object.defineProperties(component.prototype, {
                 this[channelCountPtr] = this[GetFreeQueuePointers](this[pointer], "channel_count");
                 this[statePtr] = this[GetFreeQueuePointers](this[pointer], "state");
                 this[channelDataPtr] = this[GetFreeQueuePointers](this[pointer], "channel_data");
-                // log('--------------- Malloc size ---------------', this[PrintQueueInfo](this[pointer]))
-                log('---------------------------------------')
-                // debugger
-                return  this.HEAPU8
+
+                return this[channelDataPtr]
             },
             setStatus: function (e) {
                 if (e !== "") {
@@ -280,92 +285,47 @@ Object.defineProperties(component.prototype, {
             }
 
             const module = await initFreeQueue(this.LFreeQueue)
+
+            this[GetFreeQueuePointers] = module.cwrap('GetFreeQueuePointers', 'number', ['number', 'string']);
+            this[PrintQueueInfo] = module.cwrap('PrintQueueInfo', '', ['number']);
+            this[PrintQueueAddresses] = module.cwrap('PrintQueueAddresses', '', ['number']);
+            this[CreateFreeQueue] = module.cwrap('CreateFreeQueue', 'number', ['number', 'number'])
+
+            const size  = 2024
+            this[pointer] = this[CreateFreeQueue](size, 2 );
+            this[bufferLengthPtr] = this[GetFreeQueuePointers](this[pointer], "buffer_length");
+            this[channelCountPtr] = this[GetFreeQueuePointers](this[pointer], "channel_count");
+            this[statePtr] = this[GetFreeQueuePointers](this[pointer], "state");
+            this[channelDataPtr] = this[GetFreeQueuePointers](this[pointer], "channel_data");
+            // this[Instance] = FreeQueue.fromPointers(this[pointer]);
+            console.log('module', this[Instance])
+            debugger
             // for(let key in this.LFreeQueue) {
             //     this.LFreeQueue[key] = this.LFreeQueue[key].bind(this)
             // }
 
-            const bufferLength = 1024;
-            const channelCount = 2;
-            const maxChannelCount = 4;
+            // const bufferLength = 1024;
+            // const channelCount = 2;
+            // const maxChannelCount = 4;
 
             // const freeQueue = new FreeQueue(module, bufferLength, channelCount, maxChannelCount);
 
-            this.inputQueue = new FreeQueue(module, bufferLength, channelCount, maxChannelCount);
-            this.outputQueue = new FreeQueue(module, bufferLength, channelCount, maxChannelCount);
-            this.atomicState = new Int32Array(new SharedArrayBuffer(1 * Int32Array.BYTES_PER_ELEMENT));
+            // this.inputQueue = new FreeQueue(module, bufferLength, channelCount, maxChannelCount);
+            // console.log('=========== this.inputQueue ================', this.inputQueue)
+            // this[inputInstance] = freeQueue.fromPointers(pointers);
 
-            // const pointers = new Object();
-            // pointers.memory = module.HEAPU8;
-            // pointers.bufferLengthPointer = module[bufferLengthPtr];
-            // pointers.channelCountPointer = module[channelCountPtr];
-            // pointers.statePointer = module[statePtr];
-            // pointers.channelDataPointer = module[channelDataPtr];
-            //
-            // module[instance] = freeQueue.fromPointers(module[pointer]);
+            // this.outputQueue = new FreeQueue(module, bufferLength, channelCount, maxChannelCount);
+            // this.atomicState = new Int32Array(new SharedArrayBuffer(1 * Int32Array.BYTES_PER_ELEMENT));
 
-            log('ddddddddddddddddddddddddddddddddd', freeQueue)
-            // CONFIG.queue.pointer = CreateFreeQueue( 1754 * 50, 2 );
-            // log('should initialize with correct properties length: ', freeQueue.length, bufferLength)
-            // log('should initialize with correct properties numberOfChannels: ', freeQueue.numberOfChannels, channelCount)
-            // log('should initialize with correct properties maxChannelCount: ', freeQueue.maxChannelCount, maxChannelCount)
 
-            // const dataByteSize = channelCount * bufferLength * Float32Array.BYTES_PER_ELEMENT;
-            // log('should allocate the correct amount of memory getPointer():  ', freeQueue.getPointer(), ArrayBuffer)
-            // log('should allocate the correct amount of memory getPointer().byteLength: ', freeQueue.getPointer().byteLength, dataByteSize)
-            // freeQueue.adaptChannel(3);
-            // log('should adapt to a new channel count within limits: ', freeQueue.numberOfChannels)
-
-            // const testData = [new Float32Array(bufferLength).fill(1), new Float32Array(bufferLength).fill(2)];
-            // freeQueue.push(testData);
-            //
-            // const outputData = [new Float32Array(bufferLength), new Float32Array(bufferLength)];
-            // freeQueue.pull(outputData);
-            // log('should correctly push data: ', outputData, outputData)
-
-            // const testData = [new Float32Array(bufferLength).fill(1), new Float32Array(bufferLength).fill(2)];
-            //
-            // for (let i = 0; i < 5; i++) {
-            //     freeQueue.push(testData);
-            //
-            //     const outputData = [new Float32Array(bufferLength), new Float32Array(bufferLength)];
-            //     freeQueue.pull(outputData);
-
-                // log('---------', outputData[0], testData[0])
-                // expect(outputData[0]).to.deep.equal(testData[0]);
-                // expect(outputData[1]).to.deep.equal(testData[1]);
-                // expect(freeQueue.framesAvailable).to.equal(0);
-            // }
-
-            // const input = [new Float32Array(1), new Float32Array(1)];
-            // const output = [new Float32Array(1), new Float32Array(1)];
-            // for (let i = 0; i < 1000000; i++) {
-            //     freeQueue.push(input, 1);
-            //     console.log('-----')
-            //     freeQueue.pull(output, 1);
-            // }
-            // CONFIG.queue.pointer = CreateFreeQueue( 1754 * 50, 2 );
-            // const bufferLengthPtr = GetFreeQueuePointers(CONFIG.queue.pointer, "buffer_length");
-            // const channelCountPtr = GetFreeQueuePointers(CONFIG.queue.pointer, "channel_count");
-            // const statePtr = GetFreeQueuePointers(CONFIG.queue.pointer, "state");
-            // const channelDataPtr = GetFreeQueuePointers(CONFIG.queue.pointer, "channel_data");
-
-            // const pointers = new Object();
-            // pointers.memory = module.HEAPU8;
-            // pointers.bufferLengthPointer = bufferLengthPtr;
-            // pointers.channelCountPointer = channelCountPtr;
-            // pointers.statePointer = statePtr;
-            // pointers.channelDataPointer = channelDataPtr;
-
-            // CONFIG.queue.instance = FreeQueue.fromPointers(pointers);
-            // if (CONFIG.queue.instance != undefined) CONFIG.queue.instance.printAvailableReadAndWrite();
-
+            // this[outputInstance] = freeQueue.fromPointers(pointers);
             module.setStatus("initWasmFreeQueue completed...");
 
             if (!detectFeaturesAndReport(this)) {
                 return;
             }
 
-            this.audioContext = await initializeAudio();
+            this.audioContext = await initializeAudio.call(this);
 
             const newUrl = new URL('./worker.sync.mjs', import.meta.url)
 

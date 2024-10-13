@@ -1,4 +1,5 @@
 import { FreeQueueSAB } from '@newkind/FreeQueueSAB'
+import {FreeQueue, MAX_CHANNEL_COUNT, RENDER_QUANTUM_FRAMES} from '@newkind/freeQueue';
 import { getConstants } from '@newkind/constants'
 const { RENDER_QUANTUM, FRAME_SIZE } = getConstants('emulator');
 import {logger} from '@libp2p/logger'
@@ -24,8 +25,10 @@ export class MainProcessor {
         this.inputQueue = options.processorOptions.inputQueue;
         this.outputQueue = options.processorOptions.outputQueue;
         this.atomicState = options.processorOptions.atomicState;
-        Object.setPrototypeOf(this.inputQueue, FreeQueueSAB.prototype);
-        Object.setPrototypeOf(this.outputQueue, FreeQueueSAB.prototype);
+        // Object.setPrototypeOf(this.inputQueue, FreeQueueSAB.prototype);
+        // Object.setPrototypeOf(this.outputQueue, FreeQueueSAB.prototype);
+        Object.setPrototypeOf(this.inputQueue, FreeQueue.prototype);
+        Object.setPrototypeOf(this.outputQueue, FreeQueue.prototype);
         this.primingCounter = 0;
     }
 
