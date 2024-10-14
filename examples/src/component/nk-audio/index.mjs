@@ -226,18 +226,18 @@ Object.defineProperties(component.prototype, {
     LFreeQueue: {
         value: {
             _malloc: function (size) {
-                // this[GetFreeQueuePointers] = this.cwrap('GetFreeQueuePointers', 'number', ['number', 'string']);
-                // this[PrintQueueInfo] = this.cwrap('PrintQueueInfo', '', ['number']);
-                // this[PrintQueueAddresses] = this.cwrap('PrintQueueAddresses', '', ['number']);
-                // this[CreateFreeQueue] = this.cwrap('CreateFreeQueue', 'number', ['number', 'number'])
-                //
-                // this[pointer] = this[CreateFreeQueue](size, 2 );
-                // this[bufferLengthPtr] = this[GetFreeQueuePointers](this[pointer], "buffer_length");
-                // this[channelCountPtr] = this[GetFreeQueuePointers](this[pointer], "channel_count");
-                // this[statePtr] = this[GetFreeQueuePointers](this[pointer], "state");
-                // this[channelDataPtr] = this[GetFreeQueuePointers](this[pointer], "channel_data");
-                //
-                // return this[channelDataPtr]
+                this[GetFreeQueuePointers] = this.cwrap('GetFreeQueuePointers', 'number', ['number', 'string']);
+                this[PrintQueueInfo] = this.cwrap('PrintQueueInfo', '', ['number']);
+                this[PrintQueueAddresses] = this.cwrap('PrintQueueAddresses', '', ['number']);
+                this[CreateFreeQueue] = this.cwrap('CreateFreeQueue', 'number', ['number', 'number'])
+
+                this[pointer] = this[CreateFreeQueue](size, 2 );
+                this[bufferLengthPtr] = this[GetFreeQueuePointers](this[pointer], "buffer_length");
+                this[channelCountPtr] = this[GetFreeQueuePointers](this[pointer], "channel_count");
+                this[statePtr] = this[GetFreeQueuePointers](this[pointer], "state");
+                this[channelDataPtr] = this[GetFreeQueuePointers](this[pointer], "channel_data");
+
+                return this[pointer]
             },
             setStatus: function (e) {
                 if (e !== "") {
@@ -295,46 +295,22 @@ Object.defineProperties(component.prototype, {
                 }
             }
 
-            // const module = await initFreeQueue(this.LFreeQueue)
-
-            // this[GetFreeQueuePointers] = module.cwrap('GetFreeQueuePointers', 'number', ['number', 'string']);
-            // this[PrintQueueInfo] = module.cwrap('PrintQueueInfo', '', ['number']);
-            // this[PrintQueueAddresses] = module.cwrap('PrintQueueAddresses', '', ['number']);
-            // this[CreateFreeQueue] = module.cwrap('CreateFreeQueue', 'number', ['number', 'number'])
-
-            // const size  = 2024
-            // this[pointer] = this[CreateFreeQueue](size, 2 );
-            // this[bufferLengthPtr] = this[GetFreeQueuePointers](this[pointer], "buffer_length");
-            // this[channelCountPtr] = this[GetFreeQueuePointers](this[pointer], "channel_count");
-            // this[statePtr] = this[GetFreeQueuePointers](this[pointer], "state");
-            // this[channelDataPtr] = this[GetFreeQueuePointers](this[pointer], "channel_data");
-            // this[Instance] = FreeQueue.fromPointers(this[pointer]);
-            // console.log('module', this[Instance])
-            // debugger
-            // for(let key in this.LFreeQueue) {
-            //     this.LFreeQueue[key] = this.LFreeQueue[key].bind(this)
-            // }
-
-            // const bufferLength = 1024;
-            // const channelCount = 2;
-            // const maxChannelCount = 4;
-
-            // const freeQueue = new FreeQueue(module, bufferLength, channelCount, maxChannelCount);
-
-            // this.inputQueue = new FreeQueue(module, bufferLength, channelCount, maxChannelCount);
-            // console.log('=========== this.inputQueue ================', this.inputQueue)
-            // this[inputInstance] = freeQueue.fromPointers(pointers);
-
-            // this.outputQueue = new FreeQueue(module, bufferLength, channelCount, maxChannelCount);
-            // this.atomicState = new Int32Array(new SharedArrayBuffer(1 * Int32Array.BYTES_PER_ELEMENT));
-
-
-            // this[outputInstance] = freeQueue.fromPointers(pointers);
-            // module.setStatus("initWasmFreeQueue completed...");
-
             if (!detectFeaturesAndReport(this)) {
                 return;
             }
+
+
+            const module = await initFreeQueue(this.LFreeQueue)
+
+            const channelCount = 2
+            const maxChannelCount = 4
+            this.atomicState = new Int32Array(new SharedArrayBuffer(1 * Int32Array.BYTES_PER_ELEMENT));
+            this.inputQueue = new FreeQueue(module, QUEUE_SIZE, channelCount, maxChannelCount);
+            this.outputQueue = new FreeQueue(module, QUEUE_SIZE, channelCount, maxChannelCount);
+            console.log('============= this.pointerInput ======================', this.outputQueue)
+
+            module.setStatus("initWasmFreeQueue completed...");
+
 
             this.audioContext = await initializeAudio.call(this);
 
