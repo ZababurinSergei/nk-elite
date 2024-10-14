@@ -48,22 +48,21 @@ const initializeAudio = async function () {
     //     }
     // });
 
-    // const processorNode = new AudioWorkletNode(audioContext, 'audio-processor', {
-    //     processorOptions: {
-    //         inputQueue,
-    //         outputQueue,
-    //         atomicState,
-    //     }
-    // });
+    const processorNode = new AudioWorkletNode(audioContext, 'audio-processor', {
+        processorOptions: {
+            inputQueue,
+            outputQueue,
+            atomicState,
+        }
+    });
 
     // Initially suspend the context to prevent the renderer from hammering the
-    // Worker.
     audioContext.suspend();
 
     // Form an audio graph and start the source. When the renderer is resumed,
     // the pipeline will be flowing.
-    // oscillatorNode.connect(processorNode).connect(audioContext.destination);
-    oscillatorNode.connect(processorNode);
+    oscillatorNode.connect(processorNode).connect(audioContext.destination);
+    // oscillatorNode.connect(processorNode);
     oscillatorNode.start();
 
     log('[main.js] initializeAudio()');
@@ -102,22 +101,35 @@ const initializeWorkerIfNecessary = async function () {
     //     }
     // });
 
-    this.inputQueue = new FreeQueue(module, QUEUE_SIZE, channelCount, maxChannelCount);
-    this.outputQueue = new FreeQueue(module, QUEUE_SIZE, channelCount, maxChannelCount);
-    this.atomicState = new Int32Array(new SharedArrayBuffer(1 * Int32Array.BYTES_PER_ELEMENT));
+    // this.inputQueue = new FreeQueue(module, QUEUE_SIZE, channelCount, maxChannelCount);
+    // this.outputQueue = new FreeQueue(module, QUEUE_SIZE, channelCount, maxChannelCount);
+    // this.atomicState = new Int32Array(new SharedArrayBuffer(1 * Int32Array.BYTES_PER_ELEMENT));
+    // postMessage({
+    //     data: {
+    //         type: 'init',
+    //         data: {
+    //             inputQueue: this.inputQueue,
+    //             outputQueue: this.outputQueue,
+    //             atomicState: this.atomicState,
+    //             irArray,
+    //             sampleRate: this.audioContext.sampleRate,
+    //         }
+    //     }
+    // })
 
     postMessage({
         data: {
             type: 'init',
             data: {
-                inputQueue: this.inputQueue,
-                outputQueue: this.outputQueue,
-                atomicState: this.atomicState,
+                inputQueue,
+                outputQueue,
+                atomicState,
                 irArray,
                 sampleRate: this.audioContext.sampleRate,
             }
         }
     })
+
     log('[main.js] initializeWorkerIfNecessary(): ' + filePath);
 
     isWorkerInitialized = true;
@@ -214,25 +226,24 @@ Object.defineProperties(component.prototype, {
     LFreeQueue: {
         value: {
             _malloc: function (size) {
-                this[GetFreeQueuePointers] = this.cwrap('GetFreeQueuePointers', 'number', ['number', 'string']);
-                this[PrintQueueInfo] = this.cwrap('PrintQueueInfo', '', ['number']);
-                this[PrintQueueAddresses] = this.cwrap('PrintQueueAddresses', '', ['number']);
-                this[CreateFreeQueue] = this.cwrap('CreateFreeQueue', 'number', ['number', 'number'])
-
-                this[pointer] = this[CreateFreeQueue](size, 2 );
-                this[bufferLengthPtr] = this[GetFreeQueuePointers](this[pointer], "buffer_length");
-                this[channelCountPtr] = this[GetFreeQueuePointers](this[pointer], "channel_count");
-                this[statePtr] = this[GetFreeQueuePointers](this[pointer], "state");
-                this[channelDataPtr] = this[GetFreeQueuePointers](this[pointer], "channel_data");
-
-                return this[channelDataPtr]
+                // this[GetFreeQueuePointers] = this.cwrap('GetFreeQueuePointers', 'number', ['number', 'string']);
+                // this[PrintQueueInfo] = this.cwrap('PrintQueueInfo', '', ['number']);
+                // this[PrintQueueAddresses] = this.cwrap('PrintQueueAddresses', '', ['number']);
+                // this[CreateFreeQueue] = this.cwrap('CreateFreeQueue', 'number', ['number', 'number'])
+                //
+                // this[pointer] = this[CreateFreeQueue](size, 2 );
+                // this[bufferLengthPtr] = this[GetFreeQueuePointers](this[pointer], "buffer_length");
+                // this[channelCountPtr] = this[GetFreeQueuePointers](this[pointer], "channel_count");
+                // this[statePtr] = this[GetFreeQueuePointers](this[pointer], "state");
+                // this[channelDataPtr] = this[GetFreeQueuePointers](this[pointer], "channel_data");
+                //
+                // return this[channelDataPtr]
             },
             setStatus: function (e) {
                 if (e !== "") {
                     log('--------------- FreeQueue initialization ---------------', e)
 
-                }
-                ;
+                };
             },
             onRuntimeInitialized: async function () {
                 ///////////////////////////////////////////////////////////////////////////////////////
@@ -284,22 +295,22 @@ Object.defineProperties(component.prototype, {
                 }
             }
 
-            const module = await initFreeQueue(this.LFreeQueue)
+            // const module = await initFreeQueue(this.LFreeQueue)
 
-            this[GetFreeQueuePointers] = module.cwrap('GetFreeQueuePointers', 'number', ['number', 'string']);
-            this[PrintQueueInfo] = module.cwrap('PrintQueueInfo', '', ['number']);
-            this[PrintQueueAddresses] = module.cwrap('PrintQueueAddresses', '', ['number']);
-            this[CreateFreeQueue] = module.cwrap('CreateFreeQueue', 'number', ['number', 'number'])
+            // this[GetFreeQueuePointers] = module.cwrap('GetFreeQueuePointers', 'number', ['number', 'string']);
+            // this[PrintQueueInfo] = module.cwrap('PrintQueueInfo', '', ['number']);
+            // this[PrintQueueAddresses] = module.cwrap('PrintQueueAddresses', '', ['number']);
+            // this[CreateFreeQueue] = module.cwrap('CreateFreeQueue', 'number', ['number', 'number'])
 
-            const size  = 2024
-            this[pointer] = this[CreateFreeQueue](size, 2 );
-            this[bufferLengthPtr] = this[GetFreeQueuePointers](this[pointer], "buffer_length");
-            this[channelCountPtr] = this[GetFreeQueuePointers](this[pointer], "channel_count");
-            this[statePtr] = this[GetFreeQueuePointers](this[pointer], "state");
-            this[channelDataPtr] = this[GetFreeQueuePointers](this[pointer], "channel_data");
+            // const size  = 2024
+            // this[pointer] = this[CreateFreeQueue](size, 2 );
+            // this[bufferLengthPtr] = this[GetFreeQueuePointers](this[pointer], "buffer_length");
+            // this[channelCountPtr] = this[GetFreeQueuePointers](this[pointer], "channel_count");
+            // this[statePtr] = this[GetFreeQueuePointers](this[pointer], "state");
+            // this[channelDataPtr] = this[GetFreeQueuePointers](this[pointer], "channel_data");
             // this[Instance] = FreeQueue.fromPointers(this[pointer]);
-            console.log('module', this[Instance])
-            debugger
+            // console.log('module', this[Instance])
+            // debugger
             // for(let key in this.LFreeQueue) {
             //     this.LFreeQueue[key] = this.LFreeQueue[key].bind(this)
             // }
@@ -319,7 +330,7 @@ Object.defineProperties(component.prototype, {
 
 
             // this[outputInstance] = freeQueue.fromPointers(pointers);
-            module.setStatus("initWasmFreeQueue completed...");
+            // module.setStatus("initWasmFreeQueue completed...");
 
             if (!detectFeaturesAndReport(this)) {
                 return;

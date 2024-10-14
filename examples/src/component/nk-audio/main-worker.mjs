@@ -41,8 +41,8 @@ const initialize = (messageDataFromMainThread) => {
   // Object.setPrototypeOf(inputQueue, FreeQueueSAB.prototype);
   // Object.setPrototypeOf(outputQueue, FreeQueueSAB.prototype);
 
-  Object.setPrototypeOf(inputQueue, FreeQueue.prototype);
-  Object.setPrototypeOf(outputQueue, FreeQueue.prototype);
+  Object.setPrototypeOf(inputQueue, FreeQueueSAB.prototype);
+  Object.setPrototypeOf(outputQueue, FreeQueueSAB.prototype);
 
   // A local buffer to store data pulled out from `inputQueue`.
   inputBuffer = [new Float32Array(FRAME_SIZE), new Float32Array(FRAME_SIZE)]

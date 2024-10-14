@@ -293,13 +293,6 @@ const BaseClass = class extends HTMLElement {
         if ('disconnected' in this) {
             this.disconnected().then().catch(e => console.error(e))
         }
-
-        if (this._broadcastChannel[0].value) {
-            this._broadcastChannel[0].self.removeEventListener('message', this._broadcastChannel[0].value.broadcastChannel);
-            this._broadcastChannel[0].self.removeEventListener('messageerror', this._broadcastChannel[0].value.messageerror);
-        }
-
-        // this._broadcastChannel.self.close();
     }
 
     attributeChangedCallback(name, oldValue, newValue) {

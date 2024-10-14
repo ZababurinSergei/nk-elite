@@ -25,8 +25,8 @@ class AudioProcessor extends AudioWorkletProcessor {
 		this.atomicState = options.processorOptions.atomicState;
 		Object.setPrototypeOf(this.inputQueue, FreeQueueSAB.prototype);
 		Object.setPrototypeOf(this.outputQueue, FreeQueueSAB.prototype);
-		Object.setPrototypeOf(this.inputQueue, FreeQueue.prototype);
-		Object.setPrototypeOf(this.outputQueue, FreeQueue.prototype);
+		// Object.setPrototypeOf(this.inputQueue, FreeQueue.prototype);
+		// Object.setPrototypeOf(this.outputQueue, FreeQueue.prototype);
 		this.primingCounter = 0;
 	}
 
@@ -47,7 +47,7 @@ class AudioProcessor extends AudioWorkletProcessor {
 			// Pull processed audio data out of `outputQueue` and pass it in output.
 			const didPull = this.outputQueue.pull(output, RENDER_QUANTUM);
 			if (!didPull) {
-				console.log('[basic-processor.js] Not enough data in outputQueue');
+				console.log('[audio-processor.js] Not enough data in outputQueue');
 			}
 		} else {
 			this.primingCounter++;
@@ -56,7 +56,7 @@ class AudioProcessor extends AudioWorkletProcessor {
 		// Store incoming audio data `input` into `inputQueue`.
 		const didPush = this.inputQueue.push(input, RENDER_QUANTUM);
 		if (!didPush) {
-			console.log('[basic-processor.js] Not enough space in inputQueue');
+			console.log('[audio-processor.js] Not enough space in inputQueue');
 		}
 
 		// Notify worker.js if `inputQueue` has enough data to perform the batch

@@ -43,6 +43,8 @@ export const init = (self) => {
                         container = getChildren(content);
                         self.children[i].remove();
                     }
+                } else {
+                    self.children[i].classList.add('invisible')
                 }
             }
         }
