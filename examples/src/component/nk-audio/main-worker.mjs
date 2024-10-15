@@ -24,8 +24,8 @@ let runningAverageFactor = 1;
 function executeLocked(callback, atomicState, index = 0, value = 0) {
   async function tryGetLock() {
     while (await (Atomics.waitAsync(atomicState, index, value)).value === 'ok') {
-      console.log('inputBuffer: ', inputBuffer)
-      console.log('outputBuffer: ', outputBuffer)
+      // console.log('inputBuffer: ', inputBuffer)
+      // console.log('outputBuffer: ', outputBuffer)
 
       callback();
       Atomics.store(atomicState, index, 0);
@@ -62,7 +62,7 @@ const initialize = (messageDataFromMainThread) => {
 const process = () => {
   const data = inputQueue.pull(inputBuffer, FRAME_SIZE)
   if (!data) {
-    console.error('[worker.js] Pulling from inputQueue failed.');
+    // console.error('[worker.js] Pulling from inputQueue failed.');
     return;
   }
 
@@ -79,7 +79,7 @@ const process = () => {
 
 
   if (!outputQueue.push(outputBuffer, FRAME_SIZE)) {
-    console.error('[worker.js] Pushing to outputQueue failed.');
+    // console.error('[worker.js] Pushing to outputQueue failed.');
     return;
   }
 };
@@ -108,10 +108,10 @@ export const postMessage = function (msg) {
 
       // Throttle the log by 1 second.
       if (timeElapsed >= 1000) {
-        console.log(
-            `[worker.js] process() = ${timeSpent.toFixed(3)}ms : ` +
-            `avg = ${averageTimeSpent.toFixed(3)}ms : ` +
-            `callback interval = ${(callbackInterval).toFixed(3)}ms`);
+        // console.log(
+        //     `[worker.js] process() = ${timeSpent.toFixed(3)}ms : ` +
+        //     `avg = ${averageTimeSpent.toFixed(3)}ms : ` +
+        //     `callback interval = ${(callbackInterval).toFixed(3)}ms`);
         timeElapsed -= 1000;
       }
 

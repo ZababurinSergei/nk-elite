@@ -47,8 +47,7 @@ uint32_t _getAvailableWrite(
   struct FreeQueue *queue, 
   uint32_t read_index, 
   uint32_t write_index
-) 
-{
+) {
   if (write_index >= read_index)
     return queue->buffer_length - write_index + read_index - 1;
   return read_index - write_index - 1;

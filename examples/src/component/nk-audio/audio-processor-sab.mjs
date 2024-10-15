@@ -1,4 +1,4 @@
-// import { FreeQueueSAB } from "../../this/free-queue/free-queue-sab.js";
+import { FreeQueueSAB } from "../../this/free-queue/free-queue-sab.js";
 import { FreeQueue } from "../../this/free-queue/free-queue.js";
 import { getConstants } from '../../this/constants.js';
 const { FRAME_SIZE, RENDER_QUANTUM } = getConstants()
@@ -23,8 +23,8 @@ class AudioProcessor extends AudioWorkletProcessor {
 		this.inputQueue = options.processorOptions.inputQueue;
 		this.outputQueue = options.processorOptions.outputQueue;
 		this.atomicState = options.processorOptions.atomicState;
-		Object.setPrototypeOf(this.inputQueue, FreeQueue.prototype);
-		Object.setPrototypeOf(this.outputQueue, FreeQueue.prototype);
+		Object.setPrototypeOf(this.inputQueue, FreeQueueSAB.prototype);
+		Object.setPrototypeOf(this.outputQueue, FreeQueueSAB.prototype);
 		// Object.setPrototypeOf(this.inputQueue, FreeQueue.prototype);
 		// Object.setPrototypeOf(this.outputQueue, FreeQueue.prototype);
 		this.primingCounter = 0;
@@ -70,4 +70,4 @@ class AudioProcessor extends AudioWorkletProcessor {
 	}
 }
 
-registerProcessor('audio-processor', AudioProcessor);
+registerProcessor('audio-processor-sab', AudioProcessor);

@@ -37,8 +37,15 @@ log('============== initFreeQueue ==============', initFreeQueue)
  */
 const initializeAudio = async function () {
     const audioContext = new AudioContext();
-    const urlProcessor = new URL('./audio-processor.mjs', import.meta.url)
+    const audioContext2 = new AudioContext();
+
+    const urlProcessor = new URL('./audio-processor-sab.mjs', import.meta.url)
+    const urlProcessor2 = new URL('./audio-processor.mjs', import.meta.url)
+
+
     await audioContext.audioWorklet.addModule(urlProcessor.pathname);
+    await audioContext2.audioWorklet.addModule(urlProcessor2.pathname);
+
     const oscillatorNode = new OscillatorNode(audioContext);
 
     // const processorNode = new AudioWorkletNode(audioContext, 'audio-processor', {
@@ -48,6 +55,12 @@ const initializeAudio = async function () {
     //         atomicState: this.atomicState,
     //     }
     // });
+
+    // const processor = new MediaStreamTrackProcessor();
+    // const generator = new MediaStreamTrackGenerator('audio');
+    // const source = processor.readable;
+    // const sink = generator.writable;
+
     const processorNodeMain = new MainProcessor({
         processorOptions: {
             inputQueue,
@@ -56,7 +69,7 @@ const initializeAudio = async function () {
         }
     })
 
-    const processorNode = new AudioWorkletNode(audioContext, 'audio-processor', {
+    const processorNode = new AudioWorkletNode(audioContext, 'audio-processor-sab', {
         processorOptions: {
             inputQueue,
             outputQueue,
@@ -75,11 +88,10 @@ const initializeAudio = async function () {
     // console.log(processorNode, processorNodeMain)
     // Form an audio graph and start the source. When the renderer is resumed,
     // the pipeline will be flowing.
-    oscillatorNode.connect(processorNode).connect(audioContext.destination);
+    // oscillatorNode.connect(processorNode).connect(audioContext.destination);
     // oscillatorNode.connect(processorNode);
     // oscillatorNode.connect(processorNodeMain).connect(audioContext.destination);
-    // oscillatorNode.connect(processorNodeMain);
-
+    oscillatorNode.connect(processorNode);
     oscillatorNode.start();
 
     log('[main.js] initializeAudio()');
@@ -206,6 +218,7 @@ const statePtr = Symbol('statePtr')
 const channelDataPtr = Symbol('channelDataPtr')
 const Instance = Symbol('Instance')
 const InputInstance = Symbol('InputInstance')
+const DestroyFreeQueue = Symbol('DestroyFreeQueue')
 
 Object.defineProperties(component.prototype, {
     DOM: {
@@ -247,14 +260,18 @@ Object.defineProperties(component.prototype, {
                 this[PrintQueueInfo] = this.cwrap('PrintQueueInfo', '', ['number']);
                 this[PrintQueueAddresses] = this.cwrap('PrintQueueAddresses', '', ['number']);
                 this[CreateFreeQueue] = this.cwrap('CreateFreeQueue', 'number', ['number', 'number'])
+                this[DestroyFreeQueue] = this.cwrap('DestroyFreeQueue', '', ['number'])
 
-                this[pointer] = this[CreateFreeQueue](size, 2 );
+                this[pointer] = this[CreateFreeQueue](size, 2);
                 this[bufferLengthPtr] = this[GetFreeQueuePointers](this[pointer], "buffer_length");
                 this[channelCountPtr] = this[GetFreeQueuePointers](this[pointer], "channel_count");
                 this[statePtr] = this[GetFreeQueuePointers](this[pointer], "state");
                 this[channelDataPtr] = this[GetFreeQueuePointers](this[pointer], "channel_data");
-
-                return this[pointer]
+                this[PrintQueueAddresses](this[pointer])
+                return this['HEAPF64']
+            },
+            _free: function() {
+                this[DestroyFreeQueue](this[pointer])
             },
             setStatus: function (e) {
                 if (e !== "") {
@@ -324,7 +341,17 @@ Object.defineProperties(component.prototype, {
             this.atomicState = new Int32Array(new SharedArrayBuffer(1 * Int32Array.BYTES_PER_ELEMENT));
             this.inputQueue = new FreeQueue(module, QUEUE_SIZE, channelCount, maxChannelCount);
             this.outputQueue = new FreeQueue(module, QUEUE_SIZE, channelCount, maxChannelCount);
-            console.log('============= this.pointerInput ======================', this.outputQueue)
+            console.log('============= this.pointerInput ======================', {
+                module: module,
+                sab: {
+                    outputQueue: outputQueue,
+                    inputQueue: inputQueue
+                },
+                wasm: {
+                    outputQueue: this.outputQueue,
+                    inputQueue: this.inputQueue
+                }
+            })
 
             module.setStatus("initWasmFreeQueue completed...");
 
