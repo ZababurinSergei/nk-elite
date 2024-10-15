@@ -5,7 +5,7 @@
  * @property {Uint32Array} states Backed by SharedArrayBuffer.
  * @property {number} bufferLength The frame buffer length. Should be identical
  * throughout channels.
- * @property {Array<Float32Array>} channelData The length must be > 0.
+ * @property {Array<Float64Array>} channelData The length must be > 0.
  * @property {number} channelCount same with channelData.length
  */
 
@@ -25,9 +25,9 @@ class FreeQueueSAB {
       /** @type {number} A shared index for reading from the queue. (consumer) */
       READ: 0,
       /** @type {number} A shared index for writing into the queue. (producer) */
-      WRITE: 1,  
+      WRITE: 1,
     }
-    
+
     /**
      * FreeQueue constructor. A shared buffer created by this constuctor
      * will be shared between two threads.
@@ -42,7 +42,7 @@ class FreeQueueSAB {
         )
       );
       /**
-       * Use one extra bin to distinguish between the read and write indices 
+       * Use one extra bin to distinguish between the read and write indices
        * when full. See Tim Blechmann's |boost::lockfree::spsc_queue|
        * implementation.
        */
@@ -51,18 +51,18 @@ class FreeQueueSAB {
       this.channelData = [];
       for (let i = 0; i < channelCount; i++) {
         this.channelData.push(
-          new Float32Array(
+          new Float64Array(
             new SharedArrayBuffer(
-              this.bufferLength * Float32Array.BYTES_PER_ELEMENT
+              this.bufferLength * Float64Array.BYTES_PER_ELEMENT
             )
           )
         );
       }
     }
-  
+
     /**
      * Helper function for creating FreeQueue from pointers.
-     * @param {FreeQueuePointers} queuePointers 
+     * @param {FreeQueuePointers} queuePointers
      * An object containing various pointers required to create FreeQueue
      *
      * interface FreeQueuePointers {
@@ -77,7 +77,7 @@ class FreeQueueSAB {
     static fromPointers(queuePointers) {
       const queue = new FreeQueueSAB(0, 0);
       const HEAPU32 = new Uint32Array(queuePointers.memory.buffer);
-      const HEAPF32 = new Float32Array(queuePointers.memory.buffer);
+      const HEAPF64 = new Float64Array(queuePointers.memory.buffer);
       const bufferLength = HEAPU32[queuePointers.bufferLengthPointer / 4];
       const channelCount = HEAPU32[queuePointers.channelCountPointer / 4];
       const states = HEAPU32.subarray(
@@ -87,7 +87,7 @@ class FreeQueueSAB {
       const channelData = [];
       for (let i = 0; i < channelCount; i++) {
         channelData.push(
-            HEAPF32.subarray(
+            HEAPF64.subarray(
                 HEAPU32[HEAPU32[queuePointers.channelDataPointer / 4] / 4 + i] / 4,
                 HEAPU32[HEAPU32[queuePointers.channelDataPointer / 4] / 4 + i] / 4 +
                     bufferLength
@@ -104,7 +104,7 @@ class FreeQueueSAB {
     /**
      * Pushes the data into queue. Used by producer.
      *
-     * @param {Float32Array[]} input Its length must match with the channel
+     * @param {Float64Array[]} input Its length must match with the channel
      *   count of this queue.
      * @param {number} blockLength Input block frame length. It must be identical
      *   throughout channels.
@@ -140,7 +140,7 @@ class FreeQueueSAB {
     /**
      * Pulls data out of the queue. Used by consumer.
      *
-     * @param {Float32Array[]} output Its length must match with the channel
+     * @param {Float64Array[]} output Its length must match with the channel
      *   count of this queue.
      * @param {number} blockLength output block length. It must be identical
      *   throughout channels.

@@ -5,6 +5,7 @@ import {FreeQueue, MAX_CHANNEL_COUNT, RENDER_QUANTUM_FRAMES} from '@newkind/free
 import initFreeQueue from '@newkind/initFreeQueue'
 import {getConstants} from '@newkind/constants'
 import {postMessage} from './main-worker.mjs'
+import {MainProcessor} from './main-processor.mjs'
 
 const {QUEUE_SIZE} = getConstants()
 import {logger} from "@libp2p/logger";
@@ -47,6 +48,13 @@ const initializeAudio = async function () {
     //         atomicState: this.atomicState,
     //     }
     // });
+    const processorNodeMain = new MainProcessor({
+        processorOptions: {
+            inputQueue,
+            outputQueue,
+            atomicState,
+        }
+    })
 
     const processorNode = new AudioWorkletNode(audioContext, 'audio-processor', {
         processorOptions: {
@@ -56,13 +64,22 @@ const initializeAudio = async function () {
         }
     });
 
+    // var myAudioParam = new AudioParam(audioContext, 0.5)
+    // var gainNode = audioContext.createGain();
+    // console.log('gainNode', myAudioParam)
+    // debugger
+
     // Initially suspend the context to prevent the renderer from hammering the
     audioContext.suspend();
 
+    // console.log(processorNode, processorNodeMain)
     // Form an audio graph and start the source. When the renderer is resumed,
     // the pipeline will be flowing.
     oscillatorNode.connect(processorNode).connect(audioContext.destination);
     // oscillatorNode.connect(processorNode);
+    // oscillatorNode.connect(processorNodeMain).connect(audioContext.destination);
+    // oscillatorNode.connect(processorNodeMain);
+
     oscillatorNode.start();
 
     log('[main.js] initializeAudio()');

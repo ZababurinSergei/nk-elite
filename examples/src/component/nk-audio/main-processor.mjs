@@ -32,6 +32,10 @@ export class MainProcessor {
         this.primingCounter = 0;
     }
 
+    connect(inputs, outputs) {
+        console.log(inputs, outputs)
+        debugger
+    }
     /**
      * The AudioWorkletProcessor's isochronous callback.
      * @param {Array<Float32Array>>} inputs

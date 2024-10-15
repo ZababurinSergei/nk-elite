@@ -45,7 +45,7 @@ const initialize = (messageDataFromMainThread) => {
   Object.setPrototypeOf(outputQueue, FreeQueueSAB.prototype);
 
   // A local buffer to store data pulled out from `inputQueue`.
-  inputBuffer = [new Float32Array(FRAME_SIZE), new Float32Array(FRAME_SIZE)]
+  inputBuffer = [new Float64Array(FRAME_SIZE), new Float64Array(FRAME_SIZE)]
   //TODO Подключить gpu processor
   // Create an instance of GPUProcessor and provide an IR array.
   // gpuProcessor = new GPUProcessor();
