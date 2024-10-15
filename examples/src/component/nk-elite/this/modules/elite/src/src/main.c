@@ -1573,6 +1573,28 @@ int enablescreenname( int _state ) {
 #ifdef __EMSCRIPTEN__
 
 EMSCRIPTEN_KEEPALIVE
+void* GetGameParameterPointer(char* _variable)
+{
+	printf( "GetGameParameterPointer: variable[\"%s\"]\n", _variable );
+	if ( strcmp( _variable, "vflight_speed" ) == 0 ) {
+		return &flight_speed;
+	} else if ( strcmp( _variable, "vflight_roll" ) == 0 ) {
+		return &flight_roll;
+	} else if ( strcmp( _variable, "vflight_climb" ) == 0 ) {
+		return &flight_climb;
+	} else if ( strcmp( _variable, "venergy" ) == 0 ) {
+		return &energy;
+	} else if ( strcmp( _variable, "vlaser_temp" ) == 0 ) {
+		return &laser_temp;
+	} else if ( strcmp( _variable, "vaft_shield" ) == 0 ) {
+		return &aft_shield;
+	} else if ( strcmp( _variable, "vfront_shield" ) == 0 ) {
+		return &front_shield;
+	}
+	return 0;
+}
+
+EMSCRIPTEN_KEEPALIVE
 int GetGameParameter( char* _variable ) {
 	printf( "GetGameParameter: variable[\"%s\"]\n", _variable );
 	if ( strcmp( _variable, "vflight_speed" ) == 0 ) {
