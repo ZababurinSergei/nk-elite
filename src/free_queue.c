@@ -8,15 +8,18 @@
 #include <string.h>
 #include <unistd.h> 
 
-emscripten_lock_t lpull = EMSCRIPTEN_LOCK_T_STATIC_INITIALIZER;
-emscripten_lock_t lpush = EMSCRIPTEN_LOCK_T_STATIC_INITIALIZER;
-
 struct FreeQueue {
   size_t buffer_length;
   size_t channel_count;
   double **channel_data;
   atomic_uint *state;
+  emscripten_lock_t lock;
 };
+
+int TryLock( struct FreeQueue *queue );
+void Lock( struct FreeQueue *queue );
+void Unlock( struct FreeQueue *queue );
+
 
 /**
  * An index set for shared state fields.
@@ -77,30 +80,29 @@ void *CreateFreeQueue(size_t length, size_t channel_count) {
 
 EMSCRIPTEN_KEEPALIVE
 void DestroyFreeQueue(struct FreeQueue *queue) {
-  emscripten_lock_init( &lpull );
-  emscripten_lock_init( &lpush );
   if ( queue ) {
+    Lock( queue );
     for (int i = 0; i < queue->channel_count; i++) {
       free(queue->channel_data[i]);
     }
     free(queue->channel_data);
     free(queue);
+    Unlock( queue );
   }
-  emscripten_lock_release( &lpush );
-  emscripten_lock_release( &lpull );
 }
 
 EMSCRIPTEN_KEEPALIVE
 bool FreeQueuePush(struct FreeQueue *queue, double **input, size_t block_length) 
 {
-  emscripten_lock_init( &lpush );
   if ( queue ) 
   {
+    Lock( queue );
+
     uint32_t current_read = atomic_load(queue->state + READ);
     uint32_t current_write = atomic_load(queue->state + WRITE);
   
     if (_getAvailableWrite(queue, current_read, current_write) < block_length) {
-      emscripten_lock_release( &lpush );
+      Unlock( queue );
       return false;
     }
     for (uint32_t i = 0; i < block_length; i++) {
@@ -109,30 +111,54 @@ bool FreeQueuePush(struct FreeQueue *queue, double **input, size_t block_length)
             input[channel][i];
       }
     }
+
     uint32_t next_write = (current_write + block_length) % queue->buffer_length;
     atomic_store(queue->state + WRITE, next_write);
-    emscripten_lock_release( &lpush );
+
+    Unlock( queue );
     return true;
   }
-  emscripten_lock_release( &lpush );
+
   return false;
 }
 
 EMSCRIPTEN_KEEPALIVE
-double GetDataValue( double** pointer, int a, int b )
+int TryLock( struct FreeQueue *queue )
 {
-	return pointer[a][b];
+	if ( queue ) {
+		if( !emscripten_lock_try_acquire( &queue->lock ) ) return 0;
+		emscripten_lock_init( &queue->lock );
+	}
+	return 1;
 }
+
+EMSCRIPTEN_KEEPALIVE
+void Lock( struct FreeQueue *queue )
+{
+	if ( queue ) {
+		emscripten_lock_init( &queue->lock );
+	}
+}
+
+EMSCRIPTEN_KEEPALIVE
+void Unlock( struct FreeQueue *queue )
+{
+	if ( queue ) {
+		emscripten_lock_release( &queue->lock );		
+	}
+}
+
 
 EMSCRIPTEN_KEEPALIVE
 bool FreeQueuePull(struct FreeQueue *queue, double **output, size_t block_length) 
 {
-  emscripten_lock_init( &lpull );
+  
   if ( queue ) {
+    Lock( queue );
     uint32_t current_read = atomic_load(queue->state + READ);
     uint32_t current_write = atomic_load(queue->state + WRITE);
     if (_getAvailableRead(queue, current_read, current_write) < block_length) {
-      emscripten_lock_release( &lpull );
+      Unlock( queue );
       return false;
     }
     for (uint32_t i = 0; i < block_length; i++) {
@@ -143,10 +169,9 @@ bool FreeQueuePull(struct FreeQueue *queue, double **output, size_t block_length
     }
     uint32_t nextRead = (current_read + block_length) % queue->buffer_length;
     atomic_store(queue->state + READ, nextRead);
-    emscripten_lock_release( &lpull );
+    Unlock( queue );
     return true;
   }
-  emscripten_lock_release( &lpull );
   return false;
 }
 
@@ -170,6 +195,7 @@ void *GetFreeQueuePointers( struct FreeQueue* queue, char* data )
 EMSCRIPTEN_KEEPALIVE 
 void PrintQueueInfo(struct FreeQueue *queue) {
   if ( queue ) {
+    Lock( queue );
     uint32_t current_read = atomic_load(queue->state + READ);
     uint32_t current_write = atomic_load(queue->state + WRITE);
     for (uint32_t channel = 0; channel < queue->channel_count; channel++) {
@@ -185,12 +211,14 @@ void PrintQueueInfo(struct FreeQueue *queue) {
         _getAvailableRead(queue, current_read, current_write), 
         _getAvailableWrite(queue, current_read, current_write));
     printf("----------\n");
+    Unlock( queue );
   }
 }
 
 EMSCRIPTEN_KEEPALIVE 
 void PrintQueueAddresses(struct FreeQueue *queue) {
   if ( queue ) {
+    Lock( queue );
     printf("buffer_length: %p   uint: %zu\n", 
         &queue->buffer_length, (size_t)&queue->buffer_length);
     printf("channel_count: %p   uint: %zu\n", 
@@ -205,6 +233,7 @@ void PrintQueueAddresses(struct FreeQueue *queue) {
     }
     printf("state[0]    : %p   uint: %zu\n", &queue->state[0], (size_t)&queue->state[0]);
     printf("state[1]    : %p   uint: %zu\n", &queue->state[1], (size_t)&queue->state[1]);
+    Unlock( queue );
   }
 }
 
