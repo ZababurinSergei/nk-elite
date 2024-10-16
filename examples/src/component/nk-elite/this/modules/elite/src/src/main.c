@@ -1577,19 +1577,19 @@ void* GetGameParameterPointer(char* _variable)
 {
 	printf( "GetGameParameterPointer: variable[\"%s\"]\n", _variable );
 	if ( strcmp( _variable, "vflight_speed" ) == 0 ) {
-		return &flight_speed;
+		return ( void* )&flight_speed;
 	} else if ( strcmp( _variable, "vflight_roll" ) == 0 ) {
-		return &flight_roll;
+		return ( void* )&flight_roll;
 	} else if ( strcmp( _variable, "vflight_climb" ) == 0 ) {
-		return &flight_climb;
+		return ( void* )&flight_climb;
 	} else if ( strcmp( _variable, "venergy" ) == 0 ) {
-		return &energy;
+		return ( void* )&energy;
 	} else if ( strcmp( _variable, "vlaser_temp" ) == 0 ) {
-		return &laser_temp;
+		return ( void* )&laser_temp;
 	} else if ( strcmp( _variable, "vaft_shield" ) == 0 ) {
-		return &aft_shield;
+		return ( void* )&aft_shield;
 	} else if ( strcmp( _variable, "vfront_shield" ) == 0 ) {
-		return &front_shield;
+		return ( void* )&front_shield;
 	}
 	return 0;
 }

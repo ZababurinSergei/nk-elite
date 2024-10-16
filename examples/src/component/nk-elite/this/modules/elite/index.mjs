@@ -79,17 +79,46 @@ const componentInit = (self, CONFIG) => {
 	CONFIG.html.scope.pointers.vaft_shield = await globalThis["LEliteTG"].ccall('GetGameParameterPointer', 'number', ['string'], ["vaft_shield"], {async: true});
 	CONFIG.html.scope.pointers.vfront_shield = await globalThis["LEliteTG"].ccall('GetGameParameterPointer', 'number', ['string'], ["vfront_shield"], {async: true});
 
+	const HEAP = new Int32Array(globalThis["LEliteTG"].HEAPU8.buffer);
 
-	const HEAPU32 = new Uint32Array(globalThis["LEliteTG"].HEAPU8);
+	let vflight_speed = HEAP[CONFIG.html.scope.pointers.vflight_speed / 4];
+	let vflight_roll = HEAP[CONFIG.html.scope.pointers.vflight_roll / 4];
+	let vflight_climb = HEAP[CONFIG.html.scope.pointers.vflight_climb / 4];
+	let venergy = HEAP[CONFIG.html.scope.pointers.venergy / 4];
+	let vlaser_temp = HEAP[CONFIG.html.scope.pointers.vlaser_temp / 4];
+	let vaft_shield = HEAP[CONFIG.html.scope.pointers.vaft_shield / 4];
+	let vfront_shield = HEAP[CONFIG.html.scope.pointers.vfront_shield / 4];
 
 
-	let vflight_speed = HEAPU32[CONFIG.html.scope.pointers.vflight_speed / 4];
-	let vflight_roll = HEAPU32[CONFIG.html.scope.pointers.vflight_roll / 4];
-	let vflight_climb = HEAPU32[CONFIG.html.scope.pointers.vflight_climb / 4];
-	let venergy = HEAPU32[CONFIG.html.scope.pointers.venergy / 4];
-	let vlaser_temp = HEAPU32[CONFIG.html.scope.pointers.vlaser_temp / 4];
-	let vaft_shield = HEAPU32[CONFIG.html.scope.pointers.vaft_shield / 4];
-	let vfront_shield = HEAPU32[CONFIG.html.scope.pointers.vfront_shield / 4];
+	console.log( "--------------------------------------" );
+
+	console.log( "vflight_speed: " + vflight_speed );
+	console.log( "vflight_roll: " + vflight_roll );
+	console.log( "vflight_climb: " + vflight_climb );
+	console.log( "venergy: " + venergy );
+	console.log( "vlaser_temp: " + vlaser_temp );
+	console.log( "vaft_shield: " + vaft_shield );
+	console.log( "vfront_shield: " + vfront_shield );
+
+
+	vflight_speed = await globalThis["LEliteTG"].ccall('GetGameParameter', 'number', ['string'], ["vflight_speed"], {async: true});
+	vflight_roll = await globalThis["LEliteTG"].ccall('GetGameParameter', 'number', ['string'], ["vflight_roll"], {async: true});
+	vflight_climb = await globalThis["LEliteTG"].ccall('GetGameParameter', 'number', ['string'], ["vflight_climb"], {async: true});
+	venergy = await globalThis["LEliteTG"].ccall('GetGameParameter', 'number', ['string'], ["venergy"], {async: true});
+	vlaser_temp = await globalThis["LEliteTG"].ccall('GetGameParameter', 'number', ['string'], ["vlaser_temp"], {async: true});
+	vaft_shield = await globalThis["LEliteTG"].ccall('GetGameParameter', 'number', ['string'], ["vaft_shield"], {async: true});
+	vfront_shield = await globalThis["LEliteTG"].ccall('GetGameParameter', 'number', ['string'], ["vfront_shield"], {async: true});
+
+
+	console.log( "--------------------------------------" );
+
+	console.log( "vflight_speed: " + vflight_speed );
+	console.log( "vflight_roll: " + vflight_roll );
+	console.log( "vflight_climb: " + vflight_climb );
+	console.log( "venergy: " + venergy );
+	console.log( "vlaser_temp: " + vlaser_temp );
+	console.log( "vaft_shield: " + vaft_shield );
+	console.log( "vfront_shield: " + vfront_shield );
 
 
         await globalThis["LEliteTG"].ccall('SetGameParameter', 'number', ['string', 'string'], ["enableconsole", (CONFIG.html.scope.parameters.showGameConsole == true) ? "enable" : "disable"], {async: true});
