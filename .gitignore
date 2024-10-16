@@ -40,3 +40,4 @@ node_modules
 ./_sandbox_1
 ./emsdk
 emsdk
+build
