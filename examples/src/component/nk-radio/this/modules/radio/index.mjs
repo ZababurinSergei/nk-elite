@@ -53,8 +53,7 @@ const ctx = async (CONFIG) => {
 
     CONFIG.audio.node = new AudioWorkletNode(CONFIG.audio.ctx, "radio-processor", {
         processorOptions: {
-            pointer: CONFIG.queue.pointer,
-            instance: CONFIG.queue.instance
+            instance: CONFIG.queue
         },
         numberOfInputs: 1,
         numberOfOutputs: 1,

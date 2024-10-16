@@ -17,17 +17,9 @@ export class wDApplication
 {
     constructor(CONFIG) 
     {
-        this.setConfig(CONFIG);
+        this.CONFIG = CONFIG;
         this.setShaderBindGroup( null );
         this.setTextureBindGroup( null );
-    }
-    setConfig(CONFIG)
-    {
-	    this.CONFIG = CONFIG;        
-    }
-    getConfig()
-    {
-        return this.CONFIG;
     }
     getBorderWidth()
     {
@@ -459,7 +451,7 @@ fn main( @location(0) inFragUV : vec2<f32>, @location(1) inColor : vec4<f32> ) -
     }    
     render = async() => {
 
-        const CONFIG = this.getConfig();
+        let CONFIG = this.CONFIG;
 
         let texture = this.context.getCurrentTexture();
         this.renderPassDesc.colorAttachments[0].view = texture.createView();
@@ -585,11 +577,16 @@ fn main( @location(0) inFragUV : vec2<f32>, @location(1) inColor : vec4<f32> ) -
         if ( CONFIG.application.goniometer == "goniometer-on" ) {
             pluginId = pluginId | 1;
         }
+
     
         if ( CONFIG.queue.instance != undefined && CONFIG.queue.instance != null ) 
         {
+
             let bufferSize = ( ( ( CONFIG.application.sampleRate < 44100 ) ? 44100 : CONFIG.application.sampleRate ) ) / 25;
             
+//	    CONFIG.queue.instance.printAvailableReadAndWrite();
+//	console.log("CONFIG.queue: " + CONFIG.queue );
+
             let _b = [2];
             _b[0] = new Float64Array(bufferSize);
             _b[1] = new Float64Array(bufferSize);
@@ -603,6 +600,7 @@ fn main( @location(0) inFragUV : vec2<f32>, @location(1) inColor : vec4<f32> ) -
                     CONFIG.application.renderBuffer[i * 2 + 1] = _b[1][i];
                 }
             } 
+
 //            console.log( "draw: queue.pull [ " + ( ( rc == true ) ? "true" : "false" ) + " ]" );            
         }
  

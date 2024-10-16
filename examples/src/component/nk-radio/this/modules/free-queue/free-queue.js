@@ -37,7 +37,7 @@ class FreeQueue {
    */
   constructor(size, channelCount) {
     this.states = new Uint32Array(
-      new SharedArrayBuffer(
+      new ArrayBuffer(
         Object.keys(this.States).length * Uint32Array.BYTES_PER_ELEMENT
       )
     );
@@ -49,12 +49,12 @@ class FreeQueue {
     this.bufferLength = size + 1;
     this.channelCount = channelCount;
     this.channelData = [];
+
+
     for (let i = 0; i < channelCount; i++) {
       this.channelData.push(
         new Float64Array(
-          new SharedArrayBuffer(
             this.bufferLength * Float64Array.BYTES_PER_ELEMENT
-          )
         )
       );
     }
@@ -62,7 +62,8 @@ class FreeQueue {
 
   static fromObject(object)
   {
-    return Object.setPrototypeOf(object, FreeQueue.prototype);
+    Object.setPrototypeOf(object, FreeQueue.prototype);
+    return object;
   }
 
   /**
@@ -88,7 +89,7 @@ class FreeQueue {
 
     const bufferLength = HEAPU32[queuePointers.bufferLengthPointer / 4];
     const channelCount = HEAPU32[queuePointers.channelCountPointer / 4];
-
+    
     const states = HEAPU32.subarray(
         HEAPU32[queuePointers.statePointer / 4] / 4,
         HEAPU32[queuePointers.statePointer / 4] / 4 + 2
@@ -119,8 +120,9 @@ class FreeQueue {
    * @return {boolean} False if the operation fails.
    */
   push(input, blockLength) {
-    const currentRead = Atomics.load(this.states, this.States.READ);
-    const currentWrite = Atomics.load(this.states, this.States.WRITE);
+
+    const currentRead = this.states[0];
+    const currentWrite = this.states[1];
     
     if (this._getAvailableWrite(currentRead, currentWrite) < blockLength) {
       return false;
@@ -142,7 +144,9 @@ class FreeQueue {
       }
       if (nextWrite === this.bufferLength) nextWrite = 0;
     }
-    Atomics.store(this.states, this.States.WRITE, nextWrite);
+
+    this.states[1] = nextWrite;
+
     return true;
   }
 
@@ -156,8 +160,8 @@ class FreeQueue {
    * @return {boolean} False if the operation fails.
    */
   pull(output, blockLength) {
-    const currentRead = Atomics.load(this.states, this.States.READ);
-    const currentWrite = Atomics.load(this.states, this.States.WRITE);
+    const currentRead = this.states[0];
+    const currentWrite = this.states[1];
 	
     if (this._getAvailableRead(currentRead, currentWrite) < blockLength) {
       return false;
@@ -181,7 +185,8 @@ class FreeQueue {
         nextRead = 0;
       }
     }
-    Atomics.store(this.states, this.States.READ, nextRead);
+
+    this.states[0] = nextRead;
     return true;
   }
   /**
@@ -189,8 +194,8 @@ class FreeQueue {
    * Prints currently available read and write.
    */
   printAvailableReadAndWrite() {
-    const currentRead = Atomics.load(this.states, this.States.READ);
-    const currentWrite = Atomics.load(this.states, this.States.WRITE);
+    const currentRead = this.states[0];
+    const currentWrite = this.states[1];
     console.log(this, {
         availableRead: this._getAvailableRead(currentRead, currentWrite),
         availableWrite: this._getAvailableWrite(currentRead, currentWrite),
@@ -201,8 +206,8 @@ class FreeQueue {
    * @returns {number} number of samples available for read
    */
   getAvailableSamples() {
-    const currentRead = Atomics.load(this.states, this.States.READ);
-    const currentWrite = Atomics.load(this.states, this.States.WRITE);
+    const currentRead = this.states[0];
+    const currentWrite = this.states[1];
     return this._getAvailableRead(currentRead, currentWrite);
   }
   /**
@@ -236,8 +241,8 @@ class FreeQueue {
     for (let channel = 0; channel < this.channelCount; channel++) {
       this.channelData[channel].fill(0);
     }
-    Atomics.store(this.states, this.States.READ, 0);
-    Atomics.store(this.states, this.States.WRITE, 0);
+    this.states[0] = 0;
+    this.states[1] = 0;
   }
 }
 
