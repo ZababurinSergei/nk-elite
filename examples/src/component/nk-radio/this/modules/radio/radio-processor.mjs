@@ -1,9 +1,9 @@
 import FreeQueue from "../free-queue/free-queue-sab.js";
+import CONFIG from './global.mjs';
 
 class WorkletBasicProcessor extends AudioWorkletProcessor {
 	constructor(options) {
 		super();
-		this.instance = FreeQueue.fromObject( options.processorOptions.queue.instance );		
 	}
 	
 	process(inputs, outputs, parameters) 
@@ -53,9 +53,10 @@ class WorkletBasicProcessor extends AudioWorkletProcessor {
 				}
 			}
 
-			if ( this.instance != undefined && this.instance != null) {
 
-				const rc = this.instance.push( dataArray, bufferSize );
+			if ( CONFIG.queue.instance != undefined && CONFIG.queue.instance != null) {
+
+				const rc = CONFIG.queue.instance.push( dataArray, bufferSize );
 				//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 				if ( rc == true ) console.log( "processor: queue.push [ " + ( ( rc == true ) ? "true" : "false" ) + " ]" );
 				//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

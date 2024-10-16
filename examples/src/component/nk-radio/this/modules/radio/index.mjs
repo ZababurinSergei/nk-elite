@@ -1,13 +1,18 @@
-import initFreeQueue from "../../free-queue/free-queue.asm.js";
-import FreeQueue from "../../free-queue/free-queue.js";
-import { getConstants } from '@newkind/constants'
+
+import initFreeQueue from "../free-queue/free-queue.asm.js";
+import FreeQueue from "../free-queue/free-queue-sab.js";
 import Application from "./oscilloscope/index.mjs";
+
+import { getConstants } from '@newkind/constants'
 import { logger } from "@libp2p/logger";
+
+import CONFIG from './global.mjs';
+
 const constants = getConstants()
 
 const log = logger('LFreeQueue');
 
-const newAudio = async function (CONFIG) {
+const newAudio = async function () {
     try {
         if (CONFIG.audio.init == false) {
             CONFIG.audio.init = true;
@@ -41,9 +46,10 @@ const newAudio = async function (CONFIG) {
     }
 }
 
-const ctx = async (CONFIG) => {
+const ctx = async () => {
     if (CONFIG.audio.ctx == undefined || CONFIG.audio.ctx == null) {
         CONFIG.audio.ctx = new (window.AudioContext || window.webkitAudioContext)();
+
         const urlProcessor = new URL("./radio-processor.mjs", import.meta.url)
         //////////////////////////////////////////////////////////////////////////////////////////////
         // console.log("urlProcessor", urlProcessor.pathname)
@@ -52,9 +58,7 @@ const ctx = async (CONFIG) => {
     }
 
     CONFIG.audio.node = new AudioWorkletNode(CONFIG.audio.ctx, "radio-processor", {
-        processorOptions: {
-            instance: CONFIG.queue
-        },
+        processorOptions: {},
         numberOfInputs: 1,
         numberOfOutputs: 1,
         outputChannelCount: [2],
@@ -81,15 +85,15 @@ const ctx = async (CONFIG) => {
     return CONFIG.audio.ctx
 }
 
-const freeQueueInit = function (CONFIG){
+const freeQueueInit = function (){
     // Подключаю воркер
-    const urlWorker = (new URL('./worker.sync.js', import.meta.url)).pathname
-    let workerName = 'nk-radio'
+//    const urlWorker = (new URL('./worker.sync.js', import.meta.url)).pathname
+//    let workerName = 'nk-radio'
 
     // Поставь сюда подключение
-    this.inputQueue = {} //new FreeQueue(QUEUE_SIZE, 2);
-    this.outputQueue = {} //new FreeQueue(QUEUE_SIZE, 2);
-    this.atomicState = {} //new Int32Array(new SharedArrayBuffer(2 * Int32Array.BYTES_PER_ELEMENT));
+//    this.inputQueue = {} //new FreeQueue(QUEUE_SIZE, 2);
+//    this.outputQueue = {} //new FreeQueue(QUEUE_SIZE, 2);
+//    this.atomicState = {} //new Int32Array(new SharedArrayBuffer(2 * Int32Array.BYTES_PER_ELEMENT));
 
 
     globalThis["LFreeQueue"] = {
@@ -115,12 +119,14 @@ const freeQueueInit = function (CONFIG){
         const PrintQueueAddresses = module.cwrap('PrintQueueAddresses', '', ['number']);
 
         CONFIG.queue.pointer = CreateFreeQueue( 1754 * 50, 2 );
+
         const bufferLengthPtr = GetFreeQueuePointers(CONFIG.queue.pointer, "buffer_length");
         const channelCountPtr = GetFreeQueuePointers(CONFIG.queue.pointer, "channel_count");
         const statePtr = GetFreeQueuePointers(CONFIG.queue.pointer, "state");
         const channelDataPtr = GetFreeQueuePointers(CONFIG.queue.pointer, "channel_data");
 
         const pointers = new Object();
+
         pointers.memory = module.HEAPU8;
         pointers.bufferLengthPointer = bufferLengthPtr;
         pointers.channelCountPointer = channelCountPtr;
@@ -128,14 +134,15 @@ const freeQueueInit = function (CONFIG){
         pointers.channelDataPointer = channelDataPtr;
 
         CONFIG.queue.instance = FreeQueue.fromPointers(pointers);
+
         if (CONFIG.queue.instance != undefined) CONFIG.queue.instance.printAvailableReadAndWrite();
 
         module.setStatus("initWasmFreeQueue completed...");
     });
 }
 
-const componentInit = (self, CONFIG) => {
-    freeQueueInit.call(self, CONFIG);
+const componentInit = (self) => {
+    freeQueueInit();
 
     CONFIG.html.scope.canvas = self.shadowRoot.querySelector("#gfx")
     CONFIG.html.button.start = self.shadowRoot.querySelector("#start");
@@ -148,7 +155,8 @@ const componentInit = (self, CONFIG) => {
 
     CONFIG.player.isPlaying = false;
 
-    CONFIG.application.instance = new Application(CONFIG);
+    CONFIG.application.instance = new Application();
+
     const available = CONFIG.application.instance.check();
     if (available) {
         wgerr.style.display = 'none';
@@ -180,9 +188,8 @@ export default async () => {
             // component
             /////////////////////////////////////////////////////////////////////////////////////////////
             constructor(self) {
-                componentInit(self, this.CONFIG);
-
-                const CONFIG = this.CONFIG;
+		
+                componentInit(self);
 
                 for (let i = 0, max = CONFIG.html.button.radios.length; i < max; i++) {
                     if (CONFIG.html.button.radios.this[i].checked === true) {
@@ -194,7 +201,7 @@ export default async () => {
                     CONFIG.html.button.radios.this[i].addEventListener("change", async (e) => {
                         if (CONFIG.player.isPlaying) {
                             CONFIG.player.isPlaying = false;
-                            await CONFIG.stream.song.pause();
+  //                          await CONFIG.stream.song.pause();
                             await CONFIG.audio.ctx.suspend();
                             CONFIG.audio.node.disconnect();
                             CONFIG.stream.song = undefined;
@@ -205,11 +212,11 @@ export default async () => {
                             CONFIG.stream.path = e.target.value;
                             if (CONFIG.audio.ctx != undefined && CONFIG.audio.ctx != null) {
                                 CONFIG.player.isPlaying = !CONFIG.player.isPlaying;
-                                await newAudio.call(self, CONFIG);
+                                await newAudio();
                             } else {
                                 CONFIG.player.isPlaying = !CONFIG.player.isPlaying;
-                                await ctx(CONFIG);
-                                await newAudio.call(self, CONFIG);
+                                await ctx();
+                                await newAudio();
                             }
                         } else {
                             CONFIG.stream.path = event.target.value;
@@ -231,7 +238,7 @@ export default async () => {
 
                     if (CONFIG.player.isPlaying) {
                         CONFIG.player.isPlaying = false;
-                        await CONFIG.stream.song.pause();
+//                        await CONFIG.stream.song.pause();
                         await CONFIG.audio.ctx.suspend();
                         CONFIG.audio.node.disconnect();
                         CONFIG.stream.song = undefined;
@@ -242,68 +249,14 @@ export default async () => {
                     } else {
                         CONFIG.html.button.start.textContent = "Stop Audio";
                         CONFIG.player.isPlaying = true;
-                        await ctx(CONFIG);
+                        await ctx();
                         console.log(self)
-                        await newAudio.call(self, CONFIG);
+                        await newAudio();
                     }
                 });
 
                 CONFIG.application.instance.start();
             }
-
-            CONFIG = {
-                audio: {
-                    ctx: undefined,
-                    node: undefined,
-                    init: false
-                },
-                html: {
-                    scope: {
-                        canvas: false,
-                        context: false
-                    },
-                    button: {
-                        start: false,
-                        radios: {
-                            this: false,
-                            length: false
-                        }
-                    }
-                },
-                player: {
-                    isPlaying: false
-                },
-                stream: {
-                    song: undefined,
-                    source: undefined,
-                    path: undefined,
-                },
-                web: {
-                    crossOrigin: 'anonymous'
-                },
-                queue: {
-                    instance: undefined,
-                    pointer: undefined
-                },
-                application: {
-                    instance: undefined,
-                    channels: 2,
-                    goniometer: "goniometer-off",
-                    holdChart: "holdchart-off",
-                    inputType: "default", // "audio"; // "osc"
-                    renderType: "stereo",
-                    kdX: 500,
-                    kdY: 10,
-                    zoomX: 100,
-                    zoomY: 100,
-                    holdBuffer: undefined,
-                    renderBuffer: undefined,
-                    sampleRate: 44100,
-                    volumeRate: 1.0,
-                    nameOfFile: "",
-                    frameOffset: 0
-                }
-            };
         }
 
         resolve(wControl);

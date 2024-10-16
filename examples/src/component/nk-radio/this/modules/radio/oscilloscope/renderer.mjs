@@ -7,7 +7,7 @@ import { wDSpline } from './spline.mjs';
 import { wDLabel } from './label.mjs';
 import { wDImage } from './image.mjs';
 import { wDGoniometer } from './goniometer.mjs';
-
+import CONFIG from '../global.mjs';
 
 // import vertexShaderWgslCode from 'shaders/shader.vert.wgsl'
 // import fragmentShaderWgslCode from 'shaders/shader.frag.wgsl'
@@ -15,9 +15,8 @@ import { wDGoniometer } from './goniometer.mjs';
 
 export class wDApplication
 {
-    constructor(CONFIG) 
+    constructor() 
     {
-        this.CONFIG = CONFIG;
         this.setShaderBindGroup( null );
         this.setTextureBindGroup( null );
     }
@@ -451,8 +450,6 @@ fn main( @location(0) inFragUV : vec2<f32>, @location(1) inColor : vec4<f32> ) -
     }    
     render = async() => {
 
-        let CONFIG = this.CONFIG;
-
         let texture = this.context.getCurrentTexture();
         this.renderPassDesc.colorAttachments[0].view = texture.createView();
 
@@ -584,7 +581,7 @@ fn main( @location(0) inFragUV : vec2<f32>, @location(1) inColor : vec4<f32> ) -
 
             let bufferSize = ( ( ( CONFIG.application.sampleRate < 44100 ) ? 44100 : CONFIG.application.sampleRate ) ) / 25;
             
-//	    CONFIG.queue.instance.printAvailableReadAndWrite();
+
 //	console.log("CONFIG.queue: " + CONFIG.queue );
 
             let _b = [2];
