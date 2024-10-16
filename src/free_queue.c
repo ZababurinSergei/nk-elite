@@ -65,6 +65,7 @@ void *CreateFreeQueue(size_t length, size_t channel_count) {
   struct FreeQueue *queue = (struct FreeQueue *)malloc(sizeof(struct FreeQueue));
   queue->buffer_length = length + 1;
   queue->channel_count = channel_count;
+  queue->lock = EMSCRIPTEN_LOCK_T_STATIC_INITIALIZER;
   queue->state = (atomic_uint *)malloc(2 * sizeof(atomic_uint));
   atomic_store(queue->state + READ, 0);
   atomic_store(queue->state + WRITE, 0);
