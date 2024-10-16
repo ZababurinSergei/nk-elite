@@ -20,7 +20,6 @@ int TryLock( struct FreeQueue *queue );
 void Lock( struct FreeQueue *queue );
 void Unlock( struct FreeQueue *queue );
 
-
 /**
  * An index set for shared state fields.
  * @enum {number}

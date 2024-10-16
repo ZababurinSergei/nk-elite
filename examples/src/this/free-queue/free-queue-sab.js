@@ -15,7 +15,7 @@
  * worker renders audio data to fill in the queue.
  */
 
-class FreeQueue {
+class FreeQueueSAB {
 
   /**
    * An index set for shared state fields. Requires atomic access.
@@ -37,7 +37,7 @@ class FreeQueue {
    */
   constructor(size, channelCount) {
     this.states = new Uint32Array(
-      new ArrayBuffer(
+      new SharedArrayBuffer(
         Object.keys(this.States).length * Uint32Array.BYTES_PER_ELEMENT
       )
     );
@@ -49,12 +49,12 @@ class FreeQueue {
     this.bufferLength = size + 1;
     this.channelCount = channelCount;
     this.channelData = [];
-
-
     for (let i = 0; i < channelCount; i++) {
       this.channelData.push(
         new Float64Array(
+          new SharedArrayBuffer(
             this.bufferLength * Float64Array.BYTES_PER_ELEMENT
+          )
         )
       );
     }
@@ -88,7 +88,7 @@ class FreeQueue {
 
     const bufferLength = HEAPU32[queuePointers.bufferLengthPointer / 4];
     const channelCount = HEAPU32[queuePointers.channelCountPointer / 4];
-    
+
     const states = HEAPU32.subarray(
         HEAPU32[queuePointers.statePointer / 4] / 4,
         HEAPU32[queuePointers.statePointer / 4] / 4 + 2
@@ -241,4 +241,4 @@ class FreeQueue {
   }
 }
 
-export { FreeQueue };
+export { FreeQueueSAB };
