@@ -38,6 +38,7 @@ const newAudio = async function () {
 
             await CONFIG.stream.source.connect(CONFIG.audio.ctx.destination);
             await CONFIG.stream.source.connect(CONFIG.audio.node);
+
             CONFIG.audio.init = false;
         }
     } catch (e) {
