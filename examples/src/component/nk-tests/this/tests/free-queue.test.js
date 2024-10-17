@@ -1,5 +1,7 @@
-import { expect } from 'https://cdnjs.cloudflare.com/ajax/libs/chai/5.1.1/chai.js';
-import { FreeQueue, MAX_CHANNEL_COUNT, RENDER_QUANTUM_FRAMES } from '../free-queue.js';
+import { chai } from '@newkind/tests'
+import { FreeQueue, MAX_CHANNEL_COUNT, RENDER_QUANTUM_FRAMES } from '@newkind/FreeQueue';
+
+const { expect } = chai
 
 // Mock WASM module
 const mockWasmModule = {

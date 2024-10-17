@@ -1,7 +1,10 @@
 .container {
     display: flex;
     flex-direction: column;
-    /*gap: 24px;*/
+    gap: 24px;
+    border: 2px solid;
+    box-sizing: border-box;
+    padding: 16px 9px;
 }
 
 .button {
@@ -11,4 +14,10 @@
     padding: 0.42vw;
     background: #3c344b;
     cursor: pointer;
+}
+
+div.header {
+    font-family: 'Raleway-ExtraBold', sans-serif;
+    font-size: 100%;
+    line-height: 17px;
 }

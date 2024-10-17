@@ -6,6 +6,10 @@ var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require
   if (typeof require !== "undefined") return require.apply(this, arguments);
   throw Error('Dynamic require of "' + x + '" is not supported');
 });
+var __export = (target, all) => {
+  for (var name2 in all)
+    __defProp(target, name2, { get: all[name2], enumerable: true });
+};
 
 // modules/mocha/mocha.js
 var global$2 = typeof window !== "undefined" ? window : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {};
@@ -188,7 +192,7 @@ function uptime$1() {
   return dif / 1e3;
 }
 __name(uptime$1, "uptime$1");
-var process = {
+var process2 = {
   nextTick: nextTick$1,
   title: title$1,
   browser: browser$4,
@@ -329,9 +333,9 @@ function emitMany(handler, isFn, self2, args) {
   }
 }
 __name(emitMany, "emitMany");
-EventEmitter$2.prototype.emit = /* @__PURE__ */ __name(function emit(type) {
+EventEmitter$2.prototype.emit = /* @__PURE__ */ __name(function emit(type3) {
   var er, handler, len, args, i, events, domain2;
-  var doError = type === "error";
+  var doError = type3 === "error";
   events = this._events;
   if (events)
     doError = doError && events.error == null;
@@ -356,7 +360,7 @@ EventEmitter$2.prototype.emit = /* @__PURE__ */ __name(function emit(type) {
     }
     return false;
   }
-  handler = events[type];
+  handler = events[type3];
   if (!handler)
     return false;
   var isFn = typeof handler === "function";
@@ -384,7 +388,7 @@ EventEmitter$2.prototype.emit = /* @__PURE__ */ __name(function emit(type) {
   }
   return true;
 }, "emit");
-function _addListener(target, type, listener, prepend) {
+function _addListener(target, type3, listener, prepend) {
   var m2;
   var events;
   var existing;
@@ -398,19 +402,19 @@ function _addListener(target, type, listener, prepend) {
     if (events.newListener) {
       target.emit(
         "newListener",
-        type,
+        type3,
         listener.listener ? listener.listener : listener
       );
       events = target._events;
     }
-    existing = events[type];
+    existing = events[type3];
   }
   if (!existing) {
-    existing = events[type] = listener;
+    existing = events[type3] = listener;
     ++target._eventsCount;
   } else {
     if (typeof existing === "function") {
-      existing = events[type] = prepend ? [listener, existing] : [existing, listener];
+      existing = events[type3] = prepend ? [listener, existing] : [existing, listener];
     } else {
       if (prepend) {
         existing.unshift(listener);
@@ -422,10 +426,10 @@ function _addListener(target, type, listener, prepend) {
       m2 = $getMaxListeners(target);
       if (m2 && m2 > 0 && existing.length > m2) {
         existing.warned = true;
-        var w2 = new Error("Possible EventEmitter memory leak detected. " + existing.length + " " + type + " listeners added. Use emitter.setMaxListeners() to increase limit");
+        var w2 = new Error("Possible EventEmitter memory leak detected. " + existing.length + " " + type3 + " listeners added. Use emitter.setMaxListeners() to increase limit");
         w2.name = "MaxListenersExceededWarning";
         w2.emitter = target;
-        w2.type = type;
+        w2.type = type3;
         w2.count = existing.length;
         emitWarning$1(w2);
       }
@@ -438,17 +442,17 @@ function emitWarning$1(e) {
   typeof console.warn === "function" ? console.warn(e) : console.log(e);
 }
 __name(emitWarning$1, "emitWarning$1");
-EventEmitter$2.prototype.addListener = /* @__PURE__ */ __name(function addListener(type, listener) {
-  return _addListener(this, type, listener, false);
+EventEmitter$2.prototype.addListener = /* @__PURE__ */ __name(function addListener(type3, listener) {
+  return _addListener(this, type3, listener, false);
 }, "addListener");
 EventEmitter$2.prototype.on = EventEmitter$2.prototype.addListener;
-EventEmitter$2.prototype.prependListener = /* @__PURE__ */ __name(function prependListener(type, listener) {
-  return _addListener(this, type, listener, true);
+EventEmitter$2.prototype.prependListener = /* @__PURE__ */ __name(function prependListener(type3, listener) {
+  return _addListener(this, type3, listener, true);
 }, "prependListener");
-function _onceWrap(target, type, listener) {
+function _onceWrap(target, type3, listener) {
   var fired = false;
   function g() {
-    target.removeListener(type, g);
+    target.removeListener(type3, g);
     if (!fired) {
       fired = true;
       listener.apply(target, arguments);
@@ -459,35 +463,35 @@ function _onceWrap(target, type, listener) {
   return g;
 }
 __name(_onceWrap, "_onceWrap");
-EventEmitter$2.prototype.once = /* @__PURE__ */ __name(function once(type, listener) {
+EventEmitter$2.prototype.once = /* @__PURE__ */ __name(function once(type3, listener) {
   if (typeof listener !== "function")
     throw new TypeError('"listener" argument must be a function');
-  this.on(type, _onceWrap(this, type, listener));
+  this.on(type3, _onceWrap(this, type3, listener));
   return this;
 }, "once");
-EventEmitter$2.prototype.prependOnceListener = /* @__PURE__ */ __name(function prependOnceListener(type, listener) {
+EventEmitter$2.prototype.prependOnceListener = /* @__PURE__ */ __name(function prependOnceListener(type3, listener) {
   if (typeof listener !== "function")
     throw new TypeError('"listener" argument must be a function');
-  this.prependListener(type, _onceWrap(this, type, listener));
+  this.prependListener(type3, _onceWrap(this, type3, listener));
   return this;
 }, "prependOnceListener");
-EventEmitter$2.prototype.removeListener = /* @__PURE__ */ __name(function removeListener(type, listener) {
+EventEmitter$2.prototype.removeListener = /* @__PURE__ */ __name(function removeListener(type3, listener) {
   var list2, events, position, i, originalListener;
   if (typeof listener !== "function")
     throw new TypeError('"listener" argument must be a function');
   events = this._events;
   if (!events)
     return this;
-  list2 = events[type];
+  list2 = events[type3];
   if (!list2)
     return this;
   if (list2 === listener || list2.listener && list2.listener === listener) {
     if (--this._eventsCount === 0)
       this._events = new EventHandlers();
     else {
-      delete events[type];
+      delete events[type3];
       if (events.removeListener)
-        this.emit("removeListener", type, list2.listener || listener);
+        this.emit("removeListener", type3, list2.listener || listener);
     }
   } else if (typeof list2 !== "function") {
     position = -1;
@@ -506,20 +510,20 @@ EventEmitter$2.prototype.removeListener = /* @__PURE__ */ __name(function remove
         this._events = new EventHandlers();
         return this;
       } else {
-        delete events[type];
+        delete events[type3];
       }
     } else {
       spliceOne(list2, position);
     }
     if (events.removeListener)
-      this.emit("removeListener", type, originalListener || listener);
+      this.emit("removeListener", type3, originalListener || listener);
   }
   return this;
 }, "removeListener");
-EventEmitter$2.prototype.off = function(type, listener) {
-  return this.removeListener(type, listener);
+EventEmitter$2.prototype.off = function(type3, listener) {
+  return this.removeListener(type3, listener);
 };
-EventEmitter$2.prototype.removeAllListeners = /* @__PURE__ */ __name(function removeAllListeners(type) {
+EventEmitter$2.prototype.removeAllListeners = /* @__PURE__ */ __name(function removeAllListeners(type3) {
   var listeners2, events;
   events = this._events;
   if (!events)
@@ -528,11 +532,11 @@ EventEmitter$2.prototype.removeAllListeners = /* @__PURE__ */ __name(function re
     if (arguments.length === 0) {
       this._events = new EventHandlers();
       this._eventsCount = 0;
-    } else if (events[type]) {
+    } else if (events[type3]) {
       if (--this._eventsCount === 0)
         this._events = new EventHandlers();
       else
-        delete events[type];
+        delete events[type3];
     }
     return this;
   }
@@ -548,24 +552,24 @@ EventEmitter$2.prototype.removeAllListeners = /* @__PURE__ */ __name(function re
     this._eventsCount = 0;
     return this;
   }
-  listeners2 = events[type];
+  listeners2 = events[type3];
   if (typeof listeners2 === "function") {
-    this.removeListener(type, listeners2);
+    this.removeListener(type3, listeners2);
   } else if (listeners2) {
     do {
-      this.removeListener(type, listeners2[listeners2.length - 1]);
+      this.removeListener(type3, listeners2[listeners2.length - 1]);
     } while (listeners2[0]);
   }
   return this;
 }, "removeAllListeners");
-EventEmitter$2.prototype.listeners = /* @__PURE__ */ __name(function listeners(type) {
+EventEmitter$2.prototype.listeners = /* @__PURE__ */ __name(function listeners(type3) {
   var evlistener;
   var ret;
   var events = this._events;
   if (!events)
     ret = [];
   else {
-    evlistener = events[type];
+    evlistener = events[type3];
     if (!evlistener)
       ret = [];
     else if (typeof evlistener === "function")
@@ -575,18 +579,18 @@ EventEmitter$2.prototype.listeners = /* @__PURE__ */ __name(function listeners(t
   }
   return ret;
 }, "listeners");
-EventEmitter$2.listenerCount = function(emitter, type) {
+EventEmitter$2.listenerCount = function(emitter, type3) {
   if (typeof emitter.listenerCount === "function") {
-    return emitter.listenerCount(type);
+    return emitter.listenerCount(type3);
   } else {
-    return listenerCount$1.call(emitter, type);
+    return listenerCount$1.call(emitter, type3);
   }
 };
 EventEmitter$2.prototype.listenerCount = listenerCount$1;
-function listenerCount$1(type) {
+function listenerCount$1(type3) {
   var events = this._events;
   if (events) {
-    var evlistener = events[type];
+    var evlistener = events[type3];
     if (typeof evlistener === "function") {
       return 1;
     } else if (evlistener) {
@@ -2481,23 +2485,23 @@ function deprecate$1(fn, msg) {
 __name(deprecate$1, "deprecate$1");
 var debugs = {};
 var debugEnviron;
-function debuglog(set) {
+function debuglog(set2) {
   if (isUndefined(debugEnviron))
     debugEnviron = browser$1$1.env.NODE_DEBUG || "";
-  set = set.toUpperCase();
-  if (!debugs[set]) {
-    if (new RegExp("\\b" + set + "\\b", "i").test(debugEnviron)) {
+  set2 = set2.toUpperCase();
+  if (!debugs[set2]) {
+    if (new RegExp("\\b" + set2 + "\\b", "i").test(debugEnviron)) {
       var pid = 0;
-      debugs[set] = function() {
+      debugs[set2] = function() {
         var msg = format$1.apply(null, arguments);
-        console.error("%s %d: %s", set, pid, msg);
+        console.error("%s %d: %s", set2, pid, msg);
       };
     } else {
-      debugs[set] = function() {
+      debugs[set2] = function() {
       };
     }
   }
-  return debugs[set];
+  return debugs[set2];
 }
 __name(debuglog, "debuglog");
 function inspect2(obj, opts) {
@@ -3127,8 +3131,8 @@ function prependListener2(emitter, event, fn) {
   }
 }
 __name(prependListener2, "prependListener");
-function listenerCount(emitter, type) {
-  return emitter.listeners(type).length;
+function listenerCount(emitter, type3) {
+  return emitter.listeners(type3).length;
 }
 __name(listenerCount, "listenerCount");
 function ReadableState(options, stream) {
@@ -5794,8 +5798,8 @@ function selectField(index, mine, theirs) {
   }
 }
 __name(selectField, "selectField");
-function hunkBefore(test2, check) {
-  return test2.oldStart < check.oldStart && test2.oldStart + test2.oldLines < check.oldStart;
+function hunkBefore(test3, check) {
+  return test3.oldStart < check.oldStart && test3.oldStart + test3.oldLines < check.oldStart;
 }
 __name(hunkBefore, "hunkBefore");
 function cloneHunk(hunk, offset) {
@@ -6232,133 +6236,133 @@ __name(escapeHTML, "escapeHTML");
   });
   Object.defineProperty(exports2, "Diff", {
     enumerable: true,
-    get: /* @__PURE__ */ __name(function get() {
+    get: /* @__PURE__ */ __name(function get2() {
       return _base2["default"];
     }, "get")
   });
   Object.defineProperty(exports2, "diffChars", {
     enumerable: true,
-    get: /* @__PURE__ */ __name(function get() {
+    get: /* @__PURE__ */ __name(function get2() {
       return _character.diffChars;
     }, "get")
   });
   Object.defineProperty(exports2, "diffWords", {
     enumerable: true,
-    get: /* @__PURE__ */ __name(function get() {
+    get: /* @__PURE__ */ __name(function get2() {
       return _word.diffWords;
     }, "get")
   });
   Object.defineProperty(exports2, "diffWordsWithSpace", {
     enumerable: true,
-    get: /* @__PURE__ */ __name(function get() {
+    get: /* @__PURE__ */ __name(function get2() {
       return _word.diffWordsWithSpace;
     }, "get")
   });
   Object.defineProperty(exports2, "diffLines", {
     enumerable: true,
-    get: /* @__PURE__ */ __name(function get() {
+    get: /* @__PURE__ */ __name(function get2() {
       return _line2.diffLines;
     }, "get")
   });
   Object.defineProperty(exports2, "diffTrimmedLines", {
     enumerable: true,
-    get: /* @__PURE__ */ __name(function get() {
+    get: /* @__PURE__ */ __name(function get2() {
       return _line2.diffTrimmedLines;
     }, "get")
   });
   Object.defineProperty(exports2, "diffSentences", {
     enumerable: true,
-    get: /* @__PURE__ */ __name(function get() {
+    get: /* @__PURE__ */ __name(function get2() {
       return _sentence.diffSentences;
     }, "get")
   });
   Object.defineProperty(exports2, "diffCss", {
     enumerable: true,
-    get: /* @__PURE__ */ __name(function get() {
+    get: /* @__PURE__ */ __name(function get2() {
       return _css.diffCss;
     }, "get")
   });
   Object.defineProperty(exports2, "diffJson", {
     enumerable: true,
-    get: /* @__PURE__ */ __name(function get() {
+    get: /* @__PURE__ */ __name(function get2() {
       return _json.diffJson;
     }, "get")
   });
   Object.defineProperty(exports2, "canonicalize", {
     enumerable: true,
-    get: /* @__PURE__ */ __name(function get() {
+    get: /* @__PURE__ */ __name(function get2() {
       return _json.canonicalize;
     }, "get")
   });
   Object.defineProperty(exports2, "diffArrays", {
     enumerable: true,
-    get: /* @__PURE__ */ __name(function get() {
+    get: /* @__PURE__ */ __name(function get2() {
       return _array2.diffArrays;
     }, "get")
   });
   Object.defineProperty(exports2, "applyPatch", {
     enumerable: true,
-    get: /* @__PURE__ */ __name(function get() {
+    get: /* @__PURE__ */ __name(function get2() {
       return _apply.applyPatch;
     }, "get")
   });
   Object.defineProperty(exports2, "applyPatches", {
     enumerable: true,
-    get: /* @__PURE__ */ __name(function get() {
+    get: /* @__PURE__ */ __name(function get2() {
       return _apply.applyPatches;
     }, "get")
   });
   Object.defineProperty(exports2, "parsePatch", {
     enumerable: true,
-    get: /* @__PURE__ */ __name(function get() {
+    get: /* @__PURE__ */ __name(function get2() {
       return _parse2.parsePatch;
     }, "get")
   });
   Object.defineProperty(exports2, "merge", {
     enumerable: true,
-    get: /* @__PURE__ */ __name(function get() {
+    get: /* @__PURE__ */ __name(function get2() {
       return _merge.merge;
     }, "get")
   });
   Object.defineProperty(exports2, "reversePatch", {
     enumerable: true,
-    get: /* @__PURE__ */ __name(function get() {
+    get: /* @__PURE__ */ __name(function get2() {
       return _reverse.reversePatch;
     }, "get")
   });
   Object.defineProperty(exports2, "structuredPatch", {
     enumerable: true,
-    get: /* @__PURE__ */ __name(function get() {
+    get: /* @__PURE__ */ __name(function get2() {
       return _create2.structuredPatch;
     }, "get")
   });
   Object.defineProperty(exports2, "createTwoFilesPatch", {
     enumerable: true,
-    get: /* @__PURE__ */ __name(function get() {
+    get: /* @__PURE__ */ __name(function get2() {
       return _create2.createTwoFilesPatch;
     }, "get")
   });
   Object.defineProperty(exports2, "createPatch", {
     enumerable: true,
-    get: /* @__PURE__ */ __name(function get() {
+    get: /* @__PURE__ */ __name(function get2() {
       return _create2.createPatch;
     }, "get")
   });
   Object.defineProperty(exports2, "formatPatch", {
     enumerable: true,
-    get: /* @__PURE__ */ __name(function get() {
+    get: /* @__PURE__ */ __name(function get2() {
       return _create2.formatPatch;
     }, "get")
   });
   Object.defineProperty(exports2, "convertChangesToDMP", {
     enumerable: true,
-    get: /* @__PURE__ */ __name(function get() {
+    get: /* @__PURE__ */ __name(function get2() {
       return _dmp.convertChangesToDMP;
     }, "get")
   });
   Object.defineProperty(exports2, "convertChangesToXML", {
     enumerable: true,
-    get: /* @__PURE__ */ __name(function get() {
+    get: /* @__PURE__ */ __name(function get2() {
       return _xml.convertChangesToXML;
     }, "get")
   });
@@ -6390,10 +6394,10 @@ var w$1 = d$1 * 7;
 var y$1 = d$1 * 365.25;
 var ms$1 = /* @__PURE__ */ __name(function(val, options) {
   options = options || {};
-  var type = typeof val;
-  if (type === "string" && val.length > 0) {
+  var type3 = typeof val;
+  if (type3 === "string" && val.length > 0) {
     return parse$1(val);
-  } else if (type === "number" && isFinite(val)) {
+  } else if (type3 === "number" && isFinite(val)) {
     return options.long ? fmtLong$1(val) : fmtShort$1(val);
   }
   throw new Error(
@@ -6412,8 +6416,8 @@ function parse$1(str) {
     return;
   }
   var n = parseFloat(match[1]);
-  var type = (match[2] || "ms").toLowerCase();
-  switch (type) {
+  var type3 = (match[2] || "ms").toLowerCase();
+  switch (type3) {
     case "years":
     case "year":
     case "yrs":
@@ -8277,7 +8281,7 @@ var he = { exports: {} };
       "isAttributeValue": false,
       "strict": false
     };
-    var escape = /* @__PURE__ */ __name(function(string) {
+    var escape2 = /* @__PURE__ */ __name(function(string) {
       return string.replace(regexEscape, function($0) {
         return escapeMap[$0];
       });
@@ -8286,7 +8290,7 @@ var he = { exports: {} };
       "version": "1.2.0",
       "encode": encode,
       "decode": decode,
-      "escape": escape,
+      "escape": escape2,
       "unescape": decode
     };
     if (freeExports && !freeExports.nodeType) {
@@ -8356,7 +8360,7 @@ var he = { exports: {} };
     }
     return Object.prototype.toString.call(value).replace(/^\[.+\s(.+?)]$/, "$1").toLowerCase();
   }, "canonicalType");
-  exports2.type = /* @__PURE__ */ __name(function type(value) {
+  exports2.type = /* @__PURE__ */ __name(function type3(value) {
     if (value === null) return "null";
     const primitives = /* @__PURE__ */ new Set([
       "undefined",
@@ -8582,7 +8586,7 @@ var he = { exports: {} };
     return Object.freeze(exports2.createMap(obj));
   };
   exports2.cwd = /* @__PURE__ */ __name(function cwd2() {
-    return process.cwd();
+    return process2.cwd();
   }, "cwd");
   exports2.isBrowser = /* @__PURE__ */ __name(function isBrowser() {
     return Boolean(browser$2);
@@ -8669,10 +8673,10 @@ var w = d * 7;
 var y = d * 365.25;
 var ms = /* @__PURE__ */ __name(function(val, options) {
   options = options || {};
-  var type = typeof val;
-  if (type === "string" && val.length > 0) {
+  var type3 = typeof val;
+  if (type3 === "string" && val.length > 0) {
     return parse(val);
-  } else if (type === "number" && isFinite(val)) {
+  } else if (type3 === "number" && isFinite(val)) {
     return options.long ? fmtLong(val) : fmtShort(val);
   }
   throw new Error(
@@ -8691,8 +8695,8 @@ function parse(str) {
     return;
   }
   var n = parseFloat(match[1]);
-  var type = (match[2] || "ms").toLowerCase();
-  switch (type) {
+  var type3 = (match[2] || "ms").toLowerCase();
+  switch (type3) {
     case "years":
     case "year":
     case "yrs":
@@ -9090,8 +9094,8 @@ var common$1 = setup;
       r = exports2.storage.getItem("debug");
     } catch (error) {
     }
-    if (!r && typeof process !== "undefined" && "env" in process) {
-      r = process.env.DEBUG;
+    if (!r && typeof process2 !== "undefined" && "env" in process2) {
+      r = process2.env.DEBUG;
     }
     return r;
   }
@@ -9114,12 +9118,12 @@ var common$1 = setup;
   };
 })(browser, browser.exports);
 var { format } = require$$0$1;
-var emitWarning = /* @__PURE__ */ __name((msg, type) => {
-  if (process.emitWarning) {
-    process.emitWarning(msg, type);
+var emitWarning = /* @__PURE__ */ __name((msg, type3) => {
+  if (process2.emitWarning) {
+    process2.emitWarning(msg, type3);
   } else {
     nextTick$1(function() {
-      console.warn(type + ": " + msg);
+      console.warn(type3 + ": " + msg);
     });
   }
 }, "emitWarning");
@@ -9965,14 +9969,14 @@ Hook.prototype.serialize = /* @__PURE__ */ __name(function serialize() {
     this.emit(constants2.EVENT_SUITE_ADD_SUITE, suite2);
     return this;
   };
-  Suite2.prototype.addTest = function(test2) {
-    test2.parent = this;
-    test2.timeout(this.timeout());
-    test2.retries(this.retries());
-    test2.slow(this.slow());
-    test2.ctx = this.ctx;
-    this.tests.push(test2);
-    this.emit(constants2.EVENT_SUITE_ADD_TEST, test2);
+  Suite2.prototype.addTest = function(test3) {
+    test3.parent = this;
+    test3.timeout(this.timeout());
+    test3.retries(this.retries());
+    test3.slow(this.slow());
+    test3.ctx = this.ctx;
+    this.tests.push(test3);
+    this.emit(constants2.EVENT_SUITE_ADD_TEST, test3);
     return this;
   };
   Suite2.prototype.fullTitle = function() {
@@ -10034,8 +10038,8 @@ Hook.prototype.serialize = /* @__PURE__ */ __name(function serialize() {
   Suite2.prototype.markOnly = function() {
     this.parent && this.parent.appendOnlySuite(this);
   };
-  Suite2.prototype.appendOnlyTest = function(test2) {
-    this._onlyTests.push(test2);
+  Suite2.prototype.appendOnlyTest = function(test3) {
+    this._onlyTests.push(test3);
   };
   Suite2.prototype.getHooks = /* @__PURE__ */ __name(function getHooks(name2) {
     return this["_" + name2];
@@ -10293,12 +10297,12 @@ var Runner = class extends EventEmitter {
     this.total = suite2.total();
     this.failures = 0;
     this._eventListeners = /* @__PURE__ */ new Map();
-    this.on(constants$1.EVENT_TEST_END, function(test2) {
-      if (test2.type === "test" && test2.retriedTest() && test2.parent) {
-        var idx = test2.parent.tests && test2.parent.tests.indexOf(test2.retriedTest());
-        if (idx > -1) test2.parent.tests[idx] = test2;
+    this.on(constants$1.EVENT_TEST_END, function(test3) {
+      if (test3.type === "test" && test3.retriedTest() && test3.parent) {
+        var idx = test3.parent.tests && test3.parent.tests.indexOf(test3.retriedTest());
+        if (idx > -1) test3.parent.tests[idx] = test3;
       }
-      self2.checkGlobals(test2);
+      self2.checkGlobals(test3);
     });
     this.on(constants$1.EVENT_HOOK_END, function(hook2) {
       self2.checkGlobals(hook2);
@@ -10319,14 +10323,14 @@ var Runner = class extends EventEmitter {
           "trapped unhandled rejection from (probably) user code; re-emitting on process"
         );
         this._removeEventListener(
-          process,
+          process2,
           "unhandledRejection",
           this.unhandled
         );
         try {
-          process.emit("unhandledRejection", reason, promise);
+          process2.emit("unhandledRejection", reason, promise);
         } finally {
-          this._addEventListener(process, "unhandledRejection", this.unhandled);
+          this._addEventListener(process2, "unhandledRejection", this.unhandled);
         }
       }
     };
@@ -10392,8 +10396,8 @@ Runner.prototype.grep = function(re, invert) {
 Runner.prototype.grepTotal = function(suite2) {
   var self2 = this;
   var total = 0;
-  suite2.eachTest(function(test2) {
-    var match = self2._grep.test(test2.fullTitle());
+  suite2.eachTest(function(test3) {
+    var match = self2._grep.test(test3.fullTitle());
     if (self2._invert) {
       match = !match;
     }
@@ -10421,15 +10425,15 @@ Runner.prototype.globals = function(arr) {
   this._globals = this._globals.concat(arr);
   return this;
 };
-Runner.prototype.checkGlobals = function(test2) {
+Runner.prototype.checkGlobals = function(test3) {
   if (!this.checkLeaks) {
     return;
   }
   var ok = this._globals;
   var globals2 = this.globalProps();
   var leaks;
-  if (test2) {
-    ok = ok.concat(test2._allowedGlobals || []);
+  if (test3) {
+    ok = ok.concat(test3._allowedGlobals || []);
   }
   if (this.prevGlobalsLength === globals2.length) {
     return;
@@ -10439,12 +10443,12 @@ Runner.prototype.checkGlobals = function(test2) {
   this._globals = this._globals.concat(leaks);
   if (leaks.length) {
     var msg = `global leak(s) detected: ${leaks.map((e) => `'${e}'`).join(", ")}`;
-    this.fail(test2, new Error(msg));
+    this.fail(test3, new Error(msg));
   }
 };
-Runner.prototype.fail = function(test2, err, force) {
+Runner.prototype.fail = function(test3, err, force) {
   force = force === true;
-  if (test2.isPending() && !force) {
+  if (test3.isPending() && !force) {
     return;
   }
   if (this.state === constants$1.STATE_STOPPED) {
@@ -10458,7 +10462,7 @@ Runner.prototype.fail = function(test2, err, force) {
   }
   ++this.failures;
   debug("total number of failures: %d", this.failures);
-  test2.state = STATE_FAILED;
+  test3.state = STATE_FAILED;
   if (!isError(err)) {
     err = thrown2Error(err);
   }
@@ -10474,7 +10478,7 @@ Runner.prototype.fail = function(test2, err, force) {
       currentErr = currentErr.cause;
     }
   }
-  this.emit(constants$1.EVENT_TEST_FAIL, test2, err);
+  this.emit(constants$1.EVENT_TEST_FAIL, test3, err);
 };
 Runner.prototype.hook = function(name2, fn) {
   if (this._opts.dryRun) return fn();
@@ -10520,8 +10524,8 @@ Runner.prototype.hook = function(name2, fn) {
           hook2.pending = false;
           return fn(new Error("abort hookDown"));
         } else if (name2 === HOOK_TYPE_BEFORE_ALL) {
-          suite2.tests.forEach(function(test2) {
-            test2.pending = true;
+          suite2.tests.forEach(function(test3) {
+            test3.pending = true;
           });
           suite2.suites.forEach(function(suite3) {
             suite3.pending = true;
@@ -10604,22 +10608,22 @@ Runner.prototype.parents = function() {
 Runner.prototype.runTest = function(fn) {
   if (this._opts.dryRun) return Runner.immediately(fn);
   var self2 = this;
-  var test2 = this.test;
-  if (!test2) {
+  var test3 = this.test;
+  if (!test3) {
     return;
   }
   if (this.asyncOnly) {
-    test2.asyncOnly = true;
+    test3.asyncOnly = true;
   }
-  this._addEventListener(test2, "error", function(err) {
-    self2.fail(test2, err);
+  this._addEventListener(test3, "error", function(err) {
+    self2.fail(test3, err);
   });
   if (this.allowUncaught) {
-    test2.allowUncaught = true;
-    return test2.run(fn);
+    test3.allowUncaught = true;
+    return test3.run(fn);
   }
   try {
-    test2.run(fn);
+    test3.run(fn);
   } catch (err) {
     fn(err);
   }
@@ -10627,7 +10631,7 @@ Runner.prototype.runTest = function(fn) {
 Runner.prototype.runTests = function(suite2, fn) {
   var self2 = this;
   var tests = suite2.tests.slice();
-  var test2;
+  var test3;
   function hookErr(_, errSuite, after) {
     var orig = self2.suite;
     self2.suite = after ? errSuite.parent : errSuite;
@@ -10655,11 +10659,11 @@ Runner.prototype.runTests = function(suite2, fn) {
     if (err) {
       return hookErr(err, errSuite, true);
     }
-    test2 = tests.shift();
-    if (!test2) {
+    test3 = tests.shift();
+    if (!test3) {
       return fn();
     }
-    var match = self2._grep.test(test2.fullTitle());
+    var match = self2._grep.test(test3.fullTitle());
     if (self2._invert) {
       match = !match;
     }
@@ -10671,26 +10675,26 @@ Runner.prototype.runTests = function(suite2, fn) {
       }
       return;
     }
-    if (test2.isPending()) {
+    if (test3.isPending()) {
       if (self2.forbidPending) {
-        self2.fail(test2, new Error("Pending test forbidden"), true);
+        self2.fail(test3, new Error("Pending test forbidden"), true);
       } else {
-        test2.state = STATE_PENDING;
-        self2.emit(constants$1.EVENT_TEST_PENDING, test2);
+        test3.state = STATE_PENDING;
+        self2.emit(constants$1.EVENT_TEST_PENDING, test3);
       }
-      self2.emit(constants$1.EVENT_TEST_END, test2);
+      self2.emit(constants$1.EVENT_TEST_END, test3);
       return next();
     }
-    self2.emit(constants$1.EVENT_TEST_BEGIN, self2.test = test2);
+    self2.emit(constants$1.EVENT_TEST_BEGIN, self2.test = test3);
     self2.hookDown(HOOK_TYPE_BEFORE_EACH, function(err2, errSuite2) {
-      if (test2.isPending()) {
+      if (test3.isPending()) {
         if (self2.forbidPending) {
-          self2.fail(test2, new Error("Pending test forbidden"), true);
+          self2.fail(test3, new Error("Pending test forbidden"), true);
         } else {
-          test2.state = STATE_PENDING;
-          self2.emit(constants$1.EVENT_TEST_PENDING, test2);
+          test3.state = STATE_PENDING;
+          self2.emit(constants$1.EVENT_TEST_PENDING, test3);
         }
-        self2.emit(constants$1.EVENT_TEST_END, test2);
+        self2.emit(constants$1.EVENT_TEST_END, test3);
         var origSuite = self2.suite;
         self2.suite = errSuite2 || self2.suite;
         return self2.hookUp(HOOK_TYPE_AFTER_EACH, function(e, eSuite) {
@@ -10703,33 +10707,33 @@ Runner.prototype.runTests = function(suite2, fn) {
       }
       self2.currentRunnable = self2.test;
       self2.runTest(function(err3) {
-        test2 = self2.test;
-        if (test2.pending) {
+        test3 = self2.test;
+        if (test3.pending) {
           if (self2.forbidPending) {
-            self2.fail(test2, new Error("Pending test forbidden"), true);
+            self2.fail(test3, new Error("Pending test forbidden"), true);
           } else {
-            test2.state = STATE_PENDING;
-            self2.emit(constants$1.EVENT_TEST_PENDING, test2);
+            test3.state = STATE_PENDING;
+            self2.emit(constants$1.EVENT_TEST_PENDING, test3);
           }
-          self2.emit(constants$1.EVENT_TEST_END, test2);
+          self2.emit(constants$1.EVENT_TEST_END, test3);
           return self2.hookUp(HOOK_TYPE_AFTER_EACH, next);
         } else if (err3) {
-          var retry = test2.currentRetry();
-          if (retry < test2.retries()) {
-            var clonedTest = test2.clone();
+          var retry = test3.currentRetry();
+          if (retry < test3.retries()) {
+            var clonedTest = test3.clone();
             clonedTest.currentRetry(retry + 1);
             tests.unshift(clonedTest);
-            self2.emit(constants$1.EVENT_TEST_RETRY, test2, err3);
+            self2.emit(constants$1.EVENT_TEST_RETRY, test3, err3);
             return self2.hookUp(HOOK_TYPE_AFTER_EACH, next);
           } else {
-            self2.fail(test2, err3);
+            self2.fail(test3, err3);
           }
-          self2.emit(constants$1.EVENT_TEST_END, test2);
+          self2.emit(constants$1.EVENT_TEST_END, test3);
           return self2.hookUp(HOOK_TYPE_AFTER_EACH, next);
         }
-        test2.state = STATE_PASSED;
-        self2.emit(constants$1.EVENT_TEST_PASS, test2);
-        self2.emit(constants$1.EVENT_TEST_END, test2);
+        test3.state = STATE_PASSED;
+        self2.emit(constants$1.EVENT_TEST_PASS, test3);
+        self2.emit(constants$1.EVENT_TEST_END, test3);
         self2.hookUp(HOOK_TYPE_AFTER_EACH, next);
       });
     });
@@ -10897,10 +10901,10 @@ Runner.prototype.run = function(fn, opts = {}) {
     debug("run(): emitted %s", constants$1.EVENT_RUN_END);
     fn(this.failures);
   });
-  this._removeEventListener(process, "uncaughtException", this.uncaught);
-  this._removeEventListener(process, "unhandledRejection", this.unhandled);
-  this._addEventListener(process, "uncaughtException", this.uncaught);
-  this._addEventListener(process, "unhandledRejection", this.unhandled);
+  this._removeEventListener(process2, "uncaughtException", this.uncaught);
+  this._removeEventListener(process2, "unhandledRejection", this.unhandled);
+  this._addEventListener(process2, "uncaughtException", this.uncaught);
+  this._addEventListener(process2, "unhandledRejection", this.unhandled);
   if (this._opts.delay) {
     this.emit(constants$1.EVENT_DELAY_BEGIN, rootSuite);
     rootSuite.once(EVENT_ROOT_SUITE_RUN, prepare);
@@ -10985,9 +10989,9 @@ var runner = Runner;
   }
   __name(getBrowserWindowSize, "getBrowserWindowSize");
   exports2 = module.exports = Base;
-  var isatty = isBrowser || process.stdout.isTTY && process.stderr.isTTY;
+  var isatty = isBrowser || process2.stdout.isTTY && process2.stderr.isTTY;
   var consoleLog = console.log;
-  exports2.useColors = !isBrowser && (supportsColor.stdout || process.env.MOCHA_COLORS !== void 0);
+  exports2.useColors = !isBrowser && (supportsColor.stdout || process2.env.MOCHA_COLORS !== void 0);
   exports2.inlineDiffs = false;
   exports2.maxDiffSize = 8192;
   exports2.colors = {
@@ -11020,11 +11024,11 @@ var runner = Runner;
     comma: ",",
     bang: "!"
   };
-  var color = exports2.color = function(type, str) {
+  var color = exports2.color = function(type3, str) {
     if (!exports2.useColors) {
       return String(str);
     }
-    return "\x1B[" + exports2.colors[type] + "m" + str + "\x1B[0m";
+    return "\x1B[" + exports2.colors[type3] + "m" + str + "\x1B[0m";
   };
   exports2.window = {
     width: 75
@@ -11033,28 +11037,28 @@ var runner = Runner;
     if (isBrowser) {
       exports2.window.width = getBrowserWindowSize()[1];
     } else {
-      exports2.window.width = process.stdout.getWindowSize(1)[0];
+      exports2.window.width = process2.stdout.getWindowSize(1)[0];
     }
   }
   exports2.cursor = {
     hide: /* @__PURE__ */ __name(function() {
-      isatty && process.stdout.write("\x1B[?25l");
+      isatty && process2.stdout.write("\x1B[?25l");
     }, "hide"),
     show: /* @__PURE__ */ __name(function() {
-      isatty && process.stdout.write("\x1B[?25h");
+      isatty && process2.stdout.write("\x1B[?25h");
     }, "show"),
     deleteLine: /* @__PURE__ */ __name(function() {
-      isatty && process.stdout.write("\x1B[2K");
+      isatty && process2.stdout.write("\x1B[2K");
     }, "deleteLine"),
     beginningOfLine: /* @__PURE__ */ __name(function() {
-      isatty && process.stdout.write("\x1B[0G");
+      isatty && process2.stdout.write("\x1B[0G");
     }, "beginningOfLine"),
     CR: /* @__PURE__ */ __name(function() {
       if (isatty) {
         exports2.cursor.deleteLine();
         exports2.cursor.beginningOfLine();
       } else {
-        process.stdout.write("\r");
+        process2.stdout.write("\r");
       }
     }, "CR")
   };
@@ -11126,17 +11130,17 @@ var runner = Runner;
   exports2.list = function(failures) {
     var multipleErr, multipleTest;
     Base.consoleLog();
-    failures.forEach(function(test2, i) {
+    failures.forEach(function(test3, i) {
       var fmt = color("error title", "  %s) %s:\n") + color("error message", "     %s") + color("error stack", "\n%s\n");
       var err;
-      if (test2.err && test2.err.multiple) {
-        if (multipleTest !== test2) {
-          multipleTest = test2;
-          multipleErr = [test2.err].concat(test2.err.multiple);
+      if (test3.err && test3.err.multiple) {
+        if (multipleTest !== test3) {
+          multipleTest = test3;
+          multipleErr = [test3.err].concat(test3.err.multiple);
         }
         err = multipleErr.shift();
       } else {
-        err = test2.err;
+        err = test3.err;
       }
       var { message, msg, stack } = getFullErrorStack(err);
       if (err.uncaught) {
@@ -11151,7 +11155,7 @@ var runner = Runner;
       }
       stack = stack.replace(/^/gm, "  ");
       var testTitle = "";
-      test2.titlePath().forEach(function(str, index) {
+      test3.titlePath().forEach(function(str, index) {
         if (index !== 0) {
           testTitle += "\n     ";
         }
@@ -11175,25 +11179,25 @@ var runner = Runner;
     if (maxDiffSizeOpt !== void 0 && !isNaN(Number(maxDiffSizeOpt))) {
       exports2.maxDiffSize = Number(maxDiffSizeOpt);
     }
-    runner2.on(EVENT_TEST_PASS2, function(test2) {
-      if (test2.duration > test2.slow()) {
-        test2.speed = "slow";
-      } else if (test2.duration > test2.slow() / 2) {
-        test2.speed = "medium";
+    runner2.on(EVENT_TEST_PASS2, function(test3) {
+      if (test3.duration > test3.slow()) {
+        test3.speed = "slow";
+      } else if (test3.duration > test3.slow() / 2) {
+        test3.speed = "medium";
       } else {
-        test2.speed = "fast";
+        test3.speed = "fast";
       }
     });
-    runner2.on(EVENT_TEST_FAIL2, function(test2, err) {
+    runner2.on(EVENT_TEST_FAIL2, function(test3, err) {
       if (showDiff(err)) {
         stringifyDiffObjs(err);
       }
-      if (test2.err && err instanceof Error) {
-        test2.err.multiple = (test2.err.multiple || []).concat(err);
+      if (test3.err && err instanceof Error) {
+        test3.err.multiple = (test3.err.multiple || []).concat(err);
       } else {
-        test2.err = err;
+        test3.err = err;
       }
-      failures.push(test2);
+      failures.push(test3);
     });
   }
   __name(Base, "Base");
@@ -11304,32 +11308,32 @@ var dot = { exports: {} };
     var width = Base.window.width * 0.75 | 0;
     var n = -1;
     runner2.on(EVENT_RUN_BEGIN2, function() {
-      process.stdout.write("\n");
+      process2.stdout.write("\n");
     });
     runner2.on(EVENT_TEST_PENDING2, function() {
       if (++n % width === 0) {
-        process.stdout.write("\n  ");
+        process2.stdout.write("\n  ");
       }
-      process.stdout.write(Base.color("pending", Base.symbols.comma));
+      process2.stdout.write(Base.color("pending", Base.symbols.comma));
     });
-    runner2.on(EVENT_TEST_PASS2, function(test2) {
+    runner2.on(EVENT_TEST_PASS2, function(test3) {
       if (++n % width === 0) {
-        process.stdout.write("\n  ");
+        process2.stdout.write("\n  ");
       }
-      if (test2.speed === "slow") {
-        process.stdout.write(Base.color("bright yellow", Base.symbols.dot));
+      if (test3.speed === "slow") {
+        process2.stdout.write(Base.color("bright yellow", Base.symbols.dot));
       } else {
-        process.stdout.write(Base.color(test2.speed, Base.symbols.dot));
+        process2.stdout.write(Base.color(test3.speed, Base.symbols.dot));
       }
     });
     runner2.on(EVENT_TEST_FAIL2, function() {
       if (++n % width === 0) {
-        process.stdout.write("\n  ");
+        process2.stdout.write("\n  ");
       }
-      process.stdout.write(Base.color("fail", Base.symbols.bang));
+      process2.stdout.write(Base.color("fail", Base.symbols.bang));
     });
     runner2.once(EVENT_RUN_END2, function() {
-      process.stdout.write("\n");
+      process2.stdout.write("\n");
       self2.epilogue();
     });
   }
@@ -11373,24 +11377,24 @@ var doc = { exports: {} };
       Base.consoleLog("%s</section>", indent());
       --indents;
     });
-    runner2.on(EVENT_TEST_PASS2, function(test2) {
-      Base.consoleLog("%s  <dt>%s</dt>", indent(), utils2.escape(test2.title));
-      Base.consoleLog("%s  <dt>%s</dt>", indent(), utils2.escape(test2.file));
-      var code = utils2.escape(utils2.clean(test2.body));
+    runner2.on(EVENT_TEST_PASS2, function(test3) {
+      Base.consoleLog("%s  <dt>%s</dt>", indent(), utils2.escape(test3.title));
+      Base.consoleLog("%s  <dt>%s</dt>", indent(), utils2.escape(test3.file));
+      var code = utils2.escape(utils2.clean(test3.body));
       Base.consoleLog("%s  <dd><pre><code>%s</code></pre></dd>", indent(), code);
     });
-    runner2.on(EVENT_TEST_FAIL2, function(test2, err) {
+    runner2.on(EVENT_TEST_FAIL2, function(test3, err) {
       Base.consoleLog(
         '%s  <dt class="error">%s</dt>',
         indent(),
-        utils2.escape(test2.title)
+        utils2.escape(test3.title)
       );
       Base.consoleLog(
         '%s  <dt class="error">%s</dt>',
         indent(),
-        utils2.escape(test2.file)
+        utils2.escape(test3.file)
       );
-      var code = utils2.escape(utils2.clean(test2.body));
+      var code = utils2.escape(utils2.clean(test3.body));
       Base.consoleLog(
         '%s  <dd class="error"><pre><code>%s</code></pre></dd>',
         indent(),
@@ -11437,14 +11441,14 @@ var tap = { exports: {} };
     runner2.on(EVENT_TEST_END2, function() {
       ++n;
     });
-    runner2.on(EVENT_TEST_PENDING2, function(test2) {
-      self2._producer.writePending(n, test2);
+    runner2.on(EVENT_TEST_PENDING2, function(test3) {
+      self2._producer.writePending(n, test3);
     });
-    runner2.on(EVENT_TEST_PASS2, function(test2) {
-      self2._producer.writePass(n, test2);
+    runner2.on(EVENT_TEST_PASS2, function(test3) {
+      self2._producer.writePass(n, test3);
     });
-    runner2.on(EVENT_TEST_FAIL2, function(test2, err) {
-      self2._producer.writeFail(n, test2, err);
+    runner2.on(EVENT_TEST_FAIL2, function(test3, err) {
+      self2._producer.writeFail(n, test3, err);
     });
     runner2.once(EVENT_RUN_END2, function() {
       self2._producer.writeEpilogue(runner2.stats);
@@ -11452,14 +11456,14 @@ var tap = { exports: {} };
   }
   __name(TAP, "TAP");
   inherits2(TAP, Base);
-  function title2(test2) {
-    return test2.fullTitle().replace(/#/g, "");
+  function title2(test3) {
+    return test3.fullTitle().replace(/#/g, "");
   }
   __name(title2, "title");
   function println(format2, varArgs) {
     var vargs = Array.from(arguments);
     vargs[0] += "\n";
-    process.stdout.write(sprintf.apply(null, vargs));
+    process2.stdout.write(sprintf.apply(null, vargs));
   }
   __name(println, "println");
   function createProducer(tapVersion) {
@@ -11484,14 +11488,14 @@ var tap = { exports: {} };
   TAPProducer.prototype.writePlan = function(ntests) {
     println("%d..%d", 1, ntests);
   };
-  TAPProducer.prototype.writePass = function(n, test2) {
-    println("ok %d %s", n, title2(test2));
+  TAPProducer.prototype.writePass = function(n, test3) {
+    println("ok %d %s", n, title2(test3));
   };
-  TAPProducer.prototype.writePending = function(n, test2) {
-    println("ok %d %s # SKIP -", n, title2(test2));
+  TAPProducer.prototype.writePending = function(n, test3) {
+    println("ok %d %s # SKIP -", n, title2(test3));
   };
-  TAPProducer.prototype.writeFail = function(n, test2, err) {
-    println("not ok %d %s", n, title2(test2));
+  TAPProducer.prototype.writeFail = function(n, test3, err) {
+    println("not ok %d %s", n, title2(test3));
   };
   TAPProducer.prototype.writeEpilogue = function(stats) {
     println("# tests " + (stats.passes + stats.failures));
@@ -11500,8 +11504,8 @@ var tap = { exports: {} };
     this.writePlan(stats.passes + stats.failures + stats.pending);
   };
   function TAP12Producer() {
-    this.writeFail = function(n, test2, err) {
-      TAPProducer.prototype.writeFail.call(this, n, test2, err);
+    this.writeFail = function(n, test3, err) {
+      TAPProducer.prototype.writeFail.call(this, n, test3, err);
       if (err.message) {
         println(err.message.replace(/^/gm, "  "));
       }
@@ -11516,8 +11520,8 @@ var tap = { exports: {} };
     this.writeVersion = function() {
       println("TAP version 13");
     };
-    this.writeFail = function(n, test2, err) {
-      TAPProducer.prototype.writeFail.call(this, n, test2, err);
+    this.writeFail = function(n, test3, err) {
+      TAPProducer.prototype.writeFail.call(this, n, test3, err);
       var emitYamlBlock = err.message != null || err.stack != null;
       if (emitYamlBlock) {
         println(indent(1) + "---");
@@ -11575,17 +11579,17 @@ var require$$2 = /* @__PURE__ */ getAugmentedNamespace(_polyfillNode_fs$1);
       }
       output = options.reporterOption.output;
     }
-    runner2.on(EVENT_TEST_END2, function(test2) {
-      tests.push(test2);
+    runner2.on(EVENT_TEST_END2, function(test3) {
+      tests.push(test3);
     });
-    runner2.on(EVENT_TEST_PASS2, function(test2) {
-      passes.push(test2);
+    runner2.on(EVENT_TEST_PASS2, function(test3) {
+      passes.push(test3);
     });
-    runner2.on(EVENT_TEST_FAIL2, function(test2) {
-      failures.push(test2);
+    runner2.on(EVENT_TEST_FAIL2, function(test3) {
+      failures.push(test3);
     });
-    runner2.on(EVENT_TEST_PENDING2, function(test2) {
-      pending2.push(test2);
+    runner2.on(EVENT_TEST_PENDING2, function(test3) {
+      pending2.push(test3);
     });
     runner2.once(EVENT_RUN_END2, function() {
       var obj = {
@@ -11606,26 +11610,26 @@ var require$$2 = /* @__PURE__ */ getAugmentedNamespace(_polyfillNode_fs$1);
             `${Base.symbols.err} [mocha] writing output to "${output}" failed: ${err.message}
 `
           );
-          process.stdout.write(json2);
+          process2.stdout.write(json2);
         }
       } else {
-        process.stdout.write(json2);
+        process2.stdout.write(json2);
       }
     });
   }
   __name(JSONReporter, "JSONReporter");
-  function clean(test2) {
-    var err = test2.err || {};
+  function clean(test3) {
+    var err = test3.err || {};
     if (err instanceof Error) {
       err = errorJSON(err);
     }
     return {
-      title: test2.title,
-      fullTitle: test2.fullTitle(),
-      file: test2.file,
-      duration: test2.duration,
-      currentRetry: test2.currentRetry(),
-      speed: test2.speed,
+      title: test3.title,
+      fullTitle: test3.fullTitle(),
+      file: test3.file,
+      duration: test3.duration,
+      currentRetry: test3.currentRetry(),
+      speed: test3.speed,
       err: cleanCycles(err)
     };
   }
@@ -11666,7 +11670,7 @@ var html = { exports: {} };
   var EVENT_SUITE_BEGIN2 = constants2.EVENT_SUITE_BEGIN;
   var EVENT_SUITE_END = constants2.EVENT_SUITE_END;
   var EVENT_TEST_PENDING2 = constants2.EVENT_TEST_PENDING;
-  var escape = utils2.escape;
+  var escape2 = utils2.escape;
   var Date2 = commonjsGlobal.Date;
   module.exports = HTML;
   var statsTemplate = '<ul id="mocha-stats"><li class="progress-contain"><progress class="progress-element" max="100" value="0"></progress><svg class="progress-ring"><circle class="ring-flatlight" stroke-dasharray="100%,0%"/><circle class="ring-highlight" stroke-dasharray="0%,100%"/></svg><div class="progress-text">0%</div></li><li class="passes"><a href="javascript:void(0);">passes:</a> <em>0</em></li><li class="failures"><a href="javascript:void(0);">failures:</a> <em>0</em></li><li class="duration">duration: <em>0</em>s</li></ul>';
@@ -11722,7 +11726,7 @@ var html = { exports: {} };
       var el = fragment(
         '<li class="suite"><h1><a href="%s">%s</a></h1></li>',
         url,
-        escape(suite2.title)
+        escape2(suite2.title)
       );
       stack[0].appendChild(el);
       stack.unshift(document.createElement("ul"));
@@ -11735,63 +11739,63 @@ var html = { exports: {} };
       }
       stack.shift();
     });
-    runner2.on(EVENT_TEST_PASS2, function(test2) {
-      var url = self2.testURL(test2);
+    runner2.on(EVENT_TEST_PASS2, function(test3) {
+      var url = self2.testURL(test3);
       var markup = '<li class="test pass %e"><h2>%e<span class="duration">%ems</span> <a href="%s" class="replay">' + playIcon + "</a></h2></li>";
-      var el = fragment(markup, test2.speed, test2.title, test2.duration, url);
-      self2.addCodeToggle(el, test2.body);
+      var el = fragment(markup, test3.speed, test3.title, test3.duration, url);
+      self2.addCodeToggle(el, test3.body);
       appendToStack(el);
       updateStats();
     });
-    runner2.on(EVENT_TEST_FAIL2, function(test2) {
+    runner2.on(EVENT_TEST_FAIL2, function(test3) {
       var el = fragment(
         '<li class="test fail"><h2>%e <a href="%e" class="replay">' + playIcon + "</a></h2></li>",
-        test2.title,
-        self2.testURL(test2)
+        test3.title,
+        self2.testURL(test3)
       );
       var stackString;
-      var message = test2.err.toString();
+      var message = test3.err.toString();
       if (message === "[object Error]") {
-        message = test2.err.message;
+        message = test3.err.message;
       }
-      if (test2.err.stack) {
-        var indexOfMessage = test2.err.stack.indexOf(test2.err.message);
+      if (test3.err.stack) {
+        var indexOfMessage = test3.err.stack.indexOf(test3.err.message);
         if (indexOfMessage === -1) {
-          stackString = test2.err.stack;
+          stackString = test3.err.stack;
         } else {
-          stackString = test2.err.stack.slice(
-            test2.err.message.length + indexOfMessage
+          stackString = test3.err.stack.slice(
+            test3.err.message.length + indexOfMessage
           );
         }
-      } else if (test2.err.sourceURL && test2.err.line !== void 0) {
-        stackString = "\n(" + test2.err.sourceURL + ":" + test2.err.line + ")";
+      } else if (test3.err.sourceURL && test3.err.line !== void 0) {
+        stackString = "\n(" + test3.err.sourceURL + ":" + test3.err.line + ")";
       }
       stackString = stackString || "";
-      if (test2.err.htmlMessage && stackString) {
+      if (test3.err.htmlMessage && stackString) {
         el.appendChild(
           fragment(
             '<div class="html-error">%s\n<pre class="error">%e</pre></div>',
-            test2.err.htmlMessage,
+            test3.err.htmlMessage,
             stackString
           )
         );
-      } else if (test2.err.htmlMessage) {
+      } else if (test3.err.htmlMessage) {
         el.appendChild(
-          fragment('<div class="html-error">%s</div>', test2.err.htmlMessage)
+          fragment('<div class="html-error">%s</div>', test3.err.htmlMessage)
         );
       } else {
         el.appendChild(
           fragment('<pre class="error">%e%e</pre>', message, stackString)
         );
       }
-      self2.addCodeToggle(el, test2.body);
+      self2.addCodeToggle(el, test3.body);
       appendToStack(el);
       updateStats();
     });
-    runner2.on(EVENT_TEST_PENDING2, function(test2) {
+    runner2.on(EVENT_TEST_PENDING2, function(test3) {
       var el = fragment(
         '<li class="test pass pending"><h2>%e</h2></li>',
-        test2.title
+        test3.title
       );
       appendToStack(el);
       updateStats();
@@ -11838,8 +11842,8 @@ var html = { exports: {} };
   HTML.prototype.suiteURL = function(suite2) {
     return makeUrl(suite2.fullTitle());
   };
-  HTML.prototype.testURL = function(test2) {
-    return makeUrl(test2.fullTitle());
+  HTML.prototype.testURL = function(test3) {
+    return makeUrl(test3.fullTitle());
   };
   HTML.prototype.addCodeToggle = function(el, contents) {
     var h2 = el.getElementsByTagName("h2")[0];
@@ -11858,12 +11862,12 @@ var html = { exports: {} };
     var args = arguments;
     var div = document.createElement("div");
     var i = 1;
-    div.innerHTML = html2.replace(/%([se])/g, function(_, type) {
-      switch (type) {
+    div.innerHTML = html2.replace(/%([se])/g, function(_, type3) {
+      switch (type3) {
         case "s":
           return String(args[i++]);
         case "e":
-          return escape(args[i++]);
+          return escape2(args[i++]);
       }
     });
     return div.firstChild;
@@ -11925,21 +11929,21 @@ var list = { exports: {} };
     runner2.on(EVENT_RUN_BEGIN2, function() {
       Base.consoleLog();
     });
-    runner2.on(EVENT_TEST_BEGIN, function(test2) {
-      process.stdout.write(color("pass", "    " + test2.fullTitle() + ": "));
+    runner2.on(EVENT_TEST_BEGIN, function(test3) {
+      process2.stdout.write(color("pass", "    " + test3.fullTitle() + ": "));
     });
-    runner2.on(EVENT_TEST_PENDING2, function(test2) {
+    runner2.on(EVENT_TEST_PENDING2, function(test3) {
       var fmt = color("checkmark", "  -") + color("pending", " %s");
-      Base.consoleLog(fmt, test2.fullTitle());
+      Base.consoleLog(fmt, test3.fullTitle());
     });
-    runner2.on(EVENT_TEST_PASS2, function(test2) {
-      var fmt = color("checkmark", "  " + Base.symbols.ok) + color("pass", " %s: ") + color(test2.speed, "%dms");
+    runner2.on(EVENT_TEST_PASS2, function(test3) {
+      var fmt = color("checkmark", "  " + Base.symbols.ok) + color("pass", " %s: ") + color(test3.speed, "%dms");
       cursor.CR();
-      Base.consoleLog(fmt, test2.fullTitle(), test2.duration);
+      Base.consoleLog(fmt, test3.fullTitle(), test3.duration);
     });
-    runner2.on(EVENT_TEST_FAIL2, function(test2) {
+    runner2.on(EVENT_TEST_FAIL2, function(test3) {
       cursor.CR();
-      Base.consoleLog(color("fail", "  %d) %s"), ++n, test2.fullTitle());
+      Base.consoleLog(color("fail", "  %d) %s"), ++n, test3.fullTitle());
     });
     runner2.once(EVENT_RUN_END2, self2.epilogue.bind(self2));
   }
@@ -11958,8 +11962,8 @@ var min = { exports: {} };
   function Min(runner2, options) {
     Base.call(this, runner2, options);
     runner2.on(EVENT_RUN_BEGIN2, function() {
-      process.stdout.write("\x1B[2J");
-      process.stdout.write("\x1B[1;3H");
+      process2.stdout.write("\x1B[2J");
+      process2.stdout.write("\x1B[1;3H");
     });
     runner2.once(EVENT_RUN_END2, this.epilogue.bind(this));
   }
@@ -12003,22 +12007,22 @@ var spec = { exports: {} };
         Base.consoleLog();
       }
     });
-    runner2.on(EVENT_TEST_PENDING2, function(test2) {
+    runner2.on(EVENT_TEST_PENDING2, function(test3) {
       var fmt = indent() + color("pending", "  - %s");
-      Base.consoleLog(fmt, test2.title);
+      Base.consoleLog(fmt, test3.title);
     });
-    runner2.on(EVENT_TEST_PASS2, function(test2) {
+    runner2.on(EVENT_TEST_PASS2, function(test3) {
       var fmt;
-      if (test2.speed === "fast") {
+      if (test3.speed === "fast") {
         fmt = indent() + color("checkmark", "  " + Base.symbols.ok) + color("pass", " %s");
-        Base.consoleLog(fmt, test2.title);
+        Base.consoleLog(fmt, test3.title);
       } else {
-        fmt = indent() + color("checkmark", "  " + Base.symbols.ok) + color("pass", " %s") + color(test2.speed, " (%dms)");
-        Base.consoleLog(fmt, test2.title, test2.duration);
+        fmt = indent() + color("checkmark", "  " + Base.symbols.ok) + color("pass", " %s") + color(test3.speed, " (%dms)");
+        Base.consoleLog(fmt, test3.title, test3.duration);
       }
     });
-    runner2.on(EVENT_TEST_FAIL2, function(test2) {
-      Base.consoleLog(indent() + color("fail", "  %d) %s"), ++n, test2.title);
+    runner2.on(EVENT_TEST_FAIL2, function(test3) {
+      Base.consoleLog(indent() + color("fail", "  %d) %s"), ++n, test3.title);
     });
     runner2.once(EVENT_RUN_END2, self2.epilogue.bind(self2));
   }
@@ -12065,7 +12069,7 @@ var nyan = { exports: {} };
     runner2.once(EVENT_RUN_END2, function() {
       Base.cursor.show();
       for (var i = 0; i < self2.numberOfLines; i++) {
-        process.stdout.write("\n");
+        process2.stdout.write("\n");
       }
       self2.epilogue();
     });
@@ -12081,16 +12085,16 @@ var nyan = { exports: {} };
   };
   NyanCat.prototype.drawScoreboard = function() {
     var stats = this.stats;
-    function draw(type, n) {
-      process.stdout.write(" ");
-      process.stdout.write(Base.color(type, n));
-      process.stdout.write("\n");
+    function draw(type3, n) {
+      process2.stdout.write(" ");
+      process2.stdout.write(Base.color(type3, n));
+      process2.stdout.write("\n");
     }
     __name(draw, "draw");
     draw("green", stats.passes);
     draw("fail", stats.failures);
     draw("pending", stats.pending);
-    process.stdout.write("\n");
+    process2.stdout.write("\n");
     this.cursorUp(this.numberOfLines);
   };
   NyanCat.prototype.appendRainbow = function() {
@@ -12107,9 +12111,9 @@ var nyan = { exports: {} };
   NyanCat.prototype.drawRainbow = function() {
     var self2 = this;
     this.trajectories.forEach(function(line2) {
-      process.stdout.write("\x1B[" + self2.scoreboardWidth + "C");
-      process.stdout.write(line2.join(""));
-      process.stdout.write("\n");
+      process2.stdout.write("\x1B[" + self2.scoreboardWidth + "C");
+      process2.stdout.write(line2.join(""));
+      process2.stdout.write("\n");
     });
     this.cursorUp(this.numberOfLines);
   };
@@ -12118,22 +12122,22 @@ var nyan = { exports: {} };
     var startWidth = this.scoreboardWidth + this.trajectories[0].length;
     var dist = "\x1B[" + startWidth + "C";
     var padding = "";
-    process.stdout.write(dist);
-    process.stdout.write("_,------,");
-    process.stdout.write("\n");
-    process.stdout.write(dist);
+    process2.stdout.write(dist);
+    process2.stdout.write("_,------,");
+    process2.stdout.write("\n");
+    process2.stdout.write(dist);
     padding = self2.tick ? "  " : "   ";
-    process.stdout.write("_|" + padding + "/\\_/\\ ");
-    process.stdout.write("\n");
-    process.stdout.write(dist);
+    process2.stdout.write("_|" + padding + "/\\_/\\ ");
+    process2.stdout.write("\n");
+    process2.stdout.write(dist);
     padding = self2.tick ? "_" : "__";
     var tail = self2.tick ? "~" : "^";
-    process.stdout.write(tail + "|" + padding + this.face() + " ");
-    process.stdout.write("\n");
-    process.stdout.write(dist);
+    process2.stdout.write(tail + "|" + padding + this.face() + " ");
+    process2.stdout.write("\n");
+    process2.stdout.write(dist);
     padding = self2.tick ? " " : "  ";
-    process.stdout.write(padding + '""  "" ');
-    process.stdout.write("\n");
+    process2.stdout.write(padding + '""  "" ');
+    process2.stdout.write("\n");
     this.cursorUp(this.numberOfLines);
   };
   NyanCat.prototype.face = function() {
@@ -12148,10 +12152,10 @@ var nyan = { exports: {} };
     return "( - .-)";
   };
   NyanCat.prototype.cursorUp = function(n) {
-    process.stdout.write("\x1B[" + n + "A");
+    process2.stdout.write("\x1B[" + n + "A");
   };
   NyanCat.prototype.cursorDown = function(n) {
-    process.stdout.write("\x1B[" + n + "B");
+    process2.stdout.write("\x1B[" + n + "B");
   };
   NyanCat.prototype.generateColors = function() {
     var colors = [];
@@ -12190,7 +12194,7 @@ var xunit = { exports: {} };
   var EVENT_TEST_PENDING2 = constants2.EVENT_TEST_PENDING;
   var STATE_FAILED2 = runnable.constants.STATE_FAILED;
   var inherits2 = utils2.inherits;
-  var escape = utils2.escape;
+  var escape2 = utils2.escape;
   var Date2 = commonjsGlobal.Date;
   module.exports = XUnit;
   function XUnit(runner2, options) {
@@ -12213,14 +12217,14 @@ var xunit = { exports: {} };
       suiteName = options.reporterOptions.suiteName;
     }
     suiteName = suiteName || DEFAULT_SUITE_NAME;
-    runner2.on(EVENT_TEST_PENDING2, function(test2) {
-      tests.push(test2);
+    runner2.on(EVENT_TEST_PENDING2, function(test3) {
+      tests.push(test3);
     });
-    runner2.on(EVENT_TEST_PASS2, function(test2) {
-      tests.push(test2);
+    runner2.on(EVENT_TEST_PASS2, function(test3) {
+      tests.push(test3);
     });
-    runner2.on(EVENT_TEST_FAIL2, function(test2) {
-      tests.push(test2);
+    runner2.on(EVENT_TEST_FAIL2, function(test3) {
+      tests.push(test3);
     });
     runner2.once(EVENT_RUN_END2, function() {
       self2.write(
@@ -12258,22 +12262,22 @@ var xunit = { exports: {} };
   XUnit.prototype.write = function(line2) {
     if (this.fileStream) {
       this.fileStream.write(line2 + "\n");
-    } else if (typeof process === "object" && process.stdout) {
-      process.stdout.write(line2 + "\n");
+    } else if (typeof process2 === "object" && process2.stdout) {
+      process2.stdout.write(line2 + "\n");
     } else {
       Base.consoleLog(line2);
     }
   };
-  XUnit.prototype.test = function(test2) {
+  XUnit.prototype.test = function(test3) {
     Base.useColors = false;
     var attrs = {
-      classname: test2.parent.fullTitle(),
-      name: test2.title,
-      file: test2.file,
-      time: test2.duration / 1e3 || 0
+      classname: test3.parent.fullTitle(),
+      name: test3.title,
+      file: test3.file,
+      time: test3.duration / 1e3 || 0
     };
-    if (test2.state === STATE_FAILED2) {
-      var err = test2.err;
+    if (test3.state === STATE_FAILED2) {
+      var err = test3.err;
       var diff2 = !Base.hideDiff && Base.showDiff(err) ? "\n" + Base.generateDiff(err.actual, err.expected) : "";
       this.write(
         tag(
@@ -12284,11 +12288,11 @@ var xunit = { exports: {} };
             "failure",
             {},
             false,
-            escape(err.message) + escape(diff2) + "\n" + escape(err.stack)
+            escape2(err.message) + escape2(diff2) + "\n" + escape2(err.stack)
           )
         )
       );
-    } else if (test2.isPending()) {
+    } else if (test3.isPending()) {
       this.write(tag("testcase", attrs, false, tag("skipped", {}, true)));
     } else {
       this.write(tag("testcase", attrs, true));
@@ -12300,7 +12304,7 @@ var xunit = { exports: {} };
     var tag2;
     for (var key in attrs) {
       if (Object.prototype.hasOwnProperty.call(attrs, key)) {
-        pairs.push(key + '="' + escape(attrs[key]) + '"');
+        pairs.push(key + '="' + escape2(attrs[key]) + '"');
       }
     }
     tag2 = "<" + name2 + (pairs.length ? " " + pairs.join(" ") : "") + end;
@@ -12374,17 +12378,17 @@ var markdown = { exports: {} };
     runner2.on(EVENT_SUITE_END, function() {
       --level;
     });
-    runner2.on(EVENT_TEST_PASS2, function(test2) {
-      var code = utils2.clean(test2.body);
-      buf += test2.title + ".\n";
+    runner2.on(EVENT_TEST_PASS2, function(test3) {
+      var code = utils2.clean(test3.body);
+      buf += test3.title + ".\n";
       buf += "\n```js\n";
       buf += code + "\n";
       buf += "```\n\n";
     });
     runner2.once(EVENT_RUN_END2, function() {
-      process.stdout.write("# TOC\n");
-      process.stdout.write(generateTOC(runner2.suite));
-      process.stdout.write(buf);
+      process2.stdout.write("# TOC\n");
+      process2.stdout.write(generateTOC(runner2.suite));
+      process2.stdout.write(buf);
     });
   }
   __name(Markdown, "Markdown");
@@ -12417,7 +12421,7 @@ var progress = { exports: {} };
     options.close = reporterOptions.close || "]";
     options.verbose = reporterOptions.verbose || false;
     runner2.on(EVENT_RUN_BEGIN2, function() {
-      process.stdout.write("\n");
+      process2.stdout.write("\n");
       cursor.hide();
     });
     runner2.on(EVENT_TEST_END2, function() {
@@ -12430,18 +12434,18 @@ var progress = { exports: {} };
       }
       lastN = n;
       cursor.CR();
-      process.stdout.write("\x1B[J");
-      process.stdout.write(color("progress", "  " + options.open));
-      process.stdout.write(Array(n).join(options.complete));
-      process.stdout.write(Array(i).join(options.incomplete));
-      process.stdout.write(color("progress", options.close));
+      process2.stdout.write("\x1B[J");
+      process2.stdout.write(color("progress", "  " + options.open));
+      process2.stdout.write(Array(n).join(options.complete));
+      process2.stdout.write(Array(i).join(options.incomplete));
+      process2.stdout.write(color("progress", options.close));
       if (options.verbose) {
-        process.stdout.write(color("progress", " " + complete + " of " + total));
+        process2.stdout.write(color("progress", " " + complete + " of " + total));
       }
     });
     runner2.once(EVENT_RUN_END2, function() {
       cursor.show();
-      process.stdout.write("\n");
+      process2.stdout.write("\n");
       self2.epilogue();
     });
   }
@@ -12468,7 +12472,7 @@ var landing = { exports: {} };
     Base.call(this, runner2, options);
     var self2 = this;
     var width = Base.window.width * 0.75 | 0;
-    var stream = process.stdout;
+    var stream = process2.stdout;
     var plane = color("plane", "\u2708");
     var crashed = -1;
     var n = 0;
@@ -12482,9 +12486,9 @@ var landing = { exports: {} };
       stream.write("\n\n\n  ");
       cursor.hide();
     });
-    runner2.on(EVENT_TEST_END2, function(test2) {
+    runner2.on(EVENT_TEST_END2, function(test3) {
       var col = crashed === -1 ? width * ++n / ++total | 0 : crashed;
-      if (test2.state === STATE_FAILED2) {
+      if (test3.state === STATE_FAILED2) {
         plane = color("plane crash", "\u2708");
         crashed = col;
       }
@@ -12499,13 +12503,13 @@ var landing = { exports: {} };
     });
     runner2.once(EVENT_RUN_END2, function() {
       cursor.show();
-      process.stdout.write("\n");
+      process2.stdout.write("\n");
       self2.epilogue();
     });
-    process.once("SIGINT", function() {
+    process2.once("SIGINT", function() {
       cursor.show();
       nextTick$1(function() {
-        process.kill(process.pid, "SIGINT");
+        process2.kill(process2.pid, "SIGINT");
       });
     });
   }
@@ -12529,14 +12533,14 @@ var jsonStream = { exports: {} };
     runner2.once(EVENT_RUN_BEGIN2, function() {
       writeEvent(["start", { total }]);
     });
-    runner2.on(EVENT_TEST_PASS2, function(test2) {
-      writeEvent(["pass", clean(test2)]);
+    runner2.on(EVENT_TEST_PASS2, function(test3) {
+      writeEvent(["pass", clean(test3)]);
     });
-    runner2.on(EVENT_TEST_FAIL2, function(test2, err) {
-      test2 = clean(test2);
-      test2.err = err.message;
-      test2.stack = err.stack || null;
-      writeEvent(["fail", test2]);
+    runner2.on(EVENT_TEST_FAIL2, function(test3, err) {
+      test3 = clean(test3);
+      test3.err = err.message;
+      test3.stack = err.stack || null;
+      writeEvent(["fail", test3]);
     });
     runner2.once(EVENT_RUN_END2, function() {
       writeEvent(["end", self2.stats]);
@@ -12544,17 +12548,17 @@ var jsonStream = { exports: {} };
   }
   __name(JSONStream, "JSONStream");
   function writeEvent(event) {
-    process.stdout.write(JSON.stringify(event) + "\n");
+    process2.stdout.write(JSON.stringify(event) + "\n");
   }
   __name(writeEvent, "writeEvent");
-  function clean(test2) {
+  function clean(test3) {
     return {
-      title: test2.title,
-      fullTitle: test2.fullTitle(),
-      file: test2.file,
-      duration: test2.duration,
-      currentRetry: test2.currentRetry(),
-      speed: test2.speed
+      title: test3.title,
+      fullTitle: test3.fullTitle(),
+      file: test3.file,
+      duration: test3.duration,
+      currentRetry: test3.currentRetry(),
+      speed: test3.speed
     };
   }
   __name(clean, "clean");
@@ -12684,17 +12688,17 @@ Test$4.prototype.markOnly = function() {
   this.parent.appendOnlyTest(this);
 };
 Test$4.prototype.clone = function() {
-  var test2 = new Test$4(this.title, this.fn);
-  test2.timeout(this.timeout());
-  test2.slow(this.slow());
-  test2.retries(this.retries());
-  test2.currentRetry(this.currentRetry());
-  test2.retriedTest(this.retriedTest() || this);
-  test2.globals(this.globals());
-  test2.parent = this.parent;
-  test2.file = this.file;
-  test2.ctx = this.ctx;
-  return test2;
+  var test3 = new Test$4(this.title, this.fn);
+  test3.timeout(this.timeout());
+  test3.slow(this.slow());
+  test3.retries(this.retries());
+  test3.currentRetry(this.currentRetry());
+  test3.retriedTest(this.retriedTest() || this);
+  test3.globals(this.globals());
+  test3.parent = this.parent;
+  test3.file = this.file;
+  test3.ctx = this.ctx;
+  return test3;
 };
 Test$4.prototype.serialize = /* @__PURE__ */ __name(function serialize2() {
   return {
@@ -12849,12 +12853,12 @@ var common = /* @__PURE__ */ __name(function(suites, context2, mocha2) {
        * @param {Function} test
        * @returns {*}
        */
-      only: /* @__PURE__ */ __name(function(mocha3, test2) {
+      only: /* @__PURE__ */ __name(function(mocha3, test3) {
         if (mocha3.options.forbidOnly) {
           throw createForbiddenExclusivityError(mocha3);
         }
-        test2.markOnly();
-        return test2;
+        test3.markOnly();
+        return test3;
       }, "only"),
       /**
        * Pending test case.
@@ -12904,10 +12908,10 @@ bdd.exports = /* @__PURE__ */ __name(function bddInterface(suite2) {
       if (suite3.isPending()) {
         fn = null;
       }
-      var test2 = new Test$3(title2, fn);
-      test2.file = file;
-      suite3.addTest(test2);
-      return test2;
+      var test3 = new Test$3(title2, fn);
+      test3.file = file;
+      suite3.addTest(test3);
+      return test3;
     };
     context2.it.only = function(title2, fn) {
       return common$12.test.only(mocha2, context2.it(title2, fn));
@@ -12956,10 +12960,10 @@ tdd.exports = function(suite2) {
       if (suite3.isPending()) {
         fn = null;
       }
-      var test2 = new Test$2(title2, fn);
-      test2.file = file;
-      suite3.addTest(test2);
-      return test2;
+      var test3 = new Test$2(title2, fn);
+      test3.file = file;
+      suite3.addTest(test3);
+      return test3;
     };
     context2.test.only = function(title2, fn) {
       return common$12.test.only(mocha2, context2.test(title2, fn));
@@ -13001,10 +13005,10 @@ qunit.exports = /* @__PURE__ */ __name(function qUnitInterface(suite2) {
       });
     };
     context2.test = function(title2, fn) {
-      var test2 = new Test$1(title2, fn);
-      test2.file = file;
-      suites[0].addTest(test2);
-      return test2;
+      var test3 = new Test$1(title2, fn);
+      test3.file = file;
+      suites[0].addTest(test3);
+      return test3;
     };
     context2.test.only = function(title2, fn) {
       return common$12.test.only(mocha2, context2.test(title2, fn));
@@ -13038,9 +13042,9 @@ exports.exports = function(suite2) {
             suites[0].afterEach(fn);
             break;
           default:
-            var test2 = new Test(key, fn);
-            test2.file = file;
-            suites[0].addTest(test2);
+            var test3 = new Test(key, fn);
+            test3.file = file;
+            suites[0].addTest(test3);
         }
       } else {
         suite3 = Suite.create(suites[0], key);
@@ -13661,7 +13665,7 @@ var require$$17 = {
     return Boolean(this.options.globalTeardown.length);
   }, "hasGlobalTeardownFixtures");
 })(mocha$1, mocha$1.exports);
-process.stdout = browserStdout({ label: false });
+process2.stdout = browserStdout({ label: false });
 var parseQuery2 = parseQuery$1;
 var highlightTags2 = highlightTags$1;
 var Mocha = mocha$1.exports;
@@ -13673,7 +13677,7 @@ commonjsGlobal.clearTimeout;
 commonjsGlobal.clearInterval;
 var uncaughtExceptionHandlers = [];
 var originalOnerrorHandler = commonjsGlobal.onerror;
-process.removeListener = function(e, fn) {
+process2.removeListener = function(e, fn) {
   if (e === "uncaughtException") {
     if (originalOnerrorHandler) {
       commonjsGlobal.onerror = originalOnerrorHandler;
@@ -13687,13 +13691,13 @@ process.removeListener = function(e, fn) {
     }
   }
 };
-process.listenerCount = function(name2) {
+process2.listenerCount = function(name2) {
   if (name2 === "uncaughtException") {
     return uncaughtExceptionHandlers.length;
   }
   return 0;
 };
-process.on = function(e, fn) {
+process2.on = function(e, fn) {
   if (e === "uncaughtException") {
     commonjsGlobal.onerror = function(msg, url, line2, col, err) {
       fn(err || new Error(msg + " (" + url + ":" + line2 + ":" + col + ")"));
@@ -13702,7 +13706,7 @@ process.on = function(e, fn) {
     uncaughtExceptionHandlers.push(fn);
   }
 };
-process.listeners = function(e) {
+process2.listeners = function(e) {
   if (e === "uncaughtException") {
     return uncaughtExceptionHandlers;
   }
@@ -13780,7 +13784,7 @@ mocha.run = function(fn) {
     }
   });
 };
-Mocha.process = process;
+Mocha.process = process2;
 commonjsGlobal.Mocha = Mocha;
 commonjsGlobal.mocha = mocha;
 [
@@ -13800,7 +13804,3805 @@ commonjsGlobal.mocha = mocha;
   mocha[key] = commonjsGlobal[key];
 });
 var browserEntry = mocha;
+
+// modules/mocha/chai/index.mjs
+var chai_exports = {};
+__export(chai_exports, {
+  Assertion: () => Assertion,
+  AssertionError: () => AssertionError,
+  Should: () => Should,
+  assert: () => assert,
+  config: () => config2,
+  expect: () => expect,
+  should: () => should,
+  use: () => use,
+  util: () => utils_exports
+});
+var __defProp2 = Object.defineProperty;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __name2 = /* @__PURE__ */ __name((target, value) => __defProp2(target, "name", { value, configurable: true }), "__name");
+var __commonJS = /* @__PURE__ */ __name((cb, mod) => /* @__PURE__ */ __name(function __require2() {
+  return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+}, "__require"), "__commonJS");
+var __export2 = /* @__PURE__ */ __name((target, all) => {
+  for (var name2 in all)
+    __defProp2(target, name2, { get: all[name2], enumerable: true });
+}, "__export");
+var require_util = __commonJS({
+  "(disabled):util"() {
+  }
+});
+var utils_exports = {};
+__export2(utils_exports, {
+  addChainableMethod: /* @__PURE__ */ __name(() => addChainableMethod, "addChainableMethod"),
+  addLengthGuard: /* @__PURE__ */ __name(() => addLengthGuard, "addLengthGuard"),
+  addMethod: /* @__PURE__ */ __name(() => addMethod, "addMethod"),
+  addProperty: /* @__PURE__ */ __name(() => addProperty, "addProperty"),
+  checkError: /* @__PURE__ */ __name(() => check_error_exports, "checkError"),
+  compareByInspect: /* @__PURE__ */ __name(() => compareByInspect, "compareByInspect"),
+  eql: /* @__PURE__ */ __name(() => deep_eql_default, "eql"),
+  expectTypes: /* @__PURE__ */ __name(() => expectTypes, "expectTypes"),
+  flag: /* @__PURE__ */ __name(() => flag, "flag"),
+  getActual: /* @__PURE__ */ __name(() => getActual, "getActual"),
+  getMessage: /* @__PURE__ */ __name(() => getMessage2, "getMessage"),
+  getName: /* @__PURE__ */ __name(() => getName, "getName"),
+  getOperator: /* @__PURE__ */ __name(() => getOperator, "getOperator"),
+  getOwnEnumerableProperties: /* @__PURE__ */ __name(() => getOwnEnumerableProperties, "getOwnEnumerableProperties"),
+  getOwnEnumerablePropertySymbols: /* @__PURE__ */ __name(() => getOwnEnumerablePropertySymbols, "getOwnEnumerablePropertySymbols"),
+  getPathInfo: /* @__PURE__ */ __name(() => getPathInfo, "getPathInfo"),
+  hasProperty: /* @__PURE__ */ __name(() => hasProperty, "hasProperty"),
+  inspect: /* @__PURE__ */ __name(() => inspect22, "inspect"),
+  isNaN: /* @__PURE__ */ __name(() => isNaN22, "isNaN"),
+  isProxyEnabled: /* @__PURE__ */ __name(() => isProxyEnabled, "isProxyEnabled"),
+  isRegExp: /* @__PURE__ */ __name(() => isRegExp22, "isRegExp"),
+  objDisplay: /* @__PURE__ */ __name(() => objDisplay, "objDisplay"),
+  overwriteChainableMethod: /* @__PURE__ */ __name(() => overwriteChainableMethod, "overwriteChainableMethod"),
+  overwriteMethod: /* @__PURE__ */ __name(() => overwriteMethod, "overwriteMethod"),
+  overwriteProperty: /* @__PURE__ */ __name(() => overwriteProperty, "overwriteProperty"),
+  proxify: /* @__PURE__ */ __name(() => proxify, "proxify"),
+  test: /* @__PURE__ */ __name(() => test2, "test"),
+  transferFlags: /* @__PURE__ */ __name(() => transferFlags, "transferFlags"),
+  type: /* @__PURE__ */ __name(() => type, "type")
+});
+var check_error_exports = {};
+__export2(check_error_exports, {
+  compatibleConstructor: /* @__PURE__ */ __name(() => compatibleConstructor, "compatibleConstructor"),
+  compatibleInstance: /* @__PURE__ */ __name(() => compatibleInstance, "compatibleInstance"),
+  compatibleMessage: /* @__PURE__ */ __name(() => compatibleMessage, "compatibleMessage"),
+  getConstructorName: /* @__PURE__ */ __name(() => getConstructorName, "getConstructorName"),
+  getMessage: /* @__PURE__ */ __name(() => getMessage, "getMessage")
+});
+function isErrorInstance(obj) {
+  return obj instanceof Error || Object.prototype.toString.call(obj) === "[object Error]";
+}
+__name(isErrorInstance, "isErrorInstance");
+__name2(isErrorInstance, "isErrorInstance");
+function isRegExp2(obj) {
+  return Object.prototype.toString.call(obj) === "[object RegExp]";
+}
+__name(isRegExp2, "isRegExp");
+__name2(isRegExp2, "isRegExp");
+function compatibleInstance(thrown, errorLike) {
+  return isErrorInstance(errorLike) && thrown === errorLike;
+}
+__name(compatibleInstance, "compatibleInstance");
+__name2(compatibleInstance, "compatibleInstance");
+function compatibleConstructor(thrown, errorLike) {
+  if (isErrorInstance(errorLike)) {
+    return thrown.constructor === errorLike.constructor || thrown instanceof errorLike.constructor;
+  } else if ((typeof errorLike === "object" || typeof errorLike === "function") && errorLike.prototype) {
+    return thrown.constructor === errorLike || thrown instanceof errorLike;
+  }
+  return false;
+}
+__name(compatibleConstructor, "compatibleConstructor");
+__name2(compatibleConstructor, "compatibleConstructor");
+function compatibleMessage(thrown, errMatcher) {
+  const comparisonString = typeof thrown === "string" ? thrown : thrown.message;
+  if (isRegExp2(errMatcher)) {
+    return errMatcher.test(comparisonString);
+  } else if (typeof errMatcher === "string") {
+    return comparisonString.indexOf(errMatcher) !== -1;
+  }
+  return false;
+}
+__name(compatibleMessage, "compatibleMessage");
+__name2(compatibleMessage, "compatibleMessage");
+function getConstructorName(errorLike) {
+  let constructorName = errorLike;
+  if (isErrorInstance(errorLike)) {
+    constructorName = errorLike.constructor.name;
+  } else if (typeof errorLike === "function") {
+    constructorName = errorLike.name;
+    if (constructorName === "") {
+      const newConstructorName = new errorLike().name;
+      constructorName = newConstructorName || constructorName;
+    }
+  }
+  return constructorName;
+}
+__name(getConstructorName, "getConstructorName");
+__name2(getConstructorName, "getConstructorName");
+function getMessage(errorLike) {
+  let msg = "";
+  if (errorLike && errorLike.message) {
+    msg = errorLike.message;
+  } else if (typeof errorLike === "string") {
+    msg = errorLike;
+  }
+  return msg;
+}
+__name(getMessage, "getMessage");
+__name2(getMessage, "getMessage");
+function flag(obj, key, value) {
+  var flags = obj.__flags || (obj.__flags = /* @__PURE__ */ Object.create(null));
+  if (arguments.length === 3) {
+    flags[key] = value;
+  } else {
+    return flags[key];
+  }
+}
+__name(flag, "flag");
+__name2(flag, "flag");
+function test2(obj, args) {
+  var negate = flag(obj, "negate"), expr = args[0];
+  return negate ? !expr : expr;
+}
+__name(test2, "test");
+__name2(test2, "test");
+function type(obj) {
+  if (typeof obj === "undefined") {
+    return "undefined";
+  }
+  if (obj === null) {
+    return "null";
+  }
+  const stringTag = obj[Symbol.toStringTag];
+  if (typeof stringTag === "string") {
+    return stringTag;
+  }
+  const type3 = Object.prototype.toString.call(obj).slice(8, -1);
+  return type3;
+}
+__name(type, "type");
+__name2(type, "type");
+var canElideFrames = "captureStackTrace" in Error;
+var AssertionError = class _AssertionError extends Error {
+  static {
+    __name(this, "_AssertionError");
+  }
+  static {
+    __name2(this, "AssertionError");
+  }
+  message;
+  get name() {
+    return "AssertionError";
+  }
+  get ok() {
+    return false;
+  }
+  constructor(message = "Unspecified AssertionError", props, ssf) {
+    super(message);
+    this.message = message;
+    if (canElideFrames) {
+      Error.captureStackTrace(this, ssf || _AssertionError);
+    }
+    for (const key in props) {
+      if (!(key in this)) {
+        this[key] = props[key];
+      }
+    }
+  }
+  toJSON(stack) {
+    return {
+      ...this,
+      name: this.name,
+      message: this.message,
+      ok: false,
+      stack: stack !== false ? this.stack : void 0
+    };
+  }
+};
+function expectTypes(obj, types) {
+  var flagMsg = flag(obj, "message");
+  var ssfi = flag(obj, "ssfi");
+  flagMsg = flagMsg ? flagMsg + ": " : "";
+  obj = flag(obj, "object");
+  types = types.map(function(t) {
+    return t.toLowerCase();
+  });
+  types.sort();
+  var str = types.map(function(t, index) {
+    var art = ~["a", "e", "i", "o", "u"].indexOf(t.charAt(0)) ? "an" : "a";
+    var or = types.length > 1 && index === types.length - 1 ? "or " : "";
+    return or + art + " " + t;
+  }).join(", ");
+  var objType = type(obj).toLowerCase();
+  if (!types.some(function(expected) {
+    return objType === expected;
+  })) {
+    throw new AssertionError(
+      flagMsg + "object tested must be " + str + ", but " + objType + " given",
+      void 0,
+      ssfi
+    );
+  }
+}
+__name(expectTypes, "expectTypes");
+__name2(expectTypes, "expectTypes");
+function getActual(obj, args) {
+  return args.length > 4 ? args[4] : obj._obj;
+}
+__name(getActual, "getActual");
+__name2(getActual, "getActual");
+var ansiColors = {
+  bold: ["1", "22"],
+  dim: ["2", "22"],
+  italic: ["3", "23"],
+  underline: ["4", "24"],
+  // 5 & 6 are blinking
+  inverse: ["7", "27"],
+  hidden: ["8", "28"],
+  strike: ["9", "29"],
+  // 10-20 are fonts
+  // 21-29 are resets for 1-9
+  black: ["30", "39"],
+  red: ["31", "39"],
+  green: ["32", "39"],
+  yellow: ["33", "39"],
+  blue: ["34", "39"],
+  magenta: ["35", "39"],
+  cyan: ["36", "39"],
+  white: ["37", "39"],
+  brightblack: ["30;1", "39"],
+  brightred: ["31;1", "39"],
+  brightgreen: ["32;1", "39"],
+  brightyellow: ["33;1", "39"],
+  brightblue: ["34;1", "39"],
+  brightmagenta: ["35;1", "39"],
+  brightcyan: ["36;1", "39"],
+  brightwhite: ["37;1", "39"],
+  grey: ["90", "39"]
+};
+var styles = {
+  special: "cyan",
+  number: "yellow",
+  bigint: "yellow",
+  boolean: "yellow",
+  undefined: "grey",
+  null: "bold",
+  string: "green",
+  symbol: "green",
+  date: "magenta",
+  regexp: "red"
+};
+var truncator = "\u2026";
+function colorise(value, styleType) {
+  const color = ansiColors[styles[styleType]] || ansiColors[styleType] || "";
+  if (!color) {
+    return String(value);
+  }
+  return `\x1B[${color[0]}m${String(value)}\x1B[${color[1]}m`;
+}
+__name(colorise, "colorise");
+__name2(colorise, "colorise");
+function normaliseOptions({
+  showHidden = false,
+  depth = 2,
+  colors = false,
+  customInspect = true,
+  showProxy = false,
+  maxArrayLength = Infinity,
+  breakLength = Infinity,
+  seen = [],
+  // eslint-disable-next-line no-shadow
+  truncate: truncate2 = Infinity,
+  stylize = String
+} = {}, inspect32) {
+  const options = {
+    showHidden: Boolean(showHidden),
+    depth: Number(depth),
+    colors: Boolean(colors),
+    customInspect: Boolean(customInspect),
+    showProxy: Boolean(showProxy),
+    maxArrayLength: Number(maxArrayLength),
+    breakLength: Number(breakLength),
+    truncate: Number(truncate2),
+    seen,
+    inspect: inspect32,
+    stylize
+  };
+  if (options.colors) {
+    options.stylize = colorise;
+  }
+  return options;
+}
+__name(normaliseOptions, "normaliseOptions");
+__name2(normaliseOptions, "normaliseOptions");
+function truncate(string, length, tail = truncator) {
+  string = String(string);
+  const tailLength = tail.length;
+  const stringLength = string.length;
+  if (tailLength > length && stringLength > tailLength) {
+    return tail;
+  }
+  if (stringLength > length && stringLength > tailLength) {
+    return `${string.slice(0, length - tailLength)}${tail}`;
+  }
+  return string;
+}
+__name(truncate, "truncate");
+__name2(truncate, "truncate");
+function inspectList(list2, options, inspectItem, separator = ", ") {
+  inspectItem = inspectItem || options.inspect;
+  const size = list2.length;
+  if (size === 0)
+    return "";
+  const originalLength = options.truncate;
+  let output = "";
+  let peek = "";
+  let truncated = "";
+  for (let i = 0; i < size; i += 1) {
+    const last = i + 1 === list2.length;
+    const secondToLast = i + 2 === list2.length;
+    truncated = `${truncator}(${list2.length - i})`;
+    const value = list2[i];
+    options.truncate = originalLength - output.length - (last ? 0 : separator.length);
+    const string = peek || inspectItem(value, options) + (last ? "" : separator);
+    const nextLength = output.length + string.length;
+    const truncatedLength = nextLength + truncated.length;
+    if (last && nextLength > originalLength && output.length + truncated.length <= originalLength) {
+      break;
+    }
+    if (!last && !secondToLast && truncatedLength > originalLength) {
+      break;
+    }
+    peek = last ? "" : inspectItem(list2[i + 1], options) + (secondToLast ? "" : separator);
+    if (!last && secondToLast && truncatedLength > originalLength && nextLength + peek.length > originalLength) {
+      break;
+    }
+    output += string;
+    if (!last && !secondToLast && nextLength + peek.length >= originalLength) {
+      truncated = `${truncator}(${list2.length - i - 1})`;
+      break;
+    }
+    truncated = "";
+  }
+  return `${output}${truncated}`;
+}
+__name(inspectList, "inspectList");
+__name2(inspectList, "inspectList");
+function quoteComplexKey(key) {
+  if (key.match(/^[a-zA-Z_][a-zA-Z_0-9]*$/)) {
+    return key;
+  }
+  return JSON.stringify(key).replace(/'/g, "\\'").replace(/\\"/g, '"').replace(/(^"|"$)/g, "'");
+}
+__name(quoteComplexKey, "quoteComplexKey");
+__name2(quoteComplexKey, "quoteComplexKey");
+function inspectProperty([key, value], options) {
+  options.truncate -= 2;
+  if (typeof key === "string") {
+    key = quoteComplexKey(key);
+  } else if (typeof key !== "number") {
+    key = `[${options.inspect(key, options)}]`;
+  }
+  options.truncate -= key.length;
+  value = options.inspect(value, options);
+  return `${key}: ${value}`;
+}
+__name(inspectProperty, "inspectProperty");
+__name2(inspectProperty, "inspectProperty");
+function inspectArray(array2, options) {
+  const nonIndexProperties = Object.keys(array2).slice(array2.length);
+  if (!array2.length && !nonIndexProperties.length)
+    return "[]";
+  options.truncate -= 4;
+  const listContents = inspectList(array2, options);
+  options.truncate -= listContents.length;
+  let propertyContents = "";
+  if (nonIndexProperties.length) {
+    propertyContents = inspectList(nonIndexProperties.map((key) => [key, array2[key]]), options, inspectProperty);
+  }
+  return `[ ${listContents}${propertyContents ? `, ${propertyContents}` : ""} ]`;
+}
+__name(inspectArray, "inspectArray");
+__name2(inspectArray, "inspectArray");
+var getArrayName = /* @__PURE__ */ __name2((array2) => {
+  if (typeof Buffer === "function" && array2 instanceof Buffer) {
+    return "Buffer";
+  }
+  if (array2[Symbol.toStringTag]) {
+    return array2[Symbol.toStringTag];
+  }
+  return array2.constructor.name;
+}, "getArrayName");
+function inspectTypedArray(array2, options) {
+  const name2 = getArrayName(array2);
+  options.truncate -= name2.length + 4;
+  const nonIndexProperties = Object.keys(array2).slice(array2.length);
+  if (!array2.length && !nonIndexProperties.length)
+    return `${name2}[]`;
+  let output = "";
+  for (let i = 0; i < array2.length; i++) {
+    const string = `${options.stylize(truncate(array2[i], options.truncate), "number")}${i === array2.length - 1 ? "" : ", "}`;
+    options.truncate -= string.length;
+    if (array2[i] !== array2.length && options.truncate <= 3) {
+      output += `${truncator}(${array2.length - array2[i] + 1})`;
+      break;
+    }
+    output += string;
+  }
+  let propertyContents = "";
+  if (nonIndexProperties.length) {
+    propertyContents = inspectList(nonIndexProperties.map((key) => [key, array2[key]]), options, inspectProperty);
+  }
+  return `${name2}[ ${output}${propertyContents ? `, ${propertyContents}` : ""} ]`;
+}
+__name(inspectTypedArray, "inspectTypedArray");
+__name2(inspectTypedArray, "inspectTypedArray");
+function inspectDate(dateObject, options) {
+  const stringRepresentation = dateObject.toJSON();
+  if (stringRepresentation === null) {
+    return "Invalid Date";
+  }
+  const split = stringRepresentation.split("T");
+  const date = split[0];
+  return options.stylize(`${date}T${truncate(split[1], options.truncate - date.length - 1)}`, "date");
+}
+__name(inspectDate, "inspectDate");
+__name2(inspectDate, "inspectDate");
+function inspectFunction(func, options) {
+  const functionType = func[Symbol.toStringTag] || "Function";
+  const name2 = func.name;
+  if (!name2) {
+    return options.stylize(`[${functionType}]`, "special");
+  }
+  return options.stylize(`[${functionType} ${truncate(name2, options.truncate - 11)}]`, "special");
+}
+__name(inspectFunction, "inspectFunction");
+__name2(inspectFunction, "inspectFunction");
+function inspectMapEntry([key, value], options) {
+  options.truncate -= 4;
+  key = options.inspect(key, options);
+  options.truncate -= key.length;
+  value = options.inspect(value, options);
+  return `${key} => ${value}`;
+}
+__name(inspectMapEntry, "inspectMapEntry");
+__name2(inspectMapEntry, "inspectMapEntry");
+function mapToEntries(map) {
+  const entries = [];
+  map.forEach((value, key) => {
+    entries.push([key, value]);
+  });
+  return entries;
+}
+__name(mapToEntries, "mapToEntries");
+__name2(mapToEntries, "mapToEntries");
+function inspectMap(map, options) {
+  const size = map.size - 1;
+  if (size <= 0) {
+    return "Map{}";
+  }
+  options.truncate -= 7;
+  return `Map{ ${inspectList(mapToEntries(map), options, inspectMapEntry)} }`;
+}
+__name(inspectMap, "inspectMap");
+__name2(inspectMap, "inspectMap");
+var isNaN2 = Number.isNaN || ((i) => i !== i);
+function inspectNumber(number, options) {
+  if (isNaN2(number)) {
+    return options.stylize("NaN", "number");
+  }
+  if (number === Infinity) {
+    return options.stylize("Infinity", "number");
+  }
+  if (number === -Infinity) {
+    return options.stylize("-Infinity", "number");
+  }
+  if (number === 0) {
+    return options.stylize(1 / number === Infinity ? "+0" : "-0", "number");
+  }
+  return options.stylize(truncate(String(number), options.truncate), "number");
+}
+__name(inspectNumber, "inspectNumber");
+__name2(inspectNumber, "inspectNumber");
+function inspectBigInt(number, options) {
+  let nums = truncate(number.toString(), options.truncate - 1);
+  if (nums !== truncator)
+    nums += "n";
+  return options.stylize(nums, "bigint");
+}
+__name(inspectBigInt, "inspectBigInt");
+__name2(inspectBigInt, "inspectBigInt");
+function inspectRegExp(value, options) {
+  const flags = value.toString().split("/")[2];
+  const sourceLength = options.truncate - (2 + flags.length);
+  const source = value.source;
+  return options.stylize(`/${truncate(source, sourceLength)}/${flags}`, "regexp");
+}
+__name(inspectRegExp, "inspectRegExp");
+__name2(inspectRegExp, "inspectRegExp");
+function arrayFromSet(set2) {
+  const values = [];
+  set2.forEach((value) => {
+    values.push(value);
+  });
+  return values;
+}
+__name(arrayFromSet, "arrayFromSet");
+__name2(arrayFromSet, "arrayFromSet");
+function inspectSet(set2, options) {
+  if (set2.size === 0)
+    return "Set{}";
+  options.truncate -= 7;
+  return `Set{ ${inspectList(arrayFromSet(set2), options)} }`;
+}
+__name(inspectSet, "inspectSet");
+__name2(inspectSet, "inspectSet");
+var stringEscapeChars = new RegExp("['\\u0000-\\u001f\\u007f-\\u009f\\u00ad\\u0600-\\u0604\\u070f\\u17b4\\u17b5\\u200c-\\u200f\\u2028-\\u202f\\u2060-\\u206f\\ufeff\\ufff0-\\uffff]", "g");
+var escapeCharacters = {
+  "\b": "\\b",
+  "	": "\\t",
+  "\n": "\\n",
+  "\f": "\\f",
+  "\r": "\\r",
+  "'": "\\'",
+  "\\": "\\\\"
+};
+var hex = 16;
+var unicodeLength = 4;
+function escape(char) {
+  return escapeCharacters[char] || `\\u${`0000${char.charCodeAt(0).toString(hex)}`.slice(-unicodeLength)}`;
+}
+__name(escape, "escape");
+__name2(escape, "escape");
+function inspectString(string, options) {
+  if (stringEscapeChars.test(string)) {
+    string = string.replace(stringEscapeChars, escape);
+  }
+  return options.stylize(`'${truncate(string, options.truncate - 2)}'`, "string");
+}
+__name(inspectString, "inspectString");
+__name2(inspectString, "inspectString");
+function inspectSymbol(value) {
+  if ("description" in Symbol.prototype) {
+    return value.description ? `Symbol(${value.description})` : "Symbol()";
+  }
+  return value.toString();
+}
+__name(inspectSymbol, "inspectSymbol");
+__name2(inspectSymbol, "inspectSymbol");
+var getPromiseValue = /* @__PURE__ */ __name2(() => "Promise{\u2026}", "getPromiseValue");
+try {
+  const { getPromiseDetails, kPending, kRejected } = process.binding("util");
+  if (Array.isArray(getPromiseDetails(Promise.resolve()))) {
+    getPromiseValue = /* @__PURE__ */ __name2((value, options) => {
+      const [state, innerValue] = getPromiseDetails(value);
+      if (state === kPending) {
+        return "Promise{<pending>}";
+      }
+      return `Promise${state === kRejected ? "!" : ""}{${options.inspect(innerValue, options)}}`;
+    }, "getPromiseValue");
+  }
+} catch (notNode) {
+}
+var promise_default = getPromiseValue;
+function inspectObject(object, options) {
+  const properties = Object.getOwnPropertyNames(object);
+  const symbols = Object.getOwnPropertySymbols ? Object.getOwnPropertySymbols(object) : [];
+  if (properties.length === 0 && symbols.length === 0) {
+    return "{}";
+  }
+  options.truncate -= 4;
+  options.seen = options.seen || [];
+  if (options.seen.indexOf(object) >= 0) {
+    return "[Circular]";
+  }
+  options.seen.push(object);
+  const propertyContents = inspectList(properties.map((key) => [key, object[key]]), options, inspectProperty);
+  const symbolContents = inspectList(symbols.map((key) => [key, object[key]]), options, inspectProperty);
+  options.seen.pop();
+  let sep2 = "";
+  if (propertyContents && symbolContents) {
+    sep2 = ", ";
+  }
+  return `{ ${propertyContents}${sep2}${symbolContents} }`;
+}
+__name(inspectObject, "inspectObject");
+__name2(inspectObject, "inspectObject");
+var toStringTag = typeof Symbol !== "undefined" && Symbol.toStringTag ? Symbol.toStringTag : false;
+function inspectClass(value, options) {
+  let name2 = "";
+  if (toStringTag && toStringTag in value) {
+    name2 = value[toStringTag];
+  }
+  name2 = name2 || value.constructor.name;
+  if (!name2 || name2 === "_class") {
+    name2 = "<Anonymous Class>";
+  }
+  options.truncate -= name2.length;
+  return `${name2}${inspectObject(value, options)}`;
+}
+__name(inspectClass, "inspectClass");
+__name2(inspectClass, "inspectClass");
+function inspectArguments(args, options) {
+  if (args.length === 0)
+    return "Arguments[]";
+  options.truncate -= 13;
+  return `Arguments[ ${inspectList(args, options)} ]`;
+}
+__name(inspectArguments, "inspectArguments");
+__name2(inspectArguments, "inspectArguments");
+var errorKeys = [
+  "stack",
+  "line",
+  "column",
+  "name",
+  "message",
+  "fileName",
+  "lineNumber",
+  "columnNumber",
+  "number",
+  "description"
+];
+function inspectObject2(error, options) {
+  const properties = Object.getOwnPropertyNames(error).filter((key) => errorKeys.indexOf(key) === -1);
+  const name2 = error.name;
+  options.truncate -= name2.length;
+  let message = "";
+  if (typeof error.message === "string") {
+    message = truncate(error.message, options.truncate);
+  } else {
+    properties.unshift("message");
+  }
+  message = message ? `: ${message}` : "";
+  options.truncate -= message.length + 5;
+  const propertyContents = inspectList(properties.map((key) => [key, error[key]]), options, inspectProperty);
+  return `${name2}${message}${propertyContents ? ` { ${propertyContents} }` : ""}`;
+}
+__name(inspectObject2, "inspectObject2");
+__name2(inspectObject2, "inspectObject");
+function inspectAttribute([key, value], options) {
+  options.truncate -= 3;
+  if (!value) {
+    return `${options.stylize(String(key), "yellow")}`;
+  }
+  return `${options.stylize(String(key), "yellow")}=${options.stylize(`"${value}"`, "string")}`;
+}
+__name(inspectAttribute, "inspectAttribute");
+__name2(inspectAttribute, "inspectAttribute");
+function inspectHTMLCollection(collection, options) {
+  return inspectList(collection, options, inspectHTML, "\n");
+}
+__name(inspectHTMLCollection, "inspectHTMLCollection");
+__name2(inspectHTMLCollection, "inspectHTMLCollection");
+function inspectHTML(element, options) {
+  const properties = element.getAttributeNames();
+  const name2 = element.tagName.toLowerCase();
+  const head = options.stylize(`<${name2}`, "special");
+  const headClose = options.stylize(`>`, "special");
+  const tail = options.stylize(`</${name2}>`, "special");
+  options.truncate -= name2.length * 2 + 5;
+  let propertyContents = "";
+  if (properties.length > 0) {
+    propertyContents += " ";
+    propertyContents += inspectList(properties.map((key) => [key, element.getAttribute(key)]), options, inspectAttribute, " ");
+  }
+  options.truncate -= propertyContents.length;
+  const truncate2 = options.truncate;
+  let children = inspectHTMLCollection(element.children, options);
+  if (children && children.length > truncate2) {
+    children = `${truncator}(${element.children.length})`;
+  }
+  return `${head}${propertyContents}${headClose}${children}${tail}`;
+}
+__name(inspectHTML, "inspectHTML");
+__name2(inspectHTML, "inspectHTML");
+var symbolsSupported = typeof Symbol === "function" && typeof Symbol.for === "function";
+var chaiInspect = symbolsSupported ? Symbol.for("chai/inspect") : "@@chai/inspect";
+var nodeInspect = false;
+try {
+  const nodeUtil = require_util();
+  nodeInspect = nodeUtil.inspect ? nodeUtil.inspect.custom : false;
+} catch (noNodeInspect) {
+  nodeInspect = false;
+}
+var constructorMap = /* @__PURE__ */ new WeakMap();
+var stringTagMap = {};
+var baseTypesMap = {
+  undefined: /* @__PURE__ */ __name((value, options) => options.stylize("undefined", "undefined"), "undefined"),
+  null: /* @__PURE__ */ __name((value, options) => options.stylize("null", "null"), "null"),
+  boolean: /* @__PURE__ */ __name((value, options) => options.stylize(String(value), "boolean"), "boolean"),
+  Boolean: /* @__PURE__ */ __name((value, options) => options.stylize(String(value), "boolean"), "Boolean"),
+  number: inspectNumber,
+  Number: inspectNumber,
+  bigint: inspectBigInt,
+  BigInt: inspectBigInt,
+  string: inspectString,
+  String: inspectString,
+  function: inspectFunction,
+  Function: inspectFunction,
+  symbol: inspectSymbol,
+  // A Symbol polyfill will return `Symbol` not `symbol` from typedetect
+  Symbol: inspectSymbol,
+  Array: inspectArray,
+  Date: inspectDate,
+  Map: inspectMap,
+  Set: inspectSet,
+  RegExp: inspectRegExp,
+  Promise: promise_default,
+  // WeakSet, WeakMap are totally opaque to us
+  WeakSet: /* @__PURE__ */ __name((value, options) => options.stylize("WeakSet{\u2026}", "special"), "WeakSet"),
+  WeakMap: /* @__PURE__ */ __name((value, options) => options.stylize("WeakMap{\u2026}", "special"), "WeakMap"),
+  Arguments: inspectArguments,
+  Int8Array: inspectTypedArray,
+  Uint8Array: inspectTypedArray,
+  Uint8ClampedArray: inspectTypedArray,
+  Int16Array: inspectTypedArray,
+  Uint16Array: inspectTypedArray,
+  Int32Array: inspectTypedArray,
+  Uint32Array: inspectTypedArray,
+  Float32Array: inspectTypedArray,
+  Float64Array: inspectTypedArray,
+  Generator: /* @__PURE__ */ __name(() => "", "Generator"),
+  DataView: /* @__PURE__ */ __name(() => "", "DataView"),
+  ArrayBuffer: /* @__PURE__ */ __name(() => "", "ArrayBuffer"),
+  Error: inspectObject2,
+  HTMLCollection: inspectHTMLCollection,
+  NodeList: inspectHTMLCollection
+};
+var inspectCustom = /* @__PURE__ */ __name2((value, options, type3) => {
+  if (chaiInspect in value && typeof value[chaiInspect] === "function") {
+    return value[chaiInspect](options);
+  }
+  if (nodeInspect && nodeInspect in value && typeof value[nodeInspect] === "function") {
+    return value[nodeInspect](options.depth, options);
+  }
+  if ("inspect" in value && typeof value.inspect === "function") {
+    return value.inspect(options.depth, options);
+  }
+  if ("constructor" in value && constructorMap.has(value.constructor)) {
+    return constructorMap.get(value.constructor)(value, options);
+  }
+  if (stringTagMap[type3]) {
+    return stringTagMap[type3](value, options);
+  }
+  return "";
+}, "inspectCustom");
+var toString4 = Object.prototype.toString;
+function inspect4(value, opts = {}) {
+  const options = normaliseOptions(opts, inspect4);
+  const { customInspect } = options;
+  let type3 = value === null ? "null" : typeof value;
+  if (type3 === "object") {
+    type3 = toString4.call(value).slice(8, -1);
+  }
+  if (type3 in baseTypesMap) {
+    return baseTypesMap[type3](value, options);
+  }
+  if (customInspect && value) {
+    const output = inspectCustom(value, options, type3);
+    if (output) {
+      if (typeof output === "string")
+        return output;
+      return inspect4(output, options);
+    }
+  }
+  const proto = value ? Object.getPrototypeOf(value) : false;
+  if (proto === Object.prototype || proto === null) {
+    return inspectObject(value, options);
+  }
+  if (value && typeof HTMLElement === "function" && value instanceof HTMLElement) {
+    return inspectHTML(value, options);
+  }
+  if ("constructor" in value) {
+    if (value.constructor !== Object) {
+      return inspectClass(value, options);
+    }
+    return inspectObject(value, options);
+  }
+  if (value === Object(value)) {
+    return inspectObject(value, options);
+  }
+  return options.stylize(String(value), type3);
+}
+__name(inspect4, "inspect");
+__name2(inspect4, "inspect");
+var config2 = {
+  /**
+   * ### config.includeStack
+   *
+   * User configurable property, influences whether stack trace
+   * is included in Assertion error message. Default of false
+   * suppresses stack trace in the error message.
+   *
+   *     chai.config.includeStack = true;  // enable stack on error
+   *
+   * @param {boolean}
+   * @public
+   */
+  includeStack: false,
+  /**
+   * ### config.showDiff
+   *
+   * User configurable property, influences whether or not
+   * the `showDiff` flag should be included in the thrown
+   * AssertionErrors. `false` will always be `false`; `true`
+   * will be true when the assertion has requested a diff
+   * be shown.
+   *
+   * @param {boolean}
+   * @public
+   */
+  showDiff: true,
+  /**
+   * ### config.truncateThreshold
+   *
+   * User configurable property, sets length threshold for actual and
+   * expected values in assertion errors. If this threshold is exceeded, for
+   * example for large data structures, the value is replaced with something
+   * like `[ Array(3) ]` or `{ Object (prop1, prop2) }`.
+   *
+   * Set it to zero if you want to disable truncating altogether.
+   *
+   * This is especially userful when doing assertions on arrays: having this
+   * set to a reasonable large value makes the failure messages readily
+   * inspectable.
+   *
+   *     chai.config.truncateThreshold = 0;  // disable truncating
+   *
+   * @param {number}
+   * @public
+   */
+  truncateThreshold: 40,
+  /**
+   * ### config.useProxy
+   *
+   * User configurable property, defines if chai will use a Proxy to throw
+   * an error when a non-existent property is read, which protects users
+   * from typos when using property-based assertions.
+   *
+   * Set it to false if you want to disable this feature.
+   *
+   *     chai.config.useProxy = false;  // disable use of Proxy
+   *
+   * This feature is automatically disabled regardless of this config value
+   * in environments that don't support proxies.
+   *
+   * @param {boolean}
+   * @public
+   */
+  useProxy: true,
+  /**
+   * ### config.proxyExcludedKeys
+   *
+   * User configurable property, defines which properties should be ignored
+   * instead of throwing an error if they do not exist on the assertion.
+   * This is only applied if the environment Chai is running in supports proxies and
+   * if the `useProxy` configuration setting is enabled.
+   * By default, `then` and `inspect` will not throw an error if they do not exist on the
+   * assertion object because the `.inspect` property is read by `util.inspect` (for example, when
+   * using `console.log` on the assertion object) and `.then` is necessary for promise type-checking.
+   *
+   *     // By default these keys will not throw an error if they do not exist on the assertion object
+   *     chai.config.proxyExcludedKeys = ['then', 'inspect'];
+   *
+   * @param {Array}
+   * @public
+   */
+  proxyExcludedKeys: ["then", "catch", "inspect", "toJSON"],
+  /**
+   * ### config.deepEqual
+   *
+   * User configurable property, defines which a custom function to use for deepEqual
+   * comparisons.
+   * By default, the function used is the one from the `deep-eql` package without custom comparator.
+   *
+   *     // use a custom comparator
+   *     chai.config.deepEqual = (expected, actual) => {
+   *         return chai.util.eql(expected, actual, {
+   *             comparator: (expected, actual) => {
+   *                 // for non number comparison, use the default behavior
+   *                 if(typeof expected !== 'number') return null;
+   *                 // allow a difference of 10 between compared numbers
+   *                 return typeof actual === 'number' && Math.abs(actual - expected) < 10
+   *             }
+   *         })
+   *     };
+   *
+   * @param {Function}
+   * @public
+   */
+  deepEqual: null
+};
+function inspect22(obj, showHidden, depth, colors) {
+  var options = {
+    colors,
+    depth: typeof depth === "undefined" ? 2 : depth,
+    showHidden,
+    truncate: config2.truncateThreshold ? config2.truncateThreshold : Infinity
+  };
+  return inspect4(obj, options);
+}
+__name(inspect22, "inspect2");
+__name2(inspect22, "inspect");
+function objDisplay(obj) {
+  var str = inspect22(obj), type3 = Object.prototype.toString.call(obj);
+  if (config2.truncateThreshold && str.length >= config2.truncateThreshold) {
+    if (type3 === "[object Function]") {
+      return !obj.name || obj.name === "" ? "[Function]" : "[Function: " + obj.name + "]";
+    } else if (type3 === "[object Array]") {
+      return "[ Array(" + obj.length + ") ]";
+    } else if (type3 === "[object Object]") {
+      var keys2 = Object.keys(obj), kstr = keys2.length > 2 ? keys2.splice(0, 2).join(", ") + ", ..." : keys2.join(", ");
+      return "{ Object (" + kstr + ") }";
+    } else {
+      return str;
+    }
+  } else {
+    return str;
+  }
+}
+__name(objDisplay, "objDisplay");
+__name2(objDisplay, "objDisplay");
+function getMessage2(obj, args) {
+  var negate = flag(obj, "negate"), val = flag(obj, "object"), expected = args[3], actual = getActual(obj, args), msg = negate ? args[2] : args[1], flagMsg = flag(obj, "message");
+  if (typeof msg === "function")
+    msg = msg();
+  msg = msg || "";
+  msg = msg.replace(/#\{this\}/g, function() {
+    return objDisplay(val);
+  }).replace(/#\{act\}/g, function() {
+    return objDisplay(actual);
+  }).replace(/#\{exp\}/g, function() {
+    return objDisplay(expected);
+  });
+  return flagMsg ? flagMsg + ": " + msg : msg;
+}
+__name(getMessage2, "getMessage2");
+__name2(getMessage2, "getMessage");
+function transferFlags(assertion, object, includeAll) {
+  var flags = assertion.__flags || (assertion.__flags = /* @__PURE__ */ Object.create(null));
+  if (!object.__flags) {
+    object.__flags = /* @__PURE__ */ Object.create(null);
+  }
+  includeAll = arguments.length === 3 ? includeAll : true;
+  for (var flag3 in flags) {
+    if (includeAll || flag3 !== "object" && flag3 !== "ssfi" && flag3 !== "lockSsfi" && flag3 != "message") {
+      object.__flags[flag3] = flags[flag3];
+    }
+  }
+}
+__name(transferFlags, "transferFlags");
+__name2(transferFlags, "transferFlags");
+function type2(obj) {
+  if (typeof obj === "undefined") {
+    return "undefined";
+  }
+  if (obj === null) {
+    return "null";
+  }
+  const stringTag = obj[Symbol.toStringTag];
+  if (typeof stringTag === "string") {
+    return stringTag;
+  }
+  const sliceStart = 8;
+  const sliceEnd = -1;
+  return Object.prototype.toString.call(obj).slice(sliceStart, sliceEnd);
+}
+__name(type2, "type2");
+__name2(type2, "type");
+function FakeMap() {
+  this._key = "chai/deep-eql__" + Math.random() + Date.now();
+}
+__name(FakeMap, "FakeMap");
+__name2(FakeMap, "FakeMap");
+FakeMap.prototype = {
+  get: /* @__PURE__ */ __name2(/* @__PURE__ */ __name(function get(key) {
+    return key[this._key];
+  }, "get"), "get"),
+  set: /* @__PURE__ */ __name2(/* @__PURE__ */ __name(function set(key, value) {
+    if (Object.isExtensible(key)) {
+      Object.defineProperty(key, this._key, {
+        value,
+        configurable: true
+      });
+    }
+  }, "set"), "set")
+};
+var MemoizeMap = typeof WeakMap === "function" ? WeakMap : FakeMap;
+function memoizeCompare(leftHandOperand, rightHandOperand, memoizeMap) {
+  if (!memoizeMap || isPrimitive2(leftHandOperand) || isPrimitive2(rightHandOperand)) {
+    return null;
+  }
+  var leftHandMap = memoizeMap.get(leftHandOperand);
+  if (leftHandMap) {
+    var result = leftHandMap.get(rightHandOperand);
+    if (typeof result === "boolean") {
+      return result;
+    }
+  }
+  return null;
+}
+__name(memoizeCompare, "memoizeCompare");
+__name2(memoizeCompare, "memoizeCompare");
+function memoizeSet(leftHandOperand, rightHandOperand, memoizeMap, result) {
+  if (!memoizeMap || isPrimitive2(leftHandOperand) || isPrimitive2(rightHandOperand)) {
+    return;
+  }
+  var leftHandMap = memoizeMap.get(leftHandOperand);
+  if (leftHandMap) {
+    leftHandMap.set(rightHandOperand, result);
+  } else {
+    leftHandMap = new MemoizeMap();
+    leftHandMap.set(rightHandOperand, result);
+    memoizeMap.set(leftHandOperand, leftHandMap);
+  }
+}
+__name(memoizeSet, "memoizeSet");
+__name2(memoizeSet, "memoizeSet");
+var deep_eql_default = deepEqual;
+function deepEqual(leftHandOperand, rightHandOperand, options) {
+  if (options && options.comparator) {
+    return extensiveDeepEqual(leftHandOperand, rightHandOperand, options);
+  }
+  var simpleResult = simpleEqual(leftHandOperand, rightHandOperand);
+  if (simpleResult !== null) {
+    return simpleResult;
+  }
+  return extensiveDeepEqual(leftHandOperand, rightHandOperand, options);
+}
+__name(deepEqual, "deepEqual");
+__name2(deepEqual, "deepEqual");
+function simpleEqual(leftHandOperand, rightHandOperand) {
+  if (leftHandOperand === rightHandOperand) {
+    return leftHandOperand !== 0 || 1 / leftHandOperand === 1 / rightHandOperand;
+  }
+  if (leftHandOperand !== leftHandOperand && // eslint-disable-line no-self-compare
+  rightHandOperand !== rightHandOperand) {
+    return true;
+  }
+  if (isPrimitive2(leftHandOperand) || isPrimitive2(rightHandOperand)) {
+    return false;
+  }
+  return null;
+}
+__name(simpleEqual, "simpleEqual");
+__name2(simpleEqual, "simpleEqual");
+function extensiveDeepEqual(leftHandOperand, rightHandOperand, options) {
+  options = options || {};
+  options.memoize = options.memoize === false ? false : options.memoize || new MemoizeMap();
+  var comparator = options && options.comparator;
+  var memoizeResultLeft = memoizeCompare(leftHandOperand, rightHandOperand, options.memoize);
+  if (memoizeResultLeft !== null) {
+    return memoizeResultLeft;
+  }
+  var memoizeResultRight = memoizeCompare(rightHandOperand, leftHandOperand, options.memoize);
+  if (memoizeResultRight !== null) {
+    return memoizeResultRight;
+  }
+  if (comparator) {
+    var comparatorResult = comparator(leftHandOperand, rightHandOperand);
+    if (comparatorResult === false || comparatorResult === true) {
+      memoizeSet(leftHandOperand, rightHandOperand, options.memoize, comparatorResult);
+      return comparatorResult;
+    }
+    var simpleResult = simpleEqual(leftHandOperand, rightHandOperand);
+    if (simpleResult !== null) {
+      return simpleResult;
+    }
+  }
+  var leftHandType = type2(leftHandOperand);
+  if (leftHandType !== type2(rightHandOperand)) {
+    memoizeSet(leftHandOperand, rightHandOperand, options.memoize, false);
+    return false;
+  }
+  memoizeSet(leftHandOperand, rightHandOperand, options.memoize, true);
+  var result = extensiveDeepEqualByType(leftHandOperand, rightHandOperand, leftHandType, options);
+  memoizeSet(leftHandOperand, rightHandOperand, options.memoize, result);
+  return result;
+}
+__name(extensiveDeepEqual, "extensiveDeepEqual");
+__name2(extensiveDeepEqual, "extensiveDeepEqual");
+function extensiveDeepEqualByType(leftHandOperand, rightHandOperand, leftHandType, options) {
+  switch (leftHandType) {
+    case "String":
+    case "Number":
+    case "Boolean":
+    case "Date":
+      return deepEqual(leftHandOperand.valueOf(), rightHandOperand.valueOf());
+    case "Promise":
+    case "Symbol":
+    case "function":
+    case "WeakMap":
+    case "WeakSet":
+      return leftHandOperand === rightHandOperand;
+    case "Error":
+      return keysEqual(leftHandOperand, rightHandOperand, ["name", "message", "code"], options);
+    case "Arguments":
+    case "Int8Array":
+    case "Uint8Array":
+    case "Uint8ClampedArray":
+    case "Int16Array":
+    case "Uint16Array":
+    case "Int32Array":
+    case "Uint32Array":
+    case "Float32Array":
+    case "Float64Array":
+    case "Array":
+      return iterableEqual(leftHandOperand, rightHandOperand, options);
+    case "RegExp":
+      return regexpEqual(leftHandOperand, rightHandOperand);
+    case "Generator":
+      return generatorEqual(leftHandOperand, rightHandOperand, options);
+    case "DataView":
+      return iterableEqual(new Uint8Array(leftHandOperand.buffer), new Uint8Array(rightHandOperand.buffer), options);
+    case "ArrayBuffer":
+      return iterableEqual(new Uint8Array(leftHandOperand), new Uint8Array(rightHandOperand), options);
+    case "Set":
+      return entriesEqual(leftHandOperand, rightHandOperand, options);
+    case "Map":
+      return entriesEqual(leftHandOperand, rightHandOperand, options);
+    case "Temporal.PlainDate":
+    case "Temporal.PlainTime":
+    case "Temporal.PlainDateTime":
+    case "Temporal.Instant":
+    case "Temporal.ZonedDateTime":
+    case "Temporal.PlainYearMonth":
+    case "Temporal.PlainMonthDay":
+      return leftHandOperand.equals(rightHandOperand);
+    case "Temporal.Duration":
+      return leftHandOperand.total("nanoseconds") === rightHandOperand.total("nanoseconds");
+    case "Temporal.TimeZone":
+    case "Temporal.Calendar":
+      return leftHandOperand.toString() === rightHandOperand.toString();
+    default:
+      return objectEqual(leftHandOperand, rightHandOperand, options);
+  }
+}
+__name(extensiveDeepEqualByType, "extensiveDeepEqualByType");
+__name2(extensiveDeepEqualByType, "extensiveDeepEqualByType");
+function regexpEqual(leftHandOperand, rightHandOperand) {
+  return leftHandOperand.toString() === rightHandOperand.toString();
+}
+__name(regexpEqual, "regexpEqual");
+__name2(regexpEqual, "regexpEqual");
+function entriesEqual(leftHandOperand, rightHandOperand, options) {
+  if (leftHandOperand.size !== rightHandOperand.size) {
+    return false;
+  }
+  if (leftHandOperand.size === 0) {
+    return true;
+  }
+  var leftHandItems = [];
+  var rightHandItems = [];
+  leftHandOperand.forEach(/* @__PURE__ */ __name2(/* @__PURE__ */ __name(function gatherEntries(key, value) {
+    leftHandItems.push([key, value]);
+  }, "gatherEntries"), "gatherEntries"));
+  rightHandOperand.forEach(/* @__PURE__ */ __name2(/* @__PURE__ */ __name(function gatherEntries(key, value) {
+    rightHandItems.push([key, value]);
+  }, "gatherEntries"), "gatherEntries"));
+  return iterableEqual(leftHandItems.sort(), rightHandItems.sort(), options);
+}
+__name(entriesEqual, "entriesEqual");
+__name2(entriesEqual, "entriesEqual");
+function iterableEqual(leftHandOperand, rightHandOperand, options) {
+  var length = leftHandOperand.length;
+  if (length !== rightHandOperand.length) {
+    return false;
+  }
+  if (length === 0) {
+    return true;
+  }
+  var index = -1;
+  while (++index < length) {
+    if (deepEqual(leftHandOperand[index], rightHandOperand[index], options) === false) {
+      return false;
+    }
+  }
+  return true;
+}
+__name(iterableEqual, "iterableEqual");
+__name2(iterableEqual, "iterableEqual");
+function generatorEqual(leftHandOperand, rightHandOperand, options) {
+  return iterableEqual(getGeneratorEntries(leftHandOperand), getGeneratorEntries(rightHandOperand), options);
+}
+__name(generatorEqual, "generatorEqual");
+__name2(generatorEqual, "generatorEqual");
+function hasIteratorFunction(target) {
+  return typeof Symbol !== "undefined" && typeof target === "object" && typeof Symbol.iterator !== "undefined" && typeof target[Symbol.iterator] === "function";
+}
+__name(hasIteratorFunction, "hasIteratorFunction");
+__name2(hasIteratorFunction, "hasIteratorFunction");
+function getIteratorEntries(target) {
+  if (hasIteratorFunction(target)) {
+    try {
+      return getGeneratorEntries(target[Symbol.iterator]());
+    } catch (iteratorError) {
+      return [];
+    }
+  }
+  return [];
+}
+__name(getIteratorEntries, "getIteratorEntries");
+__name2(getIteratorEntries, "getIteratorEntries");
+function getGeneratorEntries(generator) {
+  var generatorResult = generator.next();
+  var accumulator = [generatorResult.value];
+  while (generatorResult.done === false) {
+    generatorResult = generator.next();
+    accumulator.push(generatorResult.value);
+  }
+  return accumulator;
+}
+__name(getGeneratorEntries, "getGeneratorEntries");
+__name2(getGeneratorEntries, "getGeneratorEntries");
+function getEnumerableKeys(target) {
+  var keys2 = [];
+  for (var key in target) {
+    keys2.push(key);
+  }
+  return keys2;
+}
+__name(getEnumerableKeys, "getEnumerableKeys");
+__name2(getEnumerableKeys, "getEnumerableKeys");
+function getEnumerableSymbols(target) {
+  var keys2 = [];
+  var allKeys = Object.getOwnPropertySymbols(target);
+  for (var i = 0; i < allKeys.length; i += 1) {
+    var key = allKeys[i];
+    if (Object.getOwnPropertyDescriptor(target, key).enumerable) {
+      keys2.push(key);
+    }
+  }
+  return keys2;
+}
+__name(getEnumerableSymbols, "getEnumerableSymbols");
+__name2(getEnumerableSymbols, "getEnumerableSymbols");
+function keysEqual(leftHandOperand, rightHandOperand, keys2, options) {
+  var length = keys2.length;
+  if (length === 0) {
+    return true;
+  }
+  for (var i = 0; i < length; i += 1) {
+    if (deepEqual(leftHandOperand[keys2[i]], rightHandOperand[keys2[i]], options) === false) {
+      return false;
+    }
+  }
+  return true;
+}
+__name(keysEqual, "keysEqual");
+__name2(keysEqual, "keysEqual");
+function objectEqual(leftHandOperand, rightHandOperand, options) {
+  var leftHandKeys = getEnumerableKeys(leftHandOperand);
+  var rightHandKeys = getEnumerableKeys(rightHandOperand);
+  var leftHandSymbols = getEnumerableSymbols(leftHandOperand);
+  var rightHandSymbols = getEnumerableSymbols(rightHandOperand);
+  leftHandKeys = leftHandKeys.concat(leftHandSymbols);
+  rightHandKeys = rightHandKeys.concat(rightHandSymbols);
+  if (leftHandKeys.length && leftHandKeys.length === rightHandKeys.length) {
+    if (iterableEqual(mapSymbols(leftHandKeys).sort(), mapSymbols(rightHandKeys).sort()) === false) {
+      return false;
+    }
+    return keysEqual(leftHandOperand, rightHandOperand, leftHandKeys, options);
+  }
+  var leftHandEntries = getIteratorEntries(leftHandOperand);
+  var rightHandEntries = getIteratorEntries(rightHandOperand);
+  if (leftHandEntries.length && leftHandEntries.length === rightHandEntries.length) {
+    leftHandEntries.sort();
+    rightHandEntries.sort();
+    return iterableEqual(leftHandEntries, rightHandEntries, options);
+  }
+  if (leftHandKeys.length === 0 && leftHandEntries.length === 0 && rightHandKeys.length === 0 && rightHandEntries.length === 0) {
+    return true;
+  }
+  return false;
+}
+__name(objectEqual, "objectEqual");
+__name2(objectEqual, "objectEqual");
+function isPrimitive2(value) {
+  return value === null || typeof value !== "object";
+}
+__name(isPrimitive2, "isPrimitive");
+__name2(isPrimitive2, "isPrimitive");
+function mapSymbols(arr) {
+  return arr.map(/* @__PURE__ */ __name2(/* @__PURE__ */ __name(function mapSymbol(entry) {
+    if (typeof entry === "symbol") {
+      return entry.toString();
+    }
+    return entry;
+  }, "mapSymbol"), "mapSymbol"));
+}
+__name(mapSymbols, "mapSymbols");
+__name2(mapSymbols, "mapSymbols");
+function hasProperty(obj, name2) {
+  if (typeof obj === "undefined" || obj === null) {
+    return false;
+  }
+  return name2 in Object(obj);
+}
+__name(hasProperty, "hasProperty");
+__name2(hasProperty, "hasProperty");
+function parsePath(path) {
+  const str = path.replace(/([^\\])\[/g, "$1.[");
+  const parts = str.match(/(\\\.|[^.]+?)+/g);
+  return parts.map((value) => {
+    if (value === "constructor" || value === "__proto__" || value === "prototype") {
+      return {};
+    }
+    const regexp = /^\[(\d+)\]$/;
+    const mArr = regexp.exec(value);
+    let parsed = null;
+    if (mArr) {
+      parsed = { i: parseFloat(mArr[1]) };
+    } else {
+      parsed = { p: value.replace(/\\([.[\]])/g, "$1") };
+    }
+    return parsed;
+  });
+}
+__name(parsePath, "parsePath");
+__name2(parsePath, "parsePath");
+function internalGetPathValue(obj, parsed, pathDepth) {
+  let temporaryValue = obj;
+  let res = null;
+  pathDepth = typeof pathDepth === "undefined" ? parsed.length : pathDepth;
+  for (let i = 0; i < pathDepth; i++) {
+    const part = parsed[i];
+    if (temporaryValue) {
+      if (typeof part.p === "undefined") {
+        temporaryValue = temporaryValue[part.i];
+      } else {
+        temporaryValue = temporaryValue[part.p];
+      }
+      if (i === pathDepth - 1) {
+        res = temporaryValue;
+      }
+    }
+  }
+  return res;
+}
+__name(internalGetPathValue, "internalGetPathValue");
+__name2(internalGetPathValue, "internalGetPathValue");
+function getPathInfo(obj, path) {
+  const parsed = parsePath(path);
+  const last = parsed[parsed.length - 1];
+  const info = {
+    parent: parsed.length > 1 ? internalGetPathValue(obj, parsed, parsed.length - 1) : obj,
+    name: last.p || last.i,
+    value: internalGetPathValue(obj, parsed)
+  };
+  info.exists = hasProperty(info.parent, info.name);
+  return info;
+}
+__name(getPathInfo, "getPathInfo");
+__name2(getPathInfo, "getPathInfo");
+function Assertion(obj, msg, ssfi, lockSsfi) {
+  flag(this, "ssfi", ssfi || Assertion);
+  flag(this, "lockSsfi", lockSsfi);
+  flag(this, "object", obj);
+  flag(this, "message", msg);
+  flag(this, "eql", config2.deepEqual || deep_eql_default);
+  return proxify(this);
+}
+__name(Assertion, "Assertion");
+__name2(Assertion, "Assertion");
+Object.defineProperty(Assertion, "includeStack", {
+  get: /* @__PURE__ */ __name(function() {
+    console.warn("Assertion.includeStack is deprecated, use chai.config.includeStack instead.");
+    return config2.includeStack;
+  }, "get"),
+  set: /* @__PURE__ */ __name(function(value) {
+    console.warn("Assertion.includeStack is deprecated, use chai.config.includeStack instead.");
+    config2.includeStack = value;
+  }, "set")
+});
+Object.defineProperty(Assertion, "showDiff", {
+  get: /* @__PURE__ */ __name(function() {
+    console.warn("Assertion.showDiff is deprecated, use chai.config.showDiff instead.");
+    return config2.showDiff;
+  }, "get"),
+  set: /* @__PURE__ */ __name(function(value) {
+    console.warn("Assertion.showDiff is deprecated, use chai.config.showDiff instead.");
+    config2.showDiff = value;
+  }, "set")
+});
+Assertion.addProperty = function(name2, fn) {
+  addProperty(this.prototype, name2, fn);
+};
+Assertion.addMethod = function(name2, fn) {
+  addMethod(this.prototype, name2, fn);
+};
+Assertion.addChainableMethod = function(name2, fn, chainingBehavior) {
+  addChainableMethod(this.prototype, name2, fn, chainingBehavior);
+};
+Assertion.overwriteProperty = function(name2, fn) {
+  overwriteProperty(this.prototype, name2, fn);
+};
+Assertion.overwriteMethod = function(name2, fn) {
+  overwriteMethod(this.prototype, name2, fn);
+};
+Assertion.overwriteChainableMethod = function(name2, fn, chainingBehavior) {
+  overwriteChainableMethod(this.prototype, name2, fn, chainingBehavior);
+};
+Assertion.prototype.assert = function(expr, msg, negateMsg, expected, _actual, showDiff) {
+  var ok = test2(this, arguments);
+  if (false !== showDiff)
+    showDiff = true;
+  if (void 0 === expected && void 0 === _actual)
+    showDiff = false;
+  if (true !== config2.showDiff)
+    showDiff = false;
+  if (!ok) {
+    msg = getMessage2(this, arguments);
+    var actual = getActual(this, arguments);
+    var assertionErrorObjectProperties = {
+      actual,
+      expected,
+      showDiff
+    };
+    var operator = getOperator(this, arguments);
+    if (operator) {
+      assertionErrorObjectProperties.operator = operator;
+    }
+    throw new AssertionError(
+      msg,
+      assertionErrorObjectProperties,
+      config2.includeStack ? this.assert : flag(this, "ssfi")
+    );
+  }
+};
+Object.defineProperty(
+  Assertion.prototype,
+  "_obj",
+  {
+    get: /* @__PURE__ */ __name(function() {
+      return flag(this, "object");
+    }, "get"),
+    set: /* @__PURE__ */ __name(function(val) {
+      flag(this, "object", val);
+    }, "set")
+  }
+);
+function isProxyEnabled() {
+  return config2.useProxy && typeof Proxy !== "undefined" && typeof Reflect !== "undefined";
+}
+__name(isProxyEnabled, "isProxyEnabled");
+__name2(isProxyEnabled, "isProxyEnabled");
+function addProperty(ctx, name2, getter) {
+  getter = getter === void 0 ? function() {
+  } : getter;
+  Object.defineProperty(
+    ctx,
+    name2,
+    {
+      get: /* @__PURE__ */ __name2(/* @__PURE__ */ __name(function propertyGetter() {
+        if (!isProxyEnabled() && !flag(this, "lockSsfi")) {
+          flag(this, "ssfi", propertyGetter);
+        }
+        var result = getter.call(this);
+        if (result !== void 0)
+          return result;
+        var newAssertion = new Assertion();
+        transferFlags(this, newAssertion);
+        return newAssertion;
+      }, "propertyGetter"), "propertyGetter"),
+      configurable: true
+    }
+  );
+}
+__name(addProperty, "addProperty");
+__name2(addProperty, "addProperty");
+var fnLengthDesc = Object.getOwnPropertyDescriptor(function() {
+}, "length");
+function addLengthGuard(fn, assertionName, isChainable) {
+  if (!fnLengthDesc.configurable)
+    return fn;
+  Object.defineProperty(fn, "length", {
+    get: /* @__PURE__ */ __name(function() {
+      if (isChainable) {
+        throw Error("Invalid Chai property: " + assertionName + '.length. Due to a compatibility issue, "length" cannot directly follow "' + assertionName + '". Use "' + assertionName + '.lengthOf" instead.');
+      }
+      throw Error("Invalid Chai property: " + assertionName + '.length. See docs for proper usage of "' + assertionName + '".');
+    }, "get")
+  });
+  return fn;
+}
+__name(addLengthGuard, "addLengthGuard");
+__name2(addLengthGuard, "addLengthGuard");
+function getProperties(object) {
+  var result = Object.getOwnPropertyNames(object);
+  function addProperty2(property) {
+    if (result.indexOf(property) === -1) {
+      result.push(property);
+    }
+  }
+  __name(addProperty2, "addProperty2");
+  __name2(addProperty2, "addProperty");
+  var proto = Object.getPrototypeOf(object);
+  while (proto !== null) {
+    Object.getOwnPropertyNames(proto).forEach(addProperty2);
+    proto = Object.getPrototypeOf(proto);
+  }
+  return result;
+}
+__name(getProperties, "getProperties");
+__name2(getProperties, "getProperties");
+var builtins = ["__flags", "__methods", "_obj", "assert"];
+function proxify(obj, nonChainableMethodName) {
+  if (!isProxyEnabled())
+    return obj;
+  return new Proxy(obj, {
+    get: /* @__PURE__ */ __name2(/* @__PURE__ */ __name(function proxyGetter(target, property) {
+      if (typeof property === "string" && config2.proxyExcludedKeys.indexOf(property) === -1 && !Reflect.has(target, property)) {
+        if (nonChainableMethodName) {
+          throw Error("Invalid Chai property: " + nonChainableMethodName + "." + property + '. See docs for proper usage of "' + nonChainableMethodName + '".');
+        }
+        var suggestion = null;
+        var suggestionDistance = 4;
+        getProperties(target).forEach(function(prop) {
+          if (!Object.prototype.hasOwnProperty(prop) && builtins.indexOf(prop) === -1) {
+            var dist = stringDistanceCapped(
+              property,
+              prop,
+              suggestionDistance
+            );
+            if (dist < suggestionDistance) {
+              suggestion = prop;
+              suggestionDistance = dist;
+            }
+          }
+        });
+        if (suggestion !== null) {
+          throw Error("Invalid Chai property: " + property + '. Did you mean "' + suggestion + '"?');
+        } else {
+          throw Error("Invalid Chai property: " + property);
+        }
+      }
+      if (builtins.indexOf(property) === -1 && !flag(target, "lockSsfi")) {
+        flag(target, "ssfi", proxyGetter);
+      }
+      return Reflect.get(target, property);
+    }, "proxyGetter"), "proxyGetter")
+  });
+}
+__name(proxify, "proxify");
+__name2(proxify, "proxify");
+function stringDistanceCapped(strA, strB, cap) {
+  if (Math.abs(strA.length - strB.length) >= cap) {
+    return cap;
+  }
+  var memo = [];
+  for (var i = 0; i <= strA.length; i++) {
+    memo[i] = Array(strB.length + 1).fill(0);
+    memo[i][0] = i;
+  }
+  for (var j = 0; j < strB.length; j++) {
+    memo[0][j] = j;
+  }
+  for (var i = 1; i <= strA.length; i++) {
+    var ch = strA.charCodeAt(i - 1);
+    for (var j = 1; j <= strB.length; j++) {
+      if (Math.abs(i - j) >= cap) {
+        memo[i][j] = cap;
+        continue;
+      }
+      memo[i][j] = Math.min(
+        memo[i - 1][j] + 1,
+        memo[i][j - 1] + 1,
+        memo[i - 1][j - 1] + (ch === strB.charCodeAt(j - 1) ? 0 : 1)
+      );
+    }
+  }
+  return memo[strA.length][strB.length];
+}
+__name(stringDistanceCapped, "stringDistanceCapped");
+__name2(stringDistanceCapped, "stringDistanceCapped");
+function addMethod(ctx, name2, method) {
+  var methodWrapper = /* @__PURE__ */ __name2(function() {
+    if (!flag(this, "lockSsfi")) {
+      flag(this, "ssfi", methodWrapper);
+    }
+    var result = method.apply(this, arguments);
+    if (result !== void 0)
+      return result;
+    var newAssertion = new Assertion();
+    transferFlags(this, newAssertion);
+    return newAssertion;
+  }, "methodWrapper");
+  addLengthGuard(methodWrapper, name2, false);
+  ctx[name2] = proxify(methodWrapper, name2);
+}
+__name(addMethod, "addMethod");
+__name2(addMethod, "addMethod");
+function overwriteProperty(ctx, name2, getter) {
+  var _get = Object.getOwnPropertyDescriptor(ctx, name2), _super = /* @__PURE__ */ __name2(function() {
+  }, "_super");
+  if (_get && "function" === typeof _get.get)
+    _super = _get.get;
+  Object.defineProperty(
+    ctx,
+    name2,
+    {
+      get: /* @__PURE__ */ __name2(/* @__PURE__ */ __name(function overwritingPropertyGetter() {
+        if (!isProxyEnabled() && !flag(this, "lockSsfi")) {
+          flag(this, "ssfi", overwritingPropertyGetter);
+        }
+        var origLockSsfi = flag(this, "lockSsfi");
+        flag(this, "lockSsfi", true);
+        var result = getter(_super).call(this);
+        flag(this, "lockSsfi", origLockSsfi);
+        if (result !== void 0) {
+          return result;
+        }
+        var newAssertion = new Assertion();
+        transferFlags(this, newAssertion);
+        return newAssertion;
+      }, "overwritingPropertyGetter"), "overwritingPropertyGetter"),
+      configurable: true
+    }
+  );
+}
+__name(overwriteProperty, "overwriteProperty");
+__name2(overwriteProperty, "overwriteProperty");
+function overwriteMethod(ctx, name2, method) {
+  var _method = ctx[name2], _super = /* @__PURE__ */ __name2(function() {
+    throw new Error(name2 + " is not a function");
+  }, "_super");
+  if (_method && "function" === typeof _method)
+    _super = _method;
+  var overwritingMethodWrapper = /* @__PURE__ */ __name2(function() {
+    if (!flag(this, "lockSsfi")) {
+      flag(this, "ssfi", overwritingMethodWrapper);
+    }
+    var origLockSsfi = flag(this, "lockSsfi");
+    flag(this, "lockSsfi", true);
+    var result = method(_super).apply(this, arguments);
+    flag(this, "lockSsfi", origLockSsfi);
+    if (result !== void 0) {
+      return result;
+    }
+    var newAssertion = new Assertion();
+    transferFlags(this, newAssertion);
+    return newAssertion;
+  }, "overwritingMethodWrapper");
+  addLengthGuard(overwritingMethodWrapper, name2, false);
+  ctx[name2] = proxify(overwritingMethodWrapper, name2);
+}
+__name(overwriteMethod, "overwriteMethod");
+__name2(overwriteMethod, "overwriteMethod");
+var canSetPrototype = typeof Object.setPrototypeOf === "function";
+var testFn = /* @__PURE__ */ __name2(function() {
+}, "testFn");
+var excludeNames = Object.getOwnPropertyNames(testFn).filter(function(name2) {
+  var propDesc = Object.getOwnPropertyDescriptor(testFn, name2);
+  if (typeof propDesc !== "object")
+    return true;
+  return !propDesc.configurable;
+});
+var call = Function.prototype.call;
+var apply2 = Function.prototype.apply;
+function addChainableMethod(ctx, name2, method, chainingBehavior) {
+  if (typeof chainingBehavior !== "function") {
+    chainingBehavior = /* @__PURE__ */ __name2(function() {
+    }, "chainingBehavior");
+  }
+  var chainableBehavior = {
+    method,
+    chainingBehavior
+  };
+  if (!ctx.__methods) {
+    ctx.__methods = {};
+  }
+  ctx.__methods[name2] = chainableBehavior;
+  Object.defineProperty(
+    ctx,
+    name2,
+    {
+      get: /* @__PURE__ */ __name2(/* @__PURE__ */ __name(function chainableMethodGetter() {
+        chainableBehavior.chainingBehavior.call(this);
+        var chainableMethodWrapper = /* @__PURE__ */ __name2(function() {
+          if (!flag(this, "lockSsfi")) {
+            flag(this, "ssfi", chainableMethodWrapper);
+          }
+          var result = chainableBehavior.method.apply(this, arguments);
+          if (result !== void 0) {
+            return result;
+          }
+          var newAssertion = new Assertion();
+          transferFlags(this, newAssertion);
+          return newAssertion;
+        }, "chainableMethodWrapper");
+        addLengthGuard(chainableMethodWrapper, name2, true);
+        if (canSetPrototype) {
+          var prototype = Object.create(this);
+          prototype.call = call;
+          prototype.apply = apply2;
+          Object.setPrototypeOf(chainableMethodWrapper, prototype);
+        } else {
+          var asserterNames = Object.getOwnPropertyNames(ctx);
+          asserterNames.forEach(function(asserterName) {
+            if (excludeNames.indexOf(asserterName) !== -1) {
+              return;
+            }
+            var pd = Object.getOwnPropertyDescriptor(ctx, asserterName);
+            Object.defineProperty(chainableMethodWrapper, asserterName, pd);
+          });
+        }
+        transferFlags(this, chainableMethodWrapper);
+        return proxify(chainableMethodWrapper);
+      }, "chainableMethodGetter"), "chainableMethodGetter"),
+      configurable: true
+    }
+  );
+}
+__name(addChainableMethod, "addChainableMethod");
+__name2(addChainableMethod, "addChainableMethod");
+function overwriteChainableMethod(ctx, name2, method, chainingBehavior) {
+  var chainableBehavior = ctx.__methods[name2];
+  var _chainingBehavior = chainableBehavior.chainingBehavior;
+  chainableBehavior.chainingBehavior = /* @__PURE__ */ __name2(/* @__PURE__ */ __name(function overwritingChainableMethodGetter() {
+    var result = chainingBehavior(_chainingBehavior).call(this);
+    if (result !== void 0) {
+      return result;
+    }
+    var newAssertion = new Assertion();
+    transferFlags(this, newAssertion);
+    return newAssertion;
+  }, "overwritingChainableMethodGetter"), "overwritingChainableMethodGetter");
+  var _method = chainableBehavior.method;
+  chainableBehavior.method = /* @__PURE__ */ __name2(/* @__PURE__ */ __name(function overwritingChainableMethodWrapper() {
+    var result = method(_method).apply(this, arguments);
+    if (result !== void 0) {
+      return result;
+    }
+    var newAssertion = new Assertion();
+    transferFlags(this, newAssertion);
+    return newAssertion;
+  }, "overwritingChainableMethodWrapper"), "overwritingChainableMethodWrapper");
+}
+__name(overwriteChainableMethod, "overwriteChainableMethod");
+__name2(overwriteChainableMethod, "overwriteChainableMethod");
+function compareByInspect(a, b) {
+  return inspect22(a) < inspect22(b) ? -1 : 1;
+}
+__name(compareByInspect, "compareByInspect");
+__name2(compareByInspect, "compareByInspect");
+function getOwnEnumerablePropertySymbols(obj) {
+  if (typeof Object.getOwnPropertySymbols !== "function")
+    return [];
+  return Object.getOwnPropertySymbols(obj).filter(function(sym) {
+    return Object.getOwnPropertyDescriptor(obj, sym).enumerable;
+  });
+}
+__name(getOwnEnumerablePropertySymbols, "getOwnEnumerablePropertySymbols");
+__name2(getOwnEnumerablePropertySymbols, "getOwnEnumerablePropertySymbols");
+function getOwnEnumerableProperties(obj) {
+  return Object.keys(obj).concat(getOwnEnumerablePropertySymbols(obj));
+}
+__name(getOwnEnumerableProperties, "getOwnEnumerableProperties");
+__name2(getOwnEnumerableProperties, "getOwnEnumerableProperties");
+function _isNaN(value) {
+  return value !== value;
+}
+__name(_isNaN, "_isNaN");
+__name2(_isNaN, "_isNaN");
+var isNaN22 = Number.isNaN || _isNaN;
+function isObjectType(obj) {
+  var objectType = type(obj);
+  var objectTypes = ["Array", "Object", "Function"];
+  return objectTypes.indexOf(objectType) !== -1;
+}
+__name(isObjectType, "isObjectType");
+__name2(isObjectType, "isObjectType");
+function getOperator(obj, args) {
+  var operator = flag(obj, "operator");
+  var negate = flag(obj, "negate");
+  var expected = args[3];
+  var msg = negate ? args[2] : args[1];
+  if (operator) {
+    return operator;
+  }
+  if (typeof msg === "function")
+    msg = msg();
+  msg = msg || "";
+  if (!msg) {
+    return void 0;
+  }
+  if (/\shave\s/.test(msg)) {
+    return void 0;
+  }
+  var isObject2 = isObjectType(expected);
+  if (/\snot\s/.test(msg)) {
+    return isObject2 ? "notDeepStrictEqual" : "notStrictEqual";
+  }
+  return isObject2 ? "deepStrictEqual" : "strictEqual";
+}
+__name(getOperator, "getOperator");
+__name2(getOperator, "getOperator");
+function getName(fn) {
+  return fn.name;
+}
+__name(getName, "getName");
+__name2(getName, "getName");
+function isRegExp22(obj) {
+  return Object.prototype.toString.call(obj) === "[object RegExp]";
+}
+__name(isRegExp22, "isRegExp2");
+__name2(isRegExp22, "isRegExp");
+var { flag: flag2 } = utils_exports;
+[
+  "to",
+  "be",
+  "been",
+  "is",
+  "and",
+  "has",
+  "have",
+  "with",
+  "that",
+  "which",
+  "at",
+  "of",
+  "same",
+  "but",
+  "does",
+  "still",
+  "also"
+].forEach(function(chain) {
+  Assertion.addProperty(chain);
+});
+Assertion.addProperty("not", function() {
+  flag2(this, "negate", true);
+});
+Assertion.addProperty("deep", function() {
+  flag2(this, "deep", true);
+});
+Assertion.addProperty("nested", function() {
+  flag2(this, "nested", true);
+});
+Assertion.addProperty("own", function() {
+  flag2(this, "own", true);
+});
+Assertion.addProperty("ordered", function() {
+  flag2(this, "ordered", true);
+});
+Assertion.addProperty("any", function() {
+  flag2(this, "any", true);
+  flag2(this, "all", false);
+});
+Assertion.addProperty("all", function() {
+  flag2(this, "all", true);
+  flag2(this, "any", false);
+});
+var functionTypes = {
+  "function": ["function", "asyncfunction", "generatorfunction", "asyncgeneratorfunction"],
+  "asyncfunction": ["asyncfunction", "asyncgeneratorfunction"],
+  "generatorfunction": ["generatorfunction", "asyncgeneratorfunction"],
+  "asyncgeneratorfunction": ["asyncgeneratorfunction"]
+};
+function an(type3, msg) {
+  if (msg)
+    flag2(this, "message", msg);
+  type3 = type3.toLowerCase();
+  var obj = flag2(this, "object"), article = ~["a", "e", "i", "o", "u"].indexOf(type3.charAt(0)) ? "an " : "a ";
+  const detectedType = type(obj).toLowerCase();
+  if (functionTypes["function"].includes(type3)) {
+    this.assert(
+      functionTypes[type3].includes(detectedType),
+      "expected #{this} to be " + article + type3,
+      "expected #{this} not to be " + article + type3
+    );
+  } else {
+    this.assert(
+      type3 === detectedType,
+      "expected #{this} to be " + article + type3,
+      "expected #{this} not to be " + article + type3
+    );
+  }
+}
+__name(an, "an");
+__name2(an, "an");
+Assertion.addChainableMethod("an", an);
+Assertion.addChainableMethod("a", an);
+function SameValueZero(a, b) {
+  return isNaN22(a) && isNaN22(b) || a === b;
+}
+__name(SameValueZero, "SameValueZero");
+__name2(SameValueZero, "SameValueZero");
+function includeChainingBehavior() {
+  flag2(this, "contains", true);
+}
+__name(includeChainingBehavior, "includeChainingBehavior");
+__name2(includeChainingBehavior, "includeChainingBehavior");
+function include(val, msg) {
+  if (msg)
+    flag2(this, "message", msg);
+  var obj = flag2(this, "object"), objType = type(obj).toLowerCase(), flagMsg = flag2(this, "message"), negate = flag2(this, "negate"), ssfi = flag2(this, "ssfi"), isDeep = flag2(this, "deep"), descriptor = isDeep ? "deep " : "", isEql = isDeep ? flag2(this, "eql") : SameValueZero;
+  flagMsg = flagMsg ? flagMsg + ": " : "";
+  var included = false;
+  switch (objType) {
+    case "string":
+      included = obj.indexOf(val) !== -1;
+      break;
+    case "weakset":
+      if (isDeep) {
+        throw new AssertionError(
+          flagMsg + "unable to use .deep.include with WeakSet",
+          void 0,
+          ssfi
+        );
+      }
+      included = obj.has(val);
+      break;
+    case "map":
+      obj.forEach(function(item) {
+        included = included || isEql(item, val);
+      });
+      break;
+    case "set":
+      if (isDeep) {
+        obj.forEach(function(item) {
+          included = included || isEql(item, val);
+        });
+      } else {
+        included = obj.has(val);
+      }
+      break;
+    case "array":
+      if (isDeep) {
+        included = obj.some(function(item) {
+          return isEql(item, val);
+        });
+      } else {
+        included = obj.indexOf(val) !== -1;
+      }
+      break;
+    default:
+      if (val !== Object(val)) {
+        throw new AssertionError(
+          flagMsg + "the given combination of arguments (" + objType + " and " + type(val).toLowerCase() + ") is invalid for this assertion. You can use an array, a map, an object, a set, a string, or a weakset instead of a " + type(val).toLowerCase(),
+          void 0,
+          ssfi
+        );
+      }
+      var props = Object.keys(val), firstErr = null, numErrs = 0;
+      props.forEach(function(prop) {
+        var propAssertion = new Assertion(obj);
+        transferFlags(this, propAssertion, true);
+        flag2(propAssertion, "lockSsfi", true);
+        if (!negate || props.length === 1) {
+          propAssertion.property(prop, val[prop]);
+          return;
+        }
+        try {
+          propAssertion.property(prop, val[prop]);
+        } catch (err) {
+          if (!check_error_exports.compatibleConstructor(err, AssertionError)) {
+            throw err;
+          }
+          if (firstErr === null)
+            firstErr = err;
+          numErrs++;
+        }
+      }, this);
+      if (negate && props.length > 1 && numErrs === props.length) {
+        throw firstErr;
+      }
+      return;
+  }
+  this.assert(
+    included,
+    "expected #{this} to " + descriptor + "include " + inspect22(val),
+    "expected #{this} to not " + descriptor + "include " + inspect22(val)
+  );
+}
+__name(include, "include");
+__name2(include, "include");
+Assertion.addChainableMethod("include", include, includeChainingBehavior);
+Assertion.addChainableMethod("contain", include, includeChainingBehavior);
+Assertion.addChainableMethod("contains", include, includeChainingBehavior);
+Assertion.addChainableMethod("includes", include, includeChainingBehavior);
+Assertion.addProperty("ok", function() {
+  this.assert(
+    flag2(this, "object"),
+    "expected #{this} to be truthy",
+    "expected #{this} to be falsy"
+  );
+});
+Assertion.addProperty("true", function() {
+  this.assert(
+    true === flag2(this, "object"),
+    "expected #{this} to be true",
+    "expected #{this} to be false",
+    flag2(this, "negate") ? false : true
+  );
+});
+Assertion.addProperty("callable", function() {
+  const val = flag2(this, "object");
+  const ssfi = flag2(this, "ssfi");
+  const message = flag2(this, "message");
+  const msg = message ? `${message}: ` : "";
+  const negate = flag2(this, "negate");
+  const assertionMessage = negate ? `${msg}expected ${inspect22(val)} not to be a callable function` : `${msg}expected ${inspect22(val)} to be a callable function`;
+  const isCallable = ["Function", "AsyncFunction", "GeneratorFunction", "AsyncGeneratorFunction"].includes(type(val));
+  if (isCallable && negate || !isCallable && !negate) {
+    throw new AssertionError(
+      assertionMessage,
+      void 0,
+      ssfi
+    );
+  }
+});
+Assertion.addProperty("false", function() {
+  this.assert(
+    false === flag2(this, "object"),
+    "expected #{this} to be false",
+    "expected #{this} to be true",
+    flag2(this, "negate") ? true : false
+  );
+});
+Assertion.addProperty("null", function() {
+  this.assert(
+    null === flag2(this, "object"),
+    "expected #{this} to be null",
+    "expected #{this} not to be null"
+  );
+});
+Assertion.addProperty("undefined", function() {
+  this.assert(
+    void 0 === flag2(this, "object"),
+    "expected #{this} to be undefined",
+    "expected #{this} not to be undefined"
+  );
+});
+Assertion.addProperty("NaN", function() {
+  this.assert(
+    isNaN22(flag2(this, "object")),
+    "expected #{this} to be NaN",
+    "expected #{this} not to be NaN"
+  );
+});
+function assertExist() {
+  var val = flag2(this, "object");
+  this.assert(
+    val !== null && val !== void 0,
+    "expected #{this} to exist",
+    "expected #{this} to not exist"
+  );
+}
+__name(assertExist, "assertExist");
+__name2(assertExist, "assertExist");
+Assertion.addProperty("exist", assertExist);
+Assertion.addProperty("exists", assertExist);
+Assertion.addProperty("empty", function() {
+  var val = flag2(this, "object"), ssfi = flag2(this, "ssfi"), flagMsg = flag2(this, "message"), itemsCount;
+  flagMsg = flagMsg ? flagMsg + ": " : "";
+  switch (type(val).toLowerCase()) {
+    case "array":
+    case "string":
+      itemsCount = val.length;
+      break;
+    case "map":
+    case "set":
+      itemsCount = val.size;
+      break;
+    case "weakmap":
+    case "weakset":
+      throw new AssertionError(
+        flagMsg + ".empty was passed a weak collection",
+        void 0,
+        ssfi
+      );
+    case "function":
+      var msg = flagMsg + ".empty was passed a function " + getName(val);
+      throw new AssertionError(msg.trim(), void 0, ssfi);
+    default:
+      if (val !== Object(val)) {
+        throw new AssertionError(
+          flagMsg + ".empty was passed non-string primitive " + inspect22(val),
+          void 0,
+          ssfi
+        );
+      }
+      itemsCount = Object.keys(val).length;
+  }
+  this.assert(
+    0 === itemsCount,
+    "expected #{this} to be empty",
+    "expected #{this} not to be empty"
+  );
+});
+function checkArguments() {
+  var obj = flag2(this, "object"), type3 = type(obj);
+  this.assert(
+    "Arguments" === type3,
+    "expected #{this} to be arguments but got " + type3,
+    "expected #{this} to not be arguments"
+  );
+}
+__name(checkArguments, "checkArguments");
+__name2(checkArguments, "checkArguments");
+Assertion.addProperty("arguments", checkArguments);
+Assertion.addProperty("Arguments", checkArguments);
+function assertEqual(val, msg) {
+  if (msg)
+    flag2(this, "message", msg);
+  var obj = flag2(this, "object");
+  if (flag2(this, "deep")) {
+    var prevLockSsfi = flag2(this, "lockSsfi");
+    flag2(this, "lockSsfi", true);
+    this.eql(val);
+    flag2(this, "lockSsfi", prevLockSsfi);
+  } else {
+    this.assert(
+      val === obj,
+      "expected #{this} to equal #{exp}",
+      "expected #{this} to not equal #{exp}",
+      val,
+      this._obj,
+      true
+    );
+  }
+}
+__name(assertEqual, "assertEqual");
+__name2(assertEqual, "assertEqual");
+Assertion.addMethod("equal", assertEqual);
+Assertion.addMethod("equals", assertEqual);
+Assertion.addMethod("eq", assertEqual);
+function assertEql(obj, msg) {
+  if (msg)
+    flag2(this, "message", msg);
+  var eql = flag2(this, "eql");
+  this.assert(
+    eql(obj, flag2(this, "object")),
+    "expected #{this} to deeply equal #{exp}",
+    "expected #{this} to not deeply equal #{exp}",
+    obj,
+    this._obj,
+    true
+  );
+}
+__name(assertEql, "assertEql");
+__name2(assertEql, "assertEql");
+Assertion.addMethod("eql", assertEql);
+Assertion.addMethod("eqls", assertEql);
+function assertAbove(n, msg) {
+  if (msg)
+    flag2(this, "message", msg);
+  var obj = flag2(this, "object"), doLength = flag2(this, "doLength"), flagMsg = flag2(this, "message"), msgPrefix = flagMsg ? flagMsg + ": " : "", ssfi = flag2(this, "ssfi"), objType = type(obj).toLowerCase(), nType = type(n).toLowerCase(), errorMessage, shouldThrow = true;
+  if (doLength && objType !== "map" && objType !== "set") {
+    new Assertion(obj, flagMsg, ssfi, true).to.have.property("length");
+  }
+  if (!doLength && (objType === "date" && nType !== "date")) {
+    errorMessage = msgPrefix + "the argument to above must be a date";
+  } else if (nType !== "number" && (doLength || objType === "number")) {
+    errorMessage = msgPrefix + "the argument to above must be a number";
+  } else if (!doLength && (objType !== "date" && objType !== "number")) {
+    var printObj = objType === "string" ? "'" + obj + "'" : obj;
+    errorMessage = msgPrefix + "expected " + printObj + " to be a number or a date";
+  } else {
+    shouldThrow = false;
+  }
+  if (shouldThrow) {
+    throw new AssertionError(errorMessage, void 0, ssfi);
+  }
+  if (doLength) {
+    var descriptor = "length", itemsCount;
+    if (objType === "map" || objType === "set") {
+      descriptor = "size";
+      itemsCount = obj.size;
+    } else {
+      itemsCount = obj.length;
+    }
+    this.assert(
+      itemsCount > n,
+      "expected #{this} to have a " + descriptor + " above #{exp} but got #{act}",
+      "expected #{this} to not have a " + descriptor + " above #{exp}",
+      n,
+      itemsCount
+    );
+  } else {
+    this.assert(
+      obj > n,
+      "expected #{this} to be above #{exp}",
+      "expected #{this} to be at most #{exp}",
+      n
+    );
+  }
+}
+__name(assertAbove, "assertAbove");
+__name2(assertAbove, "assertAbove");
+Assertion.addMethod("above", assertAbove);
+Assertion.addMethod("gt", assertAbove);
+Assertion.addMethod("greaterThan", assertAbove);
+function assertLeast(n, msg) {
+  if (msg)
+    flag2(this, "message", msg);
+  var obj = flag2(this, "object"), doLength = flag2(this, "doLength"), flagMsg = flag2(this, "message"), msgPrefix = flagMsg ? flagMsg + ": " : "", ssfi = flag2(this, "ssfi"), objType = type(obj).toLowerCase(), nType = type(n).toLowerCase(), errorMessage, shouldThrow = true;
+  if (doLength && objType !== "map" && objType !== "set") {
+    new Assertion(obj, flagMsg, ssfi, true).to.have.property("length");
+  }
+  if (!doLength && (objType === "date" && nType !== "date")) {
+    errorMessage = msgPrefix + "the argument to least must be a date";
+  } else if (nType !== "number" && (doLength || objType === "number")) {
+    errorMessage = msgPrefix + "the argument to least must be a number";
+  } else if (!doLength && (objType !== "date" && objType !== "number")) {
+    var printObj = objType === "string" ? "'" + obj + "'" : obj;
+    errorMessage = msgPrefix + "expected " + printObj + " to be a number or a date";
+  } else {
+    shouldThrow = false;
+  }
+  if (shouldThrow) {
+    throw new AssertionError(errorMessage, void 0, ssfi);
+  }
+  if (doLength) {
+    var descriptor = "length", itemsCount;
+    if (objType === "map" || objType === "set") {
+      descriptor = "size";
+      itemsCount = obj.size;
+    } else {
+      itemsCount = obj.length;
+    }
+    this.assert(
+      itemsCount >= n,
+      "expected #{this} to have a " + descriptor + " at least #{exp} but got #{act}",
+      "expected #{this} to have a " + descriptor + " below #{exp}",
+      n,
+      itemsCount
+    );
+  } else {
+    this.assert(
+      obj >= n,
+      "expected #{this} to be at least #{exp}",
+      "expected #{this} to be below #{exp}",
+      n
+    );
+  }
+}
+__name(assertLeast, "assertLeast");
+__name2(assertLeast, "assertLeast");
+Assertion.addMethod("least", assertLeast);
+Assertion.addMethod("gte", assertLeast);
+Assertion.addMethod("greaterThanOrEqual", assertLeast);
+function assertBelow(n, msg) {
+  if (msg)
+    flag2(this, "message", msg);
+  var obj = flag2(this, "object"), doLength = flag2(this, "doLength"), flagMsg = flag2(this, "message"), msgPrefix = flagMsg ? flagMsg + ": " : "", ssfi = flag2(this, "ssfi"), objType = type(obj).toLowerCase(), nType = type(n).toLowerCase(), errorMessage, shouldThrow = true;
+  if (doLength && objType !== "map" && objType !== "set") {
+    new Assertion(obj, flagMsg, ssfi, true).to.have.property("length");
+  }
+  if (!doLength && (objType === "date" && nType !== "date")) {
+    errorMessage = msgPrefix + "the argument to below must be a date";
+  } else if (nType !== "number" && (doLength || objType === "number")) {
+    errorMessage = msgPrefix + "the argument to below must be a number";
+  } else if (!doLength && (objType !== "date" && objType !== "number")) {
+    var printObj = objType === "string" ? "'" + obj + "'" : obj;
+    errorMessage = msgPrefix + "expected " + printObj + " to be a number or a date";
+  } else {
+    shouldThrow = false;
+  }
+  if (shouldThrow) {
+    throw new AssertionError(errorMessage, void 0, ssfi);
+  }
+  if (doLength) {
+    var descriptor = "length", itemsCount;
+    if (objType === "map" || objType === "set") {
+      descriptor = "size";
+      itemsCount = obj.size;
+    } else {
+      itemsCount = obj.length;
+    }
+    this.assert(
+      itemsCount < n,
+      "expected #{this} to have a " + descriptor + " below #{exp} but got #{act}",
+      "expected #{this} to not have a " + descriptor + " below #{exp}",
+      n,
+      itemsCount
+    );
+  } else {
+    this.assert(
+      obj < n,
+      "expected #{this} to be below #{exp}",
+      "expected #{this} to be at least #{exp}",
+      n
+    );
+  }
+}
+__name(assertBelow, "assertBelow");
+__name2(assertBelow, "assertBelow");
+Assertion.addMethod("below", assertBelow);
+Assertion.addMethod("lt", assertBelow);
+Assertion.addMethod("lessThan", assertBelow);
+function assertMost(n, msg) {
+  if (msg)
+    flag2(this, "message", msg);
+  var obj = flag2(this, "object"), doLength = flag2(this, "doLength"), flagMsg = flag2(this, "message"), msgPrefix = flagMsg ? flagMsg + ": " : "", ssfi = flag2(this, "ssfi"), objType = type(obj).toLowerCase(), nType = type(n).toLowerCase(), errorMessage, shouldThrow = true;
+  if (doLength && objType !== "map" && objType !== "set") {
+    new Assertion(obj, flagMsg, ssfi, true).to.have.property("length");
+  }
+  if (!doLength && (objType === "date" && nType !== "date")) {
+    errorMessage = msgPrefix + "the argument to most must be a date";
+  } else if (nType !== "number" && (doLength || objType === "number")) {
+    errorMessage = msgPrefix + "the argument to most must be a number";
+  } else if (!doLength && (objType !== "date" && objType !== "number")) {
+    var printObj = objType === "string" ? "'" + obj + "'" : obj;
+    errorMessage = msgPrefix + "expected " + printObj + " to be a number or a date";
+  } else {
+    shouldThrow = false;
+  }
+  if (shouldThrow) {
+    throw new AssertionError(errorMessage, void 0, ssfi);
+  }
+  if (doLength) {
+    var descriptor = "length", itemsCount;
+    if (objType === "map" || objType === "set") {
+      descriptor = "size";
+      itemsCount = obj.size;
+    } else {
+      itemsCount = obj.length;
+    }
+    this.assert(
+      itemsCount <= n,
+      "expected #{this} to have a " + descriptor + " at most #{exp} but got #{act}",
+      "expected #{this} to have a " + descriptor + " above #{exp}",
+      n,
+      itemsCount
+    );
+  } else {
+    this.assert(
+      obj <= n,
+      "expected #{this} to be at most #{exp}",
+      "expected #{this} to be above #{exp}",
+      n
+    );
+  }
+}
+__name(assertMost, "assertMost");
+__name2(assertMost, "assertMost");
+Assertion.addMethod("most", assertMost);
+Assertion.addMethod("lte", assertMost);
+Assertion.addMethod("lessThanOrEqual", assertMost);
+Assertion.addMethod("within", function(start, finish, msg) {
+  if (msg)
+    flag2(this, "message", msg);
+  var obj = flag2(this, "object"), doLength = flag2(this, "doLength"), flagMsg = flag2(this, "message"), msgPrefix = flagMsg ? flagMsg + ": " : "", ssfi = flag2(this, "ssfi"), objType = type(obj).toLowerCase(), startType = type(start).toLowerCase(), finishType = type(finish).toLowerCase(), errorMessage, shouldThrow = true, range = startType === "date" && finishType === "date" ? start.toISOString() + ".." + finish.toISOString() : start + ".." + finish;
+  if (doLength && objType !== "map" && objType !== "set") {
+    new Assertion(obj, flagMsg, ssfi, true).to.have.property("length");
+  }
+  if (!doLength && (objType === "date" && (startType !== "date" || finishType !== "date"))) {
+    errorMessage = msgPrefix + "the arguments to within must be dates";
+  } else if ((startType !== "number" || finishType !== "number") && (doLength || objType === "number")) {
+    errorMessage = msgPrefix + "the arguments to within must be numbers";
+  } else if (!doLength && (objType !== "date" && objType !== "number")) {
+    var printObj = objType === "string" ? "'" + obj + "'" : obj;
+    errorMessage = msgPrefix + "expected " + printObj + " to be a number or a date";
+  } else {
+    shouldThrow = false;
+  }
+  if (shouldThrow) {
+    throw new AssertionError(errorMessage, void 0, ssfi);
+  }
+  if (doLength) {
+    var descriptor = "length", itemsCount;
+    if (objType === "map" || objType === "set") {
+      descriptor = "size";
+      itemsCount = obj.size;
+    } else {
+      itemsCount = obj.length;
+    }
+    this.assert(
+      itemsCount >= start && itemsCount <= finish,
+      "expected #{this} to have a " + descriptor + " within " + range,
+      "expected #{this} to not have a " + descriptor + " within " + range
+    );
+  } else {
+    this.assert(
+      obj >= start && obj <= finish,
+      "expected #{this} to be within " + range,
+      "expected #{this} to not be within " + range
+    );
+  }
+});
+function assertInstanceOf(constructor, msg) {
+  if (msg)
+    flag2(this, "message", msg);
+  var target = flag2(this, "object");
+  var ssfi = flag2(this, "ssfi");
+  var flagMsg = flag2(this, "message");
+  try {
+    var isInstanceOf = target instanceof constructor;
+  } catch (err) {
+    if (err instanceof TypeError) {
+      flagMsg = flagMsg ? flagMsg + ": " : "";
+      throw new AssertionError(
+        flagMsg + "The instanceof assertion needs a constructor but " + type(constructor) + " was given.",
+        void 0,
+        ssfi
+      );
+    }
+    throw err;
+  }
+  var name2 = getName(constructor);
+  if (name2 == null) {
+    name2 = "an unnamed constructor";
+  }
+  this.assert(
+    isInstanceOf,
+    "expected #{this} to be an instance of " + name2,
+    "expected #{this} to not be an instance of " + name2
+  );
+}
+__name(assertInstanceOf, "assertInstanceOf");
+__name2(assertInstanceOf, "assertInstanceOf");
+Assertion.addMethod("instanceof", assertInstanceOf);
+Assertion.addMethod("instanceOf", assertInstanceOf);
+function assertProperty(name2, val, msg) {
+  if (msg)
+    flag2(this, "message", msg);
+  var isNested = flag2(this, "nested"), isOwn = flag2(this, "own"), flagMsg = flag2(this, "message"), obj = flag2(this, "object"), ssfi = flag2(this, "ssfi"), nameType = typeof name2;
+  flagMsg = flagMsg ? flagMsg + ": " : "";
+  if (isNested) {
+    if (nameType !== "string") {
+      throw new AssertionError(
+        flagMsg + "the argument to property must be a string when using nested syntax",
+        void 0,
+        ssfi
+      );
+    }
+  } else {
+    if (nameType !== "string" && nameType !== "number" && nameType !== "symbol") {
+      throw new AssertionError(
+        flagMsg + "the argument to property must be a string, number, or symbol",
+        void 0,
+        ssfi
+      );
+    }
+  }
+  if (isNested && isOwn) {
+    throw new AssertionError(
+      flagMsg + 'The "nested" and "own" flags cannot be combined.',
+      void 0,
+      ssfi
+    );
+  }
+  if (obj === null || obj === void 0) {
+    throw new AssertionError(
+      flagMsg + "Target cannot be null or undefined.",
+      void 0,
+      ssfi
+    );
+  }
+  var isDeep = flag2(this, "deep"), negate = flag2(this, "negate"), pathInfo = isNested ? getPathInfo(obj, name2) : null, value = isNested ? pathInfo.value : obj[name2], isEql = isDeep ? flag2(this, "eql") : (val1, val2) => val1 === val2;
+  var descriptor = "";
+  if (isDeep)
+    descriptor += "deep ";
+  if (isOwn)
+    descriptor += "own ";
+  if (isNested)
+    descriptor += "nested ";
+  descriptor += "property ";
+  var hasProperty2;
+  if (isOwn)
+    hasProperty2 = Object.prototype.hasOwnProperty.call(obj, name2);
+  else if (isNested)
+    hasProperty2 = pathInfo.exists;
+  else
+    hasProperty2 = hasProperty(obj, name2);
+  if (!negate || arguments.length === 1) {
+    this.assert(
+      hasProperty2,
+      "expected #{this} to have " + descriptor + inspect22(name2),
+      "expected #{this} to not have " + descriptor + inspect22(name2)
+    );
+  }
+  if (arguments.length > 1) {
+    this.assert(
+      hasProperty2 && isEql(val, value),
+      "expected #{this} to have " + descriptor + inspect22(name2) + " of #{exp}, but got #{act}",
+      "expected #{this} to not have " + descriptor + inspect22(name2) + " of #{act}",
+      val,
+      value
+    );
+  }
+  flag2(this, "object", value);
+}
+__name(assertProperty, "assertProperty");
+__name2(assertProperty, "assertProperty");
+Assertion.addMethod("property", assertProperty);
+function assertOwnProperty(name2, value, msg) {
+  flag2(this, "own", true);
+  assertProperty.apply(this, arguments);
+}
+__name(assertOwnProperty, "assertOwnProperty");
+__name2(assertOwnProperty, "assertOwnProperty");
+Assertion.addMethod("ownProperty", assertOwnProperty);
+Assertion.addMethod("haveOwnProperty", assertOwnProperty);
+function assertOwnPropertyDescriptor(name2, descriptor, msg) {
+  if (typeof descriptor === "string") {
+    msg = descriptor;
+    descriptor = null;
+  }
+  if (msg)
+    flag2(this, "message", msg);
+  var obj = flag2(this, "object");
+  var actualDescriptor = Object.getOwnPropertyDescriptor(Object(obj), name2);
+  var eql = flag2(this, "eql");
+  if (actualDescriptor && descriptor) {
+    this.assert(
+      eql(descriptor, actualDescriptor),
+      "expected the own property descriptor for " + inspect22(name2) + " on #{this} to match " + inspect22(descriptor) + ", got " + inspect22(actualDescriptor),
+      "expected the own property descriptor for " + inspect22(name2) + " on #{this} to not match " + inspect22(descriptor),
+      descriptor,
+      actualDescriptor,
+      true
+    );
+  } else {
+    this.assert(
+      actualDescriptor,
+      "expected #{this} to have an own property descriptor for " + inspect22(name2),
+      "expected #{this} to not have an own property descriptor for " + inspect22(name2)
+    );
+  }
+  flag2(this, "object", actualDescriptor);
+}
+__name(assertOwnPropertyDescriptor, "assertOwnPropertyDescriptor");
+__name2(assertOwnPropertyDescriptor, "assertOwnPropertyDescriptor");
+Assertion.addMethod("ownPropertyDescriptor", assertOwnPropertyDescriptor);
+Assertion.addMethod("haveOwnPropertyDescriptor", assertOwnPropertyDescriptor);
+function assertLengthChain() {
+  flag2(this, "doLength", true);
+}
+__name(assertLengthChain, "assertLengthChain");
+__name2(assertLengthChain, "assertLengthChain");
+function assertLength(n, msg) {
+  if (msg)
+    flag2(this, "message", msg);
+  var obj = flag2(this, "object"), objType = type(obj).toLowerCase(), flagMsg = flag2(this, "message"), ssfi = flag2(this, "ssfi"), descriptor = "length", itemsCount;
+  switch (objType) {
+    case "map":
+    case "set":
+      descriptor = "size";
+      itemsCount = obj.size;
+      break;
+    default:
+      new Assertion(obj, flagMsg, ssfi, true).to.have.property("length");
+      itemsCount = obj.length;
+  }
+  this.assert(
+    itemsCount == n,
+    "expected #{this} to have a " + descriptor + " of #{exp} but got #{act}",
+    "expected #{this} to not have a " + descriptor + " of #{act}",
+    n,
+    itemsCount
+  );
+}
+__name(assertLength, "assertLength");
+__name2(assertLength, "assertLength");
+Assertion.addChainableMethod("length", assertLength, assertLengthChain);
+Assertion.addChainableMethod("lengthOf", assertLength, assertLengthChain);
+function assertMatch(re, msg) {
+  if (msg)
+    flag2(this, "message", msg);
+  var obj = flag2(this, "object");
+  this.assert(
+    re.exec(obj),
+    "expected #{this} to match " + re,
+    "expected #{this} not to match " + re
+  );
+}
+__name(assertMatch, "assertMatch");
+__name2(assertMatch, "assertMatch");
+Assertion.addMethod("match", assertMatch);
+Assertion.addMethod("matches", assertMatch);
+Assertion.addMethod("string", function(str, msg) {
+  if (msg)
+    flag2(this, "message", msg);
+  var obj = flag2(this, "object"), flagMsg = flag2(this, "message"), ssfi = flag2(this, "ssfi");
+  new Assertion(obj, flagMsg, ssfi, true).is.a("string");
+  this.assert(
+    ~obj.indexOf(str),
+    "expected #{this} to contain " + inspect22(str),
+    "expected #{this} to not contain " + inspect22(str)
+  );
+});
+function assertKeys(keys2) {
+  var obj = flag2(this, "object"), objType = type(obj), keysType = type(keys2), ssfi = flag2(this, "ssfi"), isDeep = flag2(this, "deep"), str, deepStr = "", actual, ok = true, flagMsg = flag2(this, "message");
+  flagMsg = flagMsg ? flagMsg + ": " : "";
+  var mixedArgsMsg = flagMsg + "when testing keys against an object or an array you must give a single Array|Object|String argument or multiple String arguments";
+  if (objType === "Map" || objType === "Set") {
+    deepStr = isDeep ? "deeply " : "";
+    actual = [];
+    obj.forEach(function(val, key) {
+      actual.push(key);
+    });
+    if (keysType !== "Array") {
+      keys2 = Array.prototype.slice.call(arguments);
+    }
+  } else {
+    actual = getOwnEnumerableProperties(obj);
+    switch (keysType) {
+      case "Array":
+        if (arguments.length > 1) {
+          throw new AssertionError(mixedArgsMsg, void 0, ssfi);
+        }
+        break;
+      case "Object":
+        if (arguments.length > 1) {
+          throw new AssertionError(mixedArgsMsg, void 0, ssfi);
+        }
+        keys2 = Object.keys(keys2);
+        break;
+      default:
+        keys2 = Array.prototype.slice.call(arguments);
+    }
+    keys2 = keys2.map(function(val) {
+      return typeof val === "symbol" ? val : String(val);
+    });
+  }
+  if (!keys2.length) {
+    throw new AssertionError(flagMsg + "keys required", void 0, ssfi);
+  }
+  var len = keys2.length, any = flag2(this, "any"), all = flag2(this, "all"), expected = keys2, isEql = isDeep ? flag2(this, "eql") : (val1, val2) => val1 === val2;
+  if (!any && !all) {
+    all = true;
+  }
+  if (any) {
+    ok = expected.some(function(expectedKey) {
+      return actual.some(function(actualKey) {
+        return isEql(expectedKey, actualKey);
+      });
+    });
+  }
+  if (all) {
+    ok = expected.every(function(expectedKey) {
+      return actual.some(function(actualKey) {
+        return isEql(expectedKey, actualKey);
+      });
+    });
+    if (!flag2(this, "contains")) {
+      ok = ok && keys2.length == actual.length;
+    }
+  }
+  if (len > 1) {
+    keys2 = keys2.map(function(key) {
+      return inspect22(key);
+    });
+    var last = keys2.pop();
+    if (all) {
+      str = keys2.join(", ") + ", and " + last;
+    }
+    if (any) {
+      str = keys2.join(", ") + ", or " + last;
+    }
+  } else {
+    str = inspect22(keys2[0]);
+  }
+  str = (len > 1 ? "keys " : "key ") + str;
+  str = (flag2(this, "contains") ? "contain " : "have ") + str;
+  this.assert(
+    ok,
+    "expected #{this} to " + deepStr + str,
+    "expected #{this} to not " + deepStr + str,
+    expected.slice(0).sort(compareByInspect),
+    actual.sort(compareByInspect),
+    true
+  );
+}
+__name(assertKeys, "assertKeys");
+__name2(assertKeys, "assertKeys");
+Assertion.addMethod("keys", assertKeys);
+Assertion.addMethod("key", assertKeys);
+function assertThrows(errorLike, errMsgMatcher, msg) {
+  if (msg)
+    flag2(this, "message", msg);
+  var obj = flag2(this, "object"), ssfi = flag2(this, "ssfi"), flagMsg = flag2(this, "message"), negate = flag2(this, "negate") || false;
+  new Assertion(obj, flagMsg, ssfi, true).is.a("function");
+  if (isRegExp22(errorLike) || typeof errorLike === "string") {
+    errMsgMatcher = errorLike;
+    errorLike = null;
+  }
+  let caughtErr;
+  let errorWasThrown = false;
+  try {
+    obj();
+  } catch (err) {
+    errorWasThrown = true;
+    caughtErr = err;
+  }
+  var everyArgIsUndefined = errorLike === void 0 && errMsgMatcher === void 0;
+  var everyArgIsDefined = Boolean(errorLike && errMsgMatcher);
+  var errorLikeFail = false;
+  var errMsgMatcherFail = false;
+  if (everyArgIsUndefined || !everyArgIsUndefined && !negate) {
+    var errorLikeString = "an error";
+    if (errorLike instanceof Error) {
+      errorLikeString = "#{exp}";
+    } else if (errorLike) {
+      errorLikeString = check_error_exports.getConstructorName(errorLike);
+    }
+    let actual = caughtErr;
+    if (caughtErr instanceof Error) {
+      actual = caughtErr.toString();
+    } else if (typeof caughtErr === "string") {
+      actual = caughtErr;
+    } else if (caughtErr && (typeof caughtErr === "object" || typeof caughtErr === "function")) {
+      try {
+        actual = check_error_exports.getConstructorName(caughtErr);
+      } catch (_err) {
+      }
+    }
+    this.assert(
+      errorWasThrown,
+      "expected #{this} to throw " + errorLikeString,
+      "expected #{this} to not throw an error but #{act} was thrown",
+      errorLike && errorLike.toString(),
+      actual
+    );
+  }
+  if (errorLike && caughtErr) {
+    if (errorLike instanceof Error) {
+      var isCompatibleInstance = check_error_exports.compatibleInstance(caughtErr, errorLike);
+      if (isCompatibleInstance === negate) {
+        if (everyArgIsDefined && negate) {
+          errorLikeFail = true;
+        } else {
+          this.assert(
+            negate,
+            "expected #{this} to throw #{exp} but #{act} was thrown",
+            "expected #{this} to not throw #{exp}" + (caughtErr && !negate ? " but #{act} was thrown" : ""),
+            errorLike.toString(),
+            caughtErr.toString()
+          );
+        }
+      }
+    }
+    var isCompatibleConstructor = check_error_exports.compatibleConstructor(caughtErr, errorLike);
+    if (isCompatibleConstructor === negate) {
+      if (everyArgIsDefined && negate) {
+        errorLikeFail = true;
+      } else {
+        this.assert(
+          negate,
+          "expected #{this} to throw #{exp} but #{act} was thrown",
+          "expected #{this} to not throw #{exp}" + (caughtErr ? " but #{act} was thrown" : ""),
+          errorLike instanceof Error ? errorLike.toString() : errorLike && check_error_exports.getConstructorName(errorLike),
+          caughtErr instanceof Error ? caughtErr.toString() : caughtErr && check_error_exports.getConstructorName(caughtErr)
+        );
+      }
+    }
+  }
+  if (caughtErr && errMsgMatcher !== void 0 && errMsgMatcher !== null) {
+    var placeholder = "including";
+    if (isRegExp22(errMsgMatcher)) {
+      placeholder = "matching";
+    }
+    var isCompatibleMessage = check_error_exports.compatibleMessage(caughtErr, errMsgMatcher);
+    if (isCompatibleMessage === negate) {
+      if (everyArgIsDefined && negate) {
+        errMsgMatcherFail = true;
+      } else {
+        this.assert(
+          negate,
+          "expected #{this} to throw error " + placeholder + " #{exp} but got #{act}",
+          "expected #{this} to throw error not " + placeholder + " #{exp}",
+          errMsgMatcher,
+          check_error_exports.getMessage(caughtErr)
+        );
+      }
+    }
+  }
+  if (errorLikeFail && errMsgMatcherFail) {
+    this.assert(
+      negate,
+      "expected #{this} to throw #{exp} but #{act} was thrown",
+      "expected #{this} to not throw #{exp}" + (caughtErr ? " but #{act} was thrown" : ""),
+      errorLike instanceof Error ? errorLike.toString() : errorLike && check_error_exports.getConstructorName(errorLike),
+      caughtErr instanceof Error ? caughtErr.toString() : caughtErr && check_error_exports.getConstructorName(caughtErr)
+    );
+  }
+  flag2(this, "object", caughtErr);
+}
+__name(assertThrows, "assertThrows");
+__name2(assertThrows, "assertThrows");
+Assertion.addMethod("throw", assertThrows);
+Assertion.addMethod("throws", assertThrows);
+Assertion.addMethod("Throw", assertThrows);
+function respondTo(method, msg) {
+  if (msg)
+    flag2(this, "message", msg);
+  var obj = flag2(this, "object"), itself = flag2(this, "itself"), context2 = "function" === typeof obj && !itself ? obj.prototype[method] : obj[method];
+  this.assert(
+    "function" === typeof context2,
+    "expected #{this} to respond to " + inspect22(method),
+    "expected #{this} to not respond to " + inspect22(method)
+  );
+}
+__name(respondTo, "respondTo");
+__name2(respondTo, "respondTo");
+Assertion.addMethod("respondTo", respondTo);
+Assertion.addMethod("respondsTo", respondTo);
+Assertion.addProperty("itself", function() {
+  flag2(this, "itself", true);
+});
+function satisfy(matcher, msg) {
+  if (msg)
+    flag2(this, "message", msg);
+  var obj = flag2(this, "object");
+  var result = matcher(obj);
+  this.assert(
+    result,
+    "expected #{this} to satisfy " + objDisplay(matcher),
+    "expected #{this} to not satisfy" + objDisplay(matcher),
+    flag2(this, "negate") ? false : true,
+    result
+  );
+}
+__name(satisfy, "satisfy");
+__name2(satisfy, "satisfy");
+Assertion.addMethod("satisfy", satisfy);
+Assertion.addMethod("satisfies", satisfy);
+function closeTo(expected, delta, msg) {
+  if (msg)
+    flag2(this, "message", msg);
+  var obj = flag2(this, "object"), flagMsg = flag2(this, "message"), ssfi = flag2(this, "ssfi");
+  new Assertion(obj, flagMsg, ssfi, true).is.a("number");
+  if (typeof expected !== "number" || typeof delta !== "number") {
+    flagMsg = flagMsg ? flagMsg + ": " : "";
+    var deltaMessage = delta === void 0 ? ", and a delta is required" : "";
+    throw new AssertionError(
+      flagMsg + "the arguments to closeTo or approximately must be numbers" + deltaMessage,
+      void 0,
+      ssfi
+    );
+  }
+  this.assert(
+    Math.abs(obj - expected) <= delta,
+    "expected #{this} to be close to " + expected + " +/- " + delta,
+    "expected #{this} not to be close to " + expected + " +/- " + delta
+  );
+}
+__name(closeTo, "closeTo");
+__name2(closeTo, "closeTo");
+Assertion.addMethod("closeTo", closeTo);
+Assertion.addMethod("approximately", closeTo);
+function isSubsetOf(_subset, _superset, cmp, contains, ordered) {
+  let superset = Array.from(_superset);
+  let subset = Array.from(_subset);
+  if (!contains) {
+    if (subset.length !== superset.length)
+      return false;
+    superset = superset.slice();
+  }
+  return subset.every(function(elem, idx) {
+    if (ordered)
+      return cmp ? cmp(elem, superset[idx]) : elem === superset[idx];
+    if (!cmp) {
+      var matchIdx = superset.indexOf(elem);
+      if (matchIdx === -1)
+        return false;
+      if (!contains)
+        superset.splice(matchIdx, 1);
+      return true;
+    }
+    return superset.some(function(elem2, matchIdx2) {
+      if (!cmp(elem, elem2))
+        return false;
+      if (!contains)
+        superset.splice(matchIdx2, 1);
+      return true;
+    });
+  });
+}
+__name(isSubsetOf, "isSubsetOf");
+__name2(isSubsetOf, "isSubsetOf");
+Assertion.addMethod("members", function(subset, msg) {
+  if (msg)
+    flag2(this, "message", msg);
+  var obj = flag2(this, "object"), flagMsg = flag2(this, "message"), ssfi = flag2(this, "ssfi");
+  new Assertion(obj, flagMsg, ssfi, true).to.be.iterable;
+  new Assertion(subset, flagMsg, ssfi, true).to.be.iterable;
+  var contains = flag2(this, "contains");
+  var ordered = flag2(this, "ordered");
+  var subject, failMsg, failNegateMsg;
+  if (contains) {
+    subject = ordered ? "an ordered superset" : "a superset";
+    failMsg = "expected #{this} to be " + subject + " of #{exp}";
+    failNegateMsg = "expected #{this} to not be " + subject + " of #{exp}";
+  } else {
+    subject = ordered ? "ordered members" : "members";
+    failMsg = "expected #{this} to have the same " + subject + " as #{exp}";
+    failNegateMsg = "expected #{this} to not have the same " + subject + " as #{exp}";
+  }
+  var cmp = flag2(this, "deep") ? flag2(this, "eql") : void 0;
+  this.assert(
+    isSubsetOf(subset, obj, cmp, contains, ordered),
+    failMsg,
+    failNegateMsg,
+    subset,
+    obj,
+    true
+  );
+});
+Assertion.addProperty("iterable", function(msg) {
+  if (msg)
+    flag2(this, "message", msg);
+  var obj = flag2(this, "object");
+  this.assert(
+    obj != void 0 && obj[Symbol.iterator],
+    "expected #{this} to be an iterable",
+    "expected #{this} to not be an iterable",
+    obj
+  );
+});
+function oneOf(list2, msg) {
+  if (msg)
+    flag2(this, "message", msg);
+  var expected = flag2(this, "object"), flagMsg = flag2(this, "message"), ssfi = flag2(this, "ssfi"), contains = flag2(this, "contains"), isDeep = flag2(this, "deep"), eql = flag2(this, "eql");
+  new Assertion(list2, flagMsg, ssfi, true).to.be.an("array");
+  if (contains) {
+    this.assert(
+      list2.some(function(possibility) {
+        return expected.indexOf(possibility) > -1;
+      }),
+      "expected #{this} to contain one of #{exp}",
+      "expected #{this} to not contain one of #{exp}",
+      list2,
+      expected
+    );
+  } else {
+    if (isDeep) {
+      this.assert(
+        list2.some(function(possibility) {
+          return eql(expected, possibility);
+        }),
+        "expected #{this} to deeply equal one of #{exp}",
+        "expected #{this} to deeply equal one of #{exp}",
+        list2,
+        expected
+      );
+    } else {
+      this.assert(
+        list2.indexOf(expected) > -1,
+        "expected #{this} to be one of #{exp}",
+        "expected #{this} to not be one of #{exp}",
+        list2,
+        expected
+      );
+    }
+  }
+}
+__name(oneOf, "oneOf");
+__name2(oneOf, "oneOf");
+Assertion.addMethod("oneOf", oneOf);
+function assertChanges(subject, prop, msg) {
+  if (msg)
+    flag2(this, "message", msg);
+  var fn = flag2(this, "object"), flagMsg = flag2(this, "message"), ssfi = flag2(this, "ssfi");
+  new Assertion(fn, flagMsg, ssfi, true).is.a("function");
+  var initial;
+  if (!prop) {
+    new Assertion(subject, flagMsg, ssfi, true).is.a("function");
+    initial = subject();
+  } else {
+    new Assertion(subject, flagMsg, ssfi, true).to.have.property(prop);
+    initial = subject[prop];
+  }
+  fn();
+  var final = prop === void 0 || prop === null ? subject() : subject[prop];
+  var msgObj = prop === void 0 || prop === null ? initial : "." + prop;
+  flag2(this, "deltaMsgObj", msgObj);
+  flag2(this, "initialDeltaValue", initial);
+  flag2(this, "finalDeltaValue", final);
+  flag2(this, "deltaBehavior", "change");
+  flag2(this, "realDelta", final !== initial);
+  this.assert(
+    initial !== final,
+    "expected " + msgObj + " to change",
+    "expected " + msgObj + " to not change"
+  );
+}
+__name(assertChanges, "assertChanges");
+__name2(assertChanges, "assertChanges");
+Assertion.addMethod("change", assertChanges);
+Assertion.addMethod("changes", assertChanges);
+function assertIncreases(subject, prop, msg) {
+  if (msg)
+    flag2(this, "message", msg);
+  var fn = flag2(this, "object"), flagMsg = flag2(this, "message"), ssfi = flag2(this, "ssfi");
+  new Assertion(fn, flagMsg, ssfi, true).is.a("function");
+  var initial;
+  if (!prop) {
+    new Assertion(subject, flagMsg, ssfi, true).is.a("function");
+    initial = subject();
+  } else {
+    new Assertion(subject, flagMsg, ssfi, true).to.have.property(prop);
+    initial = subject[prop];
+  }
+  new Assertion(initial, flagMsg, ssfi, true).is.a("number");
+  fn();
+  var final = prop === void 0 || prop === null ? subject() : subject[prop];
+  var msgObj = prop === void 0 || prop === null ? initial : "." + prop;
+  flag2(this, "deltaMsgObj", msgObj);
+  flag2(this, "initialDeltaValue", initial);
+  flag2(this, "finalDeltaValue", final);
+  flag2(this, "deltaBehavior", "increase");
+  flag2(this, "realDelta", final - initial);
+  this.assert(
+    final - initial > 0,
+    "expected " + msgObj + " to increase",
+    "expected " + msgObj + " to not increase"
+  );
+}
+__name(assertIncreases, "assertIncreases");
+__name2(assertIncreases, "assertIncreases");
+Assertion.addMethod("increase", assertIncreases);
+Assertion.addMethod("increases", assertIncreases);
+function assertDecreases(subject, prop, msg) {
+  if (msg)
+    flag2(this, "message", msg);
+  var fn = flag2(this, "object"), flagMsg = flag2(this, "message"), ssfi = flag2(this, "ssfi");
+  new Assertion(fn, flagMsg, ssfi, true).is.a("function");
+  var initial;
+  if (!prop) {
+    new Assertion(subject, flagMsg, ssfi, true).is.a("function");
+    initial = subject();
+  } else {
+    new Assertion(subject, flagMsg, ssfi, true).to.have.property(prop);
+    initial = subject[prop];
+  }
+  new Assertion(initial, flagMsg, ssfi, true).is.a("number");
+  fn();
+  var final = prop === void 0 || prop === null ? subject() : subject[prop];
+  var msgObj = prop === void 0 || prop === null ? initial : "." + prop;
+  flag2(this, "deltaMsgObj", msgObj);
+  flag2(this, "initialDeltaValue", initial);
+  flag2(this, "finalDeltaValue", final);
+  flag2(this, "deltaBehavior", "decrease");
+  flag2(this, "realDelta", initial - final);
+  this.assert(
+    final - initial < 0,
+    "expected " + msgObj + " to decrease",
+    "expected " + msgObj + " to not decrease"
+  );
+}
+__name(assertDecreases, "assertDecreases");
+__name2(assertDecreases, "assertDecreases");
+Assertion.addMethod("decrease", assertDecreases);
+Assertion.addMethod("decreases", assertDecreases);
+function assertDelta(delta, msg) {
+  if (msg)
+    flag2(this, "message", msg);
+  var msgObj = flag2(this, "deltaMsgObj");
+  var initial = flag2(this, "initialDeltaValue");
+  var final = flag2(this, "finalDeltaValue");
+  var behavior = flag2(this, "deltaBehavior");
+  var realDelta = flag2(this, "realDelta");
+  var expression;
+  if (behavior === "change") {
+    expression = Math.abs(final - initial) === Math.abs(delta);
+  } else {
+    expression = realDelta === Math.abs(delta);
+  }
+  this.assert(
+    expression,
+    "expected " + msgObj + " to " + behavior + " by " + delta,
+    "expected " + msgObj + " to not " + behavior + " by " + delta
+  );
+}
+__name(assertDelta, "assertDelta");
+__name2(assertDelta, "assertDelta");
+Assertion.addMethod("by", assertDelta);
+Assertion.addProperty("extensible", function() {
+  var obj = flag2(this, "object");
+  var isExtensible = obj === Object(obj) && Object.isExtensible(obj);
+  this.assert(
+    isExtensible,
+    "expected #{this} to be extensible",
+    "expected #{this} to not be extensible"
+  );
+});
+Assertion.addProperty("sealed", function() {
+  var obj = flag2(this, "object");
+  var isSealed = obj === Object(obj) ? Object.isSealed(obj) : true;
+  this.assert(
+    isSealed,
+    "expected #{this} to be sealed",
+    "expected #{this} to not be sealed"
+  );
+});
+Assertion.addProperty("frozen", function() {
+  var obj = flag2(this, "object");
+  var isFrozen = obj === Object(obj) ? Object.isFrozen(obj) : true;
+  this.assert(
+    isFrozen,
+    "expected #{this} to be frozen",
+    "expected #{this} to not be frozen"
+  );
+});
+Assertion.addProperty("finite", function(msg) {
+  var obj = flag2(this, "object");
+  this.assert(
+    typeof obj === "number" && isFinite(obj),
+    "expected #{this} to be a finite number",
+    "expected #{this} to not be a finite number"
+  );
+});
+function expect(val, message) {
+  return new Assertion(val, message);
+}
+__name(expect, "expect");
+__name2(expect, "expect");
+expect.fail = function(actual, expected, message, operator) {
+  if (arguments.length < 2) {
+    message = actual;
+    actual = void 0;
+  }
+  message = message || "expect.fail()";
+  throw new AssertionError(message, {
+    actual,
+    expected,
+    operator
+  }, expect.fail);
+};
+var should_exports = {};
+__export2(should_exports, {
+  Should: /* @__PURE__ */ __name(() => Should, "Should"),
+  should: /* @__PURE__ */ __name(() => should, "should")
+});
+function loadShould() {
+  function shouldGetter() {
+    if (this instanceof String || this instanceof Number || this instanceof Boolean || typeof Symbol === "function" && this instanceof Symbol || typeof BigInt === "function" && this instanceof BigInt) {
+      return new Assertion(this.valueOf(), null, shouldGetter);
+    }
+    return new Assertion(this, null, shouldGetter);
+  }
+  __name(shouldGetter, "shouldGetter");
+  __name2(shouldGetter, "shouldGetter");
+  function shouldSetter(value) {
+    Object.defineProperty(this, "should", {
+      value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  }
+  __name(shouldSetter, "shouldSetter");
+  __name2(shouldSetter, "shouldSetter");
+  Object.defineProperty(Object.prototype, "should", {
+    set: shouldSetter,
+    get: shouldGetter,
+    configurable: true
+  });
+  var should2 = {};
+  should2.fail = function(actual, expected, message, operator) {
+    if (arguments.length < 2) {
+      message = actual;
+      actual = void 0;
+    }
+    message = message || "should.fail()";
+    throw new AssertionError(message, {
+      actual,
+      expected,
+      operator
+    }, should2.fail);
+  };
+  should2.equal = function(actual, expected, message) {
+    new Assertion(actual, message).to.equal(expected);
+  };
+  should2.Throw = function(fn, errt, errs, msg) {
+    new Assertion(fn, msg).to.Throw(errt, errs);
+  };
+  should2.exist = function(val, msg) {
+    new Assertion(val, msg).to.exist;
+  };
+  should2.not = {};
+  should2.not.equal = function(actual, expected, msg) {
+    new Assertion(actual, msg).to.not.equal(expected);
+  };
+  should2.not.Throw = function(fn, errt, errs, msg) {
+    new Assertion(fn, msg).to.not.Throw(errt, errs);
+  };
+  should2.not.exist = function(val, msg) {
+    new Assertion(val, msg).to.not.exist;
+  };
+  should2["throw"] = should2["Throw"];
+  should2.not["throw"] = should2.not["Throw"];
+  return should2;
+}
+__name(loadShould, "loadShould");
+__name2(loadShould, "loadShould");
+var should = loadShould;
+var Should = loadShould;
+function assert(express, errmsg) {
+  var test22 = new Assertion(null, null, assert, true);
+  test22.assert(
+    express,
+    errmsg,
+    "[ negation message unavailable ]"
+  );
+}
+__name(assert, "assert");
+__name2(assert, "assert");
+assert.fail = function(actual, expected, message, operator) {
+  if (arguments.length < 2) {
+    message = actual;
+    actual = void 0;
+  }
+  message = message || "assert.fail()";
+  throw new AssertionError(message, {
+    actual,
+    expected,
+    operator
+  }, assert.fail);
+};
+assert.isOk = function(val, msg) {
+  new Assertion(val, msg, assert.isOk, true).is.ok;
+};
+assert.isNotOk = function(val, msg) {
+  new Assertion(val, msg, assert.isNotOk, true).is.not.ok;
+};
+assert.equal = function(act, exp, msg) {
+  var test22 = new Assertion(act, msg, assert.equal, true);
+  test22.assert(
+    exp == flag(test22, "object"),
+    "expected #{this} to equal #{exp}",
+    "expected #{this} to not equal #{act}",
+    exp,
+    act,
+    true
+  );
+};
+assert.notEqual = function(act, exp, msg) {
+  var test22 = new Assertion(act, msg, assert.notEqual, true);
+  test22.assert(
+    exp != flag(test22, "object"),
+    "expected #{this} to not equal #{exp}",
+    "expected #{this} to equal #{act}",
+    exp,
+    act,
+    true
+  );
+};
+assert.strictEqual = function(act, exp, msg) {
+  new Assertion(act, msg, assert.strictEqual, true).to.equal(exp);
+};
+assert.notStrictEqual = function(act, exp, msg) {
+  new Assertion(act, msg, assert.notStrictEqual, true).to.not.equal(exp);
+};
+assert.deepEqual = assert.deepStrictEqual = function(act, exp, msg) {
+  new Assertion(act, msg, assert.deepEqual, true).to.eql(exp);
+};
+assert.notDeepEqual = function(act, exp, msg) {
+  new Assertion(act, msg, assert.notDeepEqual, true).to.not.eql(exp);
+};
+assert.isAbove = function(val, abv, msg) {
+  new Assertion(val, msg, assert.isAbove, true).to.be.above(abv);
+};
+assert.isAtLeast = function(val, atlst, msg) {
+  new Assertion(val, msg, assert.isAtLeast, true).to.be.least(atlst);
+};
+assert.isBelow = function(val, blw, msg) {
+  new Assertion(val, msg, assert.isBelow, true).to.be.below(blw);
+};
+assert.isAtMost = function(val, atmst, msg) {
+  new Assertion(val, msg, assert.isAtMost, true).to.be.most(atmst);
+};
+assert.isTrue = function(val, msg) {
+  new Assertion(val, msg, assert.isTrue, true).is["true"];
+};
+assert.isNotTrue = function(val, msg) {
+  new Assertion(val, msg, assert.isNotTrue, true).to.not.equal(true);
+};
+assert.isFalse = function(val, msg) {
+  new Assertion(val, msg, assert.isFalse, true).is["false"];
+};
+assert.isNotFalse = function(val, msg) {
+  new Assertion(val, msg, assert.isNotFalse, true).to.not.equal(false);
+};
+assert.isNull = function(val, msg) {
+  new Assertion(val, msg, assert.isNull, true).to.equal(null);
+};
+assert.isNotNull = function(val, msg) {
+  new Assertion(val, msg, assert.isNotNull, true).to.not.equal(null);
+};
+assert.isNaN = function(val, msg) {
+  new Assertion(val, msg, assert.isNaN, true).to.be.NaN;
+};
+assert.isNotNaN = function(value, message) {
+  new Assertion(value, message, assert.isNotNaN, true).not.to.be.NaN;
+};
+assert.exists = function(val, msg) {
+  new Assertion(val, msg, assert.exists, true).to.exist;
+};
+assert.notExists = function(val, msg) {
+  new Assertion(val, msg, assert.notExists, true).to.not.exist;
+};
+assert.isUndefined = function(val, msg) {
+  new Assertion(val, msg, assert.isUndefined, true).to.equal(void 0);
+};
+assert.isDefined = function(val, msg) {
+  new Assertion(val, msg, assert.isDefined, true).to.not.equal(void 0);
+};
+assert.isCallable = function(value, message) {
+  new Assertion(value, message, assert.isCallable, true).is.callable;
+};
+assert.isNotCallable = function(value, message) {
+  new Assertion(value, message, assert.isNotCallable, true).is.not.callable;
+};
+assert.isObject = function(val, msg) {
+  new Assertion(val, msg, assert.isObject, true).to.be.a("object");
+};
+assert.isNotObject = function(val, msg) {
+  new Assertion(val, msg, assert.isNotObject, true).to.not.be.a("object");
+};
+assert.isArray = function(val, msg) {
+  new Assertion(val, msg, assert.isArray, true).to.be.an("array");
+};
+assert.isNotArray = function(val, msg) {
+  new Assertion(val, msg, assert.isNotArray, true).to.not.be.an("array");
+};
+assert.isString = function(val, msg) {
+  new Assertion(val, msg, assert.isString, true).to.be.a("string");
+};
+assert.isNotString = function(val, msg) {
+  new Assertion(val, msg, assert.isNotString, true).to.not.be.a("string");
+};
+assert.isNumber = function(val, msg) {
+  new Assertion(val, msg, assert.isNumber, true).to.be.a("number");
+};
+assert.isNotNumber = function(val, msg) {
+  new Assertion(val, msg, assert.isNotNumber, true).to.not.be.a("number");
+};
+assert.isFinite = function(val, msg) {
+  new Assertion(val, msg, assert.isFinite, true).to.be.finite;
+};
+assert.isBoolean = function(val, msg) {
+  new Assertion(val, msg, assert.isBoolean, true).to.be.a("boolean");
+};
+assert.isNotBoolean = function(val, msg) {
+  new Assertion(val, msg, assert.isNotBoolean, true).to.not.be.a("boolean");
+};
+assert.typeOf = function(val, type3, msg) {
+  new Assertion(val, msg, assert.typeOf, true).to.be.a(type3);
+};
+assert.notTypeOf = function(value, type3, message) {
+  new Assertion(value, message, assert.notTypeOf, true).to.not.be.a(type3);
+};
+assert.instanceOf = function(val, type3, msg) {
+  new Assertion(val, msg, assert.instanceOf, true).to.be.instanceOf(type3);
+};
+assert.notInstanceOf = function(val, type3, msg) {
+  new Assertion(val, msg, assert.notInstanceOf, true).to.not.be.instanceOf(type3);
+};
+assert.include = function(exp, inc, msg) {
+  new Assertion(exp, msg, assert.include, true).include(inc);
+};
+assert.notInclude = function(exp, inc, msg) {
+  new Assertion(exp, msg, assert.notInclude, true).not.include(inc);
+};
+assert.deepInclude = function(exp, inc, msg) {
+  new Assertion(exp, msg, assert.deepInclude, true).deep.include(inc);
+};
+assert.notDeepInclude = function(exp, inc, msg) {
+  new Assertion(exp, msg, assert.notDeepInclude, true).not.deep.include(inc);
+};
+assert.nestedInclude = function(exp, inc, msg) {
+  new Assertion(exp, msg, assert.nestedInclude, true).nested.include(inc);
+};
+assert.notNestedInclude = function(exp, inc, msg) {
+  new Assertion(exp, msg, assert.notNestedInclude, true).not.nested.include(inc);
+};
+assert.deepNestedInclude = function(exp, inc, msg) {
+  new Assertion(exp, msg, assert.deepNestedInclude, true).deep.nested.include(inc);
+};
+assert.notDeepNestedInclude = function(exp, inc, msg) {
+  new Assertion(exp, msg, assert.notDeepNestedInclude, true).not.deep.nested.include(inc);
+};
+assert.ownInclude = function(exp, inc, msg) {
+  new Assertion(exp, msg, assert.ownInclude, true).own.include(inc);
+};
+assert.notOwnInclude = function(exp, inc, msg) {
+  new Assertion(exp, msg, assert.notOwnInclude, true).not.own.include(inc);
+};
+assert.deepOwnInclude = function(exp, inc, msg) {
+  new Assertion(exp, msg, assert.deepOwnInclude, true).deep.own.include(inc);
+};
+assert.notDeepOwnInclude = function(exp, inc, msg) {
+  new Assertion(exp, msg, assert.notDeepOwnInclude, true).not.deep.own.include(inc);
+};
+assert.match = function(exp, re, msg) {
+  new Assertion(exp, msg, assert.match, true).to.match(re);
+};
+assert.notMatch = function(exp, re, msg) {
+  new Assertion(exp, msg, assert.notMatch, true).to.not.match(re);
+};
+assert.property = function(obj, prop, msg) {
+  new Assertion(obj, msg, assert.property, true).to.have.property(prop);
+};
+assert.notProperty = function(obj, prop, msg) {
+  new Assertion(obj, msg, assert.notProperty, true).to.not.have.property(prop);
+};
+assert.propertyVal = function(obj, prop, val, msg) {
+  new Assertion(obj, msg, assert.propertyVal, true).to.have.property(prop, val);
+};
+assert.notPropertyVal = function(obj, prop, val, msg) {
+  new Assertion(obj, msg, assert.notPropertyVal, true).to.not.have.property(prop, val);
+};
+assert.deepPropertyVal = function(obj, prop, val, msg) {
+  new Assertion(obj, msg, assert.deepPropertyVal, true).to.have.deep.property(prop, val);
+};
+assert.notDeepPropertyVal = function(obj, prop, val, msg) {
+  new Assertion(obj, msg, assert.notDeepPropertyVal, true).to.not.have.deep.property(prop, val);
+};
+assert.ownProperty = function(obj, prop, msg) {
+  new Assertion(obj, msg, assert.ownProperty, true).to.have.own.property(prop);
+};
+assert.notOwnProperty = function(obj, prop, msg) {
+  new Assertion(obj, msg, assert.notOwnProperty, true).to.not.have.own.property(prop);
+};
+assert.ownPropertyVal = function(obj, prop, value, msg) {
+  new Assertion(obj, msg, assert.ownPropertyVal, true).to.have.own.property(prop, value);
+};
+assert.notOwnPropertyVal = function(obj, prop, value, msg) {
+  new Assertion(obj, msg, assert.notOwnPropertyVal, true).to.not.have.own.property(prop, value);
+};
+assert.deepOwnPropertyVal = function(obj, prop, value, msg) {
+  new Assertion(obj, msg, assert.deepOwnPropertyVal, true).to.have.deep.own.property(prop, value);
+};
+assert.notDeepOwnPropertyVal = function(obj, prop, value, msg) {
+  new Assertion(obj, msg, assert.notDeepOwnPropertyVal, true).to.not.have.deep.own.property(prop, value);
+};
+assert.nestedProperty = function(obj, prop, msg) {
+  new Assertion(obj, msg, assert.nestedProperty, true).to.have.nested.property(prop);
+};
+assert.notNestedProperty = function(obj, prop, msg) {
+  new Assertion(obj, msg, assert.notNestedProperty, true).to.not.have.nested.property(prop);
+};
+assert.nestedPropertyVal = function(obj, prop, val, msg) {
+  new Assertion(obj, msg, assert.nestedPropertyVal, true).to.have.nested.property(prop, val);
+};
+assert.notNestedPropertyVal = function(obj, prop, val, msg) {
+  new Assertion(obj, msg, assert.notNestedPropertyVal, true).to.not.have.nested.property(prop, val);
+};
+assert.deepNestedPropertyVal = function(obj, prop, val, msg) {
+  new Assertion(obj, msg, assert.deepNestedPropertyVal, true).to.have.deep.nested.property(prop, val);
+};
+assert.notDeepNestedPropertyVal = function(obj, prop, val, msg) {
+  new Assertion(obj, msg, assert.notDeepNestedPropertyVal, true).to.not.have.deep.nested.property(prop, val);
+};
+assert.lengthOf = function(exp, len, msg) {
+  new Assertion(exp, msg, assert.lengthOf, true).to.have.lengthOf(len);
+};
+assert.hasAnyKeys = function(obj, keys2, msg) {
+  new Assertion(obj, msg, assert.hasAnyKeys, true).to.have.any.keys(keys2);
+};
+assert.hasAllKeys = function(obj, keys2, msg) {
+  new Assertion(obj, msg, assert.hasAllKeys, true).to.have.all.keys(keys2);
+};
+assert.containsAllKeys = function(obj, keys2, msg) {
+  new Assertion(obj, msg, assert.containsAllKeys, true).to.contain.all.keys(keys2);
+};
+assert.doesNotHaveAnyKeys = function(obj, keys2, msg) {
+  new Assertion(obj, msg, assert.doesNotHaveAnyKeys, true).to.not.have.any.keys(keys2);
+};
+assert.doesNotHaveAllKeys = function(obj, keys2, msg) {
+  new Assertion(obj, msg, assert.doesNotHaveAllKeys, true).to.not.have.all.keys(keys2);
+};
+assert.hasAnyDeepKeys = function(obj, keys2, msg) {
+  new Assertion(obj, msg, assert.hasAnyDeepKeys, true).to.have.any.deep.keys(keys2);
+};
+assert.hasAllDeepKeys = function(obj, keys2, msg) {
+  new Assertion(obj, msg, assert.hasAllDeepKeys, true).to.have.all.deep.keys(keys2);
+};
+assert.containsAllDeepKeys = function(obj, keys2, msg) {
+  new Assertion(obj, msg, assert.containsAllDeepKeys, true).to.contain.all.deep.keys(keys2);
+};
+assert.doesNotHaveAnyDeepKeys = function(obj, keys2, msg) {
+  new Assertion(obj, msg, assert.doesNotHaveAnyDeepKeys, true).to.not.have.any.deep.keys(keys2);
+};
+assert.doesNotHaveAllDeepKeys = function(obj, keys2, msg) {
+  new Assertion(obj, msg, assert.doesNotHaveAllDeepKeys, true).to.not.have.all.deep.keys(keys2);
+};
+assert.throws = function(fn, errorLike, errMsgMatcher, msg) {
+  if ("string" === typeof errorLike || errorLike instanceof RegExp) {
+    errMsgMatcher = errorLike;
+    errorLike = null;
+  }
+  var assertErr = new Assertion(fn, msg, assert.throws, true).to.throw(errorLike, errMsgMatcher);
+  return flag(assertErr, "object");
+};
+assert.doesNotThrow = function(fn, errorLike, errMsgMatcher, message) {
+  if ("string" === typeof errorLike || errorLike instanceof RegExp) {
+    errMsgMatcher = errorLike;
+    errorLike = null;
+  }
+  new Assertion(fn, message, assert.doesNotThrow, true).to.not.throw(errorLike, errMsgMatcher);
+};
+assert.operator = function(val, operator, val2, msg) {
+  var ok;
+  switch (operator) {
+    case "==":
+      ok = val == val2;
+      break;
+    case "===":
+      ok = val === val2;
+      break;
+    case ">":
+      ok = val > val2;
+      break;
+    case ">=":
+      ok = val >= val2;
+      break;
+    case "<":
+      ok = val < val2;
+      break;
+    case "<=":
+      ok = val <= val2;
+      break;
+    case "!=":
+      ok = val != val2;
+      break;
+    case "!==":
+      ok = val !== val2;
+      break;
+    default:
+      msg = msg ? msg + ": " : msg;
+      throw new AssertionError(
+        msg + 'Invalid operator "' + operator + '"',
+        void 0,
+        assert.operator
+      );
+  }
+  var test22 = new Assertion(ok, msg, assert.operator, true);
+  test22.assert(
+    true === flag(test22, "object"),
+    "expected " + inspect22(val) + " to be " + operator + " " + inspect22(val2),
+    "expected " + inspect22(val) + " to not be " + operator + " " + inspect22(val2)
+  );
+};
+assert.closeTo = function(act, exp, delta, msg) {
+  new Assertion(act, msg, assert.closeTo, true).to.be.closeTo(exp, delta);
+};
+assert.approximately = function(act, exp, delta, msg) {
+  new Assertion(act, msg, assert.approximately, true).to.be.approximately(exp, delta);
+};
+assert.sameMembers = function(set1, set2, msg) {
+  new Assertion(set1, msg, assert.sameMembers, true).to.have.same.members(set2);
+};
+assert.notSameMembers = function(set1, set2, msg) {
+  new Assertion(set1, msg, assert.notSameMembers, true).to.not.have.same.members(set2);
+};
+assert.sameDeepMembers = function(set1, set2, msg) {
+  new Assertion(set1, msg, assert.sameDeepMembers, true).to.have.same.deep.members(set2);
+};
+assert.notSameDeepMembers = function(set1, set2, msg) {
+  new Assertion(set1, msg, assert.notSameDeepMembers, true).to.not.have.same.deep.members(set2);
+};
+assert.sameOrderedMembers = function(set1, set2, msg) {
+  new Assertion(set1, msg, assert.sameOrderedMembers, true).to.have.same.ordered.members(set2);
+};
+assert.notSameOrderedMembers = function(set1, set2, msg) {
+  new Assertion(set1, msg, assert.notSameOrderedMembers, true).to.not.have.same.ordered.members(set2);
+};
+assert.sameDeepOrderedMembers = function(set1, set2, msg) {
+  new Assertion(set1, msg, assert.sameDeepOrderedMembers, true).to.have.same.deep.ordered.members(set2);
+};
+assert.notSameDeepOrderedMembers = function(set1, set2, msg) {
+  new Assertion(set1, msg, assert.notSameDeepOrderedMembers, true).to.not.have.same.deep.ordered.members(set2);
+};
+assert.includeMembers = function(superset, subset, msg) {
+  new Assertion(superset, msg, assert.includeMembers, true).to.include.members(subset);
+};
+assert.notIncludeMembers = function(superset, subset, msg) {
+  new Assertion(superset, msg, assert.notIncludeMembers, true).to.not.include.members(subset);
+};
+assert.includeDeepMembers = function(superset, subset, msg) {
+  new Assertion(superset, msg, assert.includeDeepMembers, true).to.include.deep.members(subset);
+};
+assert.notIncludeDeepMembers = function(superset, subset, msg) {
+  new Assertion(superset, msg, assert.notIncludeDeepMembers, true).to.not.include.deep.members(subset);
+};
+assert.includeOrderedMembers = function(superset, subset, msg) {
+  new Assertion(superset, msg, assert.includeOrderedMembers, true).to.include.ordered.members(subset);
+};
+assert.notIncludeOrderedMembers = function(superset, subset, msg) {
+  new Assertion(superset, msg, assert.notIncludeOrderedMembers, true).to.not.include.ordered.members(subset);
+};
+assert.includeDeepOrderedMembers = function(superset, subset, msg) {
+  new Assertion(superset, msg, assert.includeDeepOrderedMembers, true).to.include.deep.ordered.members(subset);
+};
+assert.notIncludeDeepOrderedMembers = function(superset, subset, msg) {
+  new Assertion(superset, msg, assert.notIncludeDeepOrderedMembers, true).to.not.include.deep.ordered.members(subset);
+};
+assert.oneOf = function(inList, list2, msg) {
+  new Assertion(inList, msg, assert.oneOf, true).to.be.oneOf(list2);
+};
+assert.isIterable = function(obj, msg) {
+  if (obj == void 0 || !obj[Symbol.iterator]) {
+    msg = msg ? `${msg} expected ${inspect22(obj)} to be an iterable` : `expected ${inspect22(obj)} to be an iterable`;
+    throw new AssertionError(
+      msg,
+      void 0,
+      assert.isIterable
+    );
+  }
+};
+assert.changes = function(fn, obj, prop, msg) {
+  if (arguments.length === 3 && typeof obj === "function") {
+    msg = prop;
+    prop = null;
+  }
+  new Assertion(fn, msg, assert.changes, true).to.change(obj, prop);
+};
+assert.changesBy = function(fn, obj, prop, delta, msg) {
+  if (arguments.length === 4 && typeof obj === "function") {
+    var tmpMsg = delta;
+    delta = prop;
+    msg = tmpMsg;
+  } else if (arguments.length === 3) {
+    delta = prop;
+    prop = null;
+  }
+  new Assertion(fn, msg, assert.changesBy, true).to.change(obj, prop).by(delta);
+};
+assert.doesNotChange = function(fn, obj, prop, msg) {
+  if (arguments.length === 3 && typeof obj === "function") {
+    msg = prop;
+    prop = null;
+  }
+  return new Assertion(fn, msg, assert.doesNotChange, true).to.not.change(obj, prop);
+};
+assert.changesButNotBy = function(fn, obj, prop, delta, msg) {
+  if (arguments.length === 4 && typeof obj === "function") {
+    var tmpMsg = delta;
+    delta = prop;
+    msg = tmpMsg;
+  } else if (arguments.length === 3) {
+    delta = prop;
+    prop = null;
+  }
+  new Assertion(fn, msg, assert.changesButNotBy, true).to.change(obj, prop).but.not.by(delta);
+};
+assert.increases = function(fn, obj, prop, msg) {
+  if (arguments.length === 3 && typeof obj === "function") {
+    msg = prop;
+    prop = null;
+  }
+  return new Assertion(fn, msg, assert.increases, true).to.increase(obj, prop);
+};
+assert.increasesBy = function(fn, obj, prop, delta, msg) {
+  if (arguments.length === 4 && typeof obj === "function") {
+    var tmpMsg = delta;
+    delta = prop;
+    msg = tmpMsg;
+  } else if (arguments.length === 3) {
+    delta = prop;
+    prop = null;
+  }
+  new Assertion(fn, msg, assert.increasesBy, true).to.increase(obj, prop).by(delta);
+};
+assert.doesNotIncrease = function(fn, obj, prop, msg) {
+  if (arguments.length === 3 && typeof obj === "function") {
+    msg = prop;
+    prop = null;
+  }
+  return new Assertion(fn, msg, assert.doesNotIncrease, true).to.not.increase(obj, prop);
+};
+assert.increasesButNotBy = function(fn, obj, prop, delta, msg) {
+  if (arguments.length === 4 && typeof obj === "function") {
+    var tmpMsg = delta;
+    delta = prop;
+    msg = tmpMsg;
+  } else if (arguments.length === 3) {
+    delta = prop;
+    prop = null;
+  }
+  new Assertion(fn, msg, assert.increasesButNotBy, true).to.increase(obj, prop).but.not.by(delta);
+};
+assert.decreases = function(fn, obj, prop, msg) {
+  if (arguments.length === 3 && typeof obj === "function") {
+    msg = prop;
+    prop = null;
+  }
+  return new Assertion(fn, msg, assert.decreases, true).to.decrease(obj, prop);
+};
+assert.decreasesBy = function(fn, obj, prop, delta, msg) {
+  if (arguments.length === 4 && typeof obj === "function") {
+    var tmpMsg = delta;
+    delta = prop;
+    msg = tmpMsg;
+  } else if (arguments.length === 3) {
+    delta = prop;
+    prop = null;
+  }
+  new Assertion(fn, msg, assert.decreasesBy, true).to.decrease(obj, prop).by(delta);
+};
+assert.doesNotDecrease = function(fn, obj, prop, msg) {
+  if (arguments.length === 3 && typeof obj === "function") {
+    msg = prop;
+    prop = null;
+  }
+  return new Assertion(fn, msg, assert.doesNotDecrease, true).to.not.decrease(obj, prop);
+};
+assert.doesNotDecreaseBy = function(fn, obj, prop, delta, msg) {
+  if (arguments.length === 4 && typeof obj === "function") {
+    var tmpMsg = delta;
+    delta = prop;
+    msg = tmpMsg;
+  } else if (arguments.length === 3) {
+    delta = prop;
+    prop = null;
+  }
+  return new Assertion(fn, msg, assert.doesNotDecreaseBy, true).to.not.decrease(obj, prop).by(delta);
+};
+assert.decreasesButNotBy = function(fn, obj, prop, delta, msg) {
+  if (arguments.length === 4 && typeof obj === "function") {
+    var tmpMsg = delta;
+    delta = prop;
+    msg = tmpMsg;
+  } else if (arguments.length === 3) {
+    delta = prop;
+    prop = null;
+  }
+  new Assertion(fn, msg, assert.decreasesButNotBy, true).to.decrease(obj, prop).but.not.by(delta);
+};
+assert.ifError = function(val) {
+  if (val) {
+    throw val;
+  }
+};
+assert.isExtensible = function(obj, msg) {
+  new Assertion(obj, msg, assert.isExtensible, true).to.be.extensible;
+};
+assert.isNotExtensible = function(obj, msg) {
+  new Assertion(obj, msg, assert.isNotExtensible, true).to.not.be.extensible;
+};
+assert.isSealed = function(obj, msg) {
+  new Assertion(obj, msg, assert.isSealed, true).to.be.sealed;
+};
+assert.isNotSealed = function(obj, msg) {
+  new Assertion(obj, msg, assert.isNotSealed, true).to.not.be.sealed;
+};
+assert.isFrozen = function(obj, msg) {
+  new Assertion(obj, msg, assert.isFrozen, true).to.be.frozen;
+};
+assert.isNotFrozen = function(obj, msg) {
+  new Assertion(obj, msg, assert.isNotFrozen, true).to.not.be.frozen;
+};
+assert.isEmpty = function(val, msg) {
+  new Assertion(val, msg, assert.isEmpty, true).to.be.empty;
+};
+assert.isNotEmpty = function(val, msg) {
+  new Assertion(val, msg, assert.isNotEmpty, true).to.not.be.empty;
+};
+(/* @__PURE__ */ __name2(/* @__PURE__ */ __name(function alias(name2, as) {
+  assert[as] = assert[name2];
+  return alias;
+}, "alias"), "alias"))("isOk", "ok")("isNotOk", "notOk")("throws", "throw")("throws", "Throw")("isExtensible", "extensible")("isNotExtensible", "notExtensible")("isSealed", "sealed")("isNotSealed", "notSealed")("isFrozen", "frozen")("isNotFrozen", "notFrozen")("isEmpty", "empty")("isNotEmpty", "notEmpty")("isCallable", "isFunction")("isNotCallable", "isNotFunction");
+var used = [];
+function use(fn) {
+  const exports2 = {
+    AssertionError,
+    util: utils_exports,
+    config: config2,
+    expect,
+    assert,
+    Assertion,
+    ...should_exports
+  };
+  if (!~used.indexOf(fn)) {
+    fn(exports2, utils_exports);
+    used.push(fn);
+  }
+  return exports2;
+}
+__name(use, "use");
+__name2(use, "use");
 export {
+  chai_exports as chai,
   browserEntry as mocha
 };
 /*!
@@ -13815,4 +17617,244 @@ export {
  * Copyright(c) 2011 TJ Holowaychuk <tj@vision-media.ca>
  * MIT Licensed
  */
+/*!
+ * Chai - flag utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+/*!
+ * Chai - test utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+/*!
+ * Chai - expectTypes utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+/*!
+ * Chai - getActual utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+/*!
+ * Chai - message composition utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+/*!
+ * Chai - transferFlags utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+/*!
+ * chai
+ * http://chaijs.com
+ * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+/*!
+ * Chai - isProxyEnabled helper
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+/*!
+ * Chai - addProperty utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+/*!
+ * Chai - addLengthGuard utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+/*!
+ * Chai - getProperties utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+/*!
+ * Chai - proxify utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+/*!
+ * Chai - addMethod utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+/*!
+ * Chai - overwriteProperty utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+/*!
+ * Chai - overwriteMethod utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+/*!
+ * Chai - addChainingMethod utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+/*!
+ * Chai - overwriteChainableMethod utility
+ * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+/*!
+ * Chai - compareByInspect utility
+ * Copyright(c) 2011-2016 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+/*!
+ * Chai - getOwnEnumerablePropertySymbols utility
+ * Copyright(c) 2011-2016 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+/*!
+ * Chai - getOwnEnumerableProperties utility
+ * Copyright(c) 2011-2016 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+/*!
+ * Chai - isNaN utility
+ * Copyright(c) 2012-2015 Sakthipriyan Vairamani <thechargingvolcano@gmail.com>
+ * MIT Licensed
+ */
+/*!
+ * chai
+ * Copyright(c) 2011 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+/*!
+ * chai
+ * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
+ * MIT Licensed
+ */
+/*! Bundled license information:
+
+deep-eql/index.js:
+  (*!
+   * deep-eql
+   * Copyright(c) 2013 Jake Luer <jake@alogicalparadox.com>
+   * MIT Licensed
+   *)
+  (*!
+   * Check to see if the MemoizeMap has recorded a result of the two operands
+   *
+   * @param {Mixed} leftHandOperand
+   * @param {Mixed} rightHandOperand
+   * @param {MemoizeMap} memoizeMap
+   * @returns {Boolean|null} result
+  *)
+  (*!
+   * Set the result of the equality into the MemoizeMap
+   *
+   * @param {Mixed} leftHandOperand
+   * @param {Mixed} rightHandOperand
+   * @param {MemoizeMap} memoizeMap
+   * @param {Boolean} result
+  *)
+  (*!
+   * Primary Export
+   *)
+  (*!
+   * The main logic of the `deepEqual` function.
+   *
+   * @param {Mixed} leftHandOperand
+   * @param {Mixed} rightHandOperand
+   * @param {Object} [options] (optional) Additional options
+   * @param {Array} [options.comparator] (optional) Override default algorithm, determining custom equality.
+   * @param {Array} [options.memoize] (optional) Provide a custom memoization object which will cache the results of
+      complex objects for a speed boost. By passing `false` you can disable memoization, but this will cause circular
+      references to blow the stack.
+   * @return {Boolean} equal match
+  *)
+  (*!
+   * Compare two Regular Expressions for equality.
+   *
+   * @param {RegExp} leftHandOperand
+   * @param {RegExp} rightHandOperand
+   * @return {Boolean} result
+   *)
+  (*!
+   * Compare two Sets/Maps for equality. Faster than other equality functions.
+   *
+   * @param {Set} leftHandOperand
+   * @param {Set} rightHandOperand
+   * @param {Object} [options] (Optional)
+   * @return {Boolean} result
+   *)
+  (*!
+   * Simple equality for flat iterable objects such as Arrays, TypedArrays or Node.js buffers.
+   *
+   * @param {Iterable} leftHandOperand
+   * @param {Iterable} rightHandOperand
+   * @param {Object} [options] (Optional)
+   * @return {Boolean} result
+   *)
+  (*!
+   * Simple equality for generator objects such as those returned by generator functions.
+   *
+   * @param {Iterable} leftHandOperand
+   * @param {Iterable} rightHandOperand
+   * @param {Object} [options] (Optional)
+   * @return {Boolean} result
+   *)
+  (*!
+   * Determine if the given object has an @@iterator function.
+   *
+   * @param {Object} target
+   * @return {Boolean} `true` if the object has an @@iterator function.
+   *)
+  (*!
+   * Gets all iterator entries from the given Object. If the Object has no @@iterator function, returns an empty array.
+   * This will consume the iterator - which could have side effects depending on the @@iterator implementation.
+   *
+   * @param {Object} target
+   * @returns {Array} an array of entries from the @@iterator function
+   *)
+  (*!
+   * Gets all entries from a Generator. This will consume the generator - which could have side effects.
+   *
+   * @param {Generator} target
+   * @returns {Array} an array of entries from the Generator.
+   *)
+  (*!
+   * Gets all own and inherited enumerable keys from a target.
+   *
+   * @param {Object} target
+   * @returns {Array} an array of own and inherited enumerable keys from the target.
+   *)
+  (*!
+   * Determines if two objects have matching values, given a set of keys. Defers to deepEqual for the equality check of
+   * each key. If any value of the given key is not equal, the function will return false (early).
+   *
+   * @param {Mixed} leftHandOperand
+   * @param {Mixed} rightHandOperand
+   * @param {Array} keys An array of keys to compare the values of leftHandOperand and rightHandOperand against
+   * @param {Object} [options] (Optional)
+   * @return {Boolean} result
+   *)
+  (*!
+   * Recursively check the equality of two Objects. Once basic sameness has been established it will defer to `deepEqual`
+   * for each enumerable key in the object.
+   *
+   * @param {Mixed} leftHandOperand
+   * @param {Mixed} rightHandOperand
+   * @param {Object} [options] (Optional)
+   * @return {Boolean} result
+   *)
+  (*!
+   * Returns true if the argument is a primitive.
+   *
+   * This intentionally returns true for all objects that can be compared by reference,
+   * including functions and symbols.
+   *
+   * @param {Mixed} value
+   * @return {Boolean} result
+   *)
+*/
 //# sourceMappingURL=lib-tests.js.map

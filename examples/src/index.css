@@ -1,1 +1,8 @@
-@import url('./component/nk-tests/this/css/index.shadow.css');
+@import url('./component/nk-tests/this/css/index.shadow.desktop.css');
+
+body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
