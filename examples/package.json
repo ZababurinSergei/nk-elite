@@ -12,7 +12,8 @@
         "start": "node server.mjs",
         "dev": "nodemon server.mjs",
         "Bundler ===========================": "",
-        "build": "npm run build:webrtc && npm run build:lottieWeb && npm run build:tweenjs && npm run build:stats && npm run build:solarSystemTwig && npm run build:THREE && npm run build:orbitControls && npm run build:solarSystem && npm run build:lokijs && npm run build:peerIdFactory && npm run build:stream && npm run build:pubsub && npm run build:libp2p && npm run build:filter && npm run build:peer-store && npm run build:pubsubPeerDiscovery && npm run build:gossipsub && npm run build:identify && npm run build:logger && npm run build:cbor",
+        "build": "npm run build:tests && npm run build:webrtc && npm run build:lottieWeb && npm run build:tweenjs && npm run build:stats && npm run build:solarSystemTwig && npm run build:THREE && npm run build:orbitControls && npm run build:solarSystem && npm run build:lokijs && npm run build:peerIdFactory && npm run build:stream && npm run build:pubsub && npm run build:libp2p && npm run build:filter && npm run build:peer-store && npm run build:pubsubPeerDiscovery && npm run build:gossipsub && npm run build:identify && npm run build:logger && npm run build:cbor",
+        "build:tests": "esbuild ./modules/dep-tests.js --bundle --sourcemap --format=esm --target=chrome114 --define:global=window --keep-names --outfile=./src/this/modules/lib-tests.js",
         "build:tweenjs": "esbuild ./modules/dep-tween.js --bundle --sourcemap --format=esm --target=chrome114 --define:global=window --keep-names --outfile=./src/this/modules/lib-tween.js",
         "build:webrtc": "esbuild ./modules/dep-webrtc.js --bundle --sourcemap --format=esm --target=chrome114 --define:global=window --keep-names --outfile=./src/this/modules/lib-webrtc.js",
         "build:lottieWeb": "esbuild ./modules/dep-lottieWeb.js --bundle --sourcemap --format=esm --target=chrome114 --define:global=window --keep-names --outfile=./src/this/modules/lib-lottieWeb.js",
@@ -103,10 +104,14 @@
         "wgpu-matrix": "^3.2.0"
     },
     "devDependencies": {
+        "@bundled-es-modules/chai": "^4.3.7",
+        "assert": "^2.1.0",
         "autoprefixer": "^10.4.20",
+        "chai": "^5.1.1",
         "dotenv": "^16.4.5",
         "esbuild": "^0.24.0",
         "gulp": "^5.0.0",
-        "gulp-postcss": "^10.0.0"
+        "gulp-postcss": "^10.0.0",
+        "mocha": "^10.7.3"
     }
 }

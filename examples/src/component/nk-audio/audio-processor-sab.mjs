@@ -47,7 +47,7 @@ class AudioProcessor extends AudioWorkletProcessor {
 			// Pull processed audio data out of `outputQueue` and pass it in output.
 			const didPull = this.outputQueue.pull(output, RENDER_QUANTUM);
 			if (!didPull) {
-				console.log('[audio-processor.js] Not enough data in outputQueue');
+				// console.log('[audio-processor.js] Not enough data in outputQueue');
 			}
 		} else {
 			this.primingCounter++;

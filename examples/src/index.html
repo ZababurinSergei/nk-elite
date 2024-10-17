@@ -6,6 +6,7 @@
     <script type="importmap">
         {
             "imports": {
+                "@newkind/tests":"./this/modules/lib-tests.js",
                 "@newkind/initFreeQueue":"./this/free-queue/wasm/free-queue.asm.js",
                 "@newkind/freeQueue": "./this/free-queue/free-queue.js",
                 "@newkind/FreeQueueSAB": "./this/free-queue/free-queue-sab.js",
@@ -49,6 +50,7 @@
             }
         }
     </script>
+    <link rel="stylesheet" href="./index.css">
     <link rel="stylesheet" href="./component/nk-solar-system/this/css/index.light.css">
     <link rel="stylesheet" href="./assets/index.light.css">
     <link rel="stylesheet" href="./component/nk-star/this/css/aladin.min.css">
@@ -1898,7 +1900,20 @@
     component="nk-tests"
 >
     <template>
-
+        <div class="container">
+            <div class="control">
+                <button class="button sab">
+                    FreeQueue Shared Array Buffer
+                </button>
+                <button class="button wasm">
+                    FreeQueue WASM
+                </button>
+            </div>
+            <div id="tests">
+                <slot></slot>
+            </div>
+        </div>
+            <ul data-exclusion style="position: relative" id="mocha"></ul>
     </template>
 </nk-tests>
 </body>
@@ -1912,6 +1927,7 @@
     const isNkRadio = urlParams.has('radio')
     const isNkEmulator = urlParams.has('memory')
     const isGame = !isNkEmulator && !isNkRadio
+    const isTest = true
     let arrayComponent = []
 
     if (isNkRadio) {
@@ -1932,6 +1948,10 @@
         arrayComponent.push('nk-menu')
         arrayComponent.push('nk-world')
         arrayComponent.push('nk-emulator')
+    }
+
+    if(isTest) {
+        arrayComponent.push('nk-tests')
     }
 
     init({
