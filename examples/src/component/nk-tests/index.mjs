@@ -15,7 +15,7 @@ Object.defineProperties(component.prototype, {
               return this.shadowRoot.querySelectorAll('button')
             },
             tests: function () {
-                return this.shadowRoot.querySelector('#mocha')
+                return this.querySelector('#mocha')
             }
         },
         writable: true
@@ -24,9 +24,19 @@ Object.defineProperties(component.prototype, {
         value: function (path = false, checkLeaks = true) {
             return new Promise(async (resolve, reject) => {
                 try {
-                    mocha.setup("bdd");
+                    mocha.setup({
+                        asyncOnly: false,
+                        ui: 'bdd'
+                    });
+
                     const urlTEst = new URL(path, import.meta.url);
 
+                    // let test = await fetch(urlTEst.pathname)
+                    // test = await test.blob()
+                    // let objectURL = window.URL.createObjectURL(test);
+                    // mocha.addFile(objectURL);
+                    // console.log('-------------------------', mocha)
+                    // debugger
 
                     (path)
                         ? await Test(urlTEst.pathname)

@@ -3,11 +3,14 @@ export const actions = function (self) {
         resolve({
             click: function (event) {
                 if(event.currentTarget.classList.contains('sab')) {
-                    self.run('./this/tests/free-queue-sab.test.js')
+                    self.DOM.tests().innerHTML = ''
+                    self.run('./tests/free-queue-sab.test.js')
                 }
 
                 if(event.currentTarget.classList.contains('wasm')) {
-                    self.run('./this/tests/free-queue-sab.test.js')
+                    console.log('self.DOM.tests()', self.DOM.tests())
+                    self.DOM.tests().innerHTML = ''
+                    self.run('./tests/free-queue-sab.test.js')
                 }
             }
         })
