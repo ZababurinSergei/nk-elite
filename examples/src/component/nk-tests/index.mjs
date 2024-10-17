@@ -11,6 +11,9 @@ const component = await Component();
 Object.defineProperties(component.prototype, {
     DOM: {
         value: {
+            script: function () {
+                return this.querySelector('.script')
+            },
             buttons: function () {
               return this.shadowRoot.querySelectorAll('button')
             },
@@ -20,11 +23,18 @@ Object.defineProperties(component.prototype, {
         },
         writable: true
     },
+    reset: {
+        value: function () {
+          this.DOM.tests().innerHTML = ''
+          this.DOM.script().innerHTML = ''
+        },
+        writable: true
+    },
     run: {
         value: function (path = false, checkLeaks = true) {
             return new Promise(async (resolve, reject) => {
                 try {
-                    mocha.setup({
+                   mocha.setup({
                         asyncOnly: false,
                         ui: 'bdd'
                     });
@@ -35,18 +45,22 @@ Object.defineProperties(component.prototype, {
                     // test = await test.blob()
                     // let objectURL = window.URL.createObjectURL(test);
                     // mocha.addFile(objectURL);
-                    // console.log('-------------------------', mocha)
-                    // debugger
 
                     (path)
-                        ? await Test(urlTEst.pathname)
-                        : await Test()
+                        ? await Test.call(this, urlTEst.pathname)
+                        : await Test.call(this)
 
                     (checkLeaks)
                         ? mocha.checkLeaks()
                         : ''
 
-                    mocha.run()
+                    mocha.cleanReferencesAfterRun(false).run(() => {
+                       console.log('33333333333333333333333333333333333333')
+                        // mocha.dispose()
+                        // mocha.cleanReferencesAfterRun(true).run(() => {mocha.dispose();});
+                    });
+
+                    // mocha.run()
                     resolve(true)
                 } catch (e) {
                     reject({
@@ -73,6 +87,9 @@ Object.defineProperties(component.prototype, {
         value: async function (property) {
             this.DOM.buttons = this.DOM.buttons.bind(this)
             this.DOM.tests = this.DOM.tests.bind(this)
+            this.DOM.script = this.DOM.script.bind(this)
+
+            this.reset = this.reset.bind(this)
             this.run = this.run.bind(this)
             this.stop = this.stop.bind(this)
             const { actions } = await import(new URL('./actions/index.mjs', import.meta.url).pathname)

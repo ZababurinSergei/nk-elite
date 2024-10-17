@@ -3,8 +3,6 @@ import { FreeQueueSAB } from '@newkind/FreeQueueSAB';
 
 const { expect, assert } = chai
 
-console.log('chai', chai)
-
 describe('FreeQueueSAB', function () {
     const bufferLength = 1024;
     const channelCount = 2;
