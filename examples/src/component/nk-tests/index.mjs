@@ -54,13 +54,14 @@ Object.defineProperties(component.prototype, {
                         ? mocha.checkLeaks()
                         : ''
 
-                    mocha.cleanReferencesAfterRun(false).run(() => {
-                       console.log('33333333333333333333333333333333333333')
+                    // mocha.cleanReferencesAfterRun(false).run(() => {
+                    //    console.log('33333333333333333333333333333333333333')
+                        // mocha.cleanReferencesAfterRun(false)
                         // mocha.dispose()
                         // mocha.cleanReferencesAfterRun(true).run(() => {mocha.dispose();});
-                    });
+                    // });
 
-                    // mocha.run()
+                    mocha.run()
                     resolve(true)
                 } catch (e) {
                     reject({
