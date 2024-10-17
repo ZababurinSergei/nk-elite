@@ -28,7 +28,7 @@ const CONFIG = {
                     path: undefined,
                 },
                 web: {
-     //               crossOrigin: 'anonymous'
+                    crossOrigin: 'anonymous'
                 },
                 queue: {
                     instance: undefined,

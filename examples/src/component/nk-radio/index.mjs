@@ -19,6 +19,9 @@ Object.defineProperties(component.prototype, {
     },
     connected: {
         value: async function(property) {
+            this.broadcastChannel = {
+                await: ['nk-p2p']
+            }
             const instanceRadio = new (await wControl())(this);
             return true;
         },

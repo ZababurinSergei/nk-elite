@@ -26,7 +26,6 @@ class WorkletBasicProcessor extends AudioWorkletProcessor {
 
 			for ( let j = 0; j < channels; j++ ) {  
 			}
-
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////

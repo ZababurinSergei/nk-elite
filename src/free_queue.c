@@ -16,9 +16,9 @@ struct FreeQueue {
   emscripten_lock_t lock;
 };
 
-int TryLock( struct FreeQueue *queue );
-void Lock( struct FreeQueue *queue );
-void Unlock( struct FreeQueue *queue );
+// int TryLock( struct FreeQueue *queue );
+// void Lock( struct FreeQueue *queue );
+// void Unlock( struct FreeQueue *queue );
 
 /**
  * An index set for shared state fields.
@@ -58,6 +58,32 @@ uint32_t _getAvailableWrite(
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+EMSCRIPTEN_KEEPALIVE
+int TryLock( struct FreeQueue *queue )
+{
+	if ( queue ) {
+		if( !emscripten_lock_try_acquire( &queue->lock ) ) return 0;
+		emscripten_lock_init( &queue->lock );
+	}
+	return 1;
+}
+
+EMSCRIPTEN_KEEPALIVE
+void Lock( struct FreeQueue *queue )
+{
+	if ( queue ) {
+		emscripten_lock_init( &queue->lock );
+	}
+}
+
+EMSCRIPTEN_KEEPALIVE
+void Unlock( struct FreeQueue *queue )
+{
+	if ( queue ) {
+		emscripten_lock_release( &queue->lock );		
+	}
+}
 
 EMSCRIPTEN_KEEPALIVE
 void *CreateFreeQueue(size_t length, size_t channel_count) {
@@ -121,33 +147,6 @@ bool FreeQueuePush(struct FreeQueue *queue, double **input, size_t block_length)
 
   return false;
 }
-
-EMSCRIPTEN_KEEPALIVE
-int TryLock( struct FreeQueue *queue )
-{
-	if ( queue ) {
-		if( !emscripten_lock_try_acquire( &queue->lock ) ) return 0;
-		emscripten_lock_init( &queue->lock );
-	}
-	return 1;
-}
-
-EMSCRIPTEN_KEEPALIVE
-void Lock( struct FreeQueue *queue )
-{
-	if ( queue ) {
-		emscripten_lock_init( &queue->lock );
-	}
-}
-
-EMSCRIPTEN_KEEPALIVE
-void Unlock( struct FreeQueue *queue )
-{
-	if ( queue ) {
-		emscripten_lock_release( &queue->lock );		
-	}
-}
-
 
 EMSCRIPTEN_KEEPALIVE
 bool FreeQueuePull(struct FreeQueue *queue, double **output, size_t block_length) 

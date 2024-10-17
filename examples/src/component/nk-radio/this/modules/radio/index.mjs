@@ -47,7 +47,7 @@ const newAudio = async function () {
     }
 }
 
-const ctx = async () => {
+const ctx = async function() {
     if (CONFIG.audio.ctx == undefined || CONFIG.audio.ctx == null) {
         CONFIG.audio.ctx = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -86,7 +86,7 @@ const ctx = async () => {
     return CONFIG.audio.ctx
 }
 
-const freeQueueInit = function (){
+const freeQueueInit = function () {
     // Подключаю воркер
 //    const urlWorker = (new URL('./worker.sync.js', import.meta.url)).pathname
 //    let workerName = 'nk-radio'
@@ -114,6 +114,7 @@ const freeQueueInit = function (){
     }
 
     initFreeQueue(globalThis["LFreeQueue"]).then( async (module) => {
+
         const GetFreeQueuePointers = module.cwrap('GetFreeQueuePointers', 'number', ['number', 'string']);
         const PrintQueueInfo = module.cwrap('PrintQueueInfo', '', ['number']);
         const CreateFreeQueue = module.cwrap('CreateFreeQueue', 'number', ['number', 'number']);
@@ -202,12 +203,16 @@ export default async () => {
                     CONFIG.html.button.radios.this[i].addEventListener("change", async (e) => {
                         if (CONFIG.player.isPlaying) {
                             CONFIG.player.isPlaying = false;
-  //                          await CONFIG.stream.song.pause();
+
+                            await CONFIG.stream.song.pause();
                             await CONFIG.audio.ctx.suspend();
+
                             CONFIG.audio.node.disconnect();
+
                             CONFIG.stream.song = undefined;
                             CONFIG.audio.ctx = undefined;
                             CONFIG.audio.node = undefined;
+
                             CONFIG.queue.instance._reset();
                             CONFIG.html.button.start.textContent = "Start Audio";
                             CONFIG.stream.path = e.target.value;
