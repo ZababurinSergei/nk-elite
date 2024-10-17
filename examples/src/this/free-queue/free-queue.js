@@ -119,9 +119,8 @@ class FreeQueue {
    * @return {boolean} False if the operation fails.
    */
   push(input, blockLength) {
-
-    const currentRead = this.states[0];
-    const currentWrite = this.states[1];
+    const currentRead = Atomics.load(this.states, this.States.READ);
+    const currentWrite = Atomics.load(this.states, this.States.WRITE);
     
     if (this._getAvailableWrite(currentRead, currentWrite) < blockLength) {
       return false;
@@ -143,9 +142,7 @@ class FreeQueue {
       }
       if (nextWrite === this.bufferLength) nextWrite = 0;
     }
-
-    this.states[1] = nextWrite;
-
+    Atomics.store(this.states, this.States.WRITE, nextWrite);
     return true;
   }
 
@@ -159,8 +156,8 @@ class FreeQueue {
    * @return {boolean} False if the operation fails.
    */
   pull(output, blockLength) {
-    const currentRead = this.states[0];
-    const currentWrite = this.states[1];
+    const currentRead = Atomics.load(this.states, this.States.READ);
+    const currentWrite = Atomics.load(this.states, this.States.WRITE);
 	
     if (this._getAvailableRead(currentRead, currentWrite) < blockLength) {
       return false;
@@ -184,8 +181,7 @@ class FreeQueue {
         nextRead = 0;
       }
     }
-
-    this.states[0] = nextRead;
+    Atomics.store(this.states, this.States.READ, nextRead);
     return true;
   }
   /**
@@ -193,8 +189,8 @@ class FreeQueue {
    * Prints currently available read and write.
    */
   printAvailableReadAndWrite() {
-    const currentRead = this.states[0];
-    const currentWrite = this.states[1];
+    const currentRead = Atomics.load(this.states, this.States.READ);
+    const currentWrite = Atomics.load(this.states, this.States.WRITE);
     console.log(this, {
         availableRead: this._getAvailableRead(currentRead, currentWrite),
         availableWrite: this._getAvailableWrite(currentRead, currentWrite),
@@ -205,8 +201,8 @@ class FreeQueue {
    * @returns {number} number of samples available for read
    */
   getAvailableSamples() {
-    const currentRead = this.states[0];
-    const currentWrite = this.states[1];
+    const currentRead = Atomics.load(this.states, this.States.READ);
+    const currentWrite = Atomics.load(this.states, this.States.WRITE);
     return this._getAvailableRead(currentRead, currentWrite);
   }
   /**
@@ -240,8 +236,8 @@ class FreeQueue {
     for (let channel = 0; channel < this.channelCount; channel++) {
       this.channelData[channel].fill(0);
     }
-    this.states[0] = 0;
-    this.states[1] = 0;
+    Atomics.store(this.states, this.States.READ, 0);
+    Atomics.store(this.states, this.States.WRITE, 0);
   }
 }
 
