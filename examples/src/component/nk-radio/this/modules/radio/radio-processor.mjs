@@ -1,4 +1,5 @@
-import FreeQueue from "../../free-queue/free-queue.js";
+import FreeQueue from "../../free-queue/free-queue-sab.js";
+//import FreeQueue from "../../free-queue/free-queue.js";
 
 class WorkletBasicProcessor extends AudioWorkletProcessor 
 {
@@ -72,7 +73,7 @@ class WorkletBasicProcessor extends AudioWorkletProcessor
 		
 			if ( this.instance != undefined && this.instance != null) {
 				const rc = this.instance.push( dataArray, bufferSize );
-				if ( rc == true ) console.log( "processor: queue.push [ " + ( ( rc == true ) ? "true" : "false" ) + " ]" );
+				if ( rc == false ) console.log( "processor: queue.push [ " + ( ( rc == true ) ? "true" : "false" ) + " ]" );
 				//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			}
 

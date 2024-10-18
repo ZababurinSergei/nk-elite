@@ -1,5 +1,6 @@
 import initFreeQueue from "../../free-queue/free-queue.asm.js";
-import FreeQueue from "../../free-queue/free-queue.js";
+import FreeQueue from "../../free-queue/free-queue-sab.js";
+//import FreeQueue from "../../free-queue/free-queue.js";
 import { getConstants } from '@newkind/constants'
 import Application from "./oscilloscope/index.mjs";
 import { logger } from "@libp2p/logger";
@@ -63,7 +64,6 @@ const ctx = async function () {
     });
 
     CONFIG.audio.node.connect( CONFIG.audio.ctx.destination );
-
     CONFIG.audio.node.port.postMessage( Object.entries( CONFIG.queue.object ) );
 
     CONFIG.audio.ctx.suspend();
