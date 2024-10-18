@@ -85,6 +85,49 @@ void Unlock( struct FreeQueue *queue )
 	}
 }
 
+
+EMSCRIPTEN_KEEPALIVE
+void ChangeChannelsCount( struct FreeQueue *queue, size_t channel_count ) {
+	if ( queue ) {
+                Lock( queue );
+
+		if ( queue->channel_count != channel_count && channel_count > 0 )
+                {
+                    queue->channel_count = channel_count;
+                    queue->channel_data = (double **)realloc(queue->channel_data, channel_count * sizeof(double *));
+                    for (int i = 0; i < channel_count; i++) {
+                        queue->channel_data[i] = (double *)realloc(queue->channel_data[i], queue->buffer_length * sizeof(double));
+//                        for (int j = 0; j < queue->buffer_length; j++) {
+//                            queue->channel_data[i][j] = 0;
+//                        }
+                    }
+                }
+
+                Unlock( queue );
+	}
+}
+
+EMSCRIPTEN_KEEPALIVE
+void ChangeBufferLength( struct FreeQueue *queue, size_t length ) {
+	if ( queue ) {
+                Lock( queue );
+
+		if ( queue->buffer_length != length + 1 && length > 0 )
+		{
+                    queue->buffer_length = length + 1;
+                    queue->channel_data = (double **)realloc(queue->channel_data, channel_count * sizeof(double *));
+                    for (int i = 0; i < channel_count; i++) {
+                        queue->channel_data[i] = (double *)realloc(queue->channel_data[i], queue->buffer_length * sizeof(double));
+//                        for (int j = 0; j < queue->buffer_length; j++) {
+//                            queue->channel_data[i][j] = 0;
+//                        }
+                    }
+                }
+
+                Unlock( queue );
+	}
+}
+
 EMSCRIPTEN_KEEPALIVE
 void *CreateFreeQueue(size_t length, size_t channel_count) {
   struct FreeQueue *queue = (struct FreeQueue *)malloc(sizeof(struct FreeQueue));

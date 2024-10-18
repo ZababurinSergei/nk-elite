@@ -7,6 +7,7 @@ import { wDSpline } from './spline.mjs';
 import { wDLabel } from './label.mjs';
 import { wDImage } from './image.mjs';
 import { wDGoniometer } from './goniometer.mjs';
+
 import CONFIG from "../../../config.mjs";
 
 // import vertexShaderWgslCode from 'shaders/shader.vert.wgsl'

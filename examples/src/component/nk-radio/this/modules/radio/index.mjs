@@ -1,6 +1,8 @@
 import initFreeQueue from "../../free-queue/free-queue.asm.js";
+
 import FreeQueue from "../../free-queue/free-queue-sab.js";
 //import FreeQueue from "../../free-queue/free-queue.js";
+
 import { getConstants } from '@newkind/constants'
 import Application from "./oscilloscope/index.mjs";
 import { logger } from "@libp2p/logger";
@@ -130,9 +132,22 @@ const freeQueueInit = function (){
         pointers.channelCountPointer = channelCountPtr;
         pointers.statePointer = statePtr;
         pointers.channelDataPointer = channelDataPtr;
-
 	
+	CONFIG.queue.api.lock = function() { 
+		let fn = module.cwrap('Lock', '', ['number']);
+		fn( CONFIG.queue.pointer );
+	}
+	CONFIG.queue.api.unlock = function() { 
+		let fn = module.cwrap('Unlock', '', ['number']);
+		fn( CONFIG.queue.pointer );
+	}
+	CONFIG.queue.api.trylock = function() { 
+		let fn = module.cwrap('TryLock', 'number', ['number']);
+		return fn( CONFIG.queue.pointer );
+	}
+
 	CONFIG.queue.object = pointers;
+
         CONFIG.queue.instance = FreeQueue.fromPointers(pointers);
 
         if (CONFIG.queue.instance != undefined) CONFIG.queue.instance.printAvailableReadAndWrite();

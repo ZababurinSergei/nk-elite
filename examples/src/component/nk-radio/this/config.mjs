@@ -30,6 +30,11 @@ export let CONFIG = {
                     crossOrigin: 'anonymous'
                 },
                 queue: {
+                    api: {
+                        lock: undefined,
+                        trylock: undefined,
+                        unlock: undefined,
+                    },
                     instance: undefined,
                     pointer: undefined,
                     object: undefined
@@ -37,7 +42,7 @@ export let CONFIG = {
                 application: {
                     instance: undefined,
                     channels: 2,
-                    goniometer: "goniometer-off",
+                    goniometer: "goniometer-on",
                     holdChart: "holdchart-off",
                     inputType: "default", // "audio"; // "osc"
                     renderType: "stereo",
