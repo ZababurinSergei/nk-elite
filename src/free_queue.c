@@ -16,9 +16,6 @@ struct FreeQueue {
   emscripten_lock_t lock;
 };
 
-// int TryLock( struct FreeQueue *queue );
-// void Lock( struct FreeQueue *queue );
-// void Unlock( struct FreeQueue *queue );
 
 /**
  * An index set for shared state fields.
@@ -94,8 +91,8 @@ void ChangeChannelsCount( struct FreeQueue *queue, size_t channel_count ) {
 		if ( queue->channel_count != channel_count && channel_count > 0 )
                 {
                     queue->channel_count = channel_count;
-                    queue->channel_data = (double **)realloc(queue->channel_data, channel_count * sizeof(double *));
-                    for (int i = 0; i < channel_count; i++) {
+                    queue->channel_data = (double **)realloc(queue->channel_data, queue->channel_count * sizeof(double *));
+                    for (int i = 0; i < queue->channel_count; i++) {
                         queue->channel_data[i] = (double *)realloc(queue->channel_data[i], queue->buffer_length * sizeof(double));
 //                        for (int j = 0; j < queue->buffer_length; j++) {
 //                            queue->channel_data[i][j] = 0;
@@ -115,8 +112,8 @@ void ChangeBufferLength( struct FreeQueue *queue, size_t length ) {
 		if ( queue->buffer_length != length + 1 && length > 0 )
 		{
                     queue->buffer_length = length + 1;
-                    queue->channel_data = (double **)realloc(queue->channel_data, channel_count * sizeof(double *));
-                    for (int i = 0; i < channel_count; i++) {
+                    queue->channel_data = (double **)realloc(queue->channel_data, queue->channel_count * sizeof(double *));
+                    for (int i = 0; i < queue->channel_count; i++) {
                         queue->channel_data[i] = (double *)realloc(queue->channel_data[i], queue->buffer_length * sizeof(double));
 //                        for (int j = 0; j < queue->buffer_length; j++) {
 //                            queue->channel_data[i][j] = 0;
