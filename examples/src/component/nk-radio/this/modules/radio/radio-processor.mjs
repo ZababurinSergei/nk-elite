@@ -1,14 +1,29 @@
 import FreeQueue from "../../free-queue/free-queue.js";
 
-class WorkletBasicProcessor extends AudioWorkletProcessor {
+class WorkletBasicProcessor extends AudioWorkletProcessor 
+{
 	constructor(options) {
 		super();
-		this.instance = FreeQueue.fromObject(options.processorOptions.instance);
-		this.pointer = options.processorOptions.pointer;
+
+		this.initialized = false;
+                this.port.onmessage = (event) => {
+           	     this.ondata(event);
+                };
 	}
-	
+
+	ondata( event )	{
+		let obj = Object.fromEntries( new Map( event.data ) );
+
+		this.instance = FreeQueue.fromPointers( obj );
+		this.initialized = true;
+
+		console.log("instance: " + this.instance);
+	}
+
 	process(inputs, outputs, parameters) 
 	{
+		if ( this.initialized == false ) return true;
+
 		////////////////////////////////////////////////////////////////////////////////////////
 		// outputs count...
 		////////////////////////////////////////////////////////////////////////////////////////
@@ -30,7 +45,7 @@ class WorkletBasicProcessor extends AudioWorkletProcessor {
 
 		}
 
-/*
+
 		////////////////////////////////////////////////////////////////////////////////////////
 		// inputs count...
 		////////////////////////////////////////////////////////////////////////////////////////
@@ -54,19 +69,20 @@ class WorkletBasicProcessor extends AudioWorkletProcessor {
 					dataArray[j][k] = inputs[i][j][k];
 				}
 			}
-
+		
 			if ( this.instance != undefined && this.instance != null) {
 				const rc = this.instance.push( dataArray, bufferSize );
-				//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-				// if ( rc == true ) console.log( "processor: queue.push [ " + ( ( rc == true ) ? "true" : "false" ) + " ]" );
+				if ( rc == true ) console.log( "processor: queue.push [ " + ( ( rc == true ) ? "true" : "false" ) + " ]" );
 				//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			}
 
 		}
-*/
+
 		return true;
+
 	}
 
 }
 
 registerProcessor("radio-processor", WorkletBasicProcessor);
+

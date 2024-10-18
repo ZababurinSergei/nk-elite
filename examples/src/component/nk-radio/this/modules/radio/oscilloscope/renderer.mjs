@@ -7,7 +7,7 @@ import { wDSpline } from './spline.mjs';
 import { wDLabel } from './label.mjs';
 import { wDImage } from './image.mjs';
 import { wDGoniometer } from './goniometer.mjs';
-
+import CONFIG from "../../../config.mjs";
 
 // import vertexShaderWgslCode from 'shaders/shader.vert.wgsl'
 // import fragmentShaderWgslCode from 'shaders/shader.frag.wgsl'
@@ -15,19 +15,10 @@ import { wDGoniometer } from './goniometer.mjs';
 
 export class wDApplication
 {
-    constructor(CONFIG) 
+    constructor() 
     {
-        this.setConfig(CONFIG);
         this.setShaderBindGroup( null );
         this.setTextureBindGroup( null );
-    }
-    setConfig(CONFIG)
-    {
-	    this.CONFIG = CONFIG;        
-    }
-    getConfig()
-    {
-        return this.CONFIG;
     }
     getBorderWidth()
     {
@@ -458,8 +449,6 @@ fn main( @location(0) inFragUV : vec2<f32>, @location(1) inColor : vec4<f32> ) -
         return this.shaderBindGroup;
     }    
     render = async() => {
-
-        const CONFIG = this.getConfig();
 
         let texture = this.context.getCurrentTexture();
         this.renderPassDesc.colorAttachments[0].view = texture.createView();

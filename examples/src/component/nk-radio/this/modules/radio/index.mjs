@@ -3,11 +3,12 @@ import FreeQueue from "../../free-queue/free-queue.js";
 import { getConstants } from '@newkind/constants'
 import Application from "./oscilloscope/index.mjs";
 import { logger } from "@libp2p/logger";
-const constants = getConstants()
+import CONFIG from "../../config.mjs";
 
+const constants = getConstants()
 const log = logger('LFreeQueue');
 
-const newAudio = async function (CONFIG) {
+const newAudio = async function () {
     try {
         if (CONFIG.audio.init == false) {
             CONFIG.audio.init = true;
@@ -41,7 +42,7 @@ const newAudio = async function (CONFIG) {
     }
 }
 
-const ctx = async (CONFIG) => {
+const ctx = async function () {
     if (CONFIG.audio.ctx == undefined || CONFIG.audio.ctx == null) {
         CONFIG.audio.ctx = new (window.AudioContext || window.webkitAudioContext)();
         const urlProcessor = new URL("./radio-processor.mjs", import.meta.url)
@@ -52,10 +53,7 @@ const ctx = async (CONFIG) => {
     }
 
     CONFIG.audio.node = new AudioWorkletNode(CONFIG.audio.ctx, "radio-processor", {
-        processorOptions: {
-            pointer: CONFIG.queue.pointer,
-            instance: CONFIG.queue.instance
-        },
+        processorOptions: {},
         numberOfInputs: 1,
         numberOfOutputs: 1,
         outputChannelCount: [2],
@@ -64,7 +62,10 @@ const ctx = async (CONFIG) => {
         channelInterpretation: "speakers"
     });
 
-    CONFIG.audio.node.connect(CONFIG.audio.ctx.destination);
+    CONFIG.audio.node.connect( CONFIG.audio.ctx.destination );
+
+    CONFIG.audio.node.port.postMessage( Object.entries( CONFIG.queue.object ) );
+
     CONFIG.audio.ctx.suspend();
 
 //    CONFIG.audio.analyser =  CONFIG.audio.ctx.createAnalyser()
@@ -82,15 +83,15 @@ const ctx = async (CONFIG) => {
     return CONFIG.audio.ctx
 }
 
-const freeQueueInit = function (CONFIG){
+const freeQueueInit = function (){
     // Подключаю воркер
-    const urlWorker = (new URL('./worker.sync.js', import.meta.url)).pathname
-    let workerName = 'nk-radio'
+//    const urlWorker = (new URL('./worker.sync.js', import.meta.url)).pathname
+//    let workerName = 'nk-radio'
 
     // Поставь сюда подключение
-    this.inputQueue = {} //new FreeQueue(QUEUE_SIZE, 2);
-    this.outputQueue = {} //new FreeQueue(QUEUE_SIZE, 2);
-    this.atomicState = {} //new Int32Array(new SharedArrayBuffer(2 * Int32Array.BYTES_PER_ELEMENT));
+//    this.inputQueue = 0 //new FreeQueue(QUEUE_SIZE, 2);
+//    this.outputQueue = 0 //new FreeQueue(QUEUE_SIZE, 2);
+//    this.atomicState = 0 //new Int32Array(new SharedArrayBuffer(2 * Int32Array.BYTES_PER_ELEMENT));
 
 
     globalThis["LFreeQueue"] = {
@@ -109,7 +110,8 @@ const freeQueueInit = function (CONFIG){
         //globalThis["LFreeQueue"].callMain("");
     }
 
-    initFreeQueue(globalThis["LFreeQueue"]).then( async (module) => {
+    initFreeQueue(globalThis["LFreeQueue"]).then( async function (module) 
+    {
         const GetFreeQueuePointers = module.cwrap('GetFreeQueuePointers', 'number', ['number', 'string']);
         const PrintQueueInfo = module.cwrap('PrintQueueInfo', '', ['number']);
         const CreateFreeQueue = module.cwrap('CreateFreeQueue', 'number', ['number', 'number']);
@@ -122,21 +124,25 @@ const freeQueueInit = function (CONFIG){
         const channelDataPtr = GetFreeQueuePointers(CONFIG.queue.pointer, "channel_data");
 
         const pointers = new Object();
+
         pointers.memory = module.HEAPU8;
         pointers.bufferLengthPointer = bufferLengthPtr;
         pointers.channelCountPointer = channelCountPtr;
         pointers.statePointer = statePtr;
         pointers.channelDataPointer = channelDataPtr;
 
+	
+	CONFIG.queue.object = pointers;
         CONFIG.queue.instance = FreeQueue.fromPointers(pointers);
+
         if (CONFIG.queue.instance != undefined) CONFIG.queue.instance.printAvailableReadAndWrite();
 
         module.setStatus("initWasmFreeQueue completed...");
     });
 }
 
-const componentInit = (self, CONFIG) => {
-    freeQueueInit.call(self, CONFIG);
+const componentInit = (self) => {
+    freeQueueInit.call(self);
 
     CONFIG.html.scope.canvas = self.shadowRoot.querySelector("#gfx")
     CONFIG.html.button.start = self.shadowRoot.querySelector("#start");
@@ -149,7 +155,7 @@ const componentInit = (self, CONFIG) => {
 
     CONFIG.player.isPlaying = false;
 
-    CONFIG.application.instance = new Application(CONFIG);
+    CONFIG.application.instance = new Application();
     const available = CONFIG.application.instance.check();
     if (available) {
         wgerr.style.display = 'none';
@@ -181,9 +187,7 @@ export default async () => {
             // component
             /////////////////////////////////////////////////////////////////////////////////////////////
             constructor(self) {
-                componentInit(self, this.CONFIG);
-
-                const CONFIG = this.CONFIG;
+                componentInit(self);
 
                 for (let i = 0, max = CONFIG.html.button.radios.length; i < max; i++) {
                     if (CONFIG.html.button.radios.this[i].checked === true) {
@@ -206,14 +210,14 @@ export default async () => {
                             CONFIG.stream.path = e.target.value;
                             if (CONFIG.audio.ctx != undefined && CONFIG.audio.ctx != null) {
                                 CONFIG.player.isPlaying = !CONFIG.player.isPlaying;
-                                await newAudio.call(self, CONFIG);
+                                await newAudio.call(self);
                             } else {
                                 CONFIG.player.isPlaying = !CONFIG.player.isPlaying;
-                                await ctx(CONFIG);
-                                await newAudio.call(self, CONFIG);
+                                await ctx();
+                                await newAudio.call(self);
                             }
                         } else {
-                            CONFIG.stream.path = event.target.value;
+                            CONFIG.stream.path = e.target.value;
                         }
                     });
                 }
@@ -243,68 +247,14 @@ export default async () => {
                     } else {
                         CONFIG.html.button.start.textContent = "Stop Audio";
                         CONFIG.player.isPlaying = true;
-                        await ctx(CONFIG);
-                        console.log(self)
-                        await newAudio.call(self, CONFIG);
+                        await ctx();
+                        await newAudio.call(self);
                     }
                 });
 
                 CONFIG.application.instance.start();
             }
 
-            CONFIG = {
-                audio: {
-                    ctx: undefined,
-                    node: undefined,
-                    init: false
-                },
-                html: {
-                    scope: {
-                        canvas: false,
-                        context: false
-                    },
-                    button: {
-                        start: false,
-                        radios: {
-                            this: false,
-                            length: false
-                        }
-                    }
-                },
-                player: {
-                    isPlaying: false
-                },
-                stream: {
-                    song: undefined,
-                    source: undefined,
-                    path: undefined,
-                },
-                web: {
-                    crossOrigin: 'anonymous'
-                },
-                queue: {
-                    instance: undefined,
-                    pointer: undefined
-                },
-                application: {
-                    instance: undefined,
-                    channels: 2,
-                    goniometer: "goniometer-off",
-                    holdChart: "holdchart-off",
-                    inputType: "default", // "audio"; // "osc"
-                    renderType: "stereo",
-                    kdX: 500,
-                    kdY: 10,
-                    zoomX: 100,
-                    zoomY: 100,
-                    holdBuffer: undefined,
-                    renderBuffer: undefined,
-                    sampleRate: 44100,
-                    volumeRate: 1.0,
-                    nameOfFile: "",
-                    frameOffset: 0
-                }
-            };
         }
 
         resolve(wControl);

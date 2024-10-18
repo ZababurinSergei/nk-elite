@@ -40,6 +40,7 @@ const initialize = (messageDataFromMainThread) => {
 
 
 const process = () => {
+    console.log("sdfgsdfgsdfgsdfg");
     if (!inputQueue.pull(inputBuffer, FRAME_SIZE)) {
         console.error('[worker.js] Pulling from inputQueue failed.');
         return;
@@ -60,6 +61,8 @@ const process = () => {
  */
 self.onmessage = (msg) => {
     if (msg.data.type === 'init') {
+
+    console.log("sdfgsdfgsdfgsdfsdfsdfsdfsdfsdfsdfg");
         console.log('(((( ===== WORKER ===== ))))')
         
         initialize(msg.data.data);
@@ -70,6 +73,7 @@ self.onmessage = (msg) => {
 
         // eslint-disable-next-line no-undef
         while(Atomics.wait(atomicState, 0,0) === 'ok') {
+        console.log("222222");
             process();
             Atomics.store(atomicState, 0, 0);
         }
