@@ -15,7 +15,7 @@
  * worker renders audio data to fill in the queue.
  */
 
-class FreeQueueSab {
+class FreeQueueSAB {
 
   /**
    * An index set for shared state fields. Requires atomic access.
@@ -62,7 +62,7 @@ class FreeQueueSab {
 
   static fromObject(object)
   {
-    Object.setPrototypeOf(object, FreeQueueSab.prototype);
+    Object.setPrototypeOf(object, FreeQueueSAB.prototype);
     return object;
   }
 
@@ -82,7 +82,7 @@ class FreeQueueSab {
    */
   static fromPointers(queuePointers) {
 
-    const queue = new FreeQueueSab(0, 0);
+    const queue = new FreeQueueSAB(0, 0);
 
     const HEAPU32 = new Uint32Array(queuePointers.memory.buffer);
     const HEAPF64 = new Float64Array(queuePointers.memory.buffer);
@@ -242,6 +242,7 @@ class FreeQueueSab {
   }
 }
 
-export { FreeQueueSab as FreeQueueSAB }
-export { FreeQueueSab }
-export default FreeQueueSab;
+export { FreeQueueSAB as FreeQueueSab }
+export { FreeQueueSAB }
+
+export default FreeQueueSAB;
