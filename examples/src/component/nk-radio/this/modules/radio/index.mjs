@@ -104,7 +104,8 @@ const freeQueueInit = function () {
         setStatus: function (e) {
             if (e !== "") {
                 console.log(e)
-            };
+            }
+            ;
         }
     };
 
@@ -157,9 +158,6 @@ const freeQueueInit = function () {
         CONFIG.queue.object = pointers;
 
         CONFIG.queue.instance = FreeQueue.fromPointers(pointers);
-
-	console.log( "CONFIG.queue.object: " + CONFIG.queue.object );
-	console.log( "CONFIG.queue.instance: " + CONFIG.queue.instance );
 
         if (CONFIG.queue.instance != undefined) CONFIG.queue.instance.printAvailableReadAndWrite();
 
@@ -246,7 +244,7 @@ export default async () => {
                             CONFIG.stream.path = e.target.value;
                         }
                     });
-                };
+                }
 
                 CONFIG.html.button.start.addEventListener("click", async (e) => {
                     if (CONFIG.html.button.start.classList.contains('disabled')) {
