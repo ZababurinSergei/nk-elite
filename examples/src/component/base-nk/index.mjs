@@ -191,7 +191,7 @@ const BaseClass = class extends HTMLElement {
     task = async function (value) {
         task.push(Object.assign(value, {
             tagName: this.tagName.toLowerCase(),
-            uuid: this.dataset.uuid,
+            // uuid: this.dataset.uuid,
             type: ('type' in value) ? value.type : 'self'
         }));
 
@@ -206,7 +206,7 @@ const BaseClass = class extends HTMLElement {
         return new Promise(async (resolve,reject) => {
             task.push(Object.assign(value, {
                 tagName: this.tagName.toLowerCase(),
-                uuid: this.dataset.uuid,
+                // uuid: this.dataset.uuid,
                 type: ('type' in value) ? value.type : 'self',
                 execute: function (self) {
                     resolve(self)
@@ -256,7 +256,7 @@ const BaseClass = class extends HTMLElement {
         if (this.dataset?.servicesPath) {
             onload(this)
                 .then(async (self) => {
-                    self.dataset.uuid = uuidv();
+                    // self.dataset.uuid = uuidv();
 
                     if ('connected' in self) {
                         await self.connected()
@@ -278,7 +278,7 @@ const BaseClass = class extends HTMLElement {
 
                     store[name].push({
                         id: self.id,
-                        uuid: self.dataset.uuid,
+                        // uuid: self.dataset.uuid,
                         self: self,
                         dataset: self.dataset
                     });
