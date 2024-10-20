@@ -21,3 +21,13 @@ div.header {
     font-size: 100%;
     line-height: 17px;
 }
+
+.control {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+}
+
+.text {
+    align-self: center;
+}

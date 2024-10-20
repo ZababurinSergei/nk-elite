@@ -12,6 +12,9 @@ const component = await Component();
 Object.defineProperties(component.prototype, {
     DOM: {
         value: {
+            pathname: function () {
+                return this.shadowRoot.querySelector('.text')
+            },
             nkIframe: function () {
                 return this.querySelector('nk-iframe')
             },
@@ -30,6 +33,7 @@ Object.defineProperties(component.prototype, {
     reset: {
         value: function () {
             let nkIframe = this.DOM.nkIframe()
+            this.DOM.pathname().textContent = ''
             if(nkIframe) {
                 nkIframe.remove()
             }
@@ -48,7 +52,6 @@ Object.defineProperties(component.prototype, {
                         });
 
                         const urlTEst = new URL(path, import.meta.url);
-
                         // let test = await fetch(urlTEst.pathname)
                         // test = await test.blob()
                         // let objectURL = window.URL.createObjectURL(test);
@@ -79,6 +82,8 @@ Object.defineProperties(component.prototype, {
                         })
                     }
                 } else {
+                    this.DOM.pathname().textContent = `${new URL(path, import.meta.url).pathname}`;
+
                     this.insertAdjacentHTML('beforeend', `
                         <nk-iframe
                             slot="tests"
@@ -114,6 +119,8 @@ Object.defineProperties(component.prototype, {
             this.DOM.buttons = this.DOM.buttons.bind(this)
             this.DOM.tests = this.DOM.tests.bind(this)
             this.DOM.script = this.DOM.script.bind(this)
+            this.DOM.pathname = this.DOM.pathname.bind(this)
+
             this.reset = this.reset.bind(this)
             this.run = this.run.bind(this)
             this.stop = this.stop.bind(this)
