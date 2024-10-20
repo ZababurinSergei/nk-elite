@@ -136,8 +136,6 @@ const freeQueueInit = function () {
         pointers.statePointer = statePtr;
         pointers.channelDataPointer = channelDataPtr;
 
-
-        console.log('************************* 000 ******************************************')
         CONFIG.queue.api.lock = function () {
             console.log('*******************************************************************')
             let fn = module.cwrap('Lock', '', ['number']);

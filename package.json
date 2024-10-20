@@ -9,7 +9,6 @@
     "private": "true",
     "scripts": {
         "================ free-queue ================": "",
-        "build:mp": "nodemon  --config free-queue.mp.json",
         "build:ep": "nodemon  --config free-queue.ep.json",
         "=================== end ====================": ""
     },
