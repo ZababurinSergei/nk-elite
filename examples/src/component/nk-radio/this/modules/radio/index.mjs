@@ -2,10 +2,6 @@ import initFreeQueue from '@newkind/initFreeQueue'
 import { FreeQueue } from '@newkind/FreeQueue'
 import { FreeQueueSab } from '@newkind/FreeQueueSAB'
 
-// import initFreeQueue from "../../free-queue/free-queue.asm.js";
-// import FreeQueue from "../../free-queue/free-queue.js";
-// import FreeQueue from "../../free-queue/free-queue-sab.js";
-
 import {getConstants} from '@newkind/constants'
 import Application from "./oscilloscope/index.mjs";
 import {logger} from "@libp2p/logger";
