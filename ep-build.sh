@@ -14,10 +14,10 @@ fi
 
 cd examples
 
-export SOURCEDIR=src/this/free-queue/wasm
-export KEEPFILE=free-queue.js
+# export SOURCEDIR=src/this/free-queue/wasm
+# export KEEPFILE=free-queue.js
 
-find $SOURCEDIR -type f -not -name $KEEPFILE -delete
+# find $SOURCEDIR -type f -not -name $KEEPFILE -delete
 
 if [ -d ./dist ]; then
     rm -r -d ./dist

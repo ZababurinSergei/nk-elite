@@ -23,10 +23,10 @@ if exist node_modules (
 
 cd examples
 
-set SOURCEDIR=src\this\free-queue
-set KEEPFILE=free-queue.js
+rem set SOURCEDIR=src\this\free-queue
+rem set KEEPFILE=free-queue.js
 
-for %%a in ( "%SOURCEDIR%\*" ) do if /i not "%%~nxa"=="%KEEPFILE%" @del "%%a"
+rem for %%a in ( "%SOURCEDIR%\*" ) do if /i not "%%~nxa"=="%KEEPFILE%" @del "%%a"
 
 if exist node_modules (
     @rmdir /S /Q node_modules
