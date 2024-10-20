@@ -88,17 +88,6 @@
             </div>
             <slot name="tests"></slot>
         </div>
-<!--        <nk-iframe-->
-<!--                id="nk-iframe_0"-->
-<!--                data-css-light="true"-->
-<!--                data-test-url=""-->
-<!--        >-->
-<!--            <template>-->
-<!--                <div style="height:100%">-->
-<!--                    <slot name="jason"></slot>-->
-<!--                </div>-->
-<!--            </template>-->
-<!--        </nk-iframe>-->
     </template>
 </nk-tests>
 <nk-shadow id="nk-shadow_0">
@@ -163,7 +152,14 @@
                 </button>
             </div>
         </div>
-        <slot></slot>
+        <div class="container">
+            <div class="slot-item">
+                <slot name="nk-radio_0"></slot>
+            </div>
+            <div class="slot-item">
+                <slot name="nk-elite_0"></slot>
+            </div>
+        </div>
         <nk-memory
                 id="nk-memory_0"
                 slot="nk-memory_0"
