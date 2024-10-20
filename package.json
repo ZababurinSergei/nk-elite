@@ -9,7 +9,7 @@
     "private": "true",
     "scripts": {
         "================ free-queue ================": "",
-        "build:ep": "nodemon  --config free-queue.ep.json",
+        "watch:build.ep": "nodemon  --config free-queue.ep.json",
         "=================== end ====================": ""
     },
     "keywords": [
