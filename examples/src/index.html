@@ -86,8 +86,12 @@
                     FreeQueue WASM
                 </button>
             </div>
-            <slot name="tests"></slot>
+            <div class="body">
+                <slot name="tests"></slot>
+            </div>
         </div>
+        <div slot="tests" data-exclusion id="mocha" style="position: relative"></div>
+        <div data-exclusion class="script"></div>
     </template>
 </nk-tests>
 <nk-service id="nk-service_0">
@@ -1982,7 +1986,7 @@
     arrayComponent.unshift('nk-service')
 
     if(iframe.isFramed) {
-        arrayComponent = ['nk-service', 'nk-tests']
+        arrayComponent = ['nk-tests']
     }
 
     // arrayComponent = arrayComponent.filter(item => item !== 'nk-audio')
