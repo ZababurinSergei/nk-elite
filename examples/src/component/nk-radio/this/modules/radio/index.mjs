@@ -132,7 +132,6 @@ const freeQueueInit = function () {
         pointers.statePointer = statePtr;
         pointers.channelDataPointer = channelDataPtr;
 	pointers.queue = CONFIG.queue.pointer;
-	pointers.module = module;
 
         CONFIG.queue.api.lock = function () {
             console.log('*******************************************************************')
@@ -154,7 +153,6 @@ const freeQueueInit = function () {
         }
 
         CONFIG.queue.object = pointers;
-
         CONFIG.queue.instance = FreeQueue.fromPointers(pointers);
 
         if (CONFIG.queue.instance != undefined) CONFIG.queue.instance.printAvailableReadAndWrite();
