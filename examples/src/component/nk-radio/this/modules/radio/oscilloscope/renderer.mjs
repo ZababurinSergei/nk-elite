@@ -585,7 +585,7 @@ fn main( @location(0) inFragUV : vec2<f32>, @location(1) inColor : vec4<f32> ) -
             _b[1] = new Float64Array(bufferSize);
 
             let rc = CONFIG.queue.instance.pull( _b, bufferSize );
-            if ( rc == true )
+            if (rc == true)
             {
                 CONFIG.application.renderBuffer = new Float64Array(bufferSize * 2);
                 for ( let i = 0; i < bufferSize; i++ ) {
@@ -593,8 +593,7 @@ fn main( @location(0) inFragUV : vec2<f32>, @location(1) inColor : vec4<f32> ) -
                     CONFIG.application.renderBuffer[i * 2 + 1] = _b[1][i];
                 }
             } 
-
-            console.log( "draw: queue.pull [ " + ( ( rc == true ) ? "true" : "false" ) + " ]" );            
+            if (rc == false) console.log("renderer: CONFIG.queue.instance.pull [ " + ((rc == true) ? "true" : "false") + " ]");
         }
  
         /////////////////////////////////////////////////////////////////////////////////////////////////
