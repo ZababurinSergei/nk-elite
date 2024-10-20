@@ -20,7 +20,8 @@ Object.defineProperties(component.prototype, {
     height: {
         set: function (value) {
             const iframe = this.querySelector('iframe')
-            iframe.style.height = `${value}px`
+            console.log('ddddddddddddddddddddddddddddddddddddd', value < 156)
+            iframe.style.height = value < 156 ? 0 :`${value}px`
             this.style.setProperty('--height', `${value}px`);
         },
         get: function () {

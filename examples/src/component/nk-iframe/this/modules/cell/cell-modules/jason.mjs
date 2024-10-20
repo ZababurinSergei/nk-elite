@@ -498,7 +498,7 @@ var Footer = {
 
 var Header = {
   $type: "nav",
-  class: "header nav nav-justified",
+  class: "header nav nav-justified hidden",
   _title: null,
   _menu: null,
   _style: null,
