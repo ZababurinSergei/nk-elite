@@ -41,17 +41,60 @@ Object.defineProperties(component.prototype, {
         value: null,
         writable: true
     },
+    description: {
+        value: function (title, description) {
+            this.DOM.content().innerHTML = ''
+            this.DOM.content().insertAdjacentHTML('beforeend', `${this.DOM.contentTemplate(title, description)}`)
+        },
+        writable: true
+    },
     connected: {
         value: async function (property) {
             this.DOM = {
                 cursor: () => {
                     return  this.querySelector(".cursor");
                 },
+                content: () => {
+                    return  this.querySelector(".content");
+                },
+                contentTemplate: (title = '', content = '') => {
+                    return  `<h1>${title}</h1><p>${content}</p>`;
+                },
                 document: () => {
                     return  window.document;
                 }
             }
 
+            // let options = {
+            //     root: document.body,
+            //     rootMargin: '5px',
+            //     threshold: 0.5
+            // }
+
+            // let callback = function(entries, observer) {
+            //     entries.forEach((entry) => {
+            //         console.log('============================', entry)
+                    // if (entry.isIntersecting) {
+                    //     intersectingCount += 1;
+                    // } else {
+                    //     intersectingCount -= 1;
+                    // }
+                // });
+            // }
+
+            // let observer = new IntersectionObserver(callback, options)
+
+            // observer.observe(this)
+            // const store = this.store
+            // observer.observe(document.body)
+            // for(let key in store) {
+            //     for(let item of store[key]) {
+            //         observer.observe(item.self)
+            //         lazyImages.forEach((image) => observer.observe(image))
+            //         console.log('========= store ========', item.self)
+                // }
+            // }
+            this.description = this.description.bind(this)
             this.mouseout = this.mouseout.bind(this)
             this.mousemove = this.mousemove.bind(this)
 
