@@ -16,8 +16,8 @@ Object.defineProperties(component.prototype, {
     },
     mousemove: {
         value: function (e) {
-            let x = e.pageX;
-            let y = e.pageY;
+            let x = e.clientX;
+            let y = e.clientY;
 
             let cursor = this.DOM.cursor()
             cursor.style.top = y + "px";
@@ -47,29 +47,23 @@ Object.defineProperties(component.prototype, {
                 cursor: () => {
                     return  this.querySelector(".cursor");
                 },
-                mouseout: () => {
+                document: () => {
                     return  window.document;
-                },
-                mousemove: () => {
-                    return  window.document;
-                },
+                }
             }
+
             this.mouseout = this.mouseout.bind(this)
             this.mousemove = this.mousemove.bind(this)
 
-            this.DOM.mouseout().addEventListener("mouseout", this.mouseout)
-            this.DOM.mousemove().addEventListener("mousemove", this.mousemove)
-
-            const { actions } = await import(new URL('./actions/index.mjs', import.meta.url).pathname)
-            const { controller } = await import(new URL('./controller/index.mjs', import.meta.url).pathname)
-            this.controller = await controller(this, await actions(this))
-            await this.controller.addEventListener.init()
+            this.DOM.document().addEventListener("mouseout", this.mouseout)
+            this.DOM.document().addEventListener("mousemove", this.mousemove)
         },
         writable: true
     },
     disconnected: {
         value: async function () {
-            this.controller.addEventListener.terminate()
+            this.DOM.document().removeEventListener("mouseout", this.mouseout)
+            this.DOM.document().removeEventListener("mousemove", this.mousemove)
             return true
         },
         writable: false
