@@ -21,11 +21,16 @@ describe('FreeQueueSAB', function () {
         it('should initialize buffer length correctly', function () {
             expect(queue.getBufferLength()).to.equal(bufferLength);
         });
+
+        it('should initialize channel count correctly', function () {
+            expect(queue.getChannelCount()).to.equal(channelCount);
+        });
+
     });
 
     describe('Channel Adaption', () => {
         it('should initialize channel data correctly', function () {
-            expect(queue.channelData).to.be.an('array');
+            expect(queue.channelData).to.be.an('Array');
             expect(queue.channelData.length).to.equal(channelCount);
             queue.channelData.forEach(channel => {
                 expect(channel).to.be.an.instanceof(Float64Array);
@@ -44,14 +49,14 @@ describe('FreeQueueSAB', function () {
 
     describe('push', function () {
         it('should push data into the queue', function () {
-            const input = [new Float32Array([1, 2, 3]), new Float32Array([4, 5, 6])];
+            const input = [new Float64Array([1, 2, 3]), new Float64Array([4, 5, 6])];
             const result = queue.push(input, 3);
             expect(result).to.be.true;
             expect(queue.getAvailableSamples()).to.equal(3);
         });
 
         it('should fail to push data when buffer is full', function () {
-            const input = [new Float32Array(queue.getBufferLength()), new Float32Array(queue.getBufferLength())];
+            const input = [new Float64Array(queue.getBufferLength()), new Float64Array(queue.getBufferLength())];
 
             let result = queue.push(input, queue.getBufferLength());
             expect(result, 'Push result when buffer is full').to.be.true;
@@ -61,7 +66,7 @@ describe('FreeQueueSAB', function () {
         });
 
         it('should handle maximum capacity', function () {
-            const input = Array.from({ length: channelCount }, () => new Float32Array(bufferLength));
+            const input = Array.from({ length: channelCount }, () => new Float64Array(bufferLength));
             for (let i = 0; i < bufferLength; i++) {
                 queue.push(input, 1);
             }
@@ -71,9 +76,9 @@ describe('FreeQueueSAB', function () {
 
     describe('pull', function () {
         it('should pull data from the queue', function () {
-            const input = [new Float32Array([1, 2, 3]), new Float32Array([4, 5, 6])];
+            const input = [new Float64Array([1, 2, 3]), new Float64Array([4, 5, 6])];
             queue.push(input, 3);
-            const output = [new Float32Array(3), new Float32Array(3)];
+            const output = [new Float64Array(3), new Float64Array(3)];
             const result = queue.pull(output, 3);
             expect(result).to.be.true;
             expect(output[0]).to.deep.equal(input[0]);
@@ -81,7 +86,7 @@ describe('FreeQueueSAB', function () {
         });
 
         it('should fail to pull data when buffer is empty', function () {
-            const output = [new Float32Array(bufferLength), new Float32Array(bufferLength)];
+            const output = [new Float64Array(bufferLength), new Float64Array(bufferLength)];
             const result = queue.pull(output, bufferLength);
             expect(result).to.be.false;
         });
@@ -90,14 +95,14 @@ describe('FreeQueueSAB', function () {
     describe('Utility Methods', function () {
         it('should correctly get available samples', function () {
             expect(queue.getAvailableSamples()).to.equal(0);
-            const input = [new Float32Array([1, 2, 3]), new Float32Array([4, 5, 6])];
+            const input = [new Float64Array([1, 2, 3]), new Float64Array([4, 5, 6])];
             queue.push(input, 3);
             expect(queue.getAvailableSamples()).to.equal(3);
         });
 
         it('should correctly check if frame is available', function () {
             expect(queue.isFrameAvailable(3)).to.be.false;
-            const input = [new Float32Array([1, 2, 3]), new Float32Array([4, 5, 6])];
+            const input = [new Float64Array([1, 2, 3]), new Float64Array([4, 5, 6])];
             queue.push(input, 3);
             expect(queue.isFrameAvailable(3)).to.be.true;
         });
@@ -109,7 +114,7 @@ describe('FreeQueueSAB', function () {
             const channelCount = 2;
             const queue = new FreeQueueSAB(bufferLength, channelCount);
         
-            const invalidInput = [new Float32Array(bufferLength)]; 
+            const invalidInput = [new Float64Array(bufferLength)]; 
         
             expect(() => queue.push(invalidInput, bufferLength)).to.throw(Error);
         });
@@ -119,10 +124,10 @@ describe('FreeQueueSAB', function () {
             const channelCount = 2;
             const queue = new FreeQueueSAB(bufferLength, channelCount);
         
-            const input = [new Float32Array([1, 2, 3, 4]), new Float32Array([1, 2, 3, 4])];
+            const input = [new Float64Array([1, 2, 3, 4]), new Float64Array([1, 2, 3, 4])];
             queue.push(input, 4); 
         
-            const insufficientInput = [new Float32Array([5, 6, 7, 8]), new Float32Array([5, 6, 7, 8])];
+            const insufficientInput = [new Float64Array([5, 6, 7, 8]), new Float64Array([5, 6, 7, 8])];
             const result = queue.push(insufficientInput, 4);
         
             expect(result).to.be.false;
@@ -133,7 +138,7 @@ describe('FreeQueueSAB', function () {
             const channelCount = 2;
             const queue = new FreeQueueSAB(bufferLength, channelCount);
         
-            const output = [new Float32Array(bufferLength), new Float32Array(bufferLength)];
+            const output = [new Float64Array(bufferLength), new Float64Array(bufferLength)];
             const result = queue.pull(output, 4); 
         
             expect(result).to.be.false;
@@ -142,8 +147,8 @@ describe('FreeQueueSAB', function () {
 
     describe('Performance Tests', function () {
         it('should handle large data efficiently', function () {
-            const input = [new Float32Array(bufferLength), new Float32Array(bufferLength)];
-            const output = [new Float32Array(bufferLength), new Float32Array(bufferLength)];
+            const input = [new Float64Array(bufferLength), new Float64Array(bufferLength)];
+            const output = [new Float64Array(bufferLength), new Float64Array(bufferLength)];
             for (let i = 0; i < 100000; i++) {
                 queue.push(input, bufferLength);
                 queue.pull(output, bufferLength);
@@ -151,8 +156,8 @@ describe('FreeQueueSAB', function () {
         });
 
         it('should handle small data efficiently', function () {
-            const input = [new Float32Array(1), new Float32Array(1)];
-            const output = [new Float32Array(1), new Float32Array(1)];
+            const input = [new Float64Array(1), new Float64Array(1)];
+            const output = [new Float64Array(1), new Float64Array(1)];
             for (let i = 0; i < 1000000; i++) {
                 queue.push(input, 1);
                 queue.pull(output, 1);

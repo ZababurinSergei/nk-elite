@@ -218,6 +218,13 @@ class FreeQueueSAB {
   /**
    * @return {number}
    */
+  getChannelCount() {
+    return this.channelCount;
+  }
+
+  /**
+   * @return {number}
+   */
   getBufferLength() {
     return this.bufferLength - 1;
   }

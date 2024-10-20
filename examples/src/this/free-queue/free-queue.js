@@ -54,7 +54,9 @@ class FreeQueue {
     for (let i = 0; i < channelCount; i++) {
       this.channelData.push(
         new Float64Array(
+	   new ArrayBuffer(
             this.bufferLength * Float64Array.BYTES_PER_ELEMENT
+	   )
         )
       );
     }
@@ -107,21 +109,22 @@ class FreeQueue {
     queue.states = states;
     queue.channelData = channelData;
 
-    this.Lock = function () {
+/*
+    queue.Lock = function () {
             let fn = queuePointers.module.cwrap('Lock', '', ['number']);
             fn(queuePointers.queue);
     }
 
-    this.Unlock = function () {
+    queue.Unlock = function () {
             let fn = queuePointers.module.cwrap('Unlock', '', ['number']);
             fn(queuePointers.queue);
     }
 
-    this.TryLock = function () {
+    queue.TryLock = function () {
             let fn = queuePointers.module.cwrap('TryLock', 'number', ['number']);
             return fn(queuePointers.queue);
     }
-
+*/
 
     return queue;
   }
@@ -137,13 +140,13 @@ class FreeQueue {
    */
   push(input, blockLength) {
 
-    this.Lock();
+//    this.Lock();
 
     const currentRead = this.states[this.States.READ];
     const currentWrite = this.states[this.States.WRITE];
     
     if (this._getAvailableWrite(currentRead, currentWrite) < blockLength) {
-      this.Unlock();
+//      this.Unlock();
       return false;
     }
     let nextWrite = currentWrite + blockLength;
@@ -165,7 +168,7 @@ class FreeQueue {
     }
 
     this.states[1] = nextWrite;
-    this.Unlock();
+//    this.Unlock();
 
     return true;
   }
@@ -180,13 +183,13 @@ class FreeQueue {
    * @return {boolean} False if the operation fails.
    */
   pull(output, blockLength) {
-    this.Lock();
+//    this.Lock();
 
     const currentRead = this.states[this.States.READ];
     const currentWrite = this.states[this.States.WRITE];
 	
     if (this._getAvailableRead(currentRead, currentWrite) < blockLength) {
-      this.Unlock();
+//      this.Unlock();
       return false;
     }
     let nextRead = currentRead + blockLength;
@@ -210,7 +213,7 @@ class FreeQueue {
     }
 
     this.states[this.States.READ] = nextRead;
-    this.Unlock();
+//    this.Unlock();
 
     return true;
   }
@@ -219,10 +222,10 @@ class FreeQueue {
    * Prints currently available read and write.
    */
   printAvailableReadAndWrite() {
-    this.Lock();
+//    this.Lock();
     const currentRead = this.states[this.States.READ];
     const currentWrite = this.states[this.States.WRITE];
-    this.Unlock();
+//    this.Unlock();
     console.log(this, {
         availableRead: this._getAvailableRead(currentRead, currentWrite),
         availableWrite: this._getAvailableWrite(currentRead, currentWrite),
@@ -233,10 +236,10 @@ class FreeQueue {
    * @returns {number} number of samples available for read
    */
   getAvailableSamples() {
-    this.Lock();
+//    this.Lock();
     const currentRead = this.states[this.States.READ];
     const currentWrite = this.states[this.States.WRITE];
-    this.Unlock();
+//    this.Unlock();
     return this._getAvailableRead(currentRead, currentWrite);
   }
   /**
@@ -246,6 +249,13 @@ class FreeQueue {
    */
   isFrameAvailable(size) {
     return this.getAvailableSamples() >= size;
+  }
+
+  /**
+   * @return {number}
+   */
+  getChannelCount() {
+    return this.channelCount;
   }
 
   /**
@@ -270,10 +280,10 @@ class FreeQueue {
     for (let channel = 0; channel < this.channelCount; channel++) {
       this.channelData[channel].fill(0);
     }
-    this.Lock();
+//    this.Lock();
     this.states[this.States.READ] = 0;
     this.states[this.States.WRITE] = 0;
-    this.Unlock();
+//    this.Unlock();
   }
 }
 
