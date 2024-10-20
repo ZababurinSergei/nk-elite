@@ -40,13 +40,17 @@ fi
 
 cp ./$BUILDDIR/*.* ./examples/src/this/free-queue/wasm
 
+if [ ! -d ./node_modules ]; then
+    npm install
+fi
+
 cd examples
 
-#if [ ! -d ./node_modules ]; then
-#    npm install
-#fi
+if [ ! -d ./node_modules ]; then
+    npm install
+fi
 
-#npm run start
+npm run start
 
 cd ..
 
