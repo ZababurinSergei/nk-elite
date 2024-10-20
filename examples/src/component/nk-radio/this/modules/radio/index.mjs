@@ -1,11 +1,14 @@
+// import initFreeQueue from '@newkind/initFreeQueue'
+// import { FreeQueue } from '@newkind/FreeQueue'
+// import { FreeQueueSab } from '@newkind/FreeQueueSAB'
+
 import initFreeQueue from "../../free-queue/free-queue.asm.js";
+import FreeQueue from "../../free-queue/free-queue.js";
+// import FreeQueue from "../../free-queue/free-queue-sab.js";
 
-import FreeQueue from "../../free-queue/free-queue-sab.js";
-//import FreeQueue from "../../free-queue/free-queue.js";
-
-import { getConstants } from '@newkind/constants'
+import {getConstants} from '@newkind/constants'
 import Application from "./oscilloscope/index.mjs";
-import { logger } from "@libp2p/logger";
+import {logger} from "@libp2p/logger";
 import CONFIG from "../../config.mjs";
 
 const constants = getConstants()
@@ -28,12 +31,12 @@ const newAudio = async function () {
             })
 
             CONFIG.stream.song.crossOrigin = "anonymous";
-            CONFIG.stream.song.addEventListener( "canplay", async (event) => {
+            CONFIG.stream.song.addEventListener("canplay", async (event) => {
                 await CONFIG.audio.ctx.resume();
                 await CONFIG.stream.song.play();
                 CONFIG.html.button.start.textContent = "Stop Audio";
                 return true;
-            }, { once: true } );
+            }, {once: true});
 
             await CONFIG.stream.source.connect(CONFIG.audio.ctx.destination);
             await CONFIG.stream.source.connect(CONFIG.audio.node);
@@ -65,8 +68,9 @@ const ctx = async function () {
         channelInterpretation: "speakers"
     });
 
-    CONFIG.audio.node.connect( CONFIG.audio.ctx.destination );
-    CONFIG.audio.node.port.postMessage( Object.entries( CONFIG.queue.object ) );
+    CONFIG.audio.node.connect(CONFIG.audio.ctx.destination);
+    console.log('=========== Object.entries(CONFIG.queue.object) ===========', Object.entries(CONFIG.queue.object))
+    CONFIG.audio.node.port.postMessage(Object.entries(CONFIG.queue.object));
 
     CONFIG.audio.ctx.suspend();
 
@@ -85,7 +89,7 @@ const ctx = async function () {
     return CONFIG.audio.ctx
 }
 
-const freeQueueInit = function (){
+const freeQueueInit = function () {
     // Подключаю воркер
 //    const urlWorker = (new URL('./worker.sync.js', import.meta.url)).pathname
 //    let workerName = 'nk-radio'
@@ -100,26 +104,25 @@ const freeQueueInit = function (){
         setStatus: function (e) {
             if (e !== "") {
                 console.log(e)
-            };
+            }
+            ;
         }
     };
 
-    globalThis["LFreeQueue"].onRuntimeInitialized = async function() 
-    {
+    globalThis["LFreeQueue"].onRuntimeInitialized = async function () {
         ///////////////////////////////////////////////////////////////////////////////////////
         // FreeQueue initialization
         ///////////////////////////////////////////////////////////////////////////////////////
         //globalThis["LFreeQueue"].callMain("");
     }
 
-    initFreeQueue(globalThis["LFreeQueue"]).then( async function (module) 
-    {
+    initFreeQueue(globalThis["LFreeQueue"]).then(async function (module) {
         const GetFreeQueuePointers = module.cwrap('GetFreeQueuePointers', 'number', ['number', 'string']);
         const PrintQueueInfo = module.cwrap('PrintQueueInfo', '', ['number']);
         const CreateFreeQueue = module.cwrap('CreateFreeQueue', 'number', ['number', 'number']);
         const PrintQueueAddresses = module.cwrap('PrintQueueAddresses', '', ['number']);
 
-        CONFIG.queue.pointer = CreateFreeQueue( 1754 * 50, 2 );
+        CONFIG.queue.pointer = CreateFreeQueue(1754 * 50, 2);
         const bufferLengthPtr = GetFreeQueuePointers(CONFIG.queue.pointer, "buffer_length");
         const channelCountPtr = GetFreeQueuePointers(CONFIG.queue.pointer, "channel_count");
         const statePtr = GetFreeQueuePointers(CONFIG.queue.pointer, "state");
@@ -132,21 +135,29 @@ const freeQueueInit = function (){
         pointers.channelCountPointer = channelCountPtr;
         pointers.statePointer = statePtr;
         pointers.channelDataPointer = channelDataPtr;
-	
-	CONFIG.queue.api.lock = function() { 
-		let fn = module.cwrap('Lock', '', ['number']);
-		fn( CONFIG.queue.pointer );
-	}
-	CONFIG.queue.api.unlock = function() { 
-		let fn = module.cwrap('Unlock', '', ['number']);
-		fn( CONFIG.queue.pointer );
-	}
-	CONFIG.queue.api.trylock = function() { 
-		let fn = module.cwrap('TryLock', 'number', ['number']);
-		return fn( CONFIG.queue.pointer );
-	}
 
-	CONFIG.queue.object = pointers;
+
+        console.log('************************* 000 ******************************************')
+        CONFIG.queue.api.lock = function () {
+            console.log('*******************************************************************')
+            let fn = module.cwrap('Lock', '', ['number']);
+            fn(CONFIG.queue.pointer);
+        }
+
+        CONFIG.queue.api.unlock = function () {
+
+            console.log('*******************************************************************')
+            let fn = module.cwrap('Unlock', '', ['number']);
+            fn(CONFIG.queue.pointer);
+        }
+
+        CONFIG.queue.api.trylock = function () {
+            console.log('*******************************************************************')
+            let fn = module.cwrap('TryLock', 'number', ['number']);
+            return fn(CONFIG.queue.pointer);
+        }
+
+        CONFIG.queue.object = pointers;
 
         CONFIG.queue.instance = FreeQueue.fromPointers(pointers);
 
@@ -238,7 +249,7 @@ export default async () => {
                 }
 
                 CONFIG.html.button.start.addEventListener("click", async (e) => {
-                    if(CONFIG.html.button.start.classList.contains('disabled')) {
+                    if (CONFIG.html.button.start.classList.contains('disabled')) {
                         return
                     }
 

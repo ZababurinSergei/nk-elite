@@ -1,5 +1,5 @@
 import { chai } from '@newkind/tests'
-import { FreeQueue, MAX_CHANNEL_COUNT, RENDER_QUANTUM_FRAMES } from '@newkind/freeQueue';
+import { FreeQueue, MAX_CHANNEL_COUNT, RENDER_QUANTUM_FRAMES } from '@newkind/FreeQueue';
 
 const { expect } = chai
 

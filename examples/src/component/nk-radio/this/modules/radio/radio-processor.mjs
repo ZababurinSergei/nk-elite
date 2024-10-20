@@ -1,88 +1,87 @@
+// import FreeQueue from "../../free-queue/free-queue-sab.js";
 
-import FreeQueue from "../../free-queue/free-queue-sab.js";
-//import FreeQueue from "../../free-queue/free-queue.js";
+import FreeQueue from "../../free-queue/free-queue.js";
 
-class WorkletBasicProcessor extends AudioWorkletProcessor 
-{
-	constructor(options) {
-		super();
+class WorkletBasicProcessor extends AudioWorkletProcessor {
+    constructor(options) {
+        super();
 
-		this.initialized = false;
-                this.port.onmessage = (event) => {
-           	     this.ondata(event);
-                };
-	}
+        this.initialized = false;
+        this.port.onmessage = (event) => {
+            this.ondata(event);
+        };
+    }
 
-	ondata( event )	{
-		let obj = Object.fromEntries( new Map( event.data ) );
+    ondata(event) {
+        let obj = Object.fromEntries(new Map(event.data));
 
-		this.instance = FreeQueue.fromPointers( obj );
-		this.initialized = true;
+        this.instance = FreeQueue.fromPointers(obj);
+        console.log('66666666666666666666 instance 666666666666666666666', this.instance)
+        this.initialized = true;
 
-		console.log("instance: " + this.instance);
-	}
+        console.log("instance: " + this.instance);
+    }
 
-	process(inputs, outputs, parameters) 
-	{
-		if ( this.initialized == false ) return true;
+    process(inputs, outputs, parameters) {
+        if (this.initialized == false) return true;
 
-		////////////////////////////////////////////////////////////////////////////////////////
-		// outputs count...
-		////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////
+        // outputs count...
+        ////////////////////////////////////////////////////////////////////////////////////////
 
-		for ( let i = 0; i < outputs.length; i++ ) {
-			let bufferSize = 0;
+        for (let i = 0; i < outputs.length; i++) {
+            let bufferSize = 0;
 
-			let channels = outputs[i].length;
-			if ( channels == 0 ) break;
+            let channels = outputs[i].length;
+            if (channels == 0) break;
 
-			let dataArray = [ channels ];
+            let dataArray = [channels];
 
-			////////////////////////////////////////////////////////////////////////////////////////
-			// channels count...
-			////////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////
+            // channels count...
+            ////////////////////////////////////////////////////////////////////////////////////////
 
-			for ( let j = 0; j < channels; j++ ) {  
-			}
+            for (let j = 0; j < channels; j++) {
+            }
 
-		}
+        }
 
 
-		////////////////////////////////////////////////////////////////////////////////////////
-		// inputs count...
-		////////////////////////////////////////////////////////////////////////////////////////
-		for ( let i = 0; i < inputs.length; i++ ) {
+        ////////////////////////////////////////////////////////////////////////////////////////
+        // inputs count...
+        ////////////////////////////////////////////////////////////////////////////////////////
+        for (let i = 0; i < inputs.length; i++) {
 
-			let bufferSize = 0;
+            let bufferSize = 0;
 
-			let channels = inputs[i].length;
-			if ( channels == 0 ) break;
+            let channels = inputs[i].length;
+            if (channels == 0) break;
 
-			let dataArray = [ channels ];
+            let dataArray = [channels];
 
-			////////////////////////////////////////////////////////////////////////////////////////
-			// channels count...
-			////////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////
+            // channels count...
+            ////////////////////////////////////////////////////////////////////////////////////////
 
-			for ( let j = 0; j < channels; j++ ) {  
-				bufferSize = inputs[i][j].length;
-				dataArray[ j ] = new Float64Array(bufferSize);
-				for ( let k = 0; k < bufferSize; k++ ) {
-					dataArray[j][k] = inputs[i][j][k];
-				}
-			}
-		
-			if ( this.instance != undefined && this.instance != null) {
-				const rc = this.instance.push( dataArray, bufferSize );
-				if ( rc == false ) console.log( "processor: queue.push [ " + ( ( rc == true ) ? "true" : "false" ) + " ]" );
-				//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-			}
+            for (let j = 0; j < channels; j++) {
+                bufferSize = inputs[i][j].length;
+                dataArray[j] = new Float64Array(bufferSize);
+                for (let k = 0; k < bufferSize; k++) {
+                    dataArray[j][k] = inputs[i][j][k];
+                }
+            }
 
-		}
+            if (this.instance != undefined && this.instance != null) {
+                const rc = this.instance.push(dataArray, bufferSize);
+                if (rc == false) console.log("processor: queue.push [ " + ((rc == true) ? "true" : "false") + " ]");
+                //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            }
 
-		return true;
+        }
 
-	}
+        return true;
+
+    }
 
 }
 
