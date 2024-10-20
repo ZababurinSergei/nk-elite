@@ -23,8 +23,8 @@ class AudioProcessor extends AudioWorkletProcessor {
 		this.inputQueue = options.processorOptions.inputQueue;
 		this.outputQueue = options.processorOptions.outputQueue;
 		this.atomicState = options.processorOptions.atomicState;
-		Object.setPrototypeOf(this.inputQueue, FreeQueueSAB.prototype);
-		Object.setPrototypeOf(this.outputQueue, FreeQueueSAB.prototype);
+		Object.setPrototypeOf(this.inputQueue, FreeQueueSab.prototype);
+		Object.setPrototypeOf(this.outputQueue, FreeQueueSab.prototype);
 		// Object.setPrototypeOf(this.inputQueue, FreeQueue.prototype);
 		// Object.setPrototypeOf(this.outputQueue, FreeQueue.prototype);
 		this.primingCounter = 0;

@@ -124,8 +124,6 @@ Object.defineProperties(component.prototype, {
 
             if (iframe.isFramed) {
                 const nkIframe = window.parent.document.body.querySelector('nk-iframe')
-
-                console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ nkIframe.dataset.testUrl', nkIframe, nkIframe.dataset.testUrl.length)
                 if (nkIframe.dataset.testUrl && nkIframe.dataset.testUrl.trim().length !== 0) {
                     this.run(nkIframe.dataset.testUrl)
                 }

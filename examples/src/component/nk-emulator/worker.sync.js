@@ -28,8 +28,8 @@ const initialize = (messageDataFromMainThread) => {
     irArray = messageDataFromMainThread.irArray
     sampleRate = messageDataFromMainThread.sampleRate
 
-    Object.setPrototypeOf(inputQueue, FreeQueueSAB.prototype);
-    Object.setPrototypeOf(outputQueue, FreeQueueSAB.prototype);
+    Object.setPrototypeOf(inputQueue, FreeQueueSab.prototype);
+    Object.setPrototypeOf(outputQueue, FreeQueueSab.prototype);
 
     // A local buffer to store data pulled out from `inputQueue`.
     inputBuffer = [new Float64Array(FRAME_SIZE), new Float64Array(FRAME_SIZE)]

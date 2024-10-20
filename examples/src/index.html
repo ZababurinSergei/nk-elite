@@ -154,6 +154,9 @@
         </div>
         <div class="container">
             <div class="slot-item">
+                <slot></slot>
+            </div>
+            <div class="slot-item">
                 <slot name="nk-radio_0"></slot>
             </div>
             <div class="slot-item">
@@ -1982,7 +1985,7 @@
         arrayComponent = ['nk-service', 'nk-tests']
     }
 
-    arrayComponent = arrayComponent.filter(item => item !== 'nk-audio')
+    // arrayComponent = arrayComponent.filter(item => item !== 'nk-audio')
 
     init({
         components: arrayComponent

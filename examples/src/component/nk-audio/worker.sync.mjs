@@ -23,8 +23,8 @@ let runningAverageFactor = 1;
 // processing.
 const initialize = async (messageDataFromMainThread) => {
   ({inputQueue, outputQueue, atomicState, irArray, sampleRate} = messageDataFromMainThread);
-  Object.setPrototypeOf(inputQueue, FreeQueueSAB.prototype);
-  Object.setPrototypeOf(outputQueue, FreeQueueSAB.prototype);
+  Object.setPrototypeOf(inputQueue, FreeQueueSab.prototype);
+  Object.setPrototypeOf(outputQueue, FreeQueueSab.prototype);
 
   // A local buffer to store data pulled out from `inputQueue`.
   inputBuffer = new Float32Array(FRAME_SIZE);

@@ -18,7 +18,7 @@ export const loader = (url, data = undefined) => {
                     load.dataset[key] = data[key]
                 }
             }
-            console.log('-----------------', load)
+
             document.head.appendChild(load)
             load.onload = (out) =>{
                 // document.dispatchEvent( new CustomEvent(`${name}-loading`))

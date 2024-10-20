@@ -96,9 +96,9 @@
     };
 
     const nkIframe = window.parent.document.body.querySelector('nk-iframe')
+
     const callback = function (mutationsList, observer) {
         nkIframe.height = nkShadow.clientHeight
-        console.log('dddddddddd mutationsList dddddddddddd', nkShadow.clientHeight)
     };
 
     const observer = new MutationObserver(callback);
