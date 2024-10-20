@@ -15,7 +15,7 @@
  * worker renders audio data to fill in the queue.
  */
 
-class FreeQueue {
+class FreeQueueSAB {
 
   /**
    * An index set for shared state fields. Requires atomic access.
@@ -37,7 +37,7 @@ class FreeQueue {
    */
   constructor(size, channelCount) {
     this.states = new Uint32Array(
-      new ArrayBuffer(
+      new SharedArrayBuffer(
         Object.keys(this.States).length * Uint32Array.BYTES_PER_ELEMENT
       )
     );
@@ -49,12 +49,12 @@ class FreeQueue {
     this.bufferLength = size + 1;
     this.channelCount = channelCount;
     this.channelData = [];
-
-
     for (let i = 0; i < channelCount; i++) {
       this.channelData.push(
         new Float64Array(
+          new SharedArrayBuffer(
             this.bufferLength * Float64Array.BYTES_PER_ELEMENT
+          )
         )
       );
     }
@@ -62,7 +62,7 @@ class FreeQueue {
 
   static fromObject(object)
   {
-    Object.setPrototypeOf(object, FreeQueue.prototype);
+    Object.setPrototypeOf(object, FreeQueueSAB.prototype);
     return object;
   }
 
@@ -82,14 +82,14 @@ class FreeQueue {
    */
   static fromPointers(queuePointers) {
 
-    const queue = new FreeQueue(0, 0);
+    const queue = new FreeQueueSAB(0, 0);
 
     const HEAPU32 = new Uint32Array(queuePointers.memory.buffer);
     const HEAPF64 = new Float64Array(queuePointers.memory.buffer);
 
     const bufferLength = HEAPU32[queuePointers.bufferLengthPointer / 4];
     const channelCount = HEAPU32[queuePointers.channelCountPointer / 4];
-    
+
     const states = HEAPU32.subarray(
         HEAPU32[queuePointers.statePointer / 4] / 4,
         HEAPU32[queuePointers.statePointer / 4] / 4 + 2
@@ -120,9 +120,8 @@ class FreeQueue {
    * @return {boolean} False if the operation fails.
    */
   push(input, blockLength) {
-
-    const currentRead = this.states[0];
-    const currentWrite = this.states[1];
+    const currentRead = Atomics.load(this.states, this.States.READ);
+    const currentWrite = Atomics.load(this.states, this.States.WRITE);
     
     if (this._getAvailableWrite(currentRead, currentWrite) < blockLength) {
       return false;
@@ -144,9 +143,7 @@ class FreeQueue {
       }
       if (nextWrite === this.bufferLength) nextWrite = 0;
     }
-
-    this.states[1] = nextWrite;
-
+    Atomics.store(this.states, this.States.WRITE, nextWrite);
     return true;
   }
 
@@ -160,8 +157,8 @@ class FreeQueue {
    * @return {boolean} False if the operation fails.
    */
   pull(output, blockLength) {
-    const currentRead = this.states[0];
-    const currentWrite = this.states[1];
+    const currentRead = Atomics.load(this.states, this.States.READ);
+    const currentWrite = Atomics.load(this.states, this.States.WRITE);
 	
     if (this._getAvailableRead(currentRead, currentWrite) < blockLength) {
       return false;
@@ -185,8 +182,7 @@ class FreeQueue {
         nextRead = 0;
       }
     }
-
-    this.states[0] = nextRead;
+    Atomics.store(this.states, this.States.READ, nextRead);
     return true;
   }
   /**
@@ -194,8 +190,8 @@ class FreeQueue {
    * Prints currently available read and write.
    */
   printAvailableReadAndWrite() {
-    const currentRead = this.states[0];
-    const currentWrite = this.states[1];
+    const currentRead = Atomics.load(this.states, this.States.READ);
+    const currentWrite = Atomics.load(this.states, this.States.WRITE);
     console.log(this, {
         availableRead: this._getAvailableRead(currentRead, currentWrite),
         availableWrite: this._getAvailableWrite(currentRead, currentWrite),
@@ -206,8 +202,8 @@ class FreeQueue {
    * @returns {number} number of samples available for read
    */
   getAvailableSamples() {
-    const currentRead = this.states[0];
-    const currentWrite = this.states[1];
+    const currentRead = Atomics.load(this.states, this.States.READ);
+    const currentWrite = Atomics.load(this.states, this.States.WRITE);
     return this._getAvailableRead(currentRead, currentWrite);
   }
   /**
@@ -241,23 +237,12 @@ class FreeQueue {
     for (let channel = 0; channel < this.channelCount; channel++) {
       this.channelData[channel].fill(0);
     }
-    this.states[0] = 0;
-    this.states[1] = 0;
+    Atomics.store(this.states, this.States.READ, 0);
+    Atomics.store(this.states, this.States.WRITE, 0);
   }
 }
 
+export { FreeQueueSAB as FreeQueueSab }
+export { FreeQueueSAB }
 
-// Byte per audio sample. (32 bit float)
-export const BYTES_PER_SAMPLE = Float32Array.BYTES_PER_ELEMENT;
-
-// Basic byte unit of WASM heap. (16 bit = 2 bytes)
-export const BYTES_PER_UNIT = Uint16Array.BYTES_PER_ELEMENT;
-
-// The max audio channel on Chrome is 32.
-export const MAX_CHANNEL_COUNT = 32;
-
-// WebAudio's render quantum size.
-export const RENDER_QUANTUM_FRAMES = 128;
-
-export { FreeQueue }
-export default FreeQueue;
+export default FreeQueueSAB;

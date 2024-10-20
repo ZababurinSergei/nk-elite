@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 import initFreeQueue from '@newkind/initFreeQueue'
 import { FreeQueue } from '@newkind/FreeQueue'
 import { FreeQueueSab } from '@newkind/FreeQueueSAB'
@@ -6,13 +5,6 @@ import { FreeQueueSab } from '@newkind/FreeQueueSAB'
 // import initFreeQueue from "../../free-queue/free-queue.asm.js";
 // import FreeQueue from "../../free-queue/free-queue.js";
 // import FreeQueue from "../../free-queue/free-queue-sab.js";
-=======
-
-//import FreeQueue from "../../free-queue/free-queue-sab.js";
-import FreeQueue from "../../free-queue/free-queue.js";
-
-import initFreeQueue from "../../free-queue/free-queue.asm.js";
->>>>>>> Stashed changes
 
 import {getConstants} from '@newkind/constants'
 import Application from "./oscilloscope/index.mjs";
@@ -112,8 +104,7 @@ const freeQueueInit = function () {
         setStatus: function (e) {
             if (e !== "") {
                 console.log(e)
-            }
-            ;
+            };
         }
     };
 
@@ -143,7 +134,6 @@ const freeQueueInit = function () {
         pointers.channelCountPointer = channelCountPtr;
         pointers.statePointer = statePtr;
         pointers.channelDataPointer = channelDataPtr;
-<<<<<<< Updated upstream
 
         CONFIG.queue.api.lock = function () {
             console.log('*******************************************************************')
@@ -166,23 +156,6 @@ const freeQueueInit = function () {
 
         CONFIG.queue.object = pointers;
 
-=======
-
-	CONFIG.queue.api.lock = function() { 
-		let fn = module.cwrap('Lock', '', ['number']);
-		fn( CONFIG.queue.pointer );
-	}
-	CONFIG.queue.api.unlock = function() { 
-		let fn = module.cwrap('Unlock', '', ['number']);
-		fn( CONFIG.queue.pointer );
-	}
-	CONFIG.queue.api.trylock = function() { 
-		let fn = module.cwrap('TryLock', 'number', ['number']);
-		return fn( CONFIG.queue.pointer );
-	}
-
-	CONFIG.queue.object = pointers;
->>>>>>> Stashed changes
         CONFIG.queue.instance = FreeQueue.fromPointers(pointers);
 
 	console.log( "CONFIG.queue.object: " + CONFIG.queue.object );
@@ -273,7 +246,7 @@ export default async () => {
                             CONFIG.stream.path = e.target.value;
                         }
                     });
-                }
+                };
 
                 CONFIG.html.button.start.addEventListener("click", async (e) => {
                     if (CONFIG.html.button.start.classList.contains('disabled')) {
