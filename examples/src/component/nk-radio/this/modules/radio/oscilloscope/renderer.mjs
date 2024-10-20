@@ -593,7 +593,8 @@ fn main( @location(0) inFragUV : vec2<f32>, @location(1) inColor : vec4<f32> ) -
                     CONFIG.application.renderBuffer[i * 2 + 1] = _b[1][i];
                 }
             } 
-//            console.log( "draw: queue.pull [ " + ( ( rc == true ) ? "true" : "false" ) + " ]" );            
+
+            console.log( "draw: queue.pull [ " + ( ( rc == true ) ? "true" : "false" ) + " ]" );            
         }
  
         /////////////////////////////////////////////////////////////////////////////////////////////////

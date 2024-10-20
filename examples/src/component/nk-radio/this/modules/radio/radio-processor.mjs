@@ -1,8 +1,13 @@
 import FreeQueue from "../../../../../this/free-queue/free-queue.js";
 
+<<<<<<< Updated upstream
 class WorkletBasicProcessor extends AudioWorkletProcessor {
     constructor(options) {
         super();
+=======
+//import FreeQueue from "../../free-queue/free-queue-sab.js";
+import FreeQueue from "../../free-queue/free-queue.js";
+>>>>>>> Stashed changes
 
         this.initialized = false;
         this.port.onmessage = (event) => {
@@ -60,6 +65,7 @@ class WorkletBasicProcessor extends AudioWorkletProcessor {
             // channels count...
             ////////////////////////////////////////////////////////////////////////////////////////
 
+<<<<<<< Updated upstream
             for (let j = 0; j < channels; j++) {
                 bufferSize = inputs[i][j].length;
                 dataArray[j] = new Float64Array(bufferSize);
@@ -67,6 +73,22 @@ class WorkletBasicProcessor extends AudioWorkletProcessor {
                     dataArray[j][k] = inputs[i][j][k];
                 }
             }
+=======
+			for ( let j = 0; j < channels; j++ ) {  
+				bufferSize = inputs[i][j].length;
+				dataArray[ j ] = new Float64Array(bufferSize);
+				for ( let k = 0; k < bufferSize; k++ ) {
+					dataArray[j][k] = inputs[i][j][k];
+				}
+			}
+		
+			if ( this.instance != undefined && this.instance != null) {
+				const rc = this.instance.push( dataArray, bufferSize );
+				///if ( rc == false ) console.log( "processor: queue.push [ " + ( ( rc == true ) ? "true" : "false" ) + " ]" );
+				console.log( "processor: queue.push [ " + ( ( rc == true ) ? "true" : "false" ) + " ]" );
+				//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			}
+>>>>>>> Stashed changes
 
             if (this.instance != undefined && this.instance != null) {
                 const rc = this.instance.push(dataArray, bufferSize);

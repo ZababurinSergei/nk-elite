@@ -42,7 +42,7 @@ export let CONFIG = {
                 application: {
                     instance: undefined,
                     channels: 2,
-                    goniometer: "goniometer-on",
+                    goniometer: "goniometer-off",
                     holdChart: "holdchart-off",
                     inputType: "default", // "audio"; // "osc"
                     renderType: "stereo",

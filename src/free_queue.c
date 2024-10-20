@@ -8,6 +8,10 @@
 #include <string.h>
 #include <unistd.h> 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct FreeQueue {
   size_t buffer_length;
   size_t channel_count;
@@ -15,7 +19,6 @@ struct FreeQueue {
   atomic_uint *state;
   emscripten_lock_t lock;
 };
-
 
 /**
  * An index set for shared state fields.
@@ -27,8 +30,6 @@ enum FreeQueueState {
   /** @type {number} A shared index for writing into the queue. (producer) */
   WRITE = 1
 };
-
-// static pthread_mutex_t tasks_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 uint32_t _getAvailableRead(
   struct FreeQueue *queue, 
@@ -51,10 +52,6 @@ uint32_t _getAvailableWrite(
     return queue->buffer_length - write_index + read_index - 1;
   return read_index - write_index - 1;
 }
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 EMSCRIPTEN_KEEPALIVE
 int TryLock( struct FreeQueue *queue )
@@ -82,9 +79,9 @@ void Unlock( struct FreeQueue *queue )
 	}
 }
 
-
 EMSCRIPTEN_KEEPALIVE
-void ChangeChannelsCount( struct FreeQueue *queue, size_t channel_count ) {
+void ChangeChannelsCount( struct FreeQueue *queue, size_t channel_count ) 
+{
 	if ( queue ) {
                 Lock( queue );
 
@@ -105,7 +102,8 @@ void ChangeChannelsCount( struct FreeQueue *queue, size_t channel_count ) {
 }
 
 EMSCRIPTEN_KEEPALIVE
-void ChangeBufferLength( struct FreeQueue *queue, size_t length ) {
+void ChangeBufferLength( struct FreeQueue *queue, size_t length ) 
+{
 	if ( queue ) {
                 Lock( queue );
 
@@ -126,26 +124,31 @@ void ChangeBufferLength( struct FreeQueue *queue, size_t length ) {
 }
 
 EMSCRIPTEN_KEEPALIVE
-void *CreateFreeQueue(size_t length, size_t channel_count) {
+void *CreateFreeQueue(size_t length, size_t channel_count) 
+{
   struct FreeQueue *queue = (struct FreeQueue *)malloc(sizeof(struct FreeQueue));
-  queue->buffer_length = length + 1;
-  queue->channel_count = channel_count;
-  queue->lock = EMSCRIPTEN_LOCK_T_STATIC_INITIALIZER;
-  queue->state = (atomic_uint *)malloc(2 * sizeof(atomic_uint));
-  atomic_store(queue->state + READ, 0);
-  atomic_store(queue->state + WRITE, 0);
-  queue->channel_data = (double **)malloc(channel_count * sizeof(double *));
-  for (int i = 0; i < channel_count; i++) {
-    queue->channel_data[i] = (double *)malloc(queue->buffer_length * sizeof(double));
-    for (int j = 0; j < queue->buffer_length; j++) {
-      queue->channel_data[i][j] = 0;
+  if ( queue ) {
+    queue->buffer_length = length + 1;
+    queue->channel_count = channel_count;
+    queue->lock = 0;
+    queue->state = (atomic_uint *)malloc(2 * sizeof(atomic_uint));
+    atomic_store(queue->state + READ, 0);
+    atomic_store(queue->state + WRITE, 0);
+    queue->channel_data = (double **)malloc(queue->channel_count * sizeof(double *));
+    for (int i = 0; i < queue->channel_count; i++) {
+      queue->channel_data[i] = (double *)malloc(queue->buffer_length * sizeof(double));
+      for (int j = 0; j < queue->buffer_length; j++) {
+        queue->channel_data[i][j] = 0;
+      }
     }
+    return (void*)queue;
   }
-  return (void*)queue;
+  return 0;
 }
 
 EMSCRIPTEN_KEEPALIVE
-void DestroyFreeQueue(struct FreeQueue *queue) {
+void DestroyFreeQueue(struct FreeQueue *queue) 
+{
   if ( queue ) {
     Lock( queue );
     for (int i = 0; i < queue->channel_count; i++) {

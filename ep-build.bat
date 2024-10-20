@@ -43,6 +43,10 @@ if not exist examples\src\this\free-queue (
 
 @copy %BUILDDIR%\*.* examples\src\this\free-queue /Y
 
+if not exist node_modules (
+    @call cmd /C "npm install"
+)
+
 cd examples
 
 if not exist node_modules (

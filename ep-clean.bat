@@ -17,6 +17,10 @@ set DIR=%cd%
 @call cmd /C "%EMSCRIPTENDIR:~0,2% && cd %EMSCRIPTENDIR% && emsdk_env.bat && %DIR:~0,2% && cd %DIR% && automake.bat clean"
 cd ..
 
+if exist node_modules (
+    @rmdir /S /Q node_modules
+)
+
 cd examples
 
 set SOURCEDIR=src\this\free-queue

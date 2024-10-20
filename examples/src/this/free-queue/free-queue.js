@@ -246,6 +246,7 @@ class FreeQueue {
   }
 }
 
+<<<<<<< Updated upstream
 
 // Byte per audio sample. (32 bit float)
 export const BYTES_PER_SAMPLE = Float32Array.BYTES_PER_ELEMENT;
@@ -260,4 +261,6 @@ export const MAX_CHANNEL_COUNT = 32;
 export const RENDER_QUANTUM_FRAMES = 128;
 
 export { FreeQueue }
+=======
+>>>>>>> Stashed changes
 export default FreeQueue;
