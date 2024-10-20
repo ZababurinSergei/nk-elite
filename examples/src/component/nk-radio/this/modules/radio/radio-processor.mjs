@@ -14,7 +14,6 @@ class WorkletBasicProcessor extends AudioWorkletProcessor {
         let obj = Object.fromEntries(new Map(event.data));
 
         this.instance = FreeQueue.fromPointers(obj);
-        console.log('66666666666666666666 instance 666666666666666666666', this.instance)
         this.initialized = true;
 
         console.log("instance: " + this.instance);
