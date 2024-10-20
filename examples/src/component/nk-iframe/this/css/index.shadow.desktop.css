@@ -1,0 +1,11 @@
+:host {
+    width: 100%;
+    height: auto;
+    --height: "inherit";
+    --width: 100%;
+}
+
+:host > .jason {
+   background: magenta;
+}
+

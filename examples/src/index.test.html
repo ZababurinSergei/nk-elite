@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Org portal</title>
+    <!--    <script src='https://cdnjs.cloudflare.com/ajax/libs/dragula/$VERSION/dragula.min.js'></script>-->
+    <script type="importmap">
+        {
+            "imports": {
+                "@newkind/this": "./this/index.mjs",
+                "@newkind/tests":"./this/modules/lib-tests.js",
+                "@newkind/initFreeQueue":"./this/free-queue/wasm/free-queue.asm.js",
+                "@newkind/freeQueue": "./this/free-queue/free-queue.js",
+                "@newkind/FreeQueueSAB": "./this/free-queue/free-queue-sab.js",
+                "@newkind/constants": "./this/constants.js",
+                "@libp2p/webrtc": "./this/modules/lib-webrtc.js",
+                "@libp2p/peer-id": "./this/modules/lib-pubsub.js",
+                "@multiformats/multiaddr-matcher": "./this/modules/lib-pubsub.js",
+                "lottie-web": "./this/modules/lib-lottieWeb.js",
+                "@libp2p/crypto/keys": "./this/modules/lib-pubsub.js",
+                "tween-js": "./this/modules/lib-tween.js",
+                "stats-js": "./this/modules/lib-stats.js",
+                "randomcolor": "./this/modules/lib-solar-system.js",
+            	"three": "./this/modules/lib-THREE.js",
+                "OrbitControls": "./this/modules/lib-solar-system-orbit-controls.js",
+                "underscore": "./this/modules/underscore-esm.js",
+                "lokijs": "./this/modules/lib-lokijs.js",
+                "twig": "./this/modules/lib-solar-system-twig.js",
+                "@libp2p/peer-id-factory": "./this/modules/lib-peerId-factory.js",
+                "@libp2p/logger": "./this/modules/lib-logger.js",
+                "@chainsafe/libp2p-gossipsub": "./this/modules/lib-gossipsub.js",
+                "@chainsafe/libp2p-noise": "./this/modules/lib-pubsub.js",
+                "@chainsafe/libp2p-yamux": "./this/modules/lib-pubsub.js",
+                "@libp2p/circuit-relay-v2": "./this/modules/lib-pubsub.js",
+                "@libp2p/identify": "./this/modules/lib-identify.js",
+                "@libp2p/dcutr": "./this/modules/lib-pubsub.js",
+                "@libp2p/websockets": "./this/modules/lib-pubsub.js",
+                "@libp2p/websockets/filters": "./this/modules/lib-filters.js",
+                "@libp2p/kad-dht": "./this/modules/lib-pubsub.js",
+                "@multiformats/multiaddr": "./this/modules/lib-pubsub.js",
+                "uint8arrays": "./this/modules/lib-pubsub.js",
+                "@libp2p/bootstrap": "./this/modules/lib-pubsub.js",
+                "datastore-idb": "./this/modules/lib-pubsub.js",
+                "@libp2p/ping": "./this/modules/lib-pubsub.js",
+                "libp2p": "./this/modules/lib-libp2p.js",
+                "@libp2p/peer-store": "./this/modules/lib-peer-store.js",
+                "@libp2p/peer-id": "./this/modules/lib-pubsub.js",
+                "@libp2p/pubsub-peer-discovery": "./this/modules/lib-pubsubPeerDiscovery.js",
+                "@libp2p/interface-transport": "./this/modules/lib-pubsub.js",
+                "cborg": "./this/modules/lib-cbor.js",
+                "it-length-prefixed-stream": "./this/modules/lib-stream.js"
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="./index.css">
+    <link rel="stylesheet" href="./component/nk-solar-system/this/css/index.light.css">
+    <link rel="stylesheet" href="./assets/index.light.css">
+    <link rel="stylesheet" href="./component/nk-star/this/css/aladin.min.css">
+</head>
+<body>
+<nk-shadow id="nk-shadow_0">
+    <template>
+        <div>
+            <slot></slot>
+        </div>
+        <nk-tests
+                id="nk-tests_0"
+                component="nk-tests"
+        >
+            <template>
+                <div class="container">
+                    <slot name="tests"></slot>
+                </div>
+                <div slot="tests" data-exclusion id="mocha" style="position: relative"></div>
+                <div data-exclusion class="script"></div>
+            </template>
+        </nk-tests>
+    </template>
+</nk-shadow>
+</body>
+
+<script type="module">
+    import {init} from './index.mjs'
+
+    const arrayComponent = []
+    arrayComponent.push('nk-tests')
+    arrayComponent.unshift('nk-shadow')
+
+    const nkShadow = document.querySelector('nk-shadow')
+
+    console.log()
+    const config = {
+        attributes: true,
+        childList: true,
+        subtree: true,
+    };
+
+    const nkIframe = window.parent.document.body.querySelector('nk-iframe')
+    const callback = function (mutationsList, observer) {
+        nkIframe.height = nkShadow.clientHeight
+        console.log('dddddddddd mutationsList dddddddddddd', nkShadow.clientHeight)
+    };
+
+    const observer = new MutationObserver(callback);
+
+    observer.observe(nkShadow, config);
+
+    nkShadow.addEventListener('resize', (e) => {
+        const root = window.parent.document.body.querySelector('nk-iframe')
+        console.log('window.innerHeight', window.innerHeight)
+        console.log('window.innerWidth', window.innerWidth)
+        console.log(root);
+    });
+
+    init({
+        components: arrayComponent
+    }).then().catch(error => console.log(error));
+</script>
+</html>

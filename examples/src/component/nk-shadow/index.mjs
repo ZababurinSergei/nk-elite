@@ -1,6 +1,6 @@
 import { Component } from '../index.mjs'
 
-const name = 'nk-time-line';
+const name = 'nk-shadow';
 const component = await Component();
 
 Object.defineProperties(component.prototype, {

@@ -6,3 +6,11 @@ body {
     flex-direction: column;
     gap: 16px;
 }
+
+iframe {
+    box-sizing: border-box;
+    width: 100%;
+    height: inherit;
+    border: none;
+    outline: none;
+}

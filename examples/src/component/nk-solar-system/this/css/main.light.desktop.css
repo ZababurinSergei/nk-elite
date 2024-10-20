@@ -3935,6 +3935,7 @@ select[multiple] {
 
 .invisible {
     visibility: hidden;
+    display: none;
 }
 
 @media screen and (min-width: 0em) and (max-width: 39.9375em) {

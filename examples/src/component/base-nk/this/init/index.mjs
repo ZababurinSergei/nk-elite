@@ -51,15 +51,18 @@ export const init = (self) => {
 
         pathname = new URL('../../../../', import.meta.url)
 
+        if(self.dataset.cssLight) {
+            let linkLight = `${pathname}component/${self.tagName.toLowerCase()}/this/css/index.light.css`;
+            const styleLight = document.createElement('style');
+            styleLight.textContent = `@import "${linkLight}";`;
+            self.appendChild(styleLight);
+        }
+
         if (container.shadowDom.length > 0) {
             let link = `${pathname}component/${self.tagName.toLowerCase()}/this/css/index.shadow.css`;
 
             if (!self.shadowRoot) {
                 self.attachShadow({mode: 'open'});
-            }
-
-            if (self.dataset.cssShadow) {
-                link = `${pathname}component/${self.tagName.toLowerCase()}/this/css/${self.dataset.cssShadow}.shadow.css`;
             }
 
             const style = document.createElement('style');
