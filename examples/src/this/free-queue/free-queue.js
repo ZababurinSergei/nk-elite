@@ -107,6 +107,22 @@ class FreeQueue {
     queue.states = states;
     queue.channelData = channelData;
 
+    this.Lock = function () {
+            let fn = queuePointers.module.cwrap('Lock', '', ['number']);
+            fn(queuePointers.queue);
+    }
+
+    this.Unlock = function () {
+            let fn = queuePointers.module.cwrap('Unlock', '', ['number']);
+            fn(queuePointers.queue);
+    }
+
+    this.TryLock = function () {
+            let fn = queuePointers.module.cwrap('TryLock', 'number', ['number']);
+            return fn(queuePointers.queue);
+    }
+
+
     return queue;
   }
 
@@ -121,10 +137,13 @@ class FreeQueue {
    */
   push(input, blockLength) {
 
-    const currentRead = this.states[0];
-    const currentWrite = this.states[1];
+    this.Lock();
+
+    const currentRead = this.states[this.States.READ];
+    const currentWrite = this.states[this.States.WRITE];
     
     if (this._getAvailableWrite(currentRead, currentWrite) < blockLength) {
+      this.Unlock();
       return false;
     }
     let nextWrite = currentWrite + blockLength;
@@ -146,6 +165,7 @@ class FreeQueue {
     }
 
     this.states[1] = nextWrite;
+    this.Unlock();
 
     return true;
   }
@@ -160,10 +180,13 @@ class FreeQueue {
    * @return {boolean} False if the operation fails.
    */
   pull(output, blockLength) {
-    const currentRead = this.states[0];
-    const currentWrite = this.states[1];
+    this.Lock();
+
+    const currentRead = this.states[this.States.READ];
+    const currentWrite = this.states[this.States.WRITE];
 	
     if (this._getAvailableRead(currentRead, currentWrite) < blockLength) {
+      this.Unlock();
       return false;
     }
     let nextRead = currentRead + blockLength;
@@ -186,7 +209,9 @@ class FreeQueue {
       }
     }
 
-    this.states[0] = nextRead;
+    this.states[this.States.READ] = nextRead;
+    this.Unlock();
+
     return true;
   }
   /**
@@ -194,8 +219,10 @@ class FreeQueue {
    * Prints currently available read and write.
    */
   printAvailableReadAndWrite() {
-    const currentRead = this.states[0];
-    const currentWrite = this.states[1];
+    this.Lock();
+    const currentRead = this.states[this.States.READ];
+    const currentWrite = this.states[this.States.WRITE];
+    this.Unlock();
     console.log(this, {
         availableRead: this._getAvailableRead(currentRead, currentWrite),
         availableWrite: this._getAvailableWrite(currentRead, currentWrite),
@@ -206,8 +233,10 @@ class FreeQueue {
    * @returns {number} number of samples available for read
    */
   getAvailableSamples() {
-    const currentRead = this.states[0];
-    const currentWrite = this.states[1];
+    this.Lock();
+    const currentRead = this.states[this.States.READ];
+    const currentWrite = this.states[this.States.WRITE];
+    this.Unlock();
     return this._getAvailableRead(currentRead, currentWrite);
   }
   /**
@@ -241,23 +270,25 @@ class FreeQueue {
     for (let channel = 0; channel < this.channelCount; channel++) {
       this.channelData[channel].fill(0);
     }
-    this.states[0] = 0;
-    this.states[1] = 0;
+    this.Lock();
+    this.states[this.States.READ] = 0;
+    this.states[this.States.WRITE] = 0;
+    this.Unlock();
   }
 }
 
 
 // Byte per audio sample. (32 bit float)
-export const BYTES_PER_SAMPLE = Float32Array.BYTES_PER_ELEMENT;
+//export const BYTES_PER_SAMPLE = Float64Array.BYTES_PER_ELEMENT;
 
 // Basic byte unit of WASM heap. (16 bit = 2 bytes)
-export const BYTES_PER_UNIT = Uint16Array.BYTES_PER_ELEMENT;
+//export const BYTES_PER_UNIT = Uint16Array.BYTES_PER_ELEMENT;
 
 // The max audio channel on Chrome is 32.
-export const MAX_CHANNEL_COUNT = 32;
+//export const MAX_CHANNEL_COUNT = 32;
 
 // WebAudio's render quantum size.
-export const RENDER_QUANTUM_FRAMES = 128;
+//export const RENDER_QUANTUM_FRAMES = 128;
 
 export { FreeQueue }
 export default FreeQueue;
