@@ -1,5 +1,5 @@
-import {init, onload, v4 as uuidv} from './this/index.mjs';
-import {dialogThis} from './this/index.mjs'
+import { init, onload } from './this/index.mjs';
+import { dialogThis } from './this/index.mjs'
 
 const servicePath = new URL('../', import.meta.url);
 
