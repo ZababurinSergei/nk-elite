@@ -68,7 +68,17 @@
     </style>
 </head>
 <body>
-
+<nk-cursor
+    id="nk-cursor_0"
+    data-css-light="true"
+>
+    <template>
+        <div data-exclusion="true" class="cursor">
+            <h1>Hello!!</h1>
+            <p>Happy Codeing</p>
+        </div>
+    </template>
+</nk-cursor>
 <nk-tests
         id="nk-tests_0"
         component="nk-tests"
@@ -1991,6 +2001,11 @@
 
     if(iframe.isFramed) {
         arrayComponent = ['nk-tests']
+    }
+
+    let isNkCursor = true
+    if(isNkCursor) {
+        arrayComponent.push('nk-cursor')
     }
 
     // arrayComponent = arrayComponent.filter(item => item !== 'nk-audio')
