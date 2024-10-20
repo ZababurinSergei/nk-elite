@@ -1,4 +1,4 @@
-import { FreeQueueSAB } from '../../this/free-queue/free-queue-sab.js'
+import { FreeQueueSab } from '../../this/free-queue/free-queue-sab.js'
 import { getConstants } from '../../this/constants.js'
 const { FRAME_SIZE }  = getConstants('emulator');
 

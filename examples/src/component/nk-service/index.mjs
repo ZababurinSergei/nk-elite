@@ -1,6 +1,6 @@
 import { Component } from '../index.mjs'
 
-const name = 'nk-shadow';
+const name = 'nk-service';
 const component = await Component();
 
 Object.defineProperties(component.prototype, {

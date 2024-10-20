@@ -19,7 +19,7 @@ describe('FreeQueue Class', () => {
   const maxChannelCount = 4;
   let freeQueue = null;
 
-  // console.log('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeee', window.parent.document.querySelector('nk-shadow'))
+  // console.log('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeee', window.parent.document.querySelector('nk-service'))
   beforeEach(() => {
     freeQueue = new FreeQueue(mockWasmModule, bufferLength, channelCount, maxChannelCount);
   });

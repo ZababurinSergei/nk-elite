@@ -58,7 +58,7 @@
     <link rel="stylesheet" href="./component/nk-star/this/css/aladin.min.css">
 </head>
 <body>
-<nk-shadow id="nk-shadow_0">
+<nk-service id="nk-service_0">
     <template>
         <div>
             <slot></slot>
@@ -76,7 +76,7 @@
             </template>
         </nk-tests>
     </template>
-</nk-shadow>
+</nk-service>
 </body>
 
 <script type="module">
@@ -84,9 +84,9 @@
 
     const arrayComponent = []
     arrayComponent.push('nk-tests')
-    arrayComponent.unshift('nk-shadow')
+    arrayComponent.unshift('nk-service')
 
-    const nkShadow = document.querySelector('nk-shadow')
+    const nkShadow = document.querySelector('nk-service')
 
     console.log()
     const config = {

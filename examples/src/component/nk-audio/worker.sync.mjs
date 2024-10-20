@@ -1,7 +1,7 @@
 // import FreeQueue from "./lib/free-queue.js";
 // import GPUProcessor from "./gpu-processor.js";
 // import { FRAME_SIZE } from "./constants.js";
-import { FreeQueueSAB  } from '../../this/free-queue/free-queue-sab.js'
+import { FreeQueueSab  } from '../../this/free-queue/free-queue-sab.js'
 import { getConstants } from '../../this/constants.js'
 const { FRAME_SIZE }  = getConstants();
 

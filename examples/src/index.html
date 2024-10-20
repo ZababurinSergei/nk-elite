@@ -90,7 +90,7 @@
         </div>
     </template>
 </nk-tests>
-<nk-shadow id="nk-shadow_0">
+<nk-service id="nk-service_0">
     <template>
         <div class="header">
             <div class="logo">
@@ -1929,7 +1929,7 @@
             </template>
         </nk-star>
     </template>
-</nk-shadow>
+</nk-service>
 </body>
 
 <script type="module">
@@ -1976,10 +1976,10 @@
         arrayComponent.push('nk-tests')
     }
 
-    arrayComponent.unshift('nk-shadow')
+    arrayComponent.unshift('nk-service')
 
     if(iframe.isFramed) {
-        arrayComponent = ['nk-shadow', 'nk-tests']
+        arrayComponent = ['nk-service', 'nk-tests']
     }
 
     arrayComponent = arrayComponent.filter(item => item !== 'nk-audio')

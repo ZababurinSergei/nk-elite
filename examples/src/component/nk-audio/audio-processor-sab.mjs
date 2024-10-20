@@ -1,4 +1,4 @@
-import { FreeQueueSAB } from "../../this/free-queue/free-queue-sab.js";
+import { FreeQueueSab } from "../../this/free-queue/free-queue-sab.js";
 import { FreeQueue } from "../../this/free-queue/free-queue.js";
 import { getConstants } from '../../this/constants.js';
 const { FRAME_SIZE, RENDER_QUANTUM } = getConstants()
