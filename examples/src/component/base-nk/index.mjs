@@ -256,7 +256,6 @@ const BaseClass = class extends HTMLElement {
         if (this.dataset?.servicesPath) {
             onload(this)
                 .then(async (self) => {
-                    // self.dataset.uuid = uuidv();
 
                     if ('connected' in self) {
                         await self.connected()
@@ -317,7 +316,7 @@ const BaseClass = class extends HTMLElement {
 export const Component = (() => {
     return async () => {
         const body = `return ${BaseClass}`;
-        const baseComponent = new Function('task', 'dialogInit', 'config', 'store', 'uuidv', 'servicePath', 'init', 'onload', body);
-        return baseComponent(task, dialogInit, config, store, uuidv, servicePath, init, onload, body);
+        const baseComponent = new Function('task', 'dialogInit', 'config', 'store', 'servicePath', 'init', 'onload', body);
+        return baseComponent(task, dialogInit, config, store, servicePath, init, onload, body);
     };
 })();
