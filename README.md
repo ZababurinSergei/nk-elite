@@ -40,18 +40,22 @@ chmod +x ./ep-build.sh
 ./ep-build.sh
 ```
 
-### Start example free-queue Demo
-```bash
-chmod +x ./ep-start.sh
-./ep-start.bat
-```
-
 ### Clean compiled WebAssembly library and example of free-queue Demo
 ```bash
 chmod +x ./ep-clean.sh
 ./ep-clean.sh
 ```
 
+
+[//]: # (###```` Start example free-queue Demo)
+
+[//]: # (```bash)
+
+[//]: # (chmod +x ./ep-start.sh)
+
+[//]: # (./ep-start.bat)
+
+[//]: # (```````)
 
 
 

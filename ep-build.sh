@@ -50,7 +50,7 @@ if [ ! -d ./node_modules ]; then
     npm install
 fi
 
-npm run start
+#npm run start
 
 cd ..
 
