@@ -61,10 +61,6 @@ const process = () => {
  */
 self.onmessage = (msg) => {
     if (msg.data.type === 'init') {
-
-    console.log("sdfgsdfgsdfgsdfsdfsdfsdfsdfsdfsdfg");
-        console.log('(((( ===== WORKER ===== ))))')
-        
         initialize(msg.data.data);
 
         self.postMessage({

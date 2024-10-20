@@ -60,7 +60,6 @@ const process = () => {
  */
 self.onmessage = (msg) => {
     if (msg.data.type === 'init') {
-        console.log('(((( ===== WORKER ===== ))))')
         
         initialize(msg.data.data);
 
