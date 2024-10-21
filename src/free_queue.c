@@ -151,11 +151,13 @@ void DestroyFreeQueue(struct FreeQueue *queue)
 {
   if ( queue ) {
     Lock( queue );
+
     for (int i = 0; i < queue->channel_count; i++) {
       free(queue->channel_data[i]);
     }
     free(queue->channel_data);
     free(queue);
+
     Unlock( queue );
   }
 }
@@ -172,6 +174,7 @@ bool FreeQueuePush(struct FreeQueue *queue, double **input, size_t block_length)
   
     if (_getAvailableWrite(queue, current_read, current_write) < block_length) {
       Unlock( queue );
+
       return false;
     }
     for (uint32_t i = 0; i < block_length; i++) {
@@ -185,6 +188,7 @@ bool FreeQueuePush(struct FreeQueue *queue, double **input, size_t block_length)
     atomic_store(queue->state + WRITE, next_write);
 
     Unlock( queue );
+
     return true;
   }
 
@@ -197,9 +201,11 @@ bool FreeQueuePull(struct FreeQueue *queue, double **output, size_t block_length
   
   if ( queue ) {
     Lock( queue );
+
     uint32_t current_read = atomic_load(queue->state + READ);
     uint32_t current_write = atomic_load(queue->state + WRITE);
     if (_getAvailableRead(queue, current_read, current_write) < block_length) {
+
       Unlock( queue );
       return false;
     }

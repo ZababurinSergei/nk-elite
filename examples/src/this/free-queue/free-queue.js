@@ -140,13 +140,14 @@ class FreeQueue {
    */
   push(input, blockLength) {
 
-//    this.Lock();
-
     const currentRead = this.states[this.States.READ];
     const currentWrite = this.states[this.States.WRITE];
-    
+  
+//    const currentRead = Atomics.load(this.states, this.States.READ);
+//    const currentWrite = Atomics.load(this.states, this.States.WRITE);
+
+  
     if (this._getAvailableWrite(currentRead, currentWrite) < blockLength) {
-//      this.Unlock();
       return false;
     }
     let nextWrite = currentWrite + blockLength;
@@ -167,8 +168,8 @@ class FreeQueue {
       if (nextWrite === this.bufferLength) nextWrite = 0;
     }
 
+//    Atomics.store(this.states, this.States.WRITE, nextWrite);
     this.states[1] = nextWrite;
-//    this.Unlock();
 
     return true;
   }
@@ -183,13 +184,14 @@ class FreeQueue {
    * @return {boolean} False if the operation fails.
    */
   pull(output, blockLength) {
-//    this.Lock();
+
+//    const currentRead = Atomics.load(this.states, this.States.READ);
+//    const currentWrite = Atomics.load(this.states, this.States.WRITE);
 
     const currentRead = this.states[this.States.READ];
     const currentWrite = this.states[this.States.WRITE];
 	
     if (this._getAvailableRead(currentRead, currentWrite) < blockLength) {
-//      this.Unlock();
       return false;
     }
     let nextRead = currentRead + blockLength;
@@ -213,7 +215,7 @@ class FreeQueue {
     }
 
     this.states[this.States.READ] = nextRead;
-//    this.Unlock();
+//    Atomics.store(this.states, this.States.READ, nextRead);
 
     return true;
   }
