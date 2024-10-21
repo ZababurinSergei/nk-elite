@@ -20,4 +20,16 @@ describe('Elite', async function () {
             })
         })
     })
+    describe('Стрим ланные', async function () {
+        it('От пира А к Б', function () {
+            return new Promise(async (resolve, reject) => {
+                reject(true)
+            })
+        })
+        it('От пира Б к А', function () {
+            return new Promise(async (resolve, reject) => {
+                reject(true)
+            })
+        })
+    })
 })
