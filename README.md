@@ -46,15 +46,6 @@ chmod +x ./ep-clean.sh
 ./ep-clean.sh
 ```
 
-### Clean compiled WebAssembly library and example of free-queue Demo
-```bash
-cd ./_sandbox
-git clone https://github.com/AssemblyScript/assemblyscript.git
-cd assemblyscript
-npm install
-npm link
-```
-
 
 [//]: # (###```` Start example free-queue Demo)
 
