@@ -5,6 +5,10 @@ setlocal enabledelayedexpansion
 rem Work project batch start file
 rem Emscripten SDK...
 
+if not exist node_modules (
+    @call cmd /C "npm install"
+)
+
 cd examples
 
 if not exist node_modules (
