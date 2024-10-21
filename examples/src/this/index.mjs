@@ -1,4 +1,5 @@
 export { loader } from './loader/index.mjs'
+export { render, navigate } from './navigate/index.mjs'
 
 export const Iframe = async function() {
     let isFramed = false;
