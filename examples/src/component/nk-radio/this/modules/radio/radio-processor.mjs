@@ -48,14 +48,10 @@ class WorkletBasicProcessor extends AudioWorkletProcessor {
         // inputs count...
         ////////////////////////////////////////////////////////////////////////////////////////
         for (let i = 0; i < inputs.length; i++) {
-
             let bufferSize = 0;
-
             let channels = inputs[i].length;
             if (channels == 0) break;
-
             let dataArray = [channels];
-
             ////////////////////////////////////////////////////////////////////////////////////////
             // channels count...
             ////////////////////////////////////////////////////////////////////////////////////////
@@ -66,15 +62,12 @@ class WorkletBasicProcessor extends AudioWorkletProcessor {
                     dataArray[j][k] = inputs[i][j][k];
                 }
             }
-
             if (this.instance != undefined && this.instance != null) {
                 const rc = this.instance.push(dataArray, bufferSize);
                 if (rc == false) console.log("processor: queue.push [ " + ((rc == true) ? "true" : "false") + " ]");
                 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             }
-
         }
-
         return true;
 
     }
