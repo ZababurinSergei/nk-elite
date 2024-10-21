@@ -590,10 +590,10 @@ fn main( @location(0) inFragUV : vec2<f32>, @location(1) inColor : vec4<f32> ) -
                 let rc = CONFIG.queue.instance.pull( _buffers, bufferSize );
 		CONFIG.queue.api.unlock();
                 if (rc == true) {
-                    CONFIG.application.renderBuffer = new Float64Array(bufferSize * 2);
+                    CONFIG.application.renderBuffer = new Float64Array(bufferSize * channels);
                     for ( let i = 0; i < bufferSize; i++ ) {
 			for ( let k = 0; k < channels; k++ )
-			    CONFIG.application.renderBuffer[i * 2 + k] = _buffers[k][i];
+			    CONFIG.application.renderBuffer[i * channels + k] = _buffers[k][i];
                     }
                 } 
                 if (rc == false) console.log("renderer: CONFIG.queue.instance.pull [ " + ((rc == true) ? "true" : "false") + " ]");
