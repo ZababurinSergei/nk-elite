@@ -1,8 +1,39 @@
-export default function (){
+import {logger} from '@libp2p/logger'
+const log = logger('navigate')
 
+/**
+ * Render the array of html files, to the
+ * selected container.
+ * @param props
+ */
+function render(props = {
+    root: window.document.body,
+    pages: ['name'],
+    container: undefined,
+    pathname: new URL("../", import.meta.url)
+}) {
+    const template = document.createElement("template");
+    pages.forEach(async element => {
+        let itemHtml = await fetch(`${pathname}${element}.html`)
+        itemHtml = await itemHtml.text()
+        template.innerHTML = itemHtml;
+    });
+
+    if(props.container) {
+        root.querySelector(`${container}`).append(template.content);
+    } else {
+        console.log('!!! RENDER !!!', {
+            props: props,
+            template: template.content
+        })
+    }
+}
+
+export const navigate = function () {
     navigation.addEventListener("navigate", (event) => {
         const shouldNotIntercept = (event) => {
 
+            console.log('!!!!!!!!!!!!!!!! navigate !!!!!!!!!!!!!!!!!!!!')
             return false
         }
         // Exit early if this navigation shouldn't be intercepted,
@@ -42,3 +73,7 @@ export default function (){
         }
     });
 }
+
+export {render};
+
+

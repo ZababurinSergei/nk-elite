@@ -1,11 +1,11 @@
-import {Component} from '../index.mjs';
-import {lottieWeb} from 'lottie-web';
-import {FreeQueueSAB} from '@newkind/FreeQueueSAB'
-import {FreeQueue, MAX_CHANNEL_COUNT, RENDER_QUANTUM_FRAMES} from '@newkind/FreeQueue';
+import { Component } from '../index.mjs';
+import { lottieWeb } from 'lottie-web';
+import { FreeQueueSAB } from '@newkind/FreeQueueSAB'
+import { FreeQueue } from '@newkind/FreeQueue';
 import initFreeQueue from '@newkind/initFreeQueue'
-import {getConstants} from '@newkind/constants'
-import {postMessage} from './main-worker.mjs'
-import {MainProcessor} from './main-processor.mjs'
+import { getConstants } from '@newkind/constants'
+import { postMessage } from './main-worker.mjs'
+import { MainProcessor } from './main-processor.mjs'
 
 const {QUEUE_SIZE} = getConstants()
 import {logger} from "@libp2p/logger";
