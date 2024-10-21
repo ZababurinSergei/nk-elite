@@ -28,7 +28,7 @@ describe('FreeQueue', function () {
     
     beforeEach(async () => {
         module = await initFreeQueue(LFreeQueue)
-        // queue = new FreeQueue(bufferLength, channelCount);
+        queue = new FreeQueue(bufferLength, channelCount);
     });
 
     describe('Constructor', function () {
