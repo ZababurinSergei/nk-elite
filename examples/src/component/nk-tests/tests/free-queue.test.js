@@ -1,18 +1,72 @@
 import { chai } from '@newkind/tests'
-import { FreeQueue } from '@newkind/FreeQueue';
+import initFreeQueue from '@newkind/initFreeQueue'
+import { FreeQueue } from '@newkind/FreeQueue'
+import { postMessage } from './modules/main-worker.mjs'
 
 const { expect, assert } = chai
+
+let LFreeQueue = {
+    onRuntimeInitialized: async function(){
+
+    },
+    setStatus: async function(e) {
+        if (e !== "") {
+            console.log(e)
+        };
+    }
+}
 
 describe('FreeQueue', function () {
     const bufferLength = 1024;
     const channelCount = 2;
+    let inputQueue = undefined
+    let outputQueue = undefined
+    let atomicState = undefined
+    let sampleRate = undefined
     let queue;
-
-    beforeEach(() => {
+    let module;
+    
+    beforeEach(async () => {
+        module = await initFreeQueue(LFreeQueue)
         queue = new FreeQueue(bufferLength, channelCount);
     });
 
     describe('Constructor', function () {
+        it('Получение функций из модуля', async function () {
+
+            console.log('ddddddddddddddddddddddddddddddddddddddddddddddd')
+            const GetFreeQueuePointers = module.cwrap('GetFreeQueuePointers', 'number', ['number', 'string']);
+            const PrintQueueInfo = module.cwrap('PrintQueueInfo', '', ['number']);
+            const CreateFreeQueue = module.cwrap('CreateFreeQueue', 'number', ['number', 'number']);
+            const PrintQueueAddresses = module.cwrap('PrintQueueAddresses', '', ['number']);
+            const pointer = CreateFreeQueue(1754 * 50, 2);
+
+            const bufferLengthPtr = GetFreeQueuePointers(pointer, "buffer_length");
+            const channelCountPtr = GetFreeQueuePointers(pointer, "channel_count");
+            const statePtr = GetFreeQueuePointers(pointer, "state");
+            const channelDataPtr = GetFreeQueuePointers(pointer, "channel_data");
+
+            return false
+        });
+
+        it('Подключение чтения', async function () {
+
+
+            postMessage({
+                data: {
+                    type: 'init',
+                    data: {
+                        inputQueue: inputQueue,
+                        outputQueue: outputQueue,
+                        atomicState: atomicState,
+                        sampleRate: sampleRate,
+                    }
+                }
+            })
+
+            return true
+        });
+
         it('should initialize states correctly', function () {
             expect(queue.states).to.be.an.instanceof(Uint32Array);
             expect(queue.states.length).to.equal(2);
@@ -25,7 +79,6 @@ describe('FreeQueue', function () {
         it('should initialize channel count correctly', function () {
             expect(queue.getChannelCount()).to.equal(channelCount);
         });
-
     });
 
     describe('Channel Adaption', () => {

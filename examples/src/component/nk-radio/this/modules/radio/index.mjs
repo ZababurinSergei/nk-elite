@@ -11,7 +11,7 @@ const constants = getConstants()
 const log = logger('LFreeQueue');
 
 function *flatten(array) {
-  for (elt in array) 
+  for (let elt in array)
     if (Array.isArray(elt)) yield *flatten(elt);
     else yield elt;
 }
