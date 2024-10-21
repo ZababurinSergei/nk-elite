@@ -15,6 +15,10 @@ export const actions = function (self) {
                 if(event.currentTarget.classList.contains('elite')) {
                     self.run('./tests/elite.test.js')
                 }
+
+                if(event.currentTarget.classList.contains('market')) {
+                    self.run('./tests/market.test.js')
+                }
             }
         })
     })
