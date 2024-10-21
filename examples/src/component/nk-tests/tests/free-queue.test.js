@@ -33,7 +33,7 @@ describe('FreeQueue', function () {
 
     describe('Constructor', function () {
         it('Получение функций из модуля создание какой то очереди', function () {
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 const GetFreeQueuePointers = module.cwrap('GetFreeQueuePointers', 'number', ['number', 'string']);
                 const PrintQueueInfo = module.cwrap('PrintQueueInfo', '', ['number']);
                 const CreateFreeQueue = module.cwrap('CreateFreeQueue', 'number', ['number', 'number']);
@@ -47,7 +47,7 @@ describe('FreeQueue', function () {
                 const statePtr = GetFreeQueuePointers(pointer, "state");
                 const channelDataPtr = GetFreeQueuePointers(pointer, "channel_data");
 
-                reject('')
+                reject('Нужна константа для создания очереди')
             })
         });
 
