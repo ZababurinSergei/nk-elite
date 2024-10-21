@@ -9,25 +9,32 @@ if [ -d $BUILDDIR ]; then
     rm -r -d ./$BUILDDIR
 fi
 
-cd src
-export DIR=`pwd`
-sh ./automake.sh clean
-cd ..
+if [ -d ./node_modules ]; then
+    rm -r -d ./node_modules
+fi
 
 cd examples
 
-# export SOURCEDIR=src/this/free-queue/wasm
-# export KEEPFILE=free-queue.js
+export SOURCEDIR=src/this/free-queue
+export KEEPFILE1=free-queue.js
+export KEEPFILE2=free-queue-sab.js
 
-# find $SOURCEDIR -type f -not -name $KEEPFILE -delete
+find $SOURCEDIR -type f -not -name $KEEPFILE1 -not -name $KEEPFILE2 -delete
 
-#if [ -d ./node_modules ]; then
-#    rm -r -d ./node_modules
-#fi
+if [ -d ./node_modules ]; then
+    rm -r -d ./node_modules
+fi
 
 if [ -d ./dist ]; then
     rm -r -d ./dist
 fi
+
+cd ..
+
+cd src
+
+export DIR=`pwd`
+sh ./automake.sh clean
 
 cd ..
 

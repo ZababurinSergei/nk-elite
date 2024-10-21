@@ -12,21 +12,17 @@ if exist %BUILDDIR% (
     @rmdir /S /Q %BUILDDIR%
 )
 
-cd src
-set DIR=%cd%
-@call cmd /C "%EMSCRIPTENDIR:~0,2% && cd %EMSCRIPTENDIR% && emsdk_env.bat && %DIR:~0,2% && cd %DIR% && automake.bat clean"
-cd ..
-
 if exist node_modules (
     @rmdir /S /Q node_modules
 )
 
 cd examples
 
-rem set SOURCEDIR=src\this\free-queue
-rem set KEEPFILE=free-queue.js
+set SOURCEDIR=src\this\free-queue
+set KEEPFILE1=free-queue.js
+set KEEPFILE2=free-queue-sab.js
 
-rem for %%a in ( "%SOURCEDIR%\*" ) do if /i not "%%~nxa"=="%KEEPFILE%" @del "%%a"
+for %%a in ( "%SOURCEDIR%\*" ) do if /i not "%%~nxa"=="%KEEPFILE1%" if /i not "%%~nxa"=="%KEEPFILE2%"  @del "%%a"
 
 if exist node_modules (
     @rmdir /S /Q node_modules
@@ -35,6 +31,13 @@ if exist node_modules (
 if exist dist (
     @rmdir /S /Q dist
 )
+
+cd ..
+
+cd src
+
+set DIR=%cd%
+@call cmd /C "%EMSCRIPTENDIR:~0,2% && cd %EMSCRIPTENDIR% && emsdk_env.bat && %DIR:~0,2% && cd %DIR% && automake.bat clean"
 
 cd ..
 

@@ -17,10 +17,11 @@ if exist %BUILDDIR% (
 
 cd examples
 
-rem set SOURCEDIR=src\this\free-queue
-rem set KEEPFILE=free-queue.js
+set SOURCEDIR=src\this\free-queue
+set KEEPFILE1=free-queue.js
+set KEEPFILE2=free-queue-sab.js
 
-rem for %%a in ( "%SOURCEDIR%\*" ) do if /i not "%%~nxa"=="%KEEPFILE%" @del "%%a"
+for %%a in ( "%SOURCEDIR%\*" ) do if /i not "%%~nxa"=="%KEEPFILE1%" if /i not "%%~nxa"=="%KEEPFILE2%"  @del "%%a"
 
 if exist dist (
     @rmdir /S /Q dist
@@ -33,15 +34,11 @@ if not exist %BUILDDIR% (
 )
 
 cd src
+
 set DIR=%cd%
 @call cmd /C "%EMSCRIPTENDIR:~0,2% && cd %EMSCRIPTENDIR% && emsdk_env.bat && %DIR:~0,2% && cd %DIR% && build.bat"
+
 cd ..
-
-if not exist examples\src\this\free-queue (
-    mkdir examples\src\this\free-queue
-)
-
-@copy %BUILDDIR%\*.* examples\src\this\free-queue /Y
 
 if not exist node_modules (
     @call cmd /C "npm install"
@@ -49,11 +46,17 @@ if not exist node_modules (
 
 cd examples
 
+if not exist src\this\free-queue (
+    @mkdir src\this\free-queue
+)
+
+@copy ..\%BUILDDIR%\*.* src\this\free-queue /Y
+
 if not exist node_modules (
     @call cmd /C "npm install"
 )
 
-@call cmd /C "npm run start"
+rem @call cmd /C "npm run start"
 
 cd ..
 

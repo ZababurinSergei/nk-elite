@@ -14,10 +14,11 @@ fi
 
 cd examples
 
-# export SOURCEDIR=src/this/free-queue/wasm
-# export KEEPFILE=free-queue.js
+export SOURCEDIR=src/this/free-queue
+export KEEPFILE1=free-queue.js
+export KEEPFILE2=free-queue-sab.js
 
-# find $SOURCEDIR -type f -not -name $KEEPFILE -delete
+find $SOURCEDIR -type f -not -name $KEEPFILE1 -not -name $KEEPFILE2 -delete
 
 if [ -d ./dist ]; then
     rm -r -d ./dist
@@ -30,21 +31,23 @@ if [ ! -d ./$BUILDDIR ]; then
 fi
 
 cd src
+
 export DIR=`pwd`
 sh ./build.sh
+
 cd ..
-
-if [ ! -d ./examples/src/this/free-queue/wasm ]; then
-    mkdir ./examples/src/this/free-queue/wasm
-fi
-
-cp ./$BUILDDIR/*.* ./examples/src/this/free-queue/wasm
 
 if [ ! -d ./node_modules ]; then
     npm install
 fi
 
 cd examples
+
+if [ ! -d ./src/this/free-queue ]; then
+    mkdir ./src/this/free-queue
+fi
+
+cp ../$BUILDDIR/*.* ./src/this/free-queue
 
 if [ ! -d ./node_modules ]; then
     npm install

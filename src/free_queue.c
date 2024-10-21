@@ -235,6 +235,12 @@ void *GetFreeQueuePointers( struct FreeQueue* queue, char* data )
       return ( void* )&queue->state;
     } else if ( strcmp(data, "channel_data") == 0 ) {
       return ( void* )&queue->channel_data;
+    } else if ( strcmp(data, "lock") == 0 ) {
+      return ( void* )&Lock;
+    } else if ( strcmp(data, "unlock") == 0 ) {
+      return ( void* )&Unlock;
+    } else if ( strcmp(data, "trylock") == 0 ) {
+      return ( void* )&TryLock;
     }
   }
   return 0;
