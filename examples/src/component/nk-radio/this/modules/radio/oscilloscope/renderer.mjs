@@ -578,28 +578,24 @@ fn main( @location(0) inFragUV : vec2<f32>, @location(1) inColor : vec4<f32> ) -
     
         if ( CONFIG.queue.instance != undefined && CONFIG.queue.instance != null ) 
         {
-            let bufferSize = ( ( ( CONFIG.application.sampleRate < 44100 ) ? 44100 : CONFIG.application.sampleRate ) ) / 25;
-            
+            let bufferSize = ( ( ( CONFIG.application.sampleRate < 44100 ) ? 44100 : CONFIG.application.sampleRate ) ) / 25;            
             if ( CONFIG.queue.instance.isFrameAvailable(bufferSize) )
             {
-                let _buffers = [2];
-
-                _buffers[0] = new Float64Array(bufferSize);
-                _buffers[1] = new Float64Array(bufferSize);
-
+		let channels = CONFIG.queue.instance.getChannelCount();
+                let _buffers = [channels];
+		for ( let i = 0; i < channels; i++ ) {
+                	_buffers[i] = new Float64Array(bufferSize);
+		}
 		CONFIG.queue.api.lock();
                 let rc = CONFIG.queue.instance.pull( _buffers, bufferSize );
 		CONFIG.queue.api.unlock();
-
-                if (rc == true)
-                {
+                if (rc == true) {
                     CONFIG.application.renderBuffer = new Float64Array(bufferSize * 2);
                     for ( let i = 0; i < bufferSize; i++ ) {
-                        CONFIG.application.renderBuffer[i * 2 + 0] = _buffers[0][i];
-                        CONFIG.application.renderBuffer[i * 2 + 1] = _buffers[1][i];
+			for ( let k = 0; k < channels; k++ )
+			    CONFIG.application.renderBuffer[i * 2 + k] = _buffers[k][i];
                     }
                 } 
-
                 if (rc == false) console.log("renderer: CONFIG.queue.instance.pull [ " + ((rc == true) ? "true" : "false") + " ]");
             }
         }

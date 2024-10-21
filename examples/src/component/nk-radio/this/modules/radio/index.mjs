@@ -10,6 +10,12 @@ import CONFIG from "../../config.mjs";
 const constants = getConstants()
 const log = logger('LFreeQueue');
 
+function *flatten(array) {
+  for (elt in array) 
+    if (Array.isArray(elt)) yield *flatten(elt);
+    else yield elt;
+}
+
 const newAudio = async function () {
     try {
         if (CONFIG.audio.init == false) {
@@ -66,9 +72,8 @@ const ctx = async function () {
     });
 
     CONFIG.audio.node.connect(CONFIG.audio.ctx.destination);
-    console.log('=========== Object.entries(CONFIG.queue.object) ===========', Object.entries(CONFIG.queue.object))
-    CONFIG.audio.node.port.postMessage(Object.entries(CONFIG.queue.object));
 
+    CONFIG.audio.node.port.postMessage(Object.entries(CONFIG.queue.object));
     CONFIG.audio.ctx.suspend();
 
 //    CONFIG.audio.analyser =  CONFIG.audio.ctx.createAnalyser()

@@ -10,12 +10,13 @@ class WorkletBasicProcessor extends AudioWorkletProcessor {
     }
 
     ondata(event) {
+        ///////////////////////////////////////////////////////////////////////////////////////
+	// window, globalThis is undefined in this scope...
+
         let obj = Object.fromEntries(new Map(event.data));
 
         this.instance = FreeQueue.fromPointers(obj);
         this.initialized = true;
-
-        console.log("instance: " + this.instance);
     }
 
     process(inputs, outputs, parameters) {
