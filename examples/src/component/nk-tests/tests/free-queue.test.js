@@ -32,19 +32,23 @@ describe('FreeQueue', function () {
     });
 
     describe('Constructor', function () {
-        it('Получение функций из модуля', async function () {
-            const GetFreeQueuePointers = module.cwrap('GetFreeQueuePointers', 'number', ['number', 'string']);
-            const PrintQueueInfo = module.cwrap('PrintQueueInfo', '', ['number']);
-            const CreateFreeQueue = module.cwrap('CreateFreeQueue', 'number', ['number', 'number']);
-            const PrintQueueAddresses = module.cwrap('PrintQueueAddresses', '', ['number']);
-            const pointer = CreateFreeQueue(1754 * 50, 2);
+        it('Получение функций из модуля создание какой то очереди', function () {
+            new Promise((resolve, reject) => {
+                const GetFreeQueuePointers = module.cwrap('GetFreeQueuePointers', 'number', ['number', 'string']);
+                const PrintQueueInfo = module.cwrap('PrintQueueInfo', '', ['number']);
+                const CreateFreeQueue = module.cwrap('CreateFreeQueue', 'number', ['number', 'number']);
+                const PrintQueueAddresses = module.cwrap('PrintQueueAddresses', '', ['number']);
 
-            const bufferLengthPtr = GetFreeQueuePointers(pointer, "buffer_length");
-            const channelCountPtr = GetFreeQueuePointers(pointer, "channel_count");
-            const statePtr = GetFreeQueuePointers(pointer, "state");
-            const channelDataPtr = GetFreeQueuePointers(pointer, "channel_data");
+                //TODO Нужна константа для создания очереди
+                const pointer = CreateFreeQueue(1754 * 50, 2);
 
-            return false
+                const bufferLengthPtr = GetFreeQueuePointers(pointer, "buffer_length");
+                const channelCountPtr = GetFreeQueuePointers(pointer, "channel_count");
+                const statePtr = GetFreeQueuePointers(pointer, "state");
+                const channelDataPtr = GetFreeQueuePointers(pointer, "channel_data");
+
+                reject('')
+            })
         });
 
         it('Подключение чтения', async function () {
