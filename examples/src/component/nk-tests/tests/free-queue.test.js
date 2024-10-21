@@ -28,13 +28,11 @@ describe('FreeQueue', function () {
     
     beforeEach(async () => {
         module = await initFreeQueue(LFreeQueue)
-        queue = new FreeQueue(bufferLength, channelCount);
+        // queue = new FreeQueue(bufferLength, channelCount);
     });
 
     describe('Constructor', function () {
         it('Получение функций из модуля', async function () {
-
-            console.log('ddddddddddddddddddddddddddddddddddddddddddddddd')
             const GetFreeQueuePointers = module.cwrap('GetFreeQueuePointers', 'number', ['number', 'string']);
             const PrintQueueInfo = module.cwrap('PrintQueueInfo', '', ['number']);
             const CreateFreeQueue = module.cwrap('CreateFreeQueue', 'number', ['number', 'number']);
@@ -50,8 +48,6 @@ describe('FreeQueue', function () {
         });
 
         it('Подключение чтения', async function () {
-
-
             postMessage({
                 data: {
                     type: 'init',
