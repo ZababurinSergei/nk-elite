@@ -39,10 +39,10 @@ describe('FreeQueueSAB', function () {
         });
 
         it('should not adapt to an invalid channel count (e.g., negative or zero)', function () {
-            const invalidChannelCounts = [-1, 0];
+            const invalidChannelCounts = [-1, 0]; 
             invalidChannelCounts.forEach(invalidCount => {
                 expect(() => queue.setChannelCount(invalidCount)).to.throw(Error);
-                expect(queue.channelData.length).to.equal(channelCount);
+                expect(queue.channelData.length).to.equal(channelCount); 
             });
         });
     })
@@ -113,36 +113,36 @@ describe('FreeQueueSAB', function () {
             const bufferLength = 256;
             const channelCount = 2;
             const queue = new FreeQueueSAB(bufferLength, channelCount);
-
-            const invalidInput = [new Float64Array(bufferLength)];
-
+        
+            const invalidInput = [new Float64Array(bufferLength)]; 
+        
             expect(() => queue.push(invalidInput, bufferLength)).to.throw(Error);
         });
-
+        
         it('should return false when pushing with insufficient available write space', function () {
-            const bufferLength = 4;
+            const bufferLength = 4; 
             const channelCount = 2;
             const queue = new FreeQueueSAB(bufferLength, channelCount);
-
+        
             const input = [new Float64Array([1, 2, 3, 4]), new Float64Array([1, 2, 3, 4])];
-            queue.push(input, 4);
-
+            queue.push(input, 4); 
+        
             const insufficientInput = [new Float64Array([5, 6, 7, 8]), new Float64Array([5, 6, 7, 8])];
             const result = queue.push(insufficientInput, 4);
-
+        
             expect(result).to.be.false;
         });
 
         it('should return false when pulling with insufficient available read space', function () {
-            const bufferLength = 4;
+            const bufferLength = 4; 
             const channelCount = 2;
             const queue = new FreeQueueSAB(bufferLength, channelCount);
-
+        
             const output = [new Float64Array(bufferLength), new Float64Array(bufferLength)];
-            const result = queue.pull(output, 4);
-
+            const result = queue.pull(output, 4); 
+        
             expect(result).to.be.false;
-        });
+        });        
     })
 
     describe('Performance Tests', function () {
