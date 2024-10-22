@@ -38,7 +38,7 @@ const newAudio = async function () {
                 await CONFIG.stream.song.play();
                 CONFIG.html.button.start.textContent = "Stop Audio";
                 return true;
-            }, {once: true});
+            }, { once: true });
 
             await CONFIG.stream.source.connect(CONFIG.audio.ctx.destination);
             await CONFIG.stream.source.connect(CONFIG.audio.node);

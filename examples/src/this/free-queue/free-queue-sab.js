@@ -27,7 +27,7 @@ class FreeQueueSAB {
     /** @type {number} A shared index for writing into the queue. (producer) */
     WRITE: 1,  
   }
-
+ 
   /**
    * FreeQueue constructor. A shared buffer created by this constuctor
    * will be shared between two threads.
@@ -41,6 +41,12 @@ class FreeQueueSAB {
         Object.keys(this.States).length * Uint32Array.BYTES_PER_ELEMENT
       )
     );
+
+    this.lock = new Uint32Array(1);
+    this.lastBuffer = undefined;
+
+    Atomics.store(this.lock, 0, 0);
+
     /**
      * Use one extra bin to distinguish between the read and write indices 
      * when full. See Tim Blechmann's |boost::lockfree::spsc_queue|
@@ -182,9 +188,38 @@ class FreeQueueSAB {
         nextRead = 0;
       }
     }
+    this.lastBuffer = [];
+
+    Atomics.store(this.lock, 0, 0);
+    for ( let i = 0; i < this.channelCount; i++ ) {
+        this.lastBuffer.push(
+            new Float64Array( output[i] )
+        );
+    }
+    Atomics.store(this.lock, 0, 222);
+
     Atomics.store(this.states, this.States.READ, nextRead);
     return true;
   }
+
+  latest( blockLength )
+  {
+     if ( this.lastBuffer == undefined ) {
+	let channels = this.channelCount;
+        let _buffers = [channels];
+	for ( let i = 0; i < channels; i++ ) {
+               	_buffers[i] = new Float64Array( blockLength );
+	}
+	let rc = pull( _buffers, blockLength );
+        if (rc == true) {
+		this.lastBuffer = _buffers;
+	}
+	Atomics.store(this.lock, 0, 222);
+     }	
+     if ( Atomics.wait( this.lock, 0, 222, Infinity ) === "ok" ) return this.lastBuffer;
+     return undefined;
+  }
+
   /**
    * Helper function for debugging.
    * Prints currently available read and write.
