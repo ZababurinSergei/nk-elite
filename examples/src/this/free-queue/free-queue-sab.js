@@ -189,7 +189,6 @@ class FreeQueueSAB {
       }
     }
     this.lastBuffer = [];
-
     Atomics.store(this.lock, 0, 0);
     for ( let i = 0; i < this.channelCount; i++ ) {
         this.lastBuffer.push(
