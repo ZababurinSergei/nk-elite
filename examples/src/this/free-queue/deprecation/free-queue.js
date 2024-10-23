@@ -15,7 +15,7 @@
  * worker renders audio data to fill in the queue.
  */
 
-class FreeQueue {
+class FreeQueueDeprecation {
 
   /**
    * An index set for shared state fields. Requires atomic access.
@@ -90,7 +90,7 @@ class FreeQueue {
    */
   static fromPointers(queuePointers) {
 
-    const queue = new FreeQueue(0, 0);
+    const queue = new FreeQueueDeprecation(0, 0);
 
     const HEAPU32 = new Uint32Array(queuePointers.memory.buffer);
     const HEAPF64 = new Float64Array(queuePointers.memory.buffer);
@@ -332,5 +332,5 @@ class FreeQueue {
 // WebAudio's render quantum size.
 //export const RENDER_QUANTUM_FRAMES = 128;
 
-export { FreeQueue }
-export default FreeQueue;
+export { FreeQueueDeprecation }
+export default FreeQueueDeprecation;

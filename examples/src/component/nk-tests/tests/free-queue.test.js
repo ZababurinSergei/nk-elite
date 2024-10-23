@@ -8,7 +8,7 @@ let module = null
 
 let LFreeQueue = {
     onRuntimeInitialized: async function(){
-
+        console.log('ddddddddddddddddddddddddddddddddd')
     },
     setStatus: async function(e) {
         if (e !== "") {
