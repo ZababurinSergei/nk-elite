@@ -4,7 +4,21 @@ import {  FreeQueue, MAX_CHANNEL_COUNT, RENDER_QUANTUM_FRAMES } from '@newkind/F
 import { postMessage } from './modules/main-worker.mjs'
 
 const { expect, assert } = chai
+let module = null
 
+let LFreeQueue = {
+    onRuntimeInitialized: async function(){
+
+    },
+    setStatus: async function(e) {
+        if (e !== "") {
+            console.log(e)
+        };
+    }
+}
+
+// YOU WASM module
+module = await initFreeQueue(LFreeQueue)
 // Mock WASM module
 const mockWasmModule = {
     // Simulate memory allocation
