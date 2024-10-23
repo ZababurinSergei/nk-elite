@@ -129,6 +129,9 @@ const freeQueueInit = function () {
         const channelCountPtr = GetFreeQueuePointers(CONFIG.queue.pointer, "channel_count");
         const statePtr = GetFreeQueuePointers(CONFIG.queue.pointer, "state");
         const channelDataPtr = GetFreeQueuePointers(CONFIG.queue.pointer, "channel_data");
+        const lockFuncPtr = GetFreeQueuePointers(CONFIG.queue.pointer, "lock");
+        const unlockFuncPtr = GetFreeQueuePointers(CONFIG.queue.pointer, "unlock");
+        const trylockFuncPtr = GetFreeQueuePointers(CONFIG.queue.pointer, "trylock");
 
         const pointers = new Object();
 
@@ -137,6 +140,9 @@ const freeQueueInit = function () {
         pointers.channelCountPointer = channelCountPtr;
         pointers.statePointer = statePtr;
         pointers.channelDataPointer = channelDataPtr;
+        pointers.lockFuncPointer = lockFuncPtr;
+        pointers.unlockFuncPointer = unlockFuncPtr;
+        pointers.trylockFuncPointer = trylockFuncPtr;
 
         CONFIG.queue.object = pointers;
         

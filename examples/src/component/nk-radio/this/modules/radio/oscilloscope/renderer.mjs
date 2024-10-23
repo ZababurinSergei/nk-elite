@@ -584,19 +584,19 @@ fn main( @location(0) inFragUV : vec2<f32>, @location(1) inColor : vec4<f32> ) -
 		let channels = CONFIG.queue.instance.getChannelCount();
                 let _buffers = [channels];
 		for ( let i = 0; i < channels; i++ ) {
-                	_buffers[i] = new Float64Array(bufferSize);
+	               	_buffers[i] = new Float64Array(bufferSize);
 		}
 		CONFIG.queue.api.lock();
                 let rc = CONFIG.queue.instance.pull( _buffers, bufferSize );
 		CONFIG.queue.api.unlock();
                 if (rc == true) {
-                    CONFIG.application.renderBuffer = new Float64Array(bufferSize * channels);
-                    for ( let i = 0; i < bufferSize; i++ ) {
-			for ( let k = 0; k < channels; k++ )
-			    CONFIG.application.renderBuffer[i * channels + k] = _buffers[k][i];
+                        CONFIG.application.renderBuffer = new Float64Array(bufferSize * channels);
+                        for ( let i = 0; i < bufferSize; i++ ) {
+	                    for ( let k = 0; k < channels; k++ )
+			        CONFIG.application.renderBuffer[i * channels + k] = _buffers[k][i];
                     }
                 } 
-                if (rc == false) console.log("renderer: CONFIG.queue.instance.pull [ " + ((rc == true) ? "true" : "false") + " ]");
+                //if (rc == false) console.log("renderer: CONFIG.queue.instance.pull [ " + ((rc == true) ? "true" : "false") + " ]");
             }
         }
  

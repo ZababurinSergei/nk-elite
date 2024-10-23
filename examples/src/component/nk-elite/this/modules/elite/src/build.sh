@@ -1,6 +1,9 @@
 #!/bin/sh
 
+# Emscripten SDK...
+
 export NK_ELITE_OUTPUT=nk-elite.asm.js
+
 export EMCCFLAGS="-O3 \
 -s USE_SDL_GFX=2 \
 -s USE_SDL=2 \
