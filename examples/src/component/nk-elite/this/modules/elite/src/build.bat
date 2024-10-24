@@ -35,8 +35,10 @@ for %%a in ( "%SOURCEDIR%\*.data" ) do @del "%%a"
 @echo Build directory: Clean completed...
 
 cd src
+
 set DIR=%cd%
 @call cmd /C "%EMSCRIPTENDIR:~0,2% && cd %EMSCRIPTENDIR% && emsdk_env.bat && %DIR:~0,2% && cd %DIR% && build.bat"
+
 cd ..
 
 @copy build\*.* ..\..\elite\build /Y

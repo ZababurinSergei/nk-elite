@@ -1,6 +1,7 @@
 import {initFreeQueue, FreeQueue} from "../../../../../this/queue.mjs"
 import { logger } from '@libp2p/logger'
 const log = logger('LElite')
+
 export const freeQueueInit = function(self)  {
 
     self.LFreeQueue = {
@@ -44,20 +45,6 @@ export const freeQueueInit = function(self)  {
 
     initFreeQueue(self.LFreeQueue).then( async (module) => {
         self.LFreeQueue.setStatus("initWasmFreeQueue completed...");
-
-        self.LFreeQueue.Store = async function( _key, _value ) {
-            let _convert = "";
-
-            if ( typeof _value === "string" ) _convert = _value;
-            else if ( typeof _value === "number" ) _convert = _value.toString();
-            else if ( typeof _value === "boolean" ) _convert = (_value == true ) ? "true" : "false";
-
-            await self.LFreeQueue.ccall( "Store", "", [ "string", "string" ], [ _key, _convert ], { async: true } );
-        }
-
-        self.LFreeQueue.Load = async function( _key ) {
-            return await self.LFreeQueue.ccall( "Load", "string", [ "string" ], [ _key ], { async: true } );
-        }
     });
 
 }

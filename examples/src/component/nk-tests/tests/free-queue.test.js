@@ -6,6 +6,7 @@ const { expect, assert } = chai
 describe('FreeQueue', function () {
     const bufferLength = 1024;
     const channelCount = 2;
+
     let queue;
 
     beforeEach(() => {

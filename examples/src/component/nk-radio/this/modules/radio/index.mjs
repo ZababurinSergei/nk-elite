@@ -1,9 +1,11 @@
 import initFreeQueue from "@newkind/initFreeQueue";
 import FreeQueue from "@newkind/FreeQueue";
-import {getConstants} from "@newkind/constants";
+
 import Application from "./oscilloscope/index.mjs";
-import {logger} from "@libp2p/logger";
 import CONFIG from "../../config.mjs";
+
+import { logger } from "@libp2p/logger";
+import { getConstants } from "@newkind/constants";
 
 const constants = getConstants()
 const log = logger('LFreeQueue');
