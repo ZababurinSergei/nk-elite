@@ -37,8 +37,8 @@ const eliteTGInit = (CONFIG) => {
 
     globalThis["LEliteTG"].setStatus("Downloading...");
 
-    initWasmElite(globalThis["LEliteTG"]).then(function (Module) {
-        Module.setStatus("initWasmElite completed...");
+    initWasmElite(globalThis["LEliteTG"]).then(function (module) {
+        module.setStatus("initWasmElite completed...");
     });
 }
 

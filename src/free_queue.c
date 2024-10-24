@@ -224,6 +224,16 @@ bool FreeQueuePull(struct FreeQueue *queue, double **output, size_t block_length
 }
 
 EMSCRIPTEN_KEEPALIVE
+void *GetFreeQueueObjectPointer( struct FreeQueue* queue, void* object ) 
+{
+  if ( queue ) {
+    printf( "object: %p\n", object );
+    return (void*)object;
+  }	
+  return 0;
+}
+
+EMSCRIPTEN_KEEPALIVE
 void *GetFreeQueuePointers( struct FreeQueue* queue, char* data ) 
 {
   if ( queue ) {

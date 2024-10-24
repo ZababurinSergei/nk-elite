@@ -1,18 +1,12 @@
-import initFreeQueue from '@newkind/initFreeQueue'
-import FreeQueue from '@newkind/deprecation/FreeQueue'
-import {getConstants} from '@newkind/constants'
+import initFreeQueue from "@newkind/initFreeQueue";
+import FreeQueue from "@newkind/FreeQueue";
+import {getConstants} from "@newkind/constants";
 import Application from "./oscilloscope/index.mjs";
 import {logger} from "@libp2p/logger";
 import CONFIG from "../../config.mjs";
 
 const constants = getConstants()
 const log = logger('LFreeQueue');
-
-function *flatten(array) {
-  for (let elt in array)
-    if (Array.isArray(elt)) yield *flatten(elt);
-    else yield elt;
-}
 
 const newAudio = async function () {
     try {
@@ -122,6 +116,7 @@ const freeQueueInit = function () {
         const PrintQueueInfo = module.cwrap('PrintQueueInfo', '', ['number']);
         const CreateFreeQueue = module.cwrap('CreateFreeQueue', 'number', ['number', 'number']);
         const PrintQueueAddresses = module.cwrap('PrintQueueAddresses', '', ['number']);
+	const GetFreeQueueObjectPointer = module.cwrap('GetFreeQueueObjectPointer', 'number', ['number', 'number']);
 
         CONFIG.queue.pointer = CreateFreeQueue(1754 * 50, 2);
 
@@ -129,9 +124,11 @@ const freeQueueInit = function () {
         const channelCountPtr = GetFreeQueuePointers(CONFIG.queue.pointer, "channel_count");
         const statePtr = GetFreeQueuePointers(CONFIG.queue.pointer, "state");
         const channelDataPtr = GetFreeQueuePointers(CONFIG.queue.pointer, "channel_data");
+
         const lockFuncPtr = GetFreeQueuePointers(CONFIG.queue.pointer, "lock");
         const unlockFuncPtr = GetFreeQueuePointers(CONFIG.queue.pointer, "unlock");
         const trylockFuncPtr = GetFreeQueuePointers(CONFIG.queue.pointer, "trylock");
+//        const objectPtr = GetFreeQueueObjectPointer(CONFIG.queue.pointer, module.HEAPU8.buffer );
 
         const pointers = new Object();
 
