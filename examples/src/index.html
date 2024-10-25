@@ -116,6 +116,21 @@
         <div data-exclusion class="script"></div>
     </template>
 </nk-tests>
+<!--<iframe src="http://192.168.169.1/"></iframe>-->
+<nk-proxy
+        slot="hdd"
+        id="nk-proxy_1"
+        data-css-light="true"
+        data-base-url="/v1/"
+        data-url="http://192.168.169.1/"
+>
+    <template>
+        <div class="docker">
+            <h1>KIMAX BS-U35WF</h1>
+            <div class="body"></div>
+        </div>
+    </template>
+</nk-proxy>
 <nk-service id="nk-service_0">
     <template>
         <div class="header">
@@ -2015,6 +2030,11 @@
     let isNkCursor = true
     if(isNkCursor) {
         arrayComponent.push('nk-cursor')
+    }
+
+    let isNkProxy = true
+    if(isNkProxy) {
+        arrayComponent.push('nk-proxy')
     }
 
     // arrayComponent = arrayComponent.filter(item => item !== 'nk-audio')

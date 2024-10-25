@@ -24,6 +24,8 @@ import { PUBSUB_PEER_DISCOVERY } from './src/this/constants.js'
 import { gossipsub } from '@chainsafe/libp2p-gossipsub'
 import { autoNAT } from '@libp2p/autonat'
 import { tls } from '@libp2p/tls'
+import proxy from 'express-http-proxy';
+import puppeteer from 'puppeteer';
 
 // const datastore = new MemoryDatastore()
 let __dirname = process.cwd();
@@ -41,6 +43,25 @@ let whitelist = []
 
 let app = express();
 const server = http.createServer(app);
+
+async function ssr(url) {
+    console.info('rendering the page in ssr mode');
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+
+    try {
+        await page.goto(url, {waitUntil: 'networkidle0'});
+        // await page.waitForSelector('.comments-list');
+    } catch (err) {
+        console.error(err);
+        throw new Error('page.goto/waitForSelector timed out.');
+    }
+
+    const html = await page.content();
+    await browser.close();
+
+    return {html};
+}
 
 async function main () {
     app.use(compression());
@@ -225,6 +246,30 @@ async function main () {
             clients[i].res.flush();
         }
     }
+
+    // app.use(proxy('http://192.168.169.1/', {
+    //     limit: '5mb',
+    //     filter: function(req) {
+    //         const isPath = ['/'].some(path => {
+    //             if(req.path.includes(path)) {
+    //                 return true
+    //             }
+    //         })
+    //         console.log('-------- 1 --------', path)
+    //         return isPath
+    //     },
+    //     // proxyReqPathResolver: function (req) {
+    //     //     console.log('--------- 2 ----------', req.url.replace('/v1', ''))
+    //     //     return req.url.replace('/v1/', '');
+    //     // },
+    // }));
+
+    app.get('/ipec', async (req, res) => {
+        // const { html } = await ssr(`${req.protocol}://${req.get('host')}/comments.html`);
+        const { html } = await ssr(`http://192.168.169.1/`);
+        console.log('------------------------------', html)
+        return res.status(200).send(html);
+    });
 
     app.get('/clients', (req, res) => {
         res.json(clients.map((client) => client.id));

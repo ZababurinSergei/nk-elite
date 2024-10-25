@@ -11,6 +11,7 @@
         "Server ===========================": "",
         "start": "node server.mjs",
         "dev": "nodemon server.mjs",
+        "test": "node tests.mjs",
         "Bundler ===========================": "",
         "build": "npm run build:tests && npm run build:webrtc && npm run build:lottieWeb && npm run build:tweenjs && npm run build:stats && npm run build:solarSystemTwig && npm run build:THREE && npm run build:orbitControls && npm run build:solarSystem && npm run build:lokijs && npm run build:peerIdFactory && npm run build:stream && npm run build:pubsub && npm run build:libp2p && npm run build:filter && npm run build:peer-store && npm run build:pubsubPeerDiscovery && npm run build:gossipsub && npm run build:identify && npm run build:logger && npm run build:cbor",
         "build:tests": "esbuild ./modules/dep-tests.js --bundle --sourcemap --format=esm --target=chrome114 --define:global=window --keep-names --outfile=./src/this/modules/lib-tests.js",
@@ -87,6 +88,7 @@
         "datastore-idb": "^3.0.1",
         "express": "^4.21.0",
         "express-enqueue": "^1.0.0",
+        "express-http-proxy": "^2.1.1",
         "http-proxy": "^1.18.1",
         "it-length-prefixed-stream": "^1.2.0",
         "joi": "^17.13.3",
@@ -99,6 +101,7 @@
         "path": "^0.12.7",
         "peer-id": "^0.16.0",
         "protons-runtime": "^5.5.0",
+        "puppeteer": "^23.6.0",
         "randomcolor": "^0.6.2",
         "uint8arrays": "^5.1.0",
         "wgpu-matrix": "^3.2.0"

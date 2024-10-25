@@ -751,7 +751,7 @@ export const cell = async function () {
             'body': {
                 'background': {
                     'type': 'html',
-                    'url':`${url}`
+                    'url':`/test`
                 }
             }
         }

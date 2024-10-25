@@ -1,7 +1,7 @@
 import {Component} from '../index.mjs'
 import { cell } from './this/index.mjs'
 
-const name = 'nk-iframe';
+const name = 'nk-proxy';
 const component = await Component();
 
 Object.defineProperties(component.prototype, {
@@ -64,7 +64,24 @@ Object.defineProperties(component.prototype, {
             if (isFramed) {
 
             } else {
-                this.cell()
+                const getComments = () => {
+                    return fetch('/ipec')
+                        .then(response => response.text());
+                }
+
+                function renderComments(comments, container) {
+                    let commentsListHTML = '';
+                    comments.forEach(comment => commentsListHTML += `<li><b>${comment.email}</b>: ${comment.body})</li>`);
+
+                    container.innerHTML = commentsListHTML;
+                }
+
+                const comments = await getComments();
+                this.shadowRoot.querySelector('.body').insertAdjacentHTML('beforeend', comments)
+                // console.log('ddddddddddddddddd', comments)
+                // const container = document.querySelector('.comments-list');
+                // renderComments(comments, container);
+                // this.cell()
             }
         },
         writable: true
